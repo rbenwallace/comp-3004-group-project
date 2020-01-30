@@ -16,6 +16,20 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" />
+        android:testOnly="true"
+        android:theme="@style/AppTheme"
+        android:windowSoftInputMode="adjustResize" >
+        <activity android:name="com.uniques.ourhouse.LS_Main" />
+        <activity android:name="com.uniques.ourhouse.Sign_Up" />
+        <activity android:name="com.uniques.ourhouse.Login" />
+        <activity android:name="com.uniques.ourhouse.Splash" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
 </manifest>
