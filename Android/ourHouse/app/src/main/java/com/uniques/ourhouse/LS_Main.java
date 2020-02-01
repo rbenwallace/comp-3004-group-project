@@ -33,6 +33,10 @@ public class LS_Main extends AppCompatActivity {
         adapter.addFragment(new Login(), "Login");
         adapter.addFragment(new Sign_Up(), "Sign Up");
         adapter.addFragment(new Forget_Password(), "Forget Password");
+        adapter.addFragment(new Manage_Homescreen(), "Manage Homescreen");
+        adapter.addFragment(new Add_Fee(), "Add Fee");
+        adapter.addFragment(new Add_Task(), "Add Task");
+        adapter.addFragment(new Settings(), "Settings");
         viewPager.setAdapter(adapter);
         Log.d("titsMagee", "CHECKING IF LOADED");
     }
