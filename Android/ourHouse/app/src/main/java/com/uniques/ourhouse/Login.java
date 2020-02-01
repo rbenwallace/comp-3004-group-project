@@ -21,6 +21,7 @@ public class Login extends Fragment {
     private Button backToSignUp;
     private Button forgetPassword;
     private Button loginBtn;
+    private Button manageButton;
 
     @Nullable
     @Override
@@ -30,6 +31,7 @@ public class Login extends Fragment {
         backToSignUp = (Button) view.findViewById(R.id.createAccount);
         loginBtn = (Button) view.findViewById(R.id.loginBtn);
         forgetPassword = (Button) view.findViewById(R.id.forgot_password);
+        manageButton = (Button) view.findViewById(R.id.manageButton);
         Log.d("titsMagee", "onCreatedView: Started");
         backToSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +58,16 @@ public class Login extends Fragment {
                 //TODO NAVIGATE TO NEXT FRAGMENT
                 //((LS_Main) getActivity()) gives us access to any methods that are inside the activity
                 ((LS_Main) getActivity()).setViewPager(2);
+            }
+        });
+
+        manageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Going to find my pw", Toast.LENGTH_LONG).show();
+                //TODO NAVIGATE TO NEXT FRAGMENT
+                //((LS_Main) getActivity()) gives us access to any methods that are inside the activity
+                ((LS_Main) getActivity()).setViewPager(3);
             }
         });
 
