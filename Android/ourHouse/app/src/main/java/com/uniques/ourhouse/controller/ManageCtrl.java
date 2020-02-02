@@ -1,0 +1,72 @@
+package com.uniques.ourhouse.controller;
+
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.uniques.ourhouse.R;
+import com.uniques.ourhouse.fragment.AddFeeFragment;
+import com.uniques.ourhouse.fragment.AddTaskFragment;
+import com.uniques.ourhouse.fragment.FragmentActivity;
+import com.uniques.ourhouse.fragment.FragmentId;
+import com.uniques.ourhouse.fragment.ManageFragment;
+import com.uniques.ourhouse.fragment.SettingsFragment;
+
+public class ManageCtrl implements FragmentCtrl {
+    private FragmentActivity activity;
+
+    public ManageCtrl(FragmentActivity activity) {
+        this.activity = activity;
+    }
+
+    @Override
+    public void init(View view) {
+        Button addFeeButton = (Button) view.findViewById(R.id.add_fee);
+        Button addTaskButton = (Button) view.findViewById(R.id.add_task);
+        Button settingsButton = (Button) view.findViewById(R.id.settings);
+        Button manageSwitchButton = (Button) view.findViewById(R.id.manage_back);
+        Log.d(ManageFragment.TAG, "onCreatedView: Started");
+        addFeeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(activity, "Add Fee", Toast.LENGTH_LONG).show();
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(4);
+                activity.pushFragment(FragmentId.GET(AddFeeFragment.TAG));
+            }
+        });
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(activity, "Add Task", Toast.LENGTH_LONG).show();
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(5);
+                activity.pushFragment(FragmentId.GET(AddTaskFragment.TAG));
+            }
+        });
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(activity, "SettingsFragment", Toast.LENGTH_LONG).show();
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(6);
+                activity.pushFragment(FragmentId.GET(SettingsFragment.TAG));
+            }
+        });
+        manageSwitchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(activity, "Back", Toast.LENGTH_LONG).show();
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(0);
+                activity.popFragment(FragmentId.GET(ManageFragment.TAG));
+            }
+        });
+    }
+
+    @Override
+    public void updateInfo() {
+
+    }
+}
