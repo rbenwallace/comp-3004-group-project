@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/add_task"
+        android:layout_width="152dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="4dp"
+        android:text="Add Task"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/task_description"
+        android:layout_width="378dp"
+        android:layout_height="104dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="Task Details"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.421"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_task" />
+
+    <TextView
+        android:id="@+id/task_date"
+        android:layout_width="152dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="8dp"
+        android:text="Task Frequency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_description" />
+
+    <DatePicker
+        android:id="@+id/choose_task_date"
+        android:layout_width="246dp"
+        android:layout_height="418dp"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.072"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_date" />
+
+    <TextView
+        android:id="@+id/task_frequency"
+        android:layout_width="113dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="52dp"
+        android:text="Task Frequency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.879"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_description" />
+
+    <RadioGroup
+        android:id="@+id/choose_task_frequency"
+        android:layout_width="117dp"
+        android:layout_height="186dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.879"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_frequency">
+
+        <RadioButton
+            android:id="@+id/once"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Once"
+            tools:layout_editor_absoluteX="56dp"
+            tools:layout_editor_absoluteY="363dp" />
+
+        <RadioButton
+            android:id="@+id/weeekly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Weekly"
+            tools:layout_editor_absoluteX="56dp"
+            tools:layout_editor_absoluteY="318dp" />
+
+        <RadioButton
+            android:id="@+id/monthly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Monthly"
+            tools:layout_editor_absoluteX="56dp"
+            tools:layout_editor_absoluteY="318dp" />
+
+        <RadioButton
+            android:id="@+id/other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Other"
+            tools:layout_editor_absoluteX="56dp"
+            tools:layout_editor_absoluteY="318dp" />
+
+        <EditText
+            android:id="@+id/other_frequency"
+            android:layout_width="107dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="12dp"
+            android:hint="Number of Days"
+            android:inputType="number" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/task_difficulty"
+        android:layout_width="152dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="24dp"
+        android:text="Choose Task Difficulty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.996"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/choose_task_frequency" />
+
+    <RadioGroup
+        android:id="@+id/choose_task_difficulty"
+        android:layout_width="104dp"
+        android:layout_height="107dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_difficulty">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+        <RadioButton
+            android:id="@+id/easy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Easy"
+            tools:layout_editor_absoluteX="56dp"
+            tools:layout_editor_absoluteY="363dp" />
+
+        <RadioButton
+            android:id="@+id/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Medium"
+            tools:layout_editor_absoluteX="56dp"
+            tools:layout_editor_absoluteY="318dp" />
+
+        <RadioButton
+            android:id="@+id/Hard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Hard"
+            tools:layout_editor_absoluteX="56dp"
+            tools:layout_editor_absoluteY="318dp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/feed_add_fee"
+        android:layout_width="173dp"
+        android:layout_height="63dp"
+        android:layout_marginBottom="36dp"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.995"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/manage_back"
+        android:layout_width="179dp"
+        android:layout_height="62dp"
+        android:layout_marginBottom="36dp"
+        android:text="Back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/feed_add_fee"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
