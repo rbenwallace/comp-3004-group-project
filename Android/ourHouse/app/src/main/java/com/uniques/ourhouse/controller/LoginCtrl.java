@@ -9,8 +9,9 @@ import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.ForgotPasswordFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
-import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.ManageFragment;
+import com.uniques.ourhouse.fragment.MyHousesFragment;
+import com.uniques.ourhouse.fragment.SignUpFragment;
 
 public class LoginCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -35,7 +36,7 @@ public class LoginCtrl implements FragmentCtrl {
             //TODO NAVIGATE TO NEXT FRAGMENT
             //((LS_Main) getActivity()) gives us access to any methods that are inside the activity
 //            ((LS_Main) activity).setViewPager(1);
-            activity.popFragment(FragmentId.GET(LoginFragment.TAG));
+            activity.pushFragment(FragmentId.GET(SignUpFragment.TAG));
         });
 //        backToSignUp.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -64,6 +65,7 @@ public class LoginCtrl implements FragmentCtrl {
             //TODO CHECK FOR VERIFICATION
             Toast.makeText(activity, "Logging in", Toast.LENGTH_LONG).show();
             //TODO NAVIGATE TO NEXT Main Activity
+            activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
         });
     }
 
