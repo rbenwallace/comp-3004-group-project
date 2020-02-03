@@ -2,76 +2,163 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_blue"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/fee_description2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <TextView
+        android:id="@+id/settings_title"
+        android:layout_width="414dp"
+        android:layout_height="54dp"
         android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Roation"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.257"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fee_frequency2" />
-
-    <TextView
-        android:id="@+id/fee_frequency2"
-        android:layout_width="152dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="28dp"
-        android:text="Change Task Rotation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.196"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fee_description" />
-
-    <Button
-        android:id="@+id/feed_add_fee2"
-        android:layout_width="119dp"
-        android:layout_height="66dp"
-        android:layout_marginBottom="44dp"
-        android:text="Delete House"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/fee_frequency"
-        android:layout_width="152dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="36dp"
-        android:text="Change House Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.196"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_fee" />
-
-    <Button
-        android:id="@+id/feed_add_fee"
-        android:layout_width="119dp"
-        android:layout_height="66dp"
-        android:layout_marginBottom="40dp"
-        android:text="Save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/add_fee"
-        android:layout_width="152dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:padding="10dp"
         android:text="Settings"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.432"
+        app:layout_constraintHorizontal_bias="0.563"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/edit_house_name"
+        android:layout_width="233dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="24dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/small_house"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Edit House Name"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.095"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_title" />
+
+    <EditText
+        android:id="@+id/house_name"
+        android:layout_width="370dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:hint="House Name"
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.414"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_house_name" />
+
+    <TextView
+        android:id="@+id/edit_task_rotation"
+        android:layout_width="236dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/rotation"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Edit Task Rotation"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.091"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+
+    <!--<androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rotation_list"
+        android:layout_width="348dp"
+        android:layout_height="194dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.253"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.575">
+
+        <TextView
+            android:id="@+id/test123"
+            android:layout_width="184dp"
+            android:layout_height="54dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Ben"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/test1234"
+            android:layout_width="184dp"
+            android:layout_height="54dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Seb"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/test12345"
+            android:layout_width="184dp"
+            android:layout_height="54dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Victor"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/test123456"
+            android:layout_width="184dp"
+            android:layout_height="54dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Jon"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </androidx.recyclerview.widget.RecyclerView>-->
+
+    <CheckBox
+        android:id="@+id/late_check_box"
+        android:layout_width="237dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="20dp"
+        android:text="Show When Tasks Are Late"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.178"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_task_rotation" />
+
+    <CheckBox
+        android:id="@+id/difficulty_check_box"
+        android:layout_width="173dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:text="Show Task Difficulty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/late_check_box" />
 
     <Button
         android:id="@+id/manage_back"
@@ -79,44 +166,33 @@
         android:layout_height="70dp"
         android:layout_marginBottom="36dp"
         android:text="Back"
+        android:background="@drawable/loginbutton_selector"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/feed_add_fee"
+        app:layout_constraintEnd_toEndOf="@+id/save_house"
         app:layout_constraintHorizontal_bias="0.112"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/fee_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:ems="10"
-        android:hint="name"
-        android:inputType="textPersonName"
+    <Button
+        android:id="@+id/save_house"
+        android:layout_width="111dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/loginbutton_selector"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.257"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fee_frequency" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="237dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="68dp"
-        android:text="Show When Tasks Are Late"
+    <Button
+        android:id="@+id/delete_house"
+        android:layout_width="111dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/loginbutton_selector"
+        android:text="Delete House"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.229"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fee_description2" />
-
-    <CheckBox
-        android:id="@+id/checkBox2"
-        android:layout_width="173dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="24dp"
-        android:text="Show Task Difficulty"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.126"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+        app:layout_constraintHorizontal_bias="0.946"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
