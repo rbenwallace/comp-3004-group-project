@@ -13,7 +13,7 @@ import com.uniques.ourhouse.controller.SignUpCtrl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class SignUpFragment extends Fragment {
+public class SignUpFragment extends Fragment<SignUpCtrl> {
     public static final String TAG = "SignUpFragment";
     private static final int layoutId = R.layout.fragment_sign_up;
 

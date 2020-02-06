@@ -13,7 +13,7 @@ import com.uniques.ourhouse.controller.ManageCtrl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class ManageFragment extends Fragment {
+public class ManageFragment extends Fragment<ManageCtrl> {
     public static final String TAG = "ManageFragment";
     private static final int layoutId = R.layout.fragment_manage;
 

@@ -13,7 +13,7 @@ import com.uniques.ourhouse.controller.AddFeeCtrl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class AddFeeFragment extends Fragment {
+public class AddFeeFragment extends Fragment<AddFeeCtrl> {
     public static final String TAG = "AddFeeFragment";
     private static final int layoutId = R.layout.fragment_add_fee;
 

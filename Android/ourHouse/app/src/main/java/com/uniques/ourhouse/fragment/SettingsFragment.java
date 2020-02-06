@@ -13,7 +13,7 @@ import com.uniques.ourhouse.controller.SettingsCtrl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment<SettingsCtrl> {
     public static final String TAG = "SettingsFragment";
     private static final int layoutId = R.layout.fragment_settings;
 

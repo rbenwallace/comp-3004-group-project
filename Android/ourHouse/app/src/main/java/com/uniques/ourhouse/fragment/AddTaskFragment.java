@@ -13,7 +13,7 @@ import com.uniques.ourhouse.controller.AddTaskCtrl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class AddTaskFragment extends Fragment {
+public class AddTaskFragment extends Fragment<AddTaskCtrl> {
     public static final String TAG = "AddTaskFragment";
     private static final int layoutId = R.layout.fragment_add_task;
 

@@ -12,16 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 //import com.uniques.ourhouse.session.Session;
-//import com.uniques.ourhouse.util.ScholarModel;
+//import com.uniques.ourhouse.util.Model;
 
 public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment.app.Fragment {
     //TODO fix saved objects
-//    private static HashMap<String, ScholarModel> savedObjects = new HashMap<>();
+//    private static HashMap<String, Model> savedObjects = new HashMap<>();
     protected T controller;
     private boolean allowDestruction, pendingDestruction;
     protected boolean destroyOnCreateView;
 
-//    protected static void saveObject(FragmentId fragmentId, String key, ScholarModel obj) {
+//    protected static void saveObject(FragmentId fragmentId, String key, Model obj) {
 //        savedObjects.put(fragmentId + ":" + key, obj);
 //    }
 //
@@ -29,7 +29,7 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
 //        savedObjects.put(fragmentId + ":" + key, new DummyModel(obj));
 //    }
 //
-//    protected static ScholarModel getSavedObject(FragmentId fragmentId, String key) {
+//    protected static Model getSavedObject(FragmentId fragmentId, String key) {
 //        return savedObjects.get(fragmentId + ":" + key);
 //    }
 
@@ -39,7 +39,7 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
 ////        return (T) (dummyModel != null ? dummyModel.getObj() : null);
 //    }
 
-//    private static class DummyModel implements ScholarModel {
+//    private static class DummyModel implements Model {
 //        @NonNull
 //        private Object obj;
 //

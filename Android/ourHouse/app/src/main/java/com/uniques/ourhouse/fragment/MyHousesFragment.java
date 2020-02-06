@@ -5,15 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.uniques.ourhouse.ActivityId;
 import com.uniques.ourhouse.LS_Main;
 import com.uniques.ourhouse.R;
-import com.uniques.ourhouse.controller.HousesCtrl;
+import com.uniques.ourhouse.controller.MyHousesCtrl;
 
-public class MyHousesFragment extends Fragment {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+public class MyHousesFragment extends Fragment<MyHousesCtrl> {
     public static final String TAG = "MyHousesFragment";
     private static final int layoutId = R.layout.fragment_my_houses;
     public static FragmentId setupId(ActivityId activityId) {
@@ -24,7 +24,7 @@ public class MyHousesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new HousesCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId()));
+            controller = new MyHousesCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId()));
         }
 
         super.onCreateView(inflater, container, savedInstanceState);

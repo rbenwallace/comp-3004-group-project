@@ -12,10 +12,10 @@ import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.JoinHouseFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
 
-public class HousesCtrl implements FragmentCtrl {
+public class MyHousesCtrl implements FragmentCtrl {
     private FragmentActivity activity;
 
-    public HousesCtrl(FragmentActivity activity) {
+    public MyHousesCtrl(FragmentActivity activity) {
         this.activity = activity;
     }
 

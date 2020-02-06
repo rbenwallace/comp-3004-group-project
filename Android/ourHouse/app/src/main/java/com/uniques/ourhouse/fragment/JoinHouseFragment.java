@@ -5,15 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.uniques.ourhouse.ActivityId;
 import com.uniques.ourhouse.LS_Main;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.controller.JoinHouseCtrl;
 
-public class JoinHouseFragment extends Fragment {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+public class JoinHouseFragment extends Fragment<JoinHouseCtrl> {
     public static final String TAG = "JoinHouseFragment";
     private static final int layoutId = R.layout.fragment_join_house;
     public static FragmentId setupId(ActivityId activityId) {

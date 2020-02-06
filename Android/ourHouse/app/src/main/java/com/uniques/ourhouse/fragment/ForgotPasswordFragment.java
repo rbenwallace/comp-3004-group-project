@@ -13,7 +13,7 @@ import com.uniques.ourhouse.controller.ForgotPasswordCtrl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class ForgotPasswordFragment extends Fragment {
+public class ForgotPasswordFragment extends Fragment<ForgotPasswordCtrl> {
     public static final String TAG = "ForgotPasswordFragment";
     private static final int layoutId = R.layout.fragment_forget_password;
 

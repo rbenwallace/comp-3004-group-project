@@ -2,8 +2,6 @@ package com.uniques.ourhouse;
 
 import android.os.Bundle;
 
-import androidx.fragment.app.FragmentManager;
-
 import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.CreateHouseFragment;
@@ -17,6 +15,8 @@ import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
 import com.uniques.ourhouse.fragment.SignUpFragment;
+
+import androidx.fragment.app.FragmentManager;
 
 public class LS_Main extends FragmentActivity {
     public static final String TAG = "LS_Main";
@@ -87,7 +87,7 @@ public class LS_Main extends FragmentActivity {
         }
         fragmentStack.push(fragment);
         fragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, currentFragment())
+                .replace(R.id.ls_main_fragment, currentFragment())
                 .addToBackStack(String.valueOf(fragmentId))
                 .commit();
     }

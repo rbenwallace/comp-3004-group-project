@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/background_blue"
+    android:background="@color/colorPrimaryLight"
     android:layout_height="match_parent">
     <ImageView
         android:layout_width="wrap_content"
@@ -13,7 +13,7 @@
     </ImageView>
     <ScrollView
         android:layout_width="match_parent"
-        android:background="@color/background_blue"
+        android:background="@color/colorPrimaryLight"
         android:layout_below="@+id/house"
         android:layout_height="fill_parent">
 
@@ -33,7 +33,7 @@
                 android:orientation="vertical" >
                 <View
                     android:layout_width="match_parent"
-                    android:background="@color/background_blue"
+                    android:background="@color/colorPrimaryLight"
                     android:layout_height="30dp">
 
                 </View>
@@ -50,8 +50,8 @@
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textColorHint="@color/colorTextPrimary"
                     android:textSize="16sp" />
 
 
@@ -67,8 +67,8 @@
                     android:hint="@string/passowrd"
                     android:inputType="textPassword"
                     android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textColorHint="@color/colorTextPrimary"
                     android:textSize="16sp" />
 
 
@@ -81,7 +81,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="@string/forgot"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorTextPrimary"
                     android:textSize="14sp" />
 
                 <RelativeLayout
@@ -98,7 +98,7 @@
                         android:paddingVertical="5dp"
                         android:text="@string/login"
                         android:layout_centerHorizontal="true"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="34sp" />
 
                 </RelativeLayout>
@@ -112,7 +112,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="@string/newUser"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorTextPrimary"
                     android:fontFamily="sans-serif-light"
                     android:textSize="15sp" />
 
@@ -135,6 +135,6 @@
         android:fontFamily="sans-serif-light"
         android:gravity="center"
         android:text="Manage"
-        android:textColor="@color/black"
+        android:textColor="@color/colorTextPrimary"
         android:textSize="15sp" />
 </RelativeLayout>
