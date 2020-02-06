@@ -8,7 +8,7 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import java.util.Date;
 
-public class Event implements Model, Observable, Comparable {
+public class Event implements Observable, Comparable {
     private String title;
     private String assignedTo;
     private Date dueDate;

@@ -126,15 +126,4 @@
         </RelativeLayout>
 
     </ScrollView>
-    <Button
-        android:id="@+id/manageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:clickable="true"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:text="Manage"
-        android:textColor="@color/colorTextPrimary"
-        android:textSize="15sp" />
 </RelativeLayout>

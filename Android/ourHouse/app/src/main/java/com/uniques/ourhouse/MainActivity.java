@@ -1,18 +1,24 @@
 package com.uniques.ourhouse;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.uniques.ourhouse.fragment.AddFeeFragment;
+import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.Fragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
+import com.uniques.ourhouse.fragment.ManageFragment;
+import com.uniques.ourhouse.fragment.SettingsFragment;
 
 import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends FragmentActivity {
     public static final String TAG = "MainActivity";
+    static final int LAYOUT_ID = R.layout.activity_main;
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -24,7 +30,13 @@ public class MainActivity extends FragmentActivity {
         setContentView(getActivityId().getLayoutId());
         saveInstance(getActivityId(), this);
 
+        Log.d(TAG, "Launching");
+
         FeedFragment.setupId(getActivityId());
+        ManageFragment.setupId(getActivityId());
+        AddFeeFragment.setupId(getActivityId());
+        AddTaskFragment.setupId(getActivityId());
+        SettingsFragment.setupId(getActivityId());
 
         BottomNavigationView navigation = findViewById(R.id.main_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -37,28 +49,24 @@ public class MainActivity extends FragmentActivity {
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         switch (item.getItemId()) {
-//            case R.id.navigation_home:
-//                if (currentFragment() != null)
-//                    popFragment(FragmentId.HOME_FRAGMENT);
-//                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.HOME_FRAGMENT)
-//                    pushFragment(FragmentId.HOME_FRAGMENT);
-//                return true;
-//            case R.id.navigation_calendar:
-//                if (currentFragment() != null)
-//                    popFragment(FragmentId.CALENDAR_FRAGMENT);
-//                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.CALENDAR_FRAGMENT)
-//                    pushFragment(FragmentId.CALENDAR_FRAGMENT);
-//                return true;
-//            case R.id.navigation_evaluation:
-//                //mTextMessage.setText(R.string.title_evaluation);
-//                return true;
+            case R.id.navigation_feed:
+                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(FeedFragment.TAG))
+                    pushFragment(FragmentId.GET(FeedFragment.TAG));
+                return true;
+            case R.id.navigation_manage:
+                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(ManageFragment.TAG))
+                    pushFragment(FragmentId.GET(ManageFragment.TAG));
+                return true;
+            case R.id.navigation_stats:
+                //mTextMessage.setText(R.string.title_evaluation);
+                return false;
         }
         return false;
     };
 
     @Override
     protected ActivityId getActivityId() {
-        return ActivityId.SET(this.getClass(), TAG, R.layout.activity_main);
+        return ActivityId.SET(this.getClass(), TAG, LAYOUT_ID);
     }
 
     @Override

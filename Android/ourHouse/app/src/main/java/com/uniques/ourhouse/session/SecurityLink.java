@@ -2,7 +2,7 @@ package com.uniques.ourhouse.session;
 
 import java.util.UUID;
 
-public abstract class SecurityLink {
+abstract class SecurityLink {
 
     abstract DatabaseLink getDatabaseLink();
 
@@ -16,7 +16,7 @@ public abstract class SecurityLink {
 
     public interface SecureAuthenticator {
 
-        boolean newStudent(String email, String password);
+        boolean newUser(String fullName, String email, String phoneNumber, String password);
 
         boolean authenticate(String email, String password);
     }

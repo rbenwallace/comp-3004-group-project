@@ -1,6 +1,9 @@
 package com.uniques.ourhouse.session;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.uniques.ourhouse.model.User;
 
 import java.util.UUID;
 
@@ -8,11 +11,10 @@ public final class Session {
 
     private static Session baseSession;
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean newSession(Context context) {
         baseSession = new Session();
         baseSession.database = new LocalStore(context);
-        baseSession.security = new LocalSecurity(context) {
+        baseSession.security = new WeakLocalSecurity(context) {
             @Override
             DatabaseLink getDatabaseLink() {
                 return baseSession.getDatabase();
@@ -20,16 +22,16 @@ public final class Session {
 
             @Override
             protected boolean onAuthenticate(UUID id, UUID loginKey) {
-                Settings.STUDENT_LOGIN_KEY.set(loginKey);
-                //todo login
-//                baseSession.student = baseSession.database.getStudent(id);
-                return false;
+                Settings.USER_LOGIN_KEY.set(loginKey);
+                baseSession.user = baseSession.database.getUser(id);
+                Log.d("Session", "loginKey= " + loginKey + " success= " + (baseSession.user != null));
+                return baseSession.user != null;
             }
         };
         Settings.init(context);
 
-        return Settings.STUDENT_LOGIN_KEY.get() != null
-                && baseSession.security.validateKey(Settings.STUDENT_LOGIN_KEY.get());
+        return Settings.USER_LOGIN_KEY.get() != null
+                && baseSession.security.validateKey(Settings.USER_LOGIN_KEY.get());
     }
 
     public static Session getSession() {
@@ -38,6 +40,7 @@ public final class Session {
 
     private DatabaseLink database;
     private SecurityLink security;
+    private User user;
 
     public DatabaseLink getDatabase() {
         return database;

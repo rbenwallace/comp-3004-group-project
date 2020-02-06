@@ -4,13 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LS_Main">
-<!--    <com.uniques.ourhouse.CustomViewPager-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:id="@+id/container"-->
-<!--        >-->
-
-<!--    </com.uniques.ourhouse.CustomViewPager>-->
 
     <FrameLayout
         android:id="@+id/ls_main_fragment"

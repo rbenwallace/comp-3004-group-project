@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.uniques.ourhouse.ActivityId;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Stack;
 
 import androidx.annotation.NonNull;
@@ -29,13 +30,13 @@ public abstract class FragmentActivity extends AppCompatActivity {
     }
 
     //    @NonNull
-    protected static FragmentActivity getSavedInstance(ActivityId activityId) {
+    protected static FragmentActivity getSavedInstance(ActivityId activityId, Fragment fragment) {
         checkMapNotNull();
         FragmentActivity savedInstance = savedInstances.get(activityId);
         if (savedInstance == null) {
             try {
-                savedInstance = (FragmentActivity) activityId.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                savedInstance = (FragmentActivity) Objects.requireNonNull(activityId).newInstance((AppCompatActivity) fragment.getActivity(), fragment);
+            } catch (InstantiationException | IllegalAccessException | NullPointerException e) {
                 e.printStackTrace();
             }
         }

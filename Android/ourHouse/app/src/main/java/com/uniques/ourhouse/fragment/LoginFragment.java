@@ -25,7 +25,7 @@ public class LoginFragment extends Fragment<LoginCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new LoginCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId()));
+            controller = new LoginCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);

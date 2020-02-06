@@ -2,8 +2,8 @@ package com.uniques.ourhouse.session;
 
 import android.content.Context;
 
+import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.util.Indexable;
-import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
@@ -14,12 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 final class LocalStore implements DatabaseLink {
-    private static final String PEOPLE_FILE = "people.json";
-    private static final String CLUBS_FILE = "clubs.json";
-    private static final String EVENTS_FILE = "events.json";
-    private static final String TODOS_FILE = "todos.json";
-    private static final String COURSES_FILE = "courses.json";
-    private static final String EVALUATIONS_FILE = "evaluations.json";
+    private static final String USERS_FILE = "users.json";
 
     private Context context;
 
@@ -28,13 +23,13 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
-    public Model get() {
-        return null;
+    public User getUser(UUID id) {
+        return new User().fromJSON(searchLocal(USERS_FILE, id));
     }
 
     @Override
-    public boolean post() {
-        return false;
+    public boolean postUser(User user) {
+        return saveLocal(USERS_FILE, user);
     }
 
     private JSONElement searchLocal(String fileName, UUID id) {
@@ -57,6 +52,7 @@ final class LocalStore implements DatabaseLink {
         File file = getLocalFile(fileName);
         if (!file.exists()) {
             populateStores();
+            //TODO this creates an infinite loop
             return retrieveLocal(fileName);
         }
         try {
@@ -72,52 +68,7 @@ final class LocalStore implements DatabaseLink {
     }
 
     private void populateStores() {
-//        Student student = new Student("A", "Scholar", "scholar@school.edu", new Date());
-//        Student dude = new Student("Another", "Straight-shooter", "topshot@school.edu", new Date());
-//        Teacher mark = new Teacher("Mark", "Lanthier", "mark.lanthier@school.edu", new Date());
-//        Teacher christine = new Teacher("Christine", "Laurendeau", "christine.laurendeau@school.edu", new Date());
-//        Teacher eaket = new Teacher("Christopher", "Eaket", "christine.laurendeau@school.edu", new Date());
-//
-//        Subject comp = student.getCalendar().newSubject("Computer Science", "COMP");
-//        Subject digh = student.getCalendar().newSubject("Digital Humanities", "DIGH");
-//
-//        populateNewStore(PEOPLE_FILE, student, dude, mark, christine, eaket);
-//
-//        Course java = comp.newCourse("Intro to Java", "1406", mark);
-//        java.newClass("B", new Schedule());
-//
-//        Course cplus = comp.newCourse("Intro to Software Engineering", "2404", christine);
-//        cplus.newClass("A", new Schedule());
-//
-//        Course intro = digh.newCourse("Intro to Digital Hums", "2001", eaket);
-//
-//        populateNewStore(COURSES_FILE, java, cplus, intro);
-//
-//        java.getEvaluation().newDeliverable("Assignment 2", "", new Schedule());
-//        java.getEvaluation().newTest("Midterm", "Topics 1-6", new Schedule());
-//        java.getEvaluation().newTest("Final", "Sucks to be u", new Schedule());
-//
-//        cplus.getEvaluation().newDeliverable("Assignment 1", "Bullsh$t", new Schedule());
-//        cplus.getEvaluation().newDeliverable("Assignment 2", "", new Schedule());
-//        cplus.getEvaluation().newTest("Midterm", "Topics 1-4", new Schedule());
-//        cplus.getEvaluation().newTest("Final", "Sucks to be u", new Schedule());
-//
-//        intro.newClass("A", new Schedule());
-//        intro.getEvaluation().newDeliverable("Project analysis", "", new Schedule());
-//        intro.getEvaluation().newDeliverable("Response paper", "", new Schedule());
-//        intro.getEvaluation().newDeliverable("Design doc", "", new Schedule());
-//        intro.getEvaluation().newDeliverable("Final paper", "", new Schedule());
-//
-//        populateNewStore(EVALUATIONS_FILE, java.getEvaluation(), cplus.getEvaluation(), intro.getEvaluation());
-//
-//        populateNewStore(EVENTS_FILE,
-//                student.getCalendar().newEvent("Rate my prof day", "", new Schedule()));
-//        populateNewStore(TODOS_FILE,
-//                student.getCalendar().newTodo("Contest A1 marks", "TA:paul"));
-//
-//        Club club = student.newClub("Retro Music Club", "Synth pop lovers welcome too :)");
-//        club.addMember(dude);
-//        populateNewStore(CLUBS_FILE, club);
+        populateNewStore(USERS_FILE);
     }
 
     private void populateNewStore(String fileName, Indexable... models) {

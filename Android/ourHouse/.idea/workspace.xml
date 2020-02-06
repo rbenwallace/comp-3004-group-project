@@ -12,126 +12,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1a2c80d9-e5aa-46ef-95a6-a213c7f0c675" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cardview_cardview_1_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_coordinatorlayout_coordinatorlayout_1_1_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_recyclerview_recyclerview_1_1_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_transition_transition_1_2_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_viewpager2_viewpager2_1_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_material_material_1_1_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCtrl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerCard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/DatabaseLink.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalSecurity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalStore.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/MongoDB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/SecurityLink.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Session.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Settings.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/BetterSchedule.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Comparable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Filterable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Hue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/HueHolder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Indexable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Location.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Model.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelCollection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelLink.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Nameable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Observable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Schedule.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ScheduleChangeListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ScheduleHolder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Searchable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/TextChangeListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Util.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/DatabaseHelper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/EasyJSON.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/EasyJSONException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/JSONElement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/JSONElementType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/SafeJSONElementType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/UnexpectedTokenException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/exception/InvalidArgumentException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/exception/InvalidCombinationException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/exception/InvalidRangeException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/exception/UnsupportedFunctionCallException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/ItemList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/JSONArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/JSONAware.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/JSONObject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/JSONStreamAware.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/JSONValue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/parser/ContainerFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/parser/ContentHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/parser/JSONParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/parser/ParseException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/parser/Yylex.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/parser/Yytoken.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/anim/trans_fade_in.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/anim/trans_fade_out.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/anim/trans_left_in.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/anim/trans_left_out.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/anim/trans_none.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/anim/trans_right_in.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/anim/trans_right_out.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/anim/trans_top_in.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_home_black_24dp.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_event.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_header.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_title.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_feed.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/menu/navigation.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/ActivityId.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/ActivityId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/CustomViewPager.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/LS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/LS_Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/SectionPageAdapter.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/HousesCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/MyHousesCtrl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/JoinHouseCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/JoinHouseCtrl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/LoginCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/LoginCtrl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/SignUpCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/SignUpCtrl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddFeeFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddFeeFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddTaskFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddTaskFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/CreateHouseFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/CreateHouseFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ForgotPasswordFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ForgotPasswordFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/Fragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/Fragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FragmentActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FragmentActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/JoinHouseFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/JoinHouseFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/LoginFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/LoginFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ManageFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ManageFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/MyHousesFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/MyHousesFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SettingsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SettingsFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SignUpFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SignUpFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-v24/loginbutton_selector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-v24/loginbutton_selector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/DatabaseLink.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/DatabaseLink.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalSecurity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/WeakLocalSecurity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalStore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/SecurityLink.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/SecurityLink.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Session.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Settings.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_ls__main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_ls__main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_splash.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_splash.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_create_house.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_create_house.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_forget_password.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_forget_password.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_join_house.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_join_house.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_login.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_my_houses.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_my_houses.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_sign_up.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_sign_up.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/menu/navigation.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/menu/navigation.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -165,14 +84,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="43" column="30" selection-start-line="43" selection-start-column="30" selection-end-line="43" selection-end-column="30" />
-              <folding>
-                <element signature="e#1414#1444#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="255">
+              <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="23">
+              <caret line="29" column="53" selection-start-line="29" selection-start-column="53" selection-end-line="29" selection-end-column="53" />
             </state>
           </provider>
         </entry>
@@ -180,46 +105,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-45">
-              <caret line="66" column="13" lean-forward="true" selection-start-line="66" selection-start-column="13" selection-end-line="66" selection-end-column="13" />
+            <state relative-caret-position="51">
+              <caret line="34" column="24" selection-start-line="34" selection-start-column="24" selection-end-line="34" selection-end-column="24" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-          <provider selected="true" editor-type-id="android-designer2" />
-          <provider editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="70" selection-start-line="12" selection-start-column="70" selection-end-line="12" selection-end-column="70" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalSecurity.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/LS_Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="26" selection-start-line="26" selection-end-line="26" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalStore.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="121" selection-start-line="121" selection-end-line="121" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#771#772#0" expanded="true" />
-                <element signature="e#798#799#0" expanded="true" />
-                <element signature="e#841#842#0" expanded="true" />
-                <element signature="e#869#870#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="68">
+              <caret line="29" column="31" selection-start-line="29" selection-start-column="31" selection-end-line="29" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -227,56 +123,49 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Session.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="106">
-              <caret line="25" column="28" selection-start-line="25" selection-start-column="28" selection-end-line="25" selection-end-column="28" />
+            <state relative-caret-position="-134">
+              <caret line="16" column="42" selection-start-line="16" selection-start-column="42" selection-end-line="16" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#575#576#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Settings.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/WeakLocalSecurity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="60" column="37" selection-start-line="60" selection-start-column="37" selection-end-line="60" selection-end-column="37" />
+            <state relative-caret-position="240">
+              <caret line="88" column="49" selection-start-line="88" selection-start-column="49" selection-end-line="88" selection-end-column="49" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#580#581#0" expanded="true" />
+                <element signature="e#618#619#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/ActivityId.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="68" column="75" selection-start-line="68" selection-start-column="75" selection-end-line="68" selection-end-column="75" />
+            <state relative-caret-position="136">
+              <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#2144#2145#0" expanded="true" />
+                <element signature="e#2200#2201#0" expanded="true" />
+                <element signature="e#2286#2287#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="22" lean-forward="true" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerAdapter.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/SignUpCtrl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="116">
-              <caret line="22" column="11" selection-start-line="22" selection-start-column="11" selection-end-line="22" selection-end-column="11" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="125">
+              <caret line="48" column="60" selection-start-line="48" selection-start-column="16" selection-end-line="48" selection-end-column="60" />
             </state>
           </provider>
         </entry>
@@ -287,8 +176,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="resourceFile" />
-        <option value="Class" />
         <option value="valueResourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -307,57 +196,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/LoginCtrl.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Tabs_Main.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_ls__main.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/content_main.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/LS_Main.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/nav.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/navigation.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerCard.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/MyHousesCtrl.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_join_house.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_my_houses.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/JoinHouseCtrl.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_feed.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ForgotPasswordFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddFeeFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddTaskFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/CreateHouseFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/JoinHouseFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/LoginFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ManageFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/MyHousesFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SettingsFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SignUpFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Model.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/xyz/victorolaitan/easyjson/EasyJSON.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/xyz/victorolaitan/easyjson/JSONElement.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/EasyJSON.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/BetterSchedule.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Util.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_event.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_header.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Indexable.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/DatabaseLink.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelLink.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelCollection.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Schedule.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ScheduleChangeListener.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCtrl.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalSecurity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalStore.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Session.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Settings.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalSecurity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Settings.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/SecurityLink.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/menu/navigation.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelLink.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/DatabaseLink.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_ls__main.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_login.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/LoginCtrl.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/SignUpCtrl.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalStore.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/User.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/ActivityId.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FragmentActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddFeeFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddTaskFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/CreateHouseFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ForgotPasswordFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SettingsFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/JoinHouseFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/LoginFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ManageFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/MyHousesFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SignUpFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_manage.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Session.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/WeakLocalSecurity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/LS_Main.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java" />
       </list>
     </option>
   </component>
@@ -467,6 +356,13 @@
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="ourhouse" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="fragment" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ourHouse" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="ourhouse" type="cbb59c9e:AndroidPsiDirectoryNode" />
               <item name="model" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -491,7 +387,7 @@
               <item name="ourHouse" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
+              <item name="menu" type="ddeffd01:AndroidResFolderTypeNode" />
             </path>
           </expand>
           <select />
@@ -668,7 +564,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Nl-Palette" order="0" />
       <window_info id="Build Variants" order="1" side_tool="true" />
@@ -677,11 +572,11 @@
       <window_info id="Designer" order="4" />
       <window_info id="Image Layers" order="5" />
       <window_info id="Favorites" order="6" sideWeight="0.50088495" side_tool="true" weight="0.13927126" />
-      <window_info content_ui="combo" id="Project" order="7" sideWeight="0.49911505" visible="true" weight="0.17246963" />
+      <window_info active="true" content_ui="combo" id="Project" order="7" sideWeight="0.49911505" visible="true" weight="0.17246963" />
       <window_info id="Resources Explorer" order="8" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49635628" weight="0.3285968" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4923077" visible="true" weight="0.42273533" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4923077" weight="0.42273533" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49959514" weight="0.38230088" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -711,257 +606,6 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/JoinHouseFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="15" column="61" selection-start-line="15" selection-start-column="61" selection-end-line="15" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/LoginFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="15" column="53" selection-start-line="15" selection-start-column="53" selection-end-line="15" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ManageFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="15" column="55" selection-start-line="15" selection-start-column="55" selection-end-line="15" selection-end-column="55" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/MyHousesFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="59">
-          <caret line="15" column="59" selection-start-line="15" selection-start-column="59" selection-end-line="15" selection-end-column="59" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SettingsFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="15" column="59" selection-start-line="15" selection-start-column="59" selection-end-line="15" selection-end-column="59" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SignUpFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="15" column="55" selection-start-line="15" selection-start-column="55" selection-end-line="15" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/Sdk/platforms/android-29/android.jar!/java/lang/Comparable.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#188#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerCard.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/TextChangeListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/simple/ItemList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/EasyJSON.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="252" column="12" lean-forward="true" selection-start-line="252" selection-start-column="12" selection-end-line="252" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/DatabaseHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/EasyJSONException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="49" column="51" lean-forward="true" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/JSONElement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="10" column="14" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/JSONElementType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/SafeJSONElementType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/easyjson/UnexpectedTokenException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ScheduleHolder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Comparable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="17" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Hue.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/BetterSchedule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5984">
-          <caret line="404" column="49" selection-start-line="404" selection-start-column="49" selection-end-line="404" selection-end-column="49" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Model.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Util.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="48" column="27" selection-start-line="48" selection-start-column="27" selection-end-line="48" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="38" selection-start-line="6" selection-start-column="38" selection-end-line="6" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_create_house.xml">
-      <provider selected="true" editor-type-id="android-designer2" />
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="113" column="32" selection-start-line="113" selection-start-column="32" selection-end-line="113" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-v24/loginbutton_selector.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Indexable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/DatabaseLink.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelCollection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="91" column="12" lean-forward="true" selection-start-line="91" selection-start-column="12" selection-end-line="91" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ScheduleChangeListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -979,13 +623,6 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelLink.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
@@ -1042,40 +679,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalSecurity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="26" selection-start-line="26" selection-end-line="26" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalStore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="121" selection-start-line="121" selection-end-line="121" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#771#772#0" expanded="true" />
-            <element signature="e#798#799#0" expanded="true" />
-            <element signature="e#841#842#0" expanded="true" />
-            <element signature="e#869#870#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Session.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="25" column="28" selection-start-line="25" selection-start-column="28" selection-end-line="25" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_splash.xml">
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
@@ -1084,17 +687,339 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="15" column="3" selection-start-line="15" selection-start-column="3" selection-end-line="15" selection-end-column="3" />
+        <state relative-caret-position="119">
+          <caret line="7" column="22" lean-forward="true" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="69" column="5" lean-forward="true" selection-start-line="69" selection-start-column="5" selection-end-line="69" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="10" column="31" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Settings.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="62" column="32" selection-start-line="62" selection-start-column="32" selection-end-line="62" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/navigation.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/AddFeeCtrl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="25" column="71" selection-start-line="25" selection-start-column="71" selection-end-line="25" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelCollection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-34">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/DatabaseLink.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="7" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/SectionPageAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="7" column="22" lean-forward="true" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/CustomViewPager.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
-          <caret line="60" column="37" selection-start-line="60" selection-start-column="37" selection-end-line="60" selection-end-column="37" />
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_ls__main.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="29" selection-start-line="5" selection-start-column="29" selection-end-line="5" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelLink.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="27" lean-forward="true" selection-start-line="13" selection-start-column="27" selection-end-line="13" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/AddTaskCtrl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="21" column="54" lean-forward="true" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_login.xml">
+      <provider selected="true" editor-type-id="android-designer2" />
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="-204" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_sign_up.xml">
+      <provider selected="true" editor-type-id="android-designer2" />
+      <provider editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/LoginCtrl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="47" column="57" lean-forward="true" selection-start-line="47" selection-start-column="16" selection-end-line="47" selection-end-column="57" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/LocalStore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="91">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#845#846#0" expanded="true" />
+            <element signature="e#895#896#0" expanded="true" />
+            <element signature="e#2000#2001#0" expanded="true" />
+            <element signature="e#2081#2082#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="65">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddTaskFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="27" column="119" selection-start-line="27" selection-start-column="119" selection-end-line="27" selection-end-column="119" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/CreateHouseFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="26" column="123" selection-start-line="26" selection-start-column="123" selection-end-line="26" selection-end-column="123" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FragmentId.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="57" column="30" selection-start-line="57" selection-start-column="30" selection-end-line="57" selection-end-column="30" />
+          <folding>
+            <element signature="e#1970#1971#0" expanded="true" />
+            <element signature="e#2010#2011#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ForgotPasswordFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="27" column="102" lean-forward="true" selection-start-line="27" selection-start-column="102" selection-end-line="27" selection-end-column="102" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SettingsFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="27" column="120" selection-start-line="27" selection-start-column="120" selection-end-line="27" selection-end-column="120" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/ManageCtrl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="1" selection-start-column="1" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FragmentActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="34" column="8" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/JoinHouseFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="26" column="121" selection-start-line="26" selection-start-column="121" selection-end-line="26" selection-end-column="121" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/LoginFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="27" column="117" selection-start-line="27" selection-start-column="117" selection-end-line="27" selection-end-column="117" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/MyHousesFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="26" column="120" selection-start-line="26" selection-start-column="120" selection-end-line="26" selection-end-column="120" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SignUpFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="27" column="118" selection-start-line="27" selection-start-column="118" selection-end-line="27" selection-end-column="118" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_manage.xml">
+      <provider selected="true" editor-type-id="android-designer2" />
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="40" lean-forward="true" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/ActivityId.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
+          <folding>
+            <element signature="e#2144#2145#0" expanded="true" />
+            <element signature="e#2200#2201#0" expanded="true" />
+            <element signature="e#2286#2287#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/SignUpCtrl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="48" column="60" selection-start-line="48" selection-start-column="16" selection-end-line="48" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/SecurityLink.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="99">
+          <caret line="14" column="31" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/WeakLocalSecurity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="88" column="49" selection-start-line="88" selection-start-column="49" selection-end-line="88" selection-end-column="49" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#580#581#0" expanded="true" />
+            <element signature="e#618#619#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/session/Session.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-134">
+          <caret line="16" column="42" selection-start-line="16" selection-start-column="42" selection-end-line="16" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#575#576#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="29" column="53" selection-start-line="29" selection-start-column="53" selection-end-line="29" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/LS_Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="29" column="31" selection-start-line="29" selection-start-column="31" selection-end-line="29" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="34" column="24" selection-start-line="34" selection-start-column="24" selection-end-line="34" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddFeeFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-83">
+          <caret line="27" column="118" selection-start-line="27" selection-start-column="118" selection-end-line="27" selection-end-column="118" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/ManageFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-202">
+          <caret line="27" column="118" selection-start-line="27" selection-start-column="118" selection-end-line="27" selection-end-column="118" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1103,43 +1028,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="43" column="30" selection-start-line="43" selection-start-column="30" selection-end-line="43" selection-end-column="30" />
-          <folding>
-            <element signature="e#1414#1444#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="android-designer2" />
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="70" selection-start-line="12" selection-start-column="70" selection-end-line="12" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-45">
-          <caret line="66" column="13" lean-forward="true" selection-start-line="66" selection-start-column="13" selection-end-line="66" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="68" column="75" selection-start-line="68" selection-start-column="75" selection-end-line="68" selection-end-column="75" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="22" lean-forward="true" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
+        <state relative-caret-position="255">
+          <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
         </state>
       </provider>
     </entry>

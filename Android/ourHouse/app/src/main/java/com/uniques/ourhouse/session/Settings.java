@@ -11,10 +11,10 @@ import java.util.UUID;
 
 public enum Settings {
 
-    STUDENT_LOGIN_KEY(new Handler<UUID>() {
+    USER_LOGIN_KEY(new Handler<UUID>() {
         @Override
         String getKey() {
-            return "studentLoginKey";
+            return "userLoginKey";
         }
 
         @Override

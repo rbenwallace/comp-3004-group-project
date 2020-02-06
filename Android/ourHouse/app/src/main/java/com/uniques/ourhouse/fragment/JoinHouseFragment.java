@@ -24,7 +24,7 @@ public class JoinHouseFragment extends Fragment<JoinHouseCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new JoinHouseCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId()));
+            controller = new JoinHouseCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
         }
 
         super.onCreateView(inflater, container, savedInstanceState);
