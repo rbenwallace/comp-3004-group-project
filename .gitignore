@@ -2,6 +2,7 @@ Android/ourHouse/local.properties
 Android/ourHouse/app/build
 local.properties
 build/
-.idea/
 .gradle/
-*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/caches
