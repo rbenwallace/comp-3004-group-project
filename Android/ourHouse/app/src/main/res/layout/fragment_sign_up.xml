@@ -2,7 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/background_blue"
+    android:background="@color/colorPrimaryLight"
     android:layout_height="match_parent"
     >
     <ScrollView
@@ -20,7 +20,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="@string/signUp"
-                android:textColor="@color/black"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
@@ -36,8 +36,8 @@
                 android:inputType="textCapWords"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
+                android:textColor="@color/colorTextPrimary"
+                android:textColorHint="@color/colorTextPrimary"
                 android:textSize="16sp" />
 
             <EditText
@@ -52,8 +52,8 @@
                 android:inputType="textEmailAddress"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
+                android:textColor="@color/colorTextPrimary"
+                android:textColorHint="@color/colorTextPrimary"
                 android:textSize="16sp" />
 
             <EditText
@@ -68,8 +68,8 @@
                 android:inputType="phone"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
+                android:textColor="@color/colorTextPrimary"
+                android:textColorHint="@color/colorTextPrimary"
                 android:textSize="16sp" />
 
             <EditText
@@ -84,8 +84,8 @@
                 android:inputType="textPassword"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
+                android:textColor="@color/colorTextPrimary"
+                android:textColorHint="@color/colorTextPrimary"
                 android:textSize="16sp" />
 
             <EditText
@@ -100,8 +100,8 @@
                 android:inputType="textPassword"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
+                android:textColor="@color/colorTextPrimary"
+                android:textColorHint="@color/colorTextPrimary"
                 android:textSize="16sp" />
 
             <CheckBox
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:text="@string/terms_conditions"
-                android:textColor="@color/black"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="14sp" />
 
             <Button
@@ -121,7 +121,7 @@
                 android:background="@drawable/loginbutton_selector"
                 android:padding="3dp"
                 android:text="@string/signUp"
-                android:textColor="@color/black"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
@@ -135,7 +135,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="@string/already_user"
-                android:textColor="@color/black"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="15sp" />
 
         </LinearLayout>

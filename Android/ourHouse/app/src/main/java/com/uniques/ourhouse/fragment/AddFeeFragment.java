@@ -6,14 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.uniques.ourhouse.ActivityId;
-import com.uniques.ourhouse.LS_Main;
+import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.controller.AddFeeCtrl;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class AddFeeFragment extends Fragment {
+public class AddFeeFragment extends Fragment<AddFeeCtrl> {
     public static final String TAG = "AddFeeFragment";
     private static final int layoutId = R.layout.fragment_add_fee;
 
@@ -25,7 +25,7 @@ public class AddFeeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new AddFeeCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId()));
+            controller = new AddFeeCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
@@ -41,7 +41,7 @@ public class AddFeeFragment extends Fragment {
 
     @Override
     public FragmentId getFragmentId() {
-        return setupId(ActivityId.GET(LS_Main.TAG));
+        return setupId(ActivityId.GET(MainActivity.TAG));
     }
 
     @Override

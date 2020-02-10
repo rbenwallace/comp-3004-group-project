@@ -13,7 +13,7 @@ import com.uniques.ourhouse.controller.ForgotPasswordCtrl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class ForgotPasswordFragment extends Fragment {
+public class ForgotPasswordFragment extends Fragment<ForgotPasswordCtrl> {
     public static final String TAG = "ForgotPasswordFragment";
     private static final int layoutId = R.layout.fragment_forget_password;
 
@@ -25,7 +25,7 @@ public class ForgotPasswordFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new ForgotPasswordCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId()));
+            controller = new ForgotPasswordCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);

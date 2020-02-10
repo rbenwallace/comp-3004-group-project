@@ -13,7 +13,7 @@ import com.uniques.ourhouse.controller.SignUpCtrl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class SignUpFragment extends Fragment {
+public class SignUpFragment extends Fragment<SignUpCtrl> {
     public static final String TAG = "SignUpFragment";
     private static final int layoutId = R.layout.fragment_sign_up;
 
@@ -25,7 +25,7 @@ public class SignUpFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new SignUpCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId()));
+            controller = new SignUpCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
