@@ -33,7 +33,6 @@ public class FeedFragment extends Fragment<FeedCtrl> {
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
-
     }
 
     @SuppressWarnings("unchecked")
