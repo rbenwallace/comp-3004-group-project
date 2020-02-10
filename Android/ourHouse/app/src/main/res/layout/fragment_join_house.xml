@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorPrimaryLight"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:id="@+id/house"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/house"
+        >
+    </ImageView>
+    <EditText
+        android:id="@+id/houseName_join"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/house_name"
+        android:textSize="26dp"
+        android:paddingHorizontal="20dp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/house">
+
+    </EditText>
+
+    <TextView
+        android:id="@+id/myHouses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/houseName_join"
+        android:layout_marginTop="40dp"
+        android:text="@string/houses"
+        android:gravity="center"
+        android:textSize="34sp"
+        android:textColor="@color/colorTextPrimary"
+        >
+
+    </TextView>
+    <View
+        android:id="@+id/border"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorTextPrimary"
+        android:layout_below="@id/myHouses"
+        >
+
+    </View>
+    <RelativeLayout
+        android:id="@+id/housesList"
+        android:layout_width="match_parent"
+        android:background="@color/colorInverse"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/joinHouseBtn"
+        android:layout_marginBottom="20dp"
+        android:layout_below="@+id/border">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ListView>
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/joinHouseBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/loginbutton_selector"
+        android:paddingHorizontal="40dp"
+        android:paddingVertical="5dp"
+        android:text="@string/join_house"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="20sp">
+
+    </Button>
+
+</RelativeLayout>
