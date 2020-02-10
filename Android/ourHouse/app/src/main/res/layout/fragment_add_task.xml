@@ -13,11 +13,7 @@
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:padding="10dp"
-<<<<<<< Updated upstream
-        android:text="Add Task"
-=======
         android:text="@string/add_task"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -36,11 +32,7 @@
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
-<<<<<<< Updated upstream
-        android:text="Choose Task Details"
-=======
         android:text="@string/task_details"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,11 +62,7 @@
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
-<<<<<<< Updated upstream
-        android:text="Choose Task Deadline"
-=======
         android:text="@string/task_deadline"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,11 +93,7 @@
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
-<<<<<<< Updated upstream
-        android:text="Task Frequency"
-=======
         android:text="@string/task_frequency"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -167,11 +151,7 @@
             android:layout_width="107dp"
             android:layout_height="wrap_content"
             android:ems="10"
-<<<<<<< Updated upstream
-            android:hint="Number of Days"
-=======
             android:hint="@string/task_num_days"
->>>>>>> Stashed changes
             android:inputType="number"
             android:textSize="12dp" />
     </RadioGroup>
@@ -187,11 +167,7 @@
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
-<<<<<<< Updated upstream
-        android:text="Task Difficulty"
-=======
         android:text="@string/task_difficulty"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -243,11 +219,7 @@
         android:layout_width="173dp"
         android:layout_height="63dp"
         android:layout_marginBottom="36dp"
-<<<<<<< Updated upstream
-        android:text="Add"
-=======
         android:text="@string/add"
->>>>>>> Stashed changes
         android:background="@drawable/loginbutton_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -259,11 +231,7 @@
         android:layout_width="179dp"
         android:layout_height="62dp"
         android:layout_marginBottom="36dp"
-<<<<<<< Updated upstream
-        android:text="Back"
-=======
         android:text="@string/back"
->>>>>>> Stashed changes
         android:background="@drawable/loginbutton_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/feed_add_task"

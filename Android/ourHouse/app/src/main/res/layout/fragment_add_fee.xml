@@ -13,11 +13,7 @@
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:padding="10dp"
-<<<<<<< Updated upstream
-        android:text="Add Fee"
-=======
         android:text="@string/add_fee"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -37,11 +33,7 @@
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
-<<<<<<< Updated upstream
-        android:text="Choose Fee Details"
-=======
         android:text="@string/fee_details"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,10 +48,6 @@
         android:layout_marginTop="4dp"
         android:ems="10"
         android:gravity="bottom"
-<<<<<<< Updated upstream
-        android:hint="Fee Details"
-=======
->>>>>>> Stashed changes
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.275"
@@ -77,11 +65,7 @@
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
-<<<<<<< Updated upstream
-        android:text="Choose Fee Amount"
-=======
         android:text="@string/fee_amount"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -112,11 +96,7 @@
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
-<<<<<<< Updated upstream
-        android:text="Choose Fee Frequency"
-=======
         android:text="@string/fee_frequency"
->>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -173,11 +153,7 @@
             android:id="@+id/other_fee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-<<<<<<< Updated upstream
-            android:hint="Number of Days"
-=======
             android:hint="@string/fee_num_days"
->>>>>>> Stashed changes
             android:inputType="number"
             android:textSize="14sp" />
     </RadioGroup>
@@ -187,11 +163,7 @@
         android:layout_width="173dp"
         android:layout_height="63dp"
         android:layout_marginBottom="36dp"
-<<<<<<< Updated upstream
-        android:text="Add"
-=======
         android:text="@string/add"
->>>>>>> Stashed changes
         android:background="@drawable/loginbutton_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -203,11 +175,7 @@
         android:layout_width="179dp"
         android:layout_height="62dp"
         android:layout_marginBottom="36dp"
-<<<<<<< Updated upstream
-        android:text="Back"
-=======
         android:text="@string/back"
->>>>>>> Stashed changes
         android:background="@drawable/loginbutton_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/feed_add_fee"

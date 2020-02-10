@@ -15,10 +15,7 @@ import androidx.fragment.app.Fragment;
 public class Add_Fee extends Fragment {
     private static final String TAG = "Sign_Up";
     private Button manageBackButton;
-<<<<<<< Updated upstream
-=======
     private Button addFee;
->>>>>>> Stashed changes
 
     @Nullable
     @Override
@@ -27,10 +24,7 @@ public class Add_Fee extends Fragment {
         Log.d(TAG, "Add Fee Clicked");
 
         manageBackButton = (Button) view.findViewById(R.id.manage_back);
-<<<<<<< Updated upstream
-=======
         addFee = (Button) view.findViewById(R.id.feed_add_fee);
->>>>>>> Stashed changes
 
         manageBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,8 +35,6 @@ public class Add_Fee extends Fragment {
             }
         });
 
-<<<<<<< Updated upstream
-=======
         addFee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +43,6 @@ public class Add_Fee extends Fragment {
             }
         });
 
->>>>>>> Stashed changes
         return view;
     }
 }

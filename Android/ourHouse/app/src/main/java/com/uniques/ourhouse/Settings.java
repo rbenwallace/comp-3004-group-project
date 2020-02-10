@@ -8,11 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-<<<<<<< Updated upstream
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-=======
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -22,13 +17,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
->>>>>>> Stashed changes
 
 public class Settings extends Fragment {
     private static final String TAG = "Sign_Up";
     private Button manageBackButton;
-<<<<<<< Updated upstream
-=======
     private Button Logout;
     private Button Delete_House;
     private Button Switch_House;
@@ -36,26 +28,20 @@ public class Settings extends Fragment {
     private Button save;
     private RecyclerView recyclerView;
     private Adapter adapter;
->>>>>>> Stashed changes
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-<<<<<<< Updated upstream
-=======
         test = new ArrayList<>();
         test.add("Ben");
         test.add("Seb");
         test.add("Vic");
         test.add("Seb");
 
->>>>>>> Stashed changes
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         Log.d(TAG, "Add Fee Clicked");
 
         manageBackButton = (Button) view.findViewById(R.id.manage_back);
-<<<<<<< Updated upstream
-=======
         Logout = (Button) view.findViewById(R.id.logout);
         Delete_House = (Button) view.findViewById(R.id.delete_house);
         Switch_House = (Button) view.findViewById(R.id.switch_house);
@@ -83,7 +69,6 @@ public class Settings extends Fragment {
             }
         });
         helper.attachToRecyclerView(recyclerView);*/
->>>>>>> Stashed changes
 
         manageBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,8 +79,6 @@ public class Settings extends Fragment {
             }
         });
 
-<<<<<<< Updated upstream
-=======
         Logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,7 +110,6 @@ public class Settings extends Fragment {
             }
         });
 
->>>>>>> Stashed changes
         return view;
     }
 }

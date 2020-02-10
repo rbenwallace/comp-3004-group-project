@@ -19,8 +19,6 @@
     <string name="registered_emailid">Please enter your Registered Email Id below:</string>
     <string name="submit">SUBMIT</string>
     <string name="back">BACK</string>
-<<<<<<< Updated upstream
-=======
     <string name="manage">Manage</string>
     <string name="add_fee">Add Fee</string>
     <string name="add_task">Add Task</string>
@@ -44,7 +42,6 @@
     <string name="delete_house">Delete House</string>
     <string name="logout">Logout</string>
     <string name="task_num_days">Number of Days</string>
->>>>>>> Stashed changes
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
