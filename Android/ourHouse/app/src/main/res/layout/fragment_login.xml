@@ -62,6 +62,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/password"
+                    android:drawableRight="@drawable/password_eye_open"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:hint="@string/passowrd"
@@ -70,6 +71,9 @@
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:textSize="16sp" />
+
+
+
 
 
                 <Button
