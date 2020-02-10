@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.uniques.ourhouse.ActivityId;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
+<<<<<<< HEAD
 import com.uniques.ourhouse.controller.RecyclerAdapter;
 import com.uniques.ourhouse.controller.SettingsCtrl;
 import com.uniques.ourhouse.controller.TaskRotationCard;
@@ -25,6 +26,19 @@ public class SettingsFragment extends Fragment<SettingsCtrl> {
 
     public static FragmentId setupId(ActivityId activityId) {
         return FragmentId.SET(SettingsFragment.class, TAG, LAYOUT_ID, activityId, true);
+=======
+import com.uniques.ourhouse.controller.SettingsCtrl;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+public class SettingsFragment extends Fragment<SettingsCtrl> {
+    public static final String TAG = "SettingsFragment";
+    private static final int layoutId = R.layout.fragment_settings;
+
+    public static FragmentId setupId(ActivityId activityId) {
+        return FragmentId.SET(SettingsFragment.class, TAG, layoutId, activityId, true);
+>>>>>>> master
     }
 
     @Nullable
@@ -42,6 +56,7 @@ public class SettingsFragment extends Fragment<SettingsCtrl> {
         super.onViewCreated(view, savedInstanceState);
 
         controller.init(view);
+<<<<<<< HEAD
 
         RecyclerView personRecycler = view.findViewById(R.id.settings_recycler);
         personRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -54,12 +69,18 @@ public class SettingsFragment extends Fragment<SettingsCtrl> {
         personRecycler.setAdapter(adapter);
         controller.setRecyclerAdapter(adapter);
 
+=======
+>>>>>>> master
         controller.updateInfo();
     }
 
     @Override
     public FragmentId getFragmentId() {
+<<<<<<< HEAD
         return setupId(ActivityId.GET(ACTIVITY_TAG));
+=======
+        return setupId(ActivityId.GET(MainActivity.TAG));
+>>>>>>> master
     }
 
     @Override

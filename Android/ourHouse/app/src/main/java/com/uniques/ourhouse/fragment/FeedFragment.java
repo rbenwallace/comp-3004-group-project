@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import com.uniques.ourhouse.ActivityId;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
+<<<<<<< HEAD
 import com.uniques.ourhouse.controller.FeedCard;
+=======
+>>>>>>> master
 import com.uniques.ourhouse.controller.FeedCtrl;
 import com.uniques.ourhouse.controller.RecyclerAdapter;
 
@@ -20,11 +23,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class FeedFragment extends Fragment<FeedCtrl> {
     public static final String TAG = "FeedFragment";
+<<<<<<< HEAD
     private static final String ACTIVITY_TAG = MainActivity.TAG;
     private static final int LAYOUT_ID = R.layout.fragment_feed;
 
     public static FragmentId setupId(ActivityId activityId) {
         return FragmentId.SET(FeedFragment.class, TAG, LAYOUT_ID, activityId);
+=======
+    private static final int layoutId = R.layout.fragment_feed;
+
+    public static FragmentId setupId(ActivityId activityId) {
+        return FragmentId.SET(FeedFragment.class, TAG, layoutId, activityId);
+>>>>>>> master
     }
 
     @Nullable
@@ -37,6 +47,10 @@ public class FeedFragment extends Fragment<FeedCtrl> {
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
     }
 
+<<<<<<< HEAD
+=======
+    @SuppressWarnings("unchecked")
+>>>>>>> master
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -47,19 +61,30 @@ public class FeedFragment extends Fragment<FeedCtrl> {
         homeRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         homeRecycler.setItemAnimator(new DefaultItemAnimator());
 
+<<<<<<< HEAD
         RecyclerAdapter<FeedCard> adapter = new RecyclerAdapter<>(
                 homeRecycler,
                 controller.observableCards,
                 R.layout.content_card_feed_event);
         homeRecycler.setAdapter(adapter);
         controller.setRecyclerAdapter(adapter);
+=======
+        RecyclerAdapter adapter = new RecyclerAdapter(getContext(), controller.observableCards,
+                R.layout.content_card_feed_event, R.id.home_cardview, R.anim.trans_fade_in);
+        homeRecycler.setAdapter(adapter);
+        controller.setCardsAdapter(adapter);
+>>>>>>> master
 
         controller.updateInfo();
     }
 
     @Override
     public FragmentId getFragmentId() {
+<<<<<<< HEAD
         return setupId(ActivityId.GET(ACTIVITY_TAG));
+=======
+        return setupId(ActivityId.GET(MainActivity.TAG));
+>>>>>>> master
     }
 
     @Override

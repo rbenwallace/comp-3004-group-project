@@ -1,6 +1,10 @@
 package com.uniques.ourhouse.model;
 
+<<<<<<< HEAD
 import com.uniques.ourhouse.util.IndexableModel;
+=======
+import com.uniques.ourhouse.util.Indexable;
+>>>>>>> master
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
@@ -9,7 +13,11 @@ import java.util.UUID;
 
 import androidx.annotation.NonNull;
 
+<<<<<<< HEAD
 public class User implements Observable, IndexableModel {
+=======
+public class User implements Observable, Indexable {
+>>>>>>> master
 
     private UUID userID = UUID.randomUUID();
     private String firstName;
@@ -25,6 +33,12 @@ public class User implements Observable, IndexableModel {
 
     public User() {}
 
+<<<<<<< HEAD
+=======
+    /**
+     * Same as {@link #getFancyName() getFancyName()}
+     */
+>>>>>>> master
     public String getFullName() {
         return (firstName + " " + lastName).trim();
     }
@@ -79,6 +93,22 @@ public class User implements Observable, IndexableModel {
         parseFullName(name);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Same as {@link #getFullName() getFullName()}
+     */
+    @Override
+    public String getFancyName() {
+        return getFullName();
+    }
+
+    @Override
+    public String getShortName() {
+        return firstName;
+    }
+
+>>>>>>> master
     @Override
     public String consoleFormat(String prefix) {
         return prefix + firstName + lastName + " num: " + phoneNumber;

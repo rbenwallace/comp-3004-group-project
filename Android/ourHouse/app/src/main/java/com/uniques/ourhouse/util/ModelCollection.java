@@ -12,7 +12,11 @@ import java.util.UUID;
 
 import androidx.annotation.NonNull;
 
+<<<<<<< HEAD
 public abstract class ModelCollection<E extends IndexableModel> implements Iterable<E> {
+=======
+public abstract class ModelCollection<E extends Indexable> implements Iterable<E> {
+>>>>>>> master
     private HashMap<UUID, ModelLink<E>> map = new HashMap<>();
 
     protected abstract E getMethod(DatabaseLink link, UUID id);

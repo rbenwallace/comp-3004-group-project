@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<<<<<<< HEAD
     <color name="background_blue">#B3E5FC</color>
     <color name="button_blue">#A3E0FF</color>
     <color name="darker_blue">#0DA5F3</color>
     <color name="black">#000000</color>
     <color name="button_selectorcolor">#9E9E9E</color>
+=======
+>>>>>>> master
     <color name="colorPrimary">#03A9F4</color>
     <color name="colorPrimaryLight">#B3E5FC</color>
     <color name="colorPrimaryDark">#0288D1</color>
@@ -15,7 +18,10 @@
     <color name="colorTextSecondary">#757575</color>
     <color name="colorTextInverse">#FFFFFF</color>
     <color name="colorTextMuted">#BDBDBD</color>
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> master
 
 </resources>

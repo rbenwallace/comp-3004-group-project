@@ -24,7 +24,11 @@
         android:background="@drawable/loginbutton_selector"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
+<<<<<<< HEAD
         android:text="Join House"
+=======
+        android:text="@string/join_house"
+>>>>>>> master
         android:textColor="@color/colorTextPrimary"
         android:textSize="20sp" />
 
@@ -38,7 +42,11 @@
         android:paddingHorizontal="40dp"
         android:layout_marginHorizontal="40dp"
         android:paddingVertical="5dp"
+<<<<<<< HEAD
         android:text="Create House"
+=======
+        android:text="@string/create_house"
+>>>>>>> master
         android:layout_centerHorizontal="true"
         android:textColor="@color/colorTextPrimary"
         android:textSize="20sp" />
@@ -49,7 +57,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/createHouseBtn"
         android:layout_marginTop="40dp"
+<<<<<<< HEAD
         android:text="My Houses"
+=======
+        android:text="@string/my_houses"
+>>>>>>> master
         android:gravity="center"
         android:textSize="34sp"
         android:textColor="@color/colorTextPrimary"

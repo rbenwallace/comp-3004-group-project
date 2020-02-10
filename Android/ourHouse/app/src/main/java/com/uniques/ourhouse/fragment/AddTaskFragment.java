@@ -15,11 +15,18 @@ import androidx.annotation.Nullable;
 
 public class AddTaskFragment extends Fragment<AddTaskCtrl> {
     public static final String TAG = "AddTaskFragment";
+<<<<<<< HEAD
     private static final String ACTIVITY_TAG = MainActivity.TAG;
     private static final int LAYOUT_ID = R.layout.fragment_add_task;
 
     public static FragmentId setupId(ActivityId activityId) {
         return FragmentId.SET(AddTaskFragment.class, TAG, LAYOUT_ID, activityId);
+=======
+    private static final int layoutId = R.layout.fragment_add_task;
+
+    public static FragmentId setupId(ActivityId activityId) {
+        return FragmentId.SET(AddTaskFragment.class, TAG, layoutId, activityId);
+>>>>>>> master
     }
 
     @Nullable
@@ -42,7 +49,11 @@ public class AddTaskFragment extends Fragment<AddTaskCtrl> {
 
     @Override
     public FragmentId getFragmentId() {
+<<<<<<< HEAD
         return setupId(ActivityId.GET(ACTIVITY_TAG));
+=======
+        return setupId(ActivityId.GET(MainActivity.TAG));
+>>>>>>> master
     }
 
     @Override

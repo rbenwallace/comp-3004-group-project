@@ -3,6 +3,7 @@ package com.uniques.ourhouse.controller;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+<<<<<<< HEAD
 
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
@@ -43,12 +44,27 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
             }
         });
+=======
+import android.widget.Toast;
+
+import com.uniques.ourhouse.R;
+import com.uniques.ourhouse.fragment.FragmentActivity;
+import com.uniques.ourhouse.fragment.FragmentId;
+import com.uniques.ourhouse.fragment.SettingsFragment;
+
+public class SettingsCtrl implements FragmentCtrl {
+    private FragmentActivity activity;
+
+    public SettingsCtrl(FragmentActivity activity) {
+        this.activity = activity;
+>>>>>>> master
     }
 
     @Override
     public void init(View view) {
         Log.d(SettingsFragment.TAG, "Add Fee Clicked");
 
+<<<<<<< HEAD
         Button btnLogout = view.findViewById(R.id.settings_btnLogout);
         Button btnSwitchHouse = view.findViewById(R.id.settings_btnDeleteHouse);
         Button btnDeleteHouse = view.findViewById(R.id.settings_btnSwitchHouse);
@@ -60,12 +76,22 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
         observableCards.add(new TaskRotationCard(new ObservableString("Seb")));
         observableCards.add(new TaskRotationCard(new ObservableString("Vic")));
         observableCards.add(new TaskRotationCard(new ObservableString("Jon")));
+=======
+        Button manageBackButton = view.findViewById(R.id.manage_back);
+        manageBackButton.setOnClickListener(view1 -> {
+            Toast.makeText(activity, "Back", Toast.LENGTH_LONG).show();
+            //TODO NAVIGATE TO NEXT FRAGMENT
+//            ((LS_Main) activity).setViewPager(3);
+            activity.popFragment(FragmentId.GET(SettingsFragment.TAG));
+        });
+>>>>>>> master
     }
 
     @Override
     public void updateInfo() {
 
     }
+<<<<<<< HEAD
 
     @Override
     public void setRecyclerAdapter(RecyclerAdapter<TaskRotationCard> recyclerAdapter) {
@@ -93,4 +119,6 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             return string;
         }
     }
+=======
+>>>>>>> master
 }

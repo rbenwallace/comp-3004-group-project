@@ -15,11 +15,18 @@ import androidx.annotation.Nullable;
 
 public class ForgotPasswordFragment extends Fragment<ForgotPasswordCtrl> {
     public static final String TAG = "ForgotPasswordFragment";
+<<<<<<< HEAD
     private static final String ACTIVITY_TAG = LS_Main.TAG;
     private static final int LAYOUT_ID = R.layout.fragment_forget_password;
 
     public static FragmentId setupId(ActivityId activityId) {
         return FragmentId.SET(ForgotPasswordFragment.class, TAG, LAYOUT_ID, activityId);
+=======
+    private static final int layoutId = R.layout.fragment_forget_password;
+
+    public static FragmentId setupId(ActivityId activityId) {
+        return FragmentId.SET(ForgotPasswordFragment.class, TAG, layoutId, activityId);
+>>>>>>> master
     }
 
     @Nullable
@@ -42,7 +49,11 @@ public class ForgotPasswordFragment extends Fragment<ForgotPasswordCtrl> {
 
     @Override
     public FragmentId getFragmentId() {
+<<<<<<< HEAD
         return setupId(ActivityId.GET(ACTIVITY_TAG));
+=======
+        return setupId(ActivityId.GET(LS_Main.TAG));
+>>>>>>> master
     }
 
     @Override

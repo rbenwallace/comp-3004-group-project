@@ -19,6 +19,7 @@
     <string name="registered_emailid">Please enter your Registered Email Id below:</string>
     <string name="submit">SUBMIT</string>
     <string name="back">BACK</string>
+<<<<<<< HEAD
     <string name="manage">Manage</string>
     <string name="add_fee">Add Fee</string>
     <string name="add_task">Add Task</string>
@@ -43,6 +44,19 @@
     <string name="logout">Logout</string>
     <string name="task_num_days">Number of Days</string>
     <string name="task_num_dayds">Number of Days</string>
+=======
+    <string name="join_house">Join House</string>
+    <string name="create_house">Create House</string>
+    <string name="my_houses">My Houses</string>
+    <string name="added_roomies">Added Roomies</string>
+    <string name="create">Create</string>
+    <string name="show_difficulty">Show Difficulty</string>
+    <string name="penalize_late_tasks">Penalize Late Tasks</string>
+    <string name="houses">Houses</string>
+    <string name="house_name">House Name</string>
+    <string name="rommate_email">roomatesEmail@gmail.com</string>
+
+>>>>>>> master
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

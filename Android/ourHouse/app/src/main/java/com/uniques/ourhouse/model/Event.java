@@ -8,7 +8,11 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import java.util.Date;
 
+<<<<<<< HEAD
 public class Event implements Model, Observable, Comparable {
+=======
+public class Event implements Observable, Comparable {
+>>>>>>> master
     private String title;
     private String assignedTo;
     private Date dueDate;
@@ -48,6 +52,19 @@ public class Event implements Model, Observable, Comparable {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public String getFancyName() {
+        return title + ": " + assignedTo;
+    }
+
+    @Override
+    public String getShortName() {
+        return title;
+    }
+
+    @Override
+>>>>>>> master
     public String consoleFormat(String prefix) {
         return title + ": " + assignedTo;
     }

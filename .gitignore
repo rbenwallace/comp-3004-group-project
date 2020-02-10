@@ -1,5 +1,16 @@
+<<<<<<< HEAD
 /Android/ourHouse/local.properties
 Android/ourHouse/app/build
 local.properties
 Android/app/build
 build/
+=======
+Android/ourHouse/local.properties
+Android/ourHouse/app/build
+local.properties
+build/
+.gradle/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/caches
+>>>>>>> master

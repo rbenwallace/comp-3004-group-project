@@ -4,6 +4,10 @@ import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.TextView;
 
+<<<<<<< HEAD
+=======
+import com.uniques.ourhouse.R;
+>>>>>>> master
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.util.Comparable;
 import com.uniques.ourhouse.util.Hue;
@@ -45,11 +49,41 @@ public final class FeedCard implements RecyclerCard, Comparable {
 
     @Override
     public void attachLayoutViews(View layout, CardView cv) {
+<<<<<<< HEAD
+=======
+        this.cv = layout.findViewById(R.id.home_cardview_container);
+        txtTitle = layout.findViewById(R.id.home_cardview_title);
+        txtSubtitle = layout.findViewById(R.id.home_cardview_subtitle);
+        txtDate = layout.findViewById(R.id.home_cardview_date);
+
+        layout.setOnClickListener(v -> handleClick());
+
+        if (type == CardType.NORMAL)
+            return;
+
+        int bgColour = 0;
+        switch (type) {
+            case TEST:
+                //TODO bgcolour
+//                bgColour = R.color.colorPriorityHigh;
+                break;
+            case DELIVERABLE:
+//                bgColour = R.color.colorPriorityMedium;
+                break;
+        }
+        cv.setBackgroundColor(cv.getContext().getColor(R.color.colorInverse));
+>>>>>>> master
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void updateInfo() {
+<<<<<<< HEAD
+=======
+        txtTitle.setText(object.getFancyName());
+
+        if (hue != null) cv.setCardBackgroundColor(hue.getLightColor());
+>>>>>>> master
     }
 
     private void handleClick() {

@@ -26,13 +26,20 @@
         android:paddingHorizontal="20dp">
 
     </EditText>
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
     <EditText
         android:id="@+id/addRoomate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
+<<<<<<< HEAD
         android:hint="roommateEmail@email.com"
+=======
+        android:hint="@string/rommate_email"
+>>>>>>> master
         android:drawableStart="@drawable/add_friend"
         android:drawablePadding="8dp"
         android:textSize="16sp"
@@ -49,7 +56,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/addRoomate"
         android:layout_marginTop="20dp"
+<<<<<<< HEAD
         android:text="Added roommates"
+=======
+        android:text="@string/added_roomies"
+>>>>>>> master
         android:gravity="center"
         android:textSize="34sp"
         android:textColor="@color/colorTextPrimary"
@@ -102,7 +113,11 @@
             android:layout_width="match_parent"
             android:layout_marginStart="20dp"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:text="Penalize Late Tasks"
+=======
+            android:text="@string/penalize_late_tasks"
+>>>>>>> master
             >
 
         </CheckBox>
@@ -115,7 +130,11 @@
             android:background="@drawable/loginbutton_selector"
             android:paddingHorizontal="40dp"
             android:paddingVertical="5dp"
+<<<<<<< HEAD
             android:text="Create"
+=======
+            android:text="@string/create"
+>>>>>>> master
             android:layout_centerHorizontal="true"
             android:textColor="@color/colorTextPrimary"
             android:textSize="34sp" />

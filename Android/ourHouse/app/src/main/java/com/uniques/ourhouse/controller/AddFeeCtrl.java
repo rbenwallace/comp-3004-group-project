@@ -2,9 +2,19 @@ package com.uniques.ourhouse.controller;
 
 import android.util.Log;
 import android.view.View;
+<<<<<<< HEAD
 
 import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
+=======
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.uniques.ourhouse.R;
+import com.uniques.ourhouse.fragment.AddFeeFragment;
+import com.uniques.ourhouse.fragment.FragmentActivity;
+import com.uniques.ourhouse.fragment.FragmentId;
+>>>>>>> master
 
 public class AddFeeCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -16,6 +26,17 @@ public class AddFeeCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         Log.d(AddFeeFragment.TAG, "Add Fee Clicked");
+<<<<<<< HEAD
+=======
+
+        Button manageBackButton = view.findViewById(R.id.manage_back);
+        manageBackButton.setOnClickListener(view1 -> {
+            Toast.makeText(activity, "Back", Toast.LENGTH_LONG).show();
+            //TODO NAVIGATE TO NEXT FRAGMENT
+//            ((LS_Main) activity).setViewPager(3);
+            activity.popFragment(FragmentId.GET(AddFeeFragment.TAG));
+        });
+>>>>>>> master
     }
 
     @Override

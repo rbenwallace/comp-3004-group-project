@@ -31,7 +31,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/houseName_join"
         android:layout_marginTop="40dp"
+<<<<<<< HEAD
         android:text="Houses"
+=======
+        android:text="@string/houses"
+>>>>>>> master
         android:gravity="center"
         android:textSize="34sp"
         android:textColor="@color/colorTextPrimary"
@@ -74,7 +78,11 @@
         android:background="@drawable/loginbutton_selector"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
+<<<<<<< HEAD
         android:text="Join House"
+=======
+        android:text="@string/join_house"
+>>>>>>> master
         android:textColor="@color/colorTextPrimary"
         android:textSize="20sp">
 
