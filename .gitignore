@@ -1,3 +1,7 @@
 Android/ourHouse/local.properties
 Android/ourHouse/app/build
 local.properties
+build/
+.idea/
+.gradle/
+*.iml
