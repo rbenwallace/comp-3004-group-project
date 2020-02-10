@@ -19,6 +19,32 @@
     <string name="registered_emailid">Please enter your Registered Email Id below:</string>
     <string name="submit">SUBMIT</string>
     <string name="back">BACK</string>
+<<<<<<< Updated upstream
+=======
+    <string name="manage">Manage</string>
+    <string name="add_fee">Add Fee</string>
+    <string name="add_task">Add Task</string>
+    <string name="settings">Settings</string>
+    <string name="add">ADD</string>
+    <string name="save">SAVE</string>
+    <string name="fee_details">Fee Details</string>
+    <string name="fee_amount">Fee Amount</string>
+    <string name="fee_frequency">Fee Frequency</string>
+    <string name="fee_num_days">Number of Days</string>
+    <string name="task_deadline">Task Deadline</string>
+    <string name="task_details">Task Details</string>
+    <string name="task_frequency">Task Frequency</string>
+    <string name="task_difficulty">Task Difficulty</string>
+    <string name="edit_house_name">Edit House Name</string>
+    <string name="house_name">House Name</string>
+    <string name="show_late">Show When Tasks are Late</string>
+    <string name="show_difficulty">Show Task Difficulty</string>
+    <string name="edit_task_rotation">Edit Task Rotation</string>
+    <string name="switch_house">Switch House</string>
+    <string name="delete_house">Delete House</string>
+    <string name="logout">Logout</string>
+    <string name="task_num_days">Number of Days</string>
+>>>>>>> Stashed changes
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

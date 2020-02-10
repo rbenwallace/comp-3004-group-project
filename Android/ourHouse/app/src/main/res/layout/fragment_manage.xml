@@ -12,7 +12,11 @@
         android:layout_height="62dp"
         android:gravity="center"
         android:padding="10dp"
+<<<<<<< Updated upstream
         android:text="Manage"
+=======
+        android:text="@string/manage"
+>>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -34,7 +38,11 @@
         android:drawablePadding="8dp"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
+<<<<<<< Updated upstream
         android:text="Add Task"
+=======
+        android:text="@string/add_task"
+>>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +61,11 @@
         android:drawablePadding="8dp"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
+<<<<<<< Updated upstream
         android:text="Add Fee"
+=======
+        android:text="@string/add_fee"
+>>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +84,11 @@
         android:drawablePadding="8dp"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
+<<<<<<< Updated upstream
         android:text="Settings"
+=======
+        android:text="@string/settings"
+>>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,7 +101,11 @@
         android:layout_width="130dp"
         android:layout_height="80dp"
         android:gravity="center"
+<<<<<<< Updated upstream
         android:text="back"
+=======
+        android:text="@string/back"
+>>>>>>> Stashed changes
         android:textColor="@color/black"
         android:background="@drawable/loginbutton_selector"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -13,7 +13,11 @@
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:padding="10dp"
+<<<<<<< Updated upstream
         android:text="Settings"
+=======
+        android:text="@string/settings"
+>>>>>>> Stashed changes
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -21,23 +25,51 @@
         app:layout_constraintHorizontal_bias="0.563"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+<<<<<<< Updated upstream
 
     <TextView
         android:id="@+id/edit_house_name"
         android:layout_width="233dp"
         android:layout_height="60dp"
         android:layout_marginTop="24dp"
+=======
+
+    <!--<androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rotation_list"
+        android:layout_width="407dp"
+        android:layout_height="184dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.253"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.575" />-->
+
+    <TextView
+        android:id="@+id/edit_house_name"
+        android:layout_width="232dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="8dp"
+>>>>>>> Stashed changes
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:drawableLeft="@drawable/small_house"
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
+<<<<<<< Updated upstream
         android:text="Edit House Name"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.095"
+=======
+        android:text="@string/edit_house_name"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.212"
+>>>>>>> Stashed changes
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_title" />
 
@@ -47,7 +79,11 @@
         android:layout_height="52dp"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
+<<<<<<< Updated upstream
         android:hint="House Name"
+=======
+        android:hint="@string/house_name"
+>>>>>>> Stashed changes
         android:inputType="textPersonName"
         android:padding="10dp"
         android:singleLine="true"
@@ -55,21 +91,32 @@
         android:textColorHint="@color/black"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+<<<<<<< Updated upstream
         app:layout_constraintHorizontal_bias="0.414"
+=======
+        app:layout_constraintHorizontal_bias="0.487"
+>>>>>>> Stashed changes
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_house_name" />
 
     <TextView
         android:id="@+id/edit_task_rotation"
+<<<<<<< Updated upstream
         android:layout_width="236dp"
         android:layout_height="56dp"
         android:layout_marginTop="20dp"
+=======
+        android:layout_width="221dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="104dp"
+>>>>>>> Stashed changes
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:drawableLeft="@drawable/rotation"
         android:drawablePadding="8dp"
         android:gravity="center"
         android:padding="5dp"
+<<<<<<< Updated upstream
         android:text="Edit Task Rotation"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -193,6 +240,117 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.946"
+=======
+        android:text="@string/edit_task_rotation"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+
+    <CheckBox
+        android:id="@+id/late_check_box"
+        android:layout_width="158dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/show_late"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.158"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+
+    <CheckBox
+        android:id="@+id/difficulty_check_box"
+        android:layout_width="170dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/show_difficulty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.912"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+
+    <Button
+        android:id="@+id/switch_house"
+        android:layout_width="317dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="316dp"
+        android:background="@drawable/loginbutton_selector"
+        android:drawableLeft="@drawable/switch_house"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="40dp"
+        android:paddingVertical="5dp"
+        android:text="@string/switch_house"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.287"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+
+    <Button
+        android:id="@+id/delete_house"
+        android:layout_width="317dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/loginbutton_selector"
+        android:drawableLeft="@drawable/delete"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="40dp"
+        android:paddingVertical="5dp"
+        android:text="@string/delete_house"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.287"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switch_house" />
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="317dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/loginbutton_selector"
+        android:drawableLeft="@drawable/logout"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="40dp"
+        android:paddingVertical="5dp"
+        android:text="@string/logout"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.287"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_house" />
+
+    <Button
+        android:id="@+id/manage_back"
+        android:layout_width="179dp"
+        android:layout_height="62dp"
+        android:layout_marginBottom="36dp"
+        android:text="@string/back"
+        android:background="@drawable/loginbutton_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/feed_add_fee"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/save_house"
+        android:layout_width="173dp"
+        android:layout_height="63dp"
+        android:layout_marginBottom="36dp"
+        android:text="@string/save"
+        android:background="@drawable/loginbutton_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.995"
+>>>>>>> Stashed changes
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
