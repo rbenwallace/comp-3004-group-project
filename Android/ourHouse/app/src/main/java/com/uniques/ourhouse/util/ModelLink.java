@@ -5,7 +5,7 @@ import com.uniques.ourhouse.session.Session;
 
 import java.util.UUID;
 
-public abstract class ModelLink<E extends Indexable> {
+public abstract class ModelLink<E extends IndexableModel> {
     private UUID id;
     private E model;
 

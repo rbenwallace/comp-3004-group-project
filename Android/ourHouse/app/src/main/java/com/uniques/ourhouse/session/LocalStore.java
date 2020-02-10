@@ -3,7 +3,7 @@ package com.uniques.ourhouse.session;
 import android.content.Context;
 
 import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.util.Indexable;
+import com.uniques.ourhouse.util.IndexableModel;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
@@ -36,7 +36,7 @@ final class LocalStore implements DatabaseLink {
         return Objects.requireNonNull(Objects.requireNonNull(retrieveLocal(fileName)).search(id.toString()));
     }
 
-    private boolean saveLocal(String filename, Indexable model) {
+    private boolean saveLocal(String filename, IndexableModel model) {
         EasyJSON json = Objects.requireNonNull(retrieveLocal(filename));
         json.putStructure(model.getId().toString(), model.toJSON());
         try {
@@ -71,10 +71,10 @@ final class LocalStore implements DatabaseLink {
         populateNewStore(USERS_FILE);
     }
 
-    private void populateNewStore(String fileName, Indexable... models) {
+    private void populateNewStore(String fileName, IndexableModel... models) {
         EasyJSON store = EasyJSON.create(getLocalFile(fileName));
         store.getRootNode().setType(SafeJSONElementType.ARRAY);
-        for (Indexable model : models) {
+        for (IndexableModel model : models) {
             store.putStructure(model.getId().toString(), model.toJSON());
         }
         try {

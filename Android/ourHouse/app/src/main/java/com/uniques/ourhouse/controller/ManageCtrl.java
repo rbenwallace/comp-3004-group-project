@@ -22,10 +22,10 @@ public class ManageCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        Button addFeeButton = (Button) view.findViewById(R.id.add_fee);
-        Button addTaskButton = (Button) view.findViewById(R.id.add_task);
-        Button settingsButton = (Button) view.findViewById(R.id.settings);
-        Button manageSwitchButton = (Button) view.findViewById(R.id.manage_back);
+        Button addFeeButton = (Button) view.findViewById(R.id.manage_btnAddFee);
+        Button addTaskButton = (Button) view.findViewById(R.id.manage_btnAddTask);
+        Button settingsButton = (Button) view.findViewById(R.id.manage_btnSettings);
+
         Log.d(ManageFragment.TAG, "onCreatedView: Started");
         addFeeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,15 +54,7 @@ public class ManageCtrl implements FragmentCtrl {
                 activity.pushFragment(FragmentId.GET(SettingsFragment.TAG));
             }
         });
-        manageSwitchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(activity, "Back", Toast.LENGTH_LONG).show();
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(0);
-                activity.popFragment(FragmentId.GET(ManageFragment.TAG));
-            }
-        });
+
     }
 
     @Override

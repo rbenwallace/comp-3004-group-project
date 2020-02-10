@@ -5,25 +5,26 @@ import android.view.View;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.Event;
+import com.uniques.ourhouse.util.RecyclerCtrl;
 import com.uniques.ourhouse.util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FeedCtrl implements FragmentCtrl {
+public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     private FragmentActivity activity;
 
-    public List<RecyclerCard> observableCards;
-    private RecyclerAdapter cardsAdapter;
+    public List<FeedCard> observableCards;
+    private RecyclerAdapter<FeedCard> cardsAdapter;
 
     public FeedCtrl(FragmentActivity activity) {
         this.activity = activity;
+        observableCards = new ArrayList<>();
     }
 
     @Override
     public void init(View view) {
-        observableCards = new ArrayList<>();
     }
 
     @Override
@@ -38,28 +39,16 @@ public class FeedCtrl implements FragmentCtrl {
         cardsAdapter.notifyDataSetChanged();
     }
 
-    public void setCardsAdapter(RecyclerAdapter cardsAdapter) {
-        cardsAdapter.setCardViewSelector(new RecyclerAdapter.CardViewSelector() {
-            @Override
-            public int getItemViewType(RecyclerCard card) {
-                return 0;
-            }
 
-            @Override
-            public int getViewLayoutId(int itemViewType) {
-                switch (itemViewType) {
-                    case 0:
-                        return R.layout.content_card_feed_event;
-                    default:
-                        return -1;
+    @Override
+    public void setRecyclerAdapter(RecyclerAdapter<FeedCard> recyclerAdapter) {
+        this.cardsAdapter = recyclerAdapter;
+        recyclerAdapter.setViewSelector(new RecyclerAdapter.ViewSelector() {
+                if (itemViewType == 0) {
+                    return R.layout.content_card_feed_event;
                 }
-            }
-
-            @Override
-            public int getCardViewId(int itemViewType) {
-                return R.id.home_cardview_container;
+                return -1;
             }
         });
-        this.cardsAdapter = cardsAdapter;
     }
 }

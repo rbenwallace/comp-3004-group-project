@@ -15,10 +15,11 @@ import androidx.annotation.Nullable;
 
 public class LoginFragment extends Fragment<LoginCtrl> {
     public static final String TAG = "LoginFragment";
-    private static final int layoutId = R.layout.fragment_login;
+    private static final String ACTIVITY_TAG = LS_Main.TAG;
+    private static final int LAYOUT_ID = R.layout.fragment_login;
 
     public static FragmentId setupId(ActivityId activityId) {
-        return FragmentId.SET(LoginFragment.class, TAG, layoutId, activityId, true);
+        return FragmentId.SET(LoginFragment.class, TAG, LAYOUT_ID, activityId, true);
     }
 
     @Nullable
@@ -42,7 +43,7 @@ public class LoginFragment extends Fragment<LoginCtrl> {
 
     @Override
     public FragmentId getFragmentId() {
-        return setupId(ActivityId.GET(LS_Main.TAG));
+        return setupId(ActivityId.GET(ACTIVITY_TAG));
     }
 
     @Override

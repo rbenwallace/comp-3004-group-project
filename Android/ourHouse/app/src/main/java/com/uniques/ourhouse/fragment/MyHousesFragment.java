@@ -15,9 +15,11 @@ import androidx.annotation.Nullable;
 
 public class MyHousesFragment extends Fragment<MyHousesCtrl> {
     public static final String TAG = "MyHousesFragment";
-    private static final int layoutId = R.layout.fragment_my_houses;
+    private static final String ACTIVITY_TAG = LS_Main.TAG;
+    private static final int LAYOUT_ID = R.layout.fragment_my_houses;
+
     public static FragmentId setupId(ActivityId activityId) {
-        return FragmentId.SET(MyHousesFragment.class, TAG, layoutId, activityId, true);
+        return FragmentId.SET(MyHousesFragment.class, TAG, LAYOUT_ID, activityId, true);
     }
 
     @Nullable
@@ -41,7 +43,7 @@ public class MyHousesFragment extends Fragment<MyHousesCtrl> {
 
     @Override
     public FragmentId getFragmentId() {
-        return setupId(ActivityId.GET(LS_Main.TAG));
+        return setupId(ActivityId.GET(ACTIVITY_TAG));
     }
 
     @Override

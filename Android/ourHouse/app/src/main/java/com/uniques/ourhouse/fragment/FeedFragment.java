@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.uniques.ourhouse.ActivityId;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
+import com.uniques.ourhouse.controller.FeedCard;
 import com.uniques.ourhouse.controller.FeedCtrl;
 import com.uniques.ourhouse.controller.RecyclerAdapter;
 
@@ -19,10 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class FeedFragment extends Fragment<FeedCtrl> {
     public static final String TAG = "FeedFragment";
-    private static final int layoutId = R.layout.fragment_feed;
+    private static final String ACTIVITY_TAG = MainActivity.TAG;
+    private static final int LAYOUT_ID = R.layout.fragment_feed;
 
     public static FragmentId setupId(ActivityId activityId) {
-        return FragmentId.SET(FeedFragment.class, TAG, layoutId, activityId);
+        return FragmentId.SET(FeedFragment.class, TAG, LAYOUT_ID, activityId);
     }
 
     @Nullable
@@ -35,7 +37,6 @@ public class FeedFragment extends Fragment<FeedCtrl> {
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -46,17 +47,19 @@ public class FeedFragment extends Fragment<FeedCtrl> {
         homeRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         homeRecycler.setItemAnimator(new DefaultItemAnimator());
 
-        RecyclerAdapter adapter = new RecyclerAdapter(getContext(), controller.observableCards,
-                R.layout.content_card_feed_event, R.id.home_cardview, R.anim.trans_fade_in);
+        RecyclerAdapter<FeedCard> adapter = new RecyclerAdapter<>(
+                homeRecycler,
+                controller.observableCards,
+                R.layout.content_card_feed_event);
         homeRecycler.setAdapter(adapter);
-        controller.setCardsAdapter(adapter);
+        controller.setRecyclerAdapter(adapter);
 
         controller.updateInfo();
     }
 
     @Override
     public FragmentId getFragmentId() {
-        return setupId(ActivityId.GET(MainActivity.TAG));
+        return setupId(ActivityId.GET(ACTIVITY_TAG));
     }
 
     @Override

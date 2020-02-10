@@ -15,10 +15,11 @@ import androidx.annotation.Nullable;
 
 public class ManageFragment extends Fragment<ManageCtrl> {
     public static final String TAG = "ManageFragment";
-    private static final int layoutId = R.layout.fragment_manage;
+    private static final String ACTIVITY_TAG = MainActivity.TAG;
+    private static final int LAYOUT_ID = R.layout.fragment_manage;
 
     public static FragmentId setupId(ActivityId activityId) {
-        return FragmentId.SET(ManageFragment.class, TAG, layoutId, activityId, true);
+        return FragmentId.SET(ManageFragment.class, TAG, LAYOUT_ID, activityId, true);
     }
 
     @Nullable
@@ -41,7 +42,7 @@ public class ManageFragment extends Fragment<ManageCtrl> {
 
     @Override
     public FragmentId getFragmentId() {
-        return setupId(ActivityId.GET(MainActivity.TAG));
+        return setupId(ActivityId.GET(ACTIVITY_TAG));
     }
 
     @Override
