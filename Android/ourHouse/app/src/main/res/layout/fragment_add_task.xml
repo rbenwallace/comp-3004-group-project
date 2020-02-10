@@ -1,242 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background_blue"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_blue">
 
-    <TextView
-        android:id="@+id/add_task"
-        android:layout_width="414dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/add_task"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/task_description_title"
-        android:layout_width="233dp"
-        android:layout_height="60dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/description"
-        android:drawablePadding="8dp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="@string/task_details"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.095"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_task" />
-
-    <EditText
-        android:id="@+id/task_description"
-        android:layout_width="403dp"
-        android:layout_height="63dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.542"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_description_title" />
-
-    <TextView
-        android:id="@+id/task_date"
-        android:layout_width="176dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/date"
-        android:drawablePadding="8dp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="@string/task_deadline"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.068"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_description" />
-
-    <DatePicker
-        android:id="@+id/choose_task_date"
-        android:layout_width="246dp"
-        android:layout_height="418dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.066"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_date" />
-
-    <TextView
-        android:id="@+id/task_frequency"
-        android:layout_width="153dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/rotation"
-        android:drawablePadding="8dp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="@string/task_frequency"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.918"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_description" />
-
-    <RadioGroup
-        android:id="@+id/choose_task_frequency"
-        android:layout_width="117dp"
-        android:layout_height="186dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.874"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_frequency">
-
-        <RadioButton
-            android:id="@+id/once"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Once"
-            tools:layout_editor_absoluteX="56dp"
-            tools:layout_editor_absoluteY="363dp" />
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/add_task"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
-        <RadioButton
-            android:id="@+id/weeekly"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Weekly"
-            tools:layout_editor_absoluteX="56dp"
-            tools:layout_editor_absoluteY="318dp" />
-
-        <RadioButton
-            android:id="@+id/monthly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Monthly"
-            tools:layout_editor_absoluteX="56dp"
-            tools:layout_editor_absoluteY="318dp" />
-
-        <RadioButton
-            android:id="@+id/other"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Other"
-            tools:layout_editor_absoluteX="56dp"
-            tools:layout_editor_absoluteY="318dp" />
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/description"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/task_details"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <EditText
-            android:id="@+id/other_frequency"
-            android:layout_width="107dp"
+            android:id="@+id/addTask_editDescription"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/task_num_days"
-            android:inputType="number"
-            android:textSize="12dp" />
-    </RadioGroup>
+            android:inputType="textPersonName" />
 
-    <TextView
-        android:id="@+id/task_difficulty"
-        android:layout_width="149dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/difficulty"
-        android:drawablePadding="8dp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="@string/task_difficulty"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.896"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choose_task_frequency" />
-
-    <RadioGroup
-        android:id="@+id/choose_task_difficulty"
-        android:layout_width="104dp"
-        android:layout_height="107dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.837"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_difficulty">
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-        <RadioButton
-            android:id="@+id/easy"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Easy"
-            tools:layout_editor_absoluteX="56dp"
-            tools:layout_editor_absoluteY="363dp" />
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/date"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/task_deadline"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
-        <RadioButton
-            android:id="@+id/medium"
-            android:layout_width="wrap_content"
+        <DatePicker
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Medium"
-            tools:layout_editor_absoluteX="56dp"
-            tools:layout_editor_absoluteY="318dp" />
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:inputType="date" />
 
-        <RadioButton
-            android:id="@+id/Hard"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Hard"
-            tools:layout_editor_absoluteX="56dp"
-            tools:layout_editor_absoluteY="318dp" />
-    </RadioGroup>
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/rotation"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/task_frequency"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/feed_add_task"
-        android:layout_width="173dp"
-        android:layout_height="63dp"
-        android:layout_marginBottom="36dp"
-        android:text="@string/add"
-        android:background="@drawable/loginbutton_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.995"
-        app:layout_constraintStart_toStartOf="parent" />
+        <RadioGroup
+            android:id="@+id/addTask_radioFrequency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
 
-    <Button
-        android:id="@+id/manage_back"
-        android:layout_width="179dp"
-        android:layout_height="62dp"
-        android:layout_marginBottom="36dp"
-        android:text="@string/back"
-        android:background="@drawable/loginbutton_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/feed_add_task"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Once"
+                tools:layout_editor_absoluteX="56dp"
+                tools:layout_editor_absoluteY="363dp" />
 
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Weekly"
+                tools:layout_editor_absoluteX="56dp"
+                tools:layout_editor_absoluteY="318dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Monthly"
+                tools:layout_editor_absoluteX="56dp"
+                tools:layout_editor_absoluteY="318dp" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Other"
+                tools:layout_editor_absoluteX="56dp"
+                tools:layout_editor_absoluteY="318dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/task_num_days"
+                android:inputType="number"
+                android:textSize="12dp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/difficulty"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/task_difficulty"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <RadioGroup
+            android:id="@+id/addTask_radioDifficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Easy" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Medium" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Hard" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/addTask_btnAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="36dp"
+            android:background="@drawable/loginbutton_selector"
+            android:text="@string/add" />
+
+    </LinearLayout>
+</ScrollView>

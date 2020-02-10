@@ -11,8 +11,6 @@
         android:windowSoftInputMode="adjustResize"
         android:theme="@style/AppTheme">
         <activity android:name=".LS_Main"/>
-        <activity android:name=".Sign_Up" />
-        <activity android:name=".Login" />
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -21,6 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

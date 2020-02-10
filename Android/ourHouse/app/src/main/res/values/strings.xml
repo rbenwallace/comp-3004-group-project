@@ -42,6 +42,7 @@
     <string name="delete_house">Delete House</string>
     <string name="logout">Logout</string>
     <string name="task_num_days">Number of Days</string>
+    <string name="task_num_dayds">Number of Days</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

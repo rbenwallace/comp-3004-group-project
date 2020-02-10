@@ -1,195 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background_blue"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_blue"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/settings_title"
-        android:layout_width="414dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/settings"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.563"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <!--<androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rotation_list"
-        android:layout_width="407dp"
-        android:layout_height="184dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.253"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575" />-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/settings"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/edit_house_name"
-        android:layout_width="232dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/small_house"
-        android:drawablePadding="8dp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="@string/edit_house_name"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.212"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_title" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/house_name"
-        android:layout_width="370dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:hint="@string/house_name"
-        android:inputType="textPersonName"
-        android:padding="10dp"
-        android:singleLine="true"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_house_name" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:drawableStart="@drawable/small_house"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/edit_house_name"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/edit_task_rotation"
-        android:layout_width="221dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="104dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/rotation"
-        android:drawablePadding="8dp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="@string/edit_task_rotation"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+            <EditText
+                android:id="@+id/settings_editHouseName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:hint="@string/house_name"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="16sp" />
 
-    <CheckBox
-        android:id="@+id/late_check_box"
-        android:layout_width="158dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/show_late"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.158"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+        </LinearLayout>
 
-    <CheckBox
-        android:id="@+id/difficulty_check_box"
-        android:layout_width="170dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/show_difficulty"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.912"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+        <Button
+            android:id="@+id/settings_btnEditTaskRotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/loginbutton_selector"
+            android:drawableStart="@drawable/rotation"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/edit_task_rotation"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/switch_house"
-        android:layout_width="317dp"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="316dp"
-        android:background="@drawable/loginbutton_selector"
-        android:drawableLeft="@drawable/switch_house"
-        android:drawablePadding="8dp"
-        android:paddingHorizontal="40dp"
-        android:paddingVertical="5dp"
-        android:text="@string/switch_house"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.287"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/house_name" />
+        <CheckBox
+            android:id="@+id/settings_chkShowLateTasks"
+            android:layout_width="158dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/show_late" />
 
-    <Button
-        android:id="@+id/delete_house"
-        android:layout_width="317dp"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/loginbutton_selector"
-        android:drawableLeft="@drawable/delete"
-        android:drawablePadding="8dp"
-        android:paddingHorizontal="40dp"
-        android:paddingVertical="5dp"
-        android:text="@string/delete_house"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.287"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch_house" />
+        <CheckBox
+            android:id="@+id/settings_chkShowDifficulty"
+            android:layout_width="170dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/show_difficulty" />
 
-    <Button
-        android:id="@+id/logout"
-        android:layout_width="317dp"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/loginbutton_selector"
-        android:drawableLeft="@drawable/logout"
-        android:drawablePadding="8dp"
-        android:paddingHorizontal="40dp"
-        android:paddingVertical="5dp"
-        android:text="@string/logout"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.287"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/delete_house" />
+        <Button
+            android:id="@+id/settings_btnSwitchHouse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/loginbutton_selector"
+            android:drawableStart="@drawable/switch_house"
+            android:drawablePadding="8dp"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="5dp"
+            android:text="@string/switch_house"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/manage_back"
-        android:layout_width="179dp"
-        android:layout_height="62dp"
-        android:layout_marginBottom="36dp"
-        android:text="@string/back"
-        android:background="@drawable/loginbutton_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/feed_add_fee"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/settings_btnDeleteHouse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/loginbutton_selector"
+            android:drawableStart="@drawable/delete"
+            android:drawablePadding="8dp"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="5dp"
+            android:text="@string/delete_house"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/save_house"
-        android:layout_width="173dp"
-        android:layout_height="63dp"
-        android:layout_marginBottom="36dp"
-        android:text="@string/save"
-        android:background="@drawable/loginbutton_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.995"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/settings_btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/loginbutton_selector"
+            android:drawableStart="@drawable/logout"
+            android:drawablePadding="8dp"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="5dp"
+            android:text="@string/logout"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/settings_btnSaveHouse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/loginbutton_selector"
+            android:text="@string/save" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/settings_recycler"
+            android:layout_width="407dp"
+            android:layout_height="184dp" />
+
+    </LinearLayout>
+
+</ScrollView>

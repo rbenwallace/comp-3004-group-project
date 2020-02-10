@@ -1,98 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background_blue"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_blue"
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/manage_title"
-        android:layout_width="201dp"
-        android:layout_height="62dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/manage"
         android:textColor="@color/black"
         android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/add_task"
-        app:layout_constraintHorizontal_bias="0.552"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.34" />
+        android:textStyle="bold" />
 
     <Button
-        android:id="@+id/add_task"
+        android:id="@+id/manage_btnAddTask"
         android:layout_width="320dp"
-        android:layout_height="78dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="156dp"
         android:background="@drawable/loginbutton_selector"
-        android:drawableLeft="@drawable/task"
+        android:drawableStart="@drawable/task"
         android:drawablePadding="8dp"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
         android:text="@string/add_task"
         android:textColor="@color/black"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.551"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="34sp" />
 
     <Button
-        android:id="@+id/add_fee"
+        android:id="@+id/manage_btnAddFee"
         android:layout_width="320dp"
-        android:layout_height="78dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/manage_btnAddTask"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="72dp"
         android:background="@drawable/loginbutton_selector"
-        android:drawableLeft="@drawable/fee"
+        android:drawableStart="@drawable/fee"
         android:drawablePadding="8dp"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
         android:text="@string/add_fee"
         android:textColor="@color/black"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.549"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_task" />
+        android:textSize="34sp" />
 
     <Button
-        android:id="@+id/settings"
+        android:id="@+id/manage_btnSettings"
         android:layout_width="320dp"
-        android:layout_height="78dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/manage_btnAddFee"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="72dp"
         android:background="@drawable/loginbutton_selector"
-        android:drawableLeft="@drawable/settings"
+        android:drawableStart="@drawable/settings"
         android:drawablePadding="8dp"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
         android:text="@string/settings"
         android:textColor="@color/black"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.549"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_fee" />
+        android:textSize="34sp" />
 
-    <Button
-        android:id="@+id/manage_back"
-        android:layout_width="130dp"
-        android:layout_height="80dp"
-        android:gravity="center"
-        android:text="@string/back"
-        android:textColor="@color/black"
-        android:background="@drawable/loginbutton_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.961" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

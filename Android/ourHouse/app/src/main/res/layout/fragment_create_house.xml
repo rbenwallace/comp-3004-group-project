@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorPrimaryLight"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:id="@+id/house"
+
+        android:src="@drawable/house"
+        >
+    </ImageView>
+
+    <EditText
+        android:id="@+id/houseName_create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/house"
+        android:layout_marginHorizontal="80dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:hint="@string/house_name"
+        android:textSize="20dp"
+        android:paddingHorizontal="20dp">
+
+    </EditText>
+
+    <EditText
+        android:id="@+id/addRoomate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:hint="roommateEmail@email.com"
+        android:drawableStart="@drawable/add_friend"
+        android:drawablePadding="8dp"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:textAlignment="gravity"
+        android:gravity="center_vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/houseName_create">
+
+    </EditText>
+    <TextView
+        android:id="@+id/myHouses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addRoomate"
+        android:layout_marginTop="20dp"
+        android:text="Added roommates"
+        android:gravity="center"
+        android:textSize="34sp"
+        android:textColor="@color/colorTextPrimary"
+        >
+
+    </TextView>
+    <View
+        android:id="@+id/border"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorTextPrimary"
+        android:layout_below="@id/myHouses"
+        >
+
+    </View>
+
+    <RelativeLayout
+        android:id="@+id/addRoomatesHeader"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_below="@+id/border"
+        android:background="@color/colorInverse"
+        android:visibility="visible">
+
+        <ListView
+            android:id="@+id/addRoomatesList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ListView>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/checks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/addRoomatesHeader">
+        <CheckBox
+            android:id="@+id/showDifficulty"
+            android:layout_width="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_height="wrap_content"
+            android:text="@string/show_difficulty"
+            >
+
+        </CheckBox>
+        <CheckBox
+            android:id="@+id/penalizeLateTasks"
+            android:layout_below="@id/showDifficulty"
+            android:layout_width="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_height="wrap_content"
+            android:text="Penalize Late Tasks"
+            >
+
+        </CheckBox>
+        <Button
+            android:id="@+id/createBtn"
+            android:layout_below="@+id/penalizeLateTasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/loginbutton_selector"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="5dp"
+            android:text="Create"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="34sp" />
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
