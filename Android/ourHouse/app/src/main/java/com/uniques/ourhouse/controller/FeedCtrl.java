@@ -44,6 +44,13 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     public void setRecyclerAdapter(RecyclerAdapter<FeedCard> recyclerAdapter) {
         this.cardsAdapter = recyclerAdapter;
         recyclerAdapter.setViewSelector(new RecyclerAdapter.ViewSelector() {
+            @Override
+            public int getItemViewType(RecyclerCard card) {
+                return 0;
+            }
+
+            @Override
+            public int getViewLayoutId(int itemViewType) {
                 if (itemViewType == 0) {
                     return R.layout.content_card_feed_event;
                 }

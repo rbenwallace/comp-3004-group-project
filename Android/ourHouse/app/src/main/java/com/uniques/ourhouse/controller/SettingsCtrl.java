@@ -60,14 +60,6 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
         observableCards.add(new TaskRotationCard(new ObservableString("Seb")));
         observableCards.add(new TaskRotationCard(new ObservableString("Vic")));
         observableCards.add(new TaskRotationCard(new ObservableString("Jon")));
-
-        Button manageBackButton = view.findViewById(R.id.manage_back);
-        manageBackButton.setOnClickListener(view1 -> {
-            Toast.makeText(activity, "Back", Toast.LENGTH_LONG).show();
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//            ((LS_Main) activity).setViewPager(3);
-            activity.popFragment(FragmentId.GET(SettingsFragment.TAG));
-        });
     }
 
     @Override

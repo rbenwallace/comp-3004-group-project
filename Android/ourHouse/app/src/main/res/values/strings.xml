@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">ourHouse</string>
+    <string name="action_settings">Settings</string>
+    <string name="email">Email Id</string>
+    <string name="passowrd">Password</string>
+    <string name="login">Login</string>
+    <string name="show_pwd">Show Password</string>
+    <string name="hide_pwd">Hide Password</string>
+    <string name="forgot">Forgot password?</string>
+    <string name="closebutton">Close Button for Activity</string>
+    <string name="newUser"><b>Not a Member yet? Sign Up here.</b></string>
+    <string name="fullName">Full Name</string>
+    <string name="mobileNumber">Mobile Number</string>
+    <string name="location">Location</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="terms_conditions">By clicking SignUp you agree all the Terms and Conditions.</string>
+    <string name="signUp">SIGN UP</string>
+    <string name="already_user">Already have Account? Login here.</string>
+    <string name="registered_emailid">Please enter your Registered Email Id below:</string>
+    <string name="submit">SUBMIT</string>
+    <string name="back">BACK</string>
+    <string name="manage">Manage</string>
+    <string name="add_fee">Add Fee</string>
+    <string name="add_task">Add Task</string>
+    <string name="settings">Settings</string>
+    <string name="add">ADD</string>
+    <string name="save">SAVE</string>
+    <string name="fee_details">Fee Details</string>
+    <string name="fee_amount">Fee Amount</string>
+    <string name="fee_frequency">Fee Frequency</string>
+    <string name="fee_num_days">Number of Days</string>
+    <string name="task_deadline">Task Deadline</string>
+    <string name="task_details">Task Details</string>
+    <string name="task_frequency">Task Frequency</string>
+    <string name="task_difficulty">Task Difficulty</string>
+    <string name="edit_house_name">Edit House Name</string>
+    <string name="house_name">House Name</string>
+    <string name="show_late">Show When Tasks are Late</string>
+    <string name="show_difficulty">Show Task Difficulty</string>
+    <string name="edit_task_rotation">Edit Task Rotation</string>
+    <string name="switch_house">Switch House</string>
+    <string name="delete_house">Delete House</string>
+    <string name="logout">Logout</string>
+    <string name="task_num_days">Number of Days</string>
+    <string name="task_num_dayds">Number of Days</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

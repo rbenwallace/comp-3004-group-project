@@ -20,14 +20,6 @@ public class AddFeeCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         Log.d(AddFeeFragment.TAG, "Add Fee Clicked");
-
-        Button manageBackButton = view.findViewById(R.id.manage_back);
-        manageBackButton.setOnClickListener(view1 -> {
-            Toast.makeText(activity, "Back", Toast.LENGTH_LONG).show();
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//            ((LS_Main) activity).setViewPager(3);
-            activity.popFragment(FragmentId.GET(AddFeeFragment.TAG));
-        });
     }
 
     @Override
