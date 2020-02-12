@@ -20,7 +20,8 @@ import com.uniques.ourhouse.controller.SignUpCtrl;
 
 public class SignUpFragment extends Fragment<SignUpCtrl> {
     public static final String TAG = "SignUpFragment";
-    private static final int layoutId = R.layout.fragment_sign_up;
+    private static final int LAYOUT_ID = R.layout.fragment_sign_up;
+    private static final String ACTIVITY_TAG = LS_Main.TAG;
     private StitchUser currentUser;
     public static StitchAppClient client;
 
