@@ -5,13 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.uniques.ourhouse.ActivityId;
 import com.uniques.ourhouse.LS_Main;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.controller.LoginCtrl;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class LoginFragment extends Fragment<LoginCtrl> {
     public static final String TAG = "LoginFragment";
