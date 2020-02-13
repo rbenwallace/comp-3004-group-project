@@ -13,8 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -34,6 +32,8 @@ import com.uniques.ourhouse.fragment.SignUpFragment;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.NonNull;
+
 public class LoginCtrl implements FragmentCtrl {
     private FragmentActivity activity;
     private int showPassword = 1;
@@ -41,7 +41,6 @@ public class LoginCtrl implements FragmentCtrl {
     private EditText password;
     private StitchUser currentUser;
     public static StitchAppClient client;
-
 
 
     public static final String regEx = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
@@ -54,7 +53,7 @@ public class LoginCtrl implements FragmentCtrl {
     public void init(View view) {
         client = Stitch.getAppClient("ourhouse-notdj");
         currentUser = client.getAuth().getUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             Toast.makeText(activity, currentUser.getId().toString(), Toast.LENGTH_LONG).show();
             activity.startActivity(new Intent(activity, MainActivity.class));
         }
@@ -73,7 +72,7 @@ public class LoginCtrl implements FragmentCtrl {
         });
         loginBtn.setOnClickListener(view14 -> {
             if (checkValidation()) {
-                new getLoginTask(view).execute(email.getText().toString().trim(),password.getText().toString().trim());
+                new getLoginTask(view).execute(email.getText().toString().trim(), password.getText().toString().trim());
             } else {
                 Log.d(LoginFragment.TAG, "Login failed");
                 Snackbar.make(view, "Invalid email or password", BaseTransientBottomBar.LENGTH_LONG);
@@ -84,19 +83,19 @@ public class LoginCtrl implements FragmentCtrl {
     }
 
     private void changePasswordDisplay() {
-        if(showPassword == 0){
+        if (showPassword == 0) {
             Toast.makeText(activity, "show password", Toast.LENGTH_LONG).show();
             showPassword = 1;
             password.setCompoundDrawablesWithIntrinsicBounds(R.drawable.password, 0, R.drawable.password_eye_closed, 0);
             password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        }
-        else {
+        } else {
             Toast.makeText(activity, "dont show password", Toast.LENGTH_LONG).show();
             showPassword = 0;
             password.setCompoundDrawablesWithIntrinsicBounds(R.drawable.password, 0, R.drawable.password_eye_open, 0);
             password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         }
     }
+
     private boolean checkValidation() {
         // Get email id and password
         String getEmailId = email.getText().toString();
@@ -119,7 +118,7 @@ public class LoginCtrl implements FragmentCtrl {
             Toast.makeText(activity, "Your Email is invalid", Toast.LENGTH_LONG).show();
             return false;
         }
-            // Else do login and do your stuff
+        // Else do login and do your stuff
         else
             return true;
 
@@ -130,13 +129,14 @@ public class LoginCtrl implements FragmentCtrl {
     public void updateInfo() {
 
     }
+
     private class getLoginTask extends AsyncTask<String, Void, Void> {
         private ProgressBar pd;
         private byte statusCode;
         private View view;
 
 
-        public getLoginTask(View view){
+        public getLoginTask(View view) {
             this.view = view;
         }
 
@@ -160,11 +160,10 @@ public class LoginCtrl implements FragmentCtrl {
                 client.getAuth().loginWithCredential(credential).addOnCompleteListener(new OnCompleteListener<StitchUser>() {
                     @Override
                     public void onComplete(@NonNull final Task<StitchUser> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             statusCode = 1;
                             onPostExecute();
-                        }
-                        else{
+                        } else {
                             statusCode = 0;
                             onPostExecute();
                         }

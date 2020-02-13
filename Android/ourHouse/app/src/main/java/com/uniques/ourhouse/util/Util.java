@@ -7,48 +7,19 @@ import com.uniques.ourhouse.controller.FeedCard;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class Util {
     public static final int SCHEDULE_START = 0;
     public static final int SCHEDULE_END = 1;
 
-    public static List<ScheduleHolder> populateScheduleHolderList(Filterable filterable) {
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.setTime(new Date());
-        List<ScheduleHolder> modelList = new ArrayList<>();
-
-        // add items occurring today or within next 3 days
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-        HashMap<Nameable, Integer> allowedDupes = new HashMap<>();
-        int globalAllowedDupes = 2;
-        for (int i = 0; i <= 3; i++, globalAllowedDupes--) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            //noinspection unchecked
-            for (Nameable n : filterable.filterRecursively(calendar.getTime())) {
-                //noinspection ConstantConditions
-                if (n instanceof ScheduleHolder &&
-                        (!modelList.contains(n) || !allowedDupes.containsKey(n) || allowedDupes.get(n) > 0)) {
-
-                    modelList.add((ScheduleHolder) n);
-                    allowedDupes.put(n, globalAllowedDupes);
-                }
-            }
-        }
-        return modelList;
-    }
-
     public static void initFeedCardList(List<FeedCard> cardList, List<Observable> modelList, FragmentActivity activity) {
         cardList.clear();
         for (Observable o : modelList) {
             FeedCard.CardType type = FeedCard.CardType.TEST;
-            Hue hue = null;
-            if (o instanceof HueHolder) hue = ((HueHolder) o).getHue();
-            cardList.add(new FeedCard(type, o, hue, activity));
+            cardList.add(new FeedCard(type, o, activity));
         }
     }
 

@@ -3,10 +3,9 @@ package com.uniques.ourhouse.controller;
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.TextView;
-import com.uniques.ourhouse.R;
+
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.util.Comparable;
-import com.uniques.ourhouse.util.Hue;
 import com.uniques.ourhouse.util.Observable;
 
 import androidx.cardview.widget.CardView;
@@ -29,17 +28,15 @@ public final class FeedCard implements RecyclerCard, Comparable {
 
     private CardType type;
     private Observable object;
-    private Hue hue;
     private FragmentActivity activity;
     private CardView cv;
     private TextView txtTitle;
     private TextView txtSubtitle;
     private TextView txtDate;
 
-    public FeedCard(CardType type, Observable object, Hue hue, FragmentActivity activity) {
+    public FeedCard(CardType type, Observable object, FragmentActivity activity) {
         this.type = type;
         this.object = object;
-        this.hue = hue;
         this.activity = activity;
     }
 

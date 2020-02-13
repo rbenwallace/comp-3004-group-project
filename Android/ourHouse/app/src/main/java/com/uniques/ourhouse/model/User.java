@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.model;
 
-import com.uniques.ourhouse.util.IndexableModel;
+import com.uniques.ourhouse.util.Indexable;
+import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
@@ -8,8 +9,9 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-public class User implements Observable, IndexableModel {
+public class User implements Model, Observable, Indexable {
 
     private UUID userID = UUID.randomUUID();
     private String firstName;
@@ -101,5 +103,13 @@ public class User implements Observable, IndexableModel {
         lastName = json.valueOf("lname");
         phoneNumber = json.valueOf("phoneNumber");
         return this;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof User) {
+            return ((User) obj).userID.equals(userID);
+        }
+        return false;
     }
 }

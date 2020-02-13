@@ -6,4 +6,8 @@ public interface Nameable {
 
     void setName(String name);
 
+    default boolean isReadOnly() {
+        return false;
+    }
+
 }

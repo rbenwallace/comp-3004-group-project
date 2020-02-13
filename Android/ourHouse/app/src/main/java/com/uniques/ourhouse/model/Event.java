@@ -1,14 +1,20 @@
 package com.uniques.ourhouse.model;
 
 import com.uniques.ourhouse.util.Comparable;
+import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import java.util.Date;
+import java.util.UUID;
 
-public class Event implements Model, Observable, Comparable {
+import androidx.annotation.NonNull;
+
+public class Event implements Model, Observable, Indexable {
+
+    private UUID eventId = UUID.randomUUID();
     private String title;
     private String assignedTo;
     private Date dueDate;
@@ -20,6 +26,9 @@ public class Event implements Model, Observable, Comparable {
                 new Event("Buy us a TV", new Date(), "Seb")};
     }
 
+    public Event() {
+    }
+
     public Event(String title, Date dueDate, String assignedTo) {
         this.title = title;
         this.dueDate = dueDate;
@@ -27,14 +36,10 @@ public class Event implements Model, Observable, Comparable {
         dateCompleted = new Date();
     }
 
+    @NonNull
     @Override
-    public int getCompareType() {
-        return Comparable.DATE;
-    }
-
-    @Override
-    public java.lang.Comparable getCompareObject() {
-        return dateCompleted;
+    public UUID getId() {
+        return null;
     }
 
     @Override
@@ -47,6 +52,16 @@ public class Event implements Model, Observable, Comparable {
         this.title = name;
     }
 
+    @Override
+    public int getCompareType() {
+        return Comparable.DATE;
+    }
+
+    @Override
+    public java.lang.Comparable getCompareObject() {
+        return dateCompleted;
+    }
+
     public String consoleFormat(String prefix) {
         return title + ": " + assignedTo;
     }
@@ -54,6 +69,7 @@ public class Event implements Model, Observable, Comparable {
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
+        json.putPrimitive("eventId", eventId);
         json.putPrimitive("title", title);
         json.putPrimitive("assignedTo", assignedTo);
         json.putPrimitive("dueDate", dueDate.getTime());
@@ -62,7 +78,8 @@ public class Event implements Model, Observable, Comparable {
     }
 
     @Override
-    public Object fromJSON(JSONElement json) {
+    public Event fromJSON(JSONElement json) {
+        eventId = UUID.fromString(json.valueOf("eventId"));
         title = json.valueOf("title");
         assignedTo = json.valueOf("assignedTo");
         dueDate = new Date((long) json.valueOf("dueDate"));
