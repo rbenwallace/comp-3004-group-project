@@ -1,5 +1,7 @@
 package com.uniques.ourhouse.util;
 
+import androidx.annotation.NonNull;
+
 @SuppressWarnings("unchecked")
 public interface Comparable extends java.lang.Comparable {
 
@@ -11,7 +13,7 @@ public interface Comparable extends java.lang.Comparable {
 
     java.lang.Comparable getCompareObject();
 
-    default int compareTo(Object o) {
+    default int compareTo(@NonNull Object o) {
         if (!(o instanceof Comparable))
             return 0;
 
@@ -26,7 +28,8 @@ public interface Comparable extends java.lang.Comparable {
         } else if (getCompareType() != c.getCompareType()) {
             return 0;
         } else {
-            return getCompareObject().compareTo(getCompareObject());
+//            System.out.println("[Compare] " + getCompareObject().toString() + " vs " + c.getCompareObject().toString());
+            return getCompareObject().compareTo(c.getCompareObject());
         }
     }
 }

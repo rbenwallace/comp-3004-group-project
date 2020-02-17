@@ -27,8 +27,31 @@ public class User implements Model, Observable, Indexable {
 
     public User() {}
 
+    @NonNull
+    @Override
+    public UUID getId() {
+        return userID;
+    }
+
+    @Override
+    public String getName() {
+        return getFullName();
+    }
+
     public String getFullName() {
         return (firstName + " " + lastName).trim();
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
 
     public void parseFullName(String name) {
@@ -40,19 +63,13 @@ public class User implements Model, Observable, Indexable {
             } else {
                 lastName = "";
             }
-        }
-        if (name.contains(" ")) {
+        } else if (name.contains(" ")) {
             firstName = name.substring(0, name.indexOf(' ')).trim();
             lastName = name.substring(name.indexOf(' ') + 1).trim();
+        } else {
+            firstName = name;
+            lastName = "";
         }
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
     }
 
     @Override
@@ -62,17 +79,6 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public Comparable getCompareObject() {
-        return getFullName();
-    }
-
-    @NonNull
-    @Override
-    public UUID getId() {
-        return userID;
-    }
-
-    @Override
-    public String getName() {
         return getFullName();
     }
 

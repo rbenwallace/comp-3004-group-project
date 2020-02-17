@@ -3,9 +3,6 @@ package com.uniques.ourhouse.util;
 import android.app.DatePickerDialog;
 import android.view.View;
 
-import com.uniques.ourhouse.controller.FeedCard;
-import com.uniques.ourhouse.fragment.FragmentActivity;
-
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,21 +12,14 @@ public class Util {
     public static final int SCHEDULE_START = 0;
     public static final int SCHEDULE_END = 1;
 
-    public static void initFeedCardList(List<FeedCard> cardList, List<Observable> modelList, FragmentActivity activity) {
-        cardList.clear();
-        for (Observable o : modelList) {
-            FeedCard.CardType type = FeedCard.CardType.TEST;
-            cardList.add(new FeedCard(type, o, activity));
-        }
-    }
-
-    public static <T extends Comparable> void sortList(List<T> list) {
+    public static <T extends Comparable> void sortList(List<T> list, boolean reverse) {
         int pass = 0;
         int swaps = -1;
         while (swaps != 0) {
             swaps = 0;
-            for (int i = 0; i < list.size() - pass - 1; i++) {
-                if (list.get(i).compareTo(list.get(i + 1)) > 0) {
+            for (int i = 0; i < list.size() - pass - 1; ++i) {
+                int order = list.get(i).compareTo(list.get(i + 1));
+                if (reverse ? order < 0 : order > 0) {
                     T temp = list.get(i);
                     list.set(i, list.get(i + 1));
                     list.set(i + 1, temp);
