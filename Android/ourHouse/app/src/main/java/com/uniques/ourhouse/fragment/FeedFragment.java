@@ -43,14 +43,14 @@ public class FeedFragment extends Fragment<FeedCtrl> {
 
         controller.init(view);
 
-        RecyclerView homeRecycler = view.findViewById(R.id.fragment_recycler);
+        RecyclerView homeRecycler = view.findViewById(R.id.feed_recycler);
         homeRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         homeRecycler.setItemAnimator(new DefaultItemAnimator());
 
         RecyclerAdapter<FeedCard> adapter = new RecyclerAdapter<>(
                 homeRecycler,
                 controller.observableCards,
-                R.layout.content_card_feed_event);
+                R.layout.content_card_feed);
         homeRecycler.setAdapter(adapter);
         controller.setRecyclerAdapter(adapter);
 

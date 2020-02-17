@@ -7,4 +7,9 @@ public interface ReadOnlyNameable extends Nameable {
     default void setName(String name) {
         throw new RuntimeException("nameable object is read-only");
     }
+
+    @Override
+    default boolean isReadOnly() {
+        return true;
+    }
 }

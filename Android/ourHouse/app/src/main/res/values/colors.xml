@@ -16,4 +16,6 @@
     <color name="colorTextInverse">#FFFFFF</color>
     <color name="colorTextMuted">#BDBDBD</color>
 
+    <color name="feedCardOnTime">#4caf50</color>
+    <color name="feedCardLate">#F44336</color>
 </resources>

@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.model;
 
-import com.uniques.ourhouse.util.IndexableModel;
+import com.uniques.ourhouse.util.Indexable;
+import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
@@ -8,8 +9,9 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-public class User implements Observable, IndexableModel {
+public class User implements Model, Observable, Indexable {
 
     private UUID userID = UUID.randomUUID();
     private String firstName;
@@ -25,8 +27,31 @@ public class User implements Observable, IndexableModel {
 
     public User() {}
 
+    @NonNull
+    @Override
+    public UUID getId() {
+        return userID;
+    }
+
+    @Override
+    public String getName() {
+        return getFullName();
+    }
+
     public String getFullName() {
         return (firstName + " " + lastName).trim();
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
 
     public void parseFullName(String name) {
@@ -38,19 +63,13 @@ public class User implements Observable, IndexableModel {
             } else {
                 lastName = "";
             }
-        }
-        if (name.contains(" ")) {
+        } else if (name.contains(" ")) {
             firstName = name.substring(0, name.indexOf(' ')).trim();
             lastName = name.substring(name.indexOf(' ') + 1).trim();
+        } else {
+            firstName = name;
+            lastName = "";
         }
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
     }
 
     @Override
@@ -60,17 +79,6 @@ public class User implements Observable, IndexableModel {
 
     @Override
     public Comparable getCompareObject() {
-        return getFullName();
-    }
-
-    @NonNull
-    @Override
-    public UUID getId() {
-        return userID;
-    }
-
-    @Override
-    public String getName() {
         return getFullName();
     }
 
@@ -101,5 +109,13 @@ public class User implements Observable, IndexableModel {
         lastName = json.valueOf("lname");
         phoneNumber = json.valueOf("phoneNumber");
         return this;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof User) {
+            return ((User) obj).userID.equals(userID);
+        }
+        return false;
     }
 }

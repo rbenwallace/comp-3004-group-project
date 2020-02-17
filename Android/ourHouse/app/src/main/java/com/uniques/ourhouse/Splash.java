@@ -6,11 +6,11 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchUser;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class Splash extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 3000;
@@ -32,7 +32,7 @@ public class Splash extends AppCompatActivity {
         }
         else{
             Log.d("Splash", "launching LS");
-            delayStart(this, LS_Main.class, true);
+            delayStart(this, MainActivity.class, true);
         }
     }
 
