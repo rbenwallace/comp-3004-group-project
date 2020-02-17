@@ -29,6 +29,7 @@ import com.uniques.ourhouse.fragment.ForgotPasswordFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.LoginFragment;
+import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SignUpFragment;
 
 import java.util.regex.Matcher;
@@ -79,10 +80,7 @@ public class LoginCtrl implements FragmentCtrl {
                 Snackbar.make(view, "Invalid email or password", BaseTransientBottomBar.LENGTH_LONG);
             }
         });
-
-
     }
-
     private void changePasswordDisplay() {
         if(showPassword == 0){
             Toast.makeText(activity, "show password", Toast.LENGTH_LONG).show();
@@ -181,7 +179,7 @@ public class LoginCtrl implements FragmentCtrl {
                 activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 Log.d("stitch-auth", "Authentication Successful.");
                 Toast.makeText(activity, "OurHouse welcomes you!", Toast.LENGTH_SHORT).show();
-                activity.startActivity(new Intent(activity, MainActivity.class));
+                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
                 pd.setVisibility(View.GONE);
             } else {
                 Log.e("stitch-auth", "Authentication Failed.");
