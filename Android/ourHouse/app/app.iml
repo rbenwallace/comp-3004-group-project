@@ -160,5 +160,6 @@
     <orderEntry type="library" name="Gradle: org.mongodb:stitch-android-services-mongodb-remote:4.7.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.mongodb:stitch-android-services-mongodb-local:4.7.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.mongodb:mongodb-driver-embedded-android:3.10.1@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.PhilJay:MPAndroidChart:v3.1.0@aar" level="project" />
   </component>
 </module>
