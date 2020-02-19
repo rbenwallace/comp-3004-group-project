@@ -1,6 +1,6 @@
 package com.uniques.ourhouse.model;
 
-import com.uniques.ourhouse.util.BetterSchedule;
+import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
@@ -16,7 +16,7 @@ public class Fee implements Model, Indexable, Observable {
     private UUID feeId = UUID.randomUUID();
     private String name;
     private float amount;
-    private BetterSchedule schedule;
+    private Schedule schedule;
 
     @NonNull
     @Override
@@ -64,7 +64,7 @@ public class Fee implements Model, Indexable, Observable {
         feeId = UUID.fromString(json.valueOf("feeId"));
         name = json.valueOf("name");
         amount = Float.valueOf(json.valueOf("amount"));
-        schedule = new BetterSchedule().fromJSON(json.search("schedule"));
+        schedule = new Schedule().fromJSON(json.search("schedule"));
         return this;
     }
 }
