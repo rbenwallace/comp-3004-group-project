@@ -1,9 +1,9 @@
 package com.uniques.ourhouse.model;
 
-import com.uniques.ourhouse.util.BetterSchedule;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
+import com.uniques.ourhouse.util.Schedule;
 
 import java.util.UUID;
 
@@ -15,11 +15,11 @@ public abstract class ManageItem implements Model, Indexable, Observable {
     protected UUID manageItemId = UUID.randomUUID();
     protected String name;
     //private UUID manageItemOwner;
-    protected BetterSchedule schedule;
+    protected Schedule schedule;
 
     public ManageItem(){}
 
-    public ManageItem(String name, BetterSchedule schedule){
+    public ManageItem(String name, Schedule schedule){
         this.name = name;
         this.schedule = schedule;
     }

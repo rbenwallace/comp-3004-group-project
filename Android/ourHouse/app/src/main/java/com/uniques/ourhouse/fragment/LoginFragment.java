@@ -18,6 +18,7 @@ public class LoginFragment extends Fragment<LoginCtrl> {
     private static final String ACTIVITY_TAG = LS_Main.TAG;
     private static final int LAYOUT_ID = R.layout.fragment_login;
 
+
     public static FragmentId setupId(ActivityId activityId) {
         return FragmentId.SET(LoginFragment.class, TAG, LAYOUT_ID, activityId, true);
     }

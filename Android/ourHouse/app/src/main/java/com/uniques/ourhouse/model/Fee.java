@@ -1,6 +1,6 @@
 package com.uniques.ourhouse.model;
 
-import com.uniques.ourhouse.util.BetterSchedule;
+import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
@@ -15,7 +15,7 @@ public class Fee extends ManageItem implements Model, Indexable, Observable {
 
     public Fee(){}
 
-    public Fee(String name, float amount, BetterSchedule schedule){
+    public Fee(String name, float amount, Schedule schedule){
         super(name, schedule);
         this.amount = amount;
         this.type = "Fee";
@@ -23,7 +23,7 @@ public class Fee extends ManageItem implements Model, Indexable, Observable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "]   " + ", Amount: " + amount;
+        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "]   " + ", Amount: " + amount + ", Date Created: " + schedule.getStart().toString();
     }
 
     @Override
@@ -31,6 +31,7 @@ public class Fee extends ManageItem implements Model, Indexable, Observable {
         EasyJSON json = EasyJSON.create();
         json.putPrimitive("feeId", manageItemId.toString());
         json.putPrimitive("name", name);
+        json.putPrimitive("type", type);
         json.putPrimitive("amount", String.valueOf(amount));
         json.putElement("schedule", schedule.toJSON());
         return json.getRootNode();
@@ -40,8 +41,9 @@ public class Fee extends ManageItem implements Model, Indexable, Observable {
     public Fee fromJSON(JSONElement json) {
         manageItemId = UUID.fromString(json.valueOf("feeId"));
         name = json.valueOf("name");
+        type = json.valueOf("type");
         amount = Float.valueOf(json.valueOf("amount"));
-        schedule = new BetterSchedule().fromJSON(json.search("schedule"));
+        schedule = new Schedule().fromJSON(json.search("schedule"));
         return this;
     }
 

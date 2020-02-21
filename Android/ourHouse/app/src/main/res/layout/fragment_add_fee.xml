@@ -29,8 +29,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/description"
-            android:drawablePadding="8dp"
-            android:gravity="center"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
             android:padding="5dp"
             android:text="@string/fee_details"
             android:textColor="@color/black"
@@ -52,8 +52,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/amount"
-            android:drawablePadding="8dp"
-            android:gravity="center"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
             android:padding="5dp"
             android:text="@string/fee_amount"
             android:textColor="@color/black"
@@ -61,11 +61,45 @@
 
         <EditText
             android:id="@+id/addFee_editAmount"
-            android:layout_width="match_parent"
+            android:layout_width="203dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="20dp"
             android:ems="10"
             android:inputType="numberDecimal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:text="@string/tax_rate"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/addFee_editTaxRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:ems="10"
+                android:gravity="bottom"
+                android:inputType="numberDecimal" />
+
+            <Button
+                android:id="@+id/addFee_addTax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/loginbutton_selector"
+                android:text="@string/tax" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -74,8 +108,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/rotation"
-            android:drawablePadding="8dp"
-            android:gravity="center"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
             android:padding="5dp"
             android:text="@string/fee_frequency"
             android:textColor="@color/black"

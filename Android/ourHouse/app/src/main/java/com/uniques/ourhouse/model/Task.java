@@ -1,45 +1,51 @@
 package com.uniques.ourhouse.model;
 
-import com.uniques.ourhouse.util.BetterSchedule;
+import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class Task extends ManageItem implements Model, Indexable, Observable {
     private String type;
-    //private int difficulty;
+    private int difficulty;
     //private UUID manageItemOwner;
 
     public Task(){}
 
-    public Task(String name, BetterSchedule schedule){
+    public Task(String name, Schedule schedule, int difficulty) {
         super(name, schedule);
         this.type = "Task";
+        this.difficulty = difficulty;
     }
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "]   ";
+        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "] , Difficulty:" + difficulty + ", Due Date: " + schedule.getEnd().toString() + ", Date Created: " + schedule.getStart().toString();
     }
 
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
-        json.putPrimitive("taskId", manageItemId.toString());
+        json.putPrimitive("manageItemId", manageItemId.toString());
         json.putPrimitive("name", name);
+        json.putPrimitive("type", type);
+        json.putPrimitive("difficulty", String.valueOf(difficulty));
         json.putElement("schedule", schedule.toJSON());
         return json.getRootNode();
     }
 
     @Override
     public Task fromJSON(JSONElement json) {
-        manageItemId = UUID.fromString(json.valueOf("taskId"));
+        manageItemId = UUID.fromString(json.valueOf("manageItemId"));
         name = json.valueOf("name");
-        schedule = new BetterSchedule().fromJSON(json.search("schedule"));
+        type = json.valueOf("type");
+        difficulty = Integer.valueOf(json.valueOf("difficulty"));
+        schedule = new Schedule().fromJSON(json.search("schedule"));
         return null;
     }
 

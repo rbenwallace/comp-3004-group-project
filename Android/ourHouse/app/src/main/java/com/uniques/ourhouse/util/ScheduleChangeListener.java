@@ -10,7 +10,7 @@ public interface ScheduleChangeListener extends Schedule.ChangeListener {
 
     ActivityCtrl getCtrl();
 
-    @Override
+    //@Override
     default void onChange() {
         getCtrl().updateInfo();
     }
@@ -23,7 +23,7 @@ public interface ScheduleChangeListener extends Schedule.ChangeListener {
     default void onEndChange(Date newEnd) {
     }
 
-    @Override
+    //@Override
     default void onEndTypeChange(Schedule.EndType endType, int endAfterTimes) {
     }
 
@@ -39,11 +39,11 @@ public interface ScheduleChangeListener extends Schedule.ChangeListener {
     default void onRepeatBasisChange(Schedule.RepeatBasis newBasis) {
     }
 
-    @Override
+    //@Override
     default void onRepeatIterativeDelayChange(int newDelay) {
     }
 
-    @Override
+    //@Override
     default void onRepeatRelativeSelectionChange(int[] selections) {
     }
 }

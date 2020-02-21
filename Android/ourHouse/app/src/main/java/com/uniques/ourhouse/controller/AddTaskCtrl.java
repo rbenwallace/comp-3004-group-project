@@ -3,6 +3,7 @@ package com.uniques.ourhouse.controller;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -15,9 +16,10 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.model.Task;
-import com.uniques.ourhouse.util.BetterSchedule;
+import com.uniques.ourhouse.util.Schedule;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddTaskCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -35,6 +37,7 @@ public class AddTaskCtrl implements FragmentCtrl {
         RadioGroup taskFrequencies = (RadioGroup) view.findViewById(R.id.addTask_radioFrequency);
         RadioGroup taskDifficulty = (RadioGroup) view.findViewById(R.id.addTask_radioDifficulty);
         TextView otherTaskFrequency = (TextView) view.findViewById(R.id.addTask_editNumberOfDays);
+        DatePicker datePicker = (DatePicker) view.findViewById(R.id.addTask_datePicked);
 
         addTaskBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,35 +53,59 @@ public class AddTaskCtrl implements FragmentCtrl {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 String selectedFrequencyText = ((RadioButton) view.findViewById(taskFrequencies.getCheckedRadioButtonId())).getText().toString();
-                String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
+                int day = datePicker.getDayOfMonth();
+                int month = datePicker.getMonth();
+                int year = datePicker.getYear();
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, day);
+                Date date = calendar.getTime();
                 if(String.valueOf(taskName.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherTaskFrequency.getText()).equals(""))){
                     Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(!date.after(Calendar.getInstance().getTime())){
+                    Toast.makeText(activity, "Please choose a date later than today", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String name = String.valueOf(taskName.getText());
-                BetterSchedule schedule = new BetterSchedule();
+                String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
+                int selectedDifficultyNum = 1;
+                if(selectedDifficulty.equals("Medium")){
+                    selectedDifficultyNum = 2;
+                }
+                else if(selectedDifficulty.equals("Hard")){
+                    selectedDifficultyNum = 3;
+                }
+                Schedule schedule = new Schedule();
+                Schedule.pauseStartEndBoundsChecking();
                 schedule.setStart(Calendar.getInstance().getTime());
-                if(!selectedFrequencyText.equals("Once")){
-                    schedule.initRepeatBetterSchedule();
+                schedule.setEnd(date);
+                Schedule.resumeStartEndBoundsChecking();
+                if(selectedFrequencyText.equals("Once")){
+                    schedule.setEndType(Schedule.EndType.ON_DATE);
                 }
-                if(selectedFrequencyText.equals("Other")){
-                    //TODO Implement when user wants custom frequency
-                    //Integer.valueOf(String.valueOf(feeAmount.getText()));
-                    schedule.getRepeatBetterSchedule().setRepeatBasis(BetterSchedule.RepeatBasis.DAILY);
+                else{
+                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
+                    if(selectedFrequencyText.equals("Other")){
+                        //TODO properly Implement when user wants custom frequency
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                        schedule.getRepeatSchedule().setDelay(Integer.valueOf(String.valueOf(otherTaskFrequency.getText())));
+
+                    }
+                    else if(selectedFrequencyText.equals("Yearly")){
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                    }
+                    else if(selectedFrequencyText.equals("Monthly")){
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                    }
+                    else if(selectedFrequencyText.equals("Weekly")){
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+                    }
+                    else if(selectedFrequencyText.equals("Daily")){
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                    }
                 }
-                else if(selectedFrequencyText.equals("Yearly")){
-                    schedule.getRepeatBetterSchedule().setRepeatBasis(BetterSchedule.RepeatBasis.YEARLY);
-                }
-                else if(selectedFrequencyText.equals("Monthly")){
-                    schedule.getRepeatBetterSchedule().setRepeatBasis(BetterSchedule.RepeatBasis.MONTHLY);
-                }
-                else if(selectedFrequencyText.equals("Weekly")){
-                    schedule.getRepeatBetterSchedule().setRepeatBasis(BetterSchedule.RepeatBasis.WEEKLY);
-                }
-                else if(selectedFrequencyText.equals("Daily")){
-                    schedule.getRepeatBetterSchedule().setRepeatBasis(BetterSchedule.RepeatBasis.DAILY);
-                }
-                Task task = new Task(name, schedule);
+                Task task = new Task(name, schedule, selectedDifficultyNum);
                 System.out.println(task.consoleFormat("Wallace"));
                 Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();
                 activity.pushFragment(FragmentId.GET(FeedFragment.TAG));

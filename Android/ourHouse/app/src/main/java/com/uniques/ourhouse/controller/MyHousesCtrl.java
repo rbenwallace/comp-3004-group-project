@@ -29,7 +29,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         createHouse.setOnClickListener(view1 -> {
             Toast.makeText(activity, "Going to CreateHouseFragment", Toast.LENGTH_LONG).show();
             //TODO NAVIGATE TO NEXT FRAGMENT
-//            ((LS_Main) activity).setViewPager(3);
+//
             activity.pushFragment(FragmentId.GET(CreateHouseFragment.TAG));
         });
         joinHouse.setOnClickListener(view2 -> {

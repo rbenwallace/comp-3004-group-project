@@ -7,11 +7,15 @@ import android.view.View;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
+import com.uniques.ourhouse.fragment.AmountPaidFragment;
+import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
 import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.Fragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
+import com.uniques.ourhouse.fragment.PerformanceFragment;
+import com.uniques.ourhouse.fragment.ScreenMonthFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
 
 import androidx.fragment.app.FragmentManager;
@@ -37,6 +41,10 @@ public class MainActivity extends FragmentActivity {
         AddFeeFragment.setupId(getActivityId());
         AddTaskFragment.setupId(getActivityId());
         SettingsFragment.setupId(getActivityId());
+        AmountPaidFragment.setupId(getActivityId());
+        CalculateAmountToPayFragment.setupId(getActivityId());
+        PerformanceFragment.setupId(getActivityId());
+        ScreenMonthFragment.setupId(getActivityId());
 
         BottomNavigationView navigation = findViewById(R.id.main_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -58,8 +66,9 @@ public class MainActivity extends FragmentActivity {
                     pushFragment(FragmentId.GET(ManageFragment.TAG));
                 return true;
             case R.id.navigation_stats:
-                //mTextMessage.setText(R.string.title_evaluation);
-                return false;
+                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(AmountPaidFragment.TAG))
+                    pushFragment(FragmentId.GET(AmountPaidFragment.TAG));
+                return true;
         }
         return false;
     };
