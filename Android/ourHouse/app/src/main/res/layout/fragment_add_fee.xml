@@ -85,29 +85,43 @@
             android:id="@+id/addFee_radioFrequency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checkedButton="@+id/addFee_once"
             android:layout_marginTop="8dp">
 
             <RadioButton
+                android:id="@+id/addFee_once"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Once" />
 
             <RadioButton
+                android:id="@+id/addFee_daily"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
+                android:text="Daily" />
+
+            <RadioButton
+                android:id="@+id/addFee_weekly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Weekly" />
 
             <RadioButton
+                android:id="@+id/addFee_monthly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="Monthly" />
 
             <RadioButton
+                android:id="@+id/addFee_yearly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
+                android:text="Yearly" />
+
+            <RadioButton
+                android:id="@+id/addFee_other"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Other" />
 
         </RadioGroup>
@@ -125,7 +139,7 @@
             android:id="@+id/addFee_btnAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="36dp"
+            android:layout_marginTop="36dp"
             android:background="@drawable/loginbutton_selector"
             android:text="@string/add" />
 
@@ -133,11 +147,11 @@
             android:id="@+id/addFee_btnBack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
             android:layout_marginBottom="36dp"
             android:background="@drawable/loginbutton_selector"
             android:text="@string/back"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/feed_add_fee"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 

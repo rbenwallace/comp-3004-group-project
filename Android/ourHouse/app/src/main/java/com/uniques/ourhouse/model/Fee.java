@@ -9,50 +9,27 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import java.util.UUID;
 
-import androidx.annotation.NonNull;
-
-public class Fee implements Model, Indexable, Observable {
-
-    private UUID feeId = UUID.randomUUID();
-    private String name;
+public class Fee extends ManageItem implements Model, Indexable, Observable {
     private float amount;
-    private BetterSchedule schedule;
+    private String type;
 
-    @NonNull
-    @Override
-    public UUID getId() {
-        return feeId;
-    }
+    public Fee(){}
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public int getCompareType() {
-        return STRING;
-    }
-
-    @Override
-    public Comparable getCompareObject() {
-        return name;
+    public Fee(String name, float amount, BetterSchedule schedule){
+        super(name, schedule);
+        this.amount = amount;
+        this.type = "Fee";
     }
 
     @Override
     public String consoleFormat(String prefix) {
-        return "Fee (" + feeId.toString() + ") [" + name + "]";
+        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "]   " + ", Amount: " + amount;
     }
 
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
-        json.putPrimitive("feeId", feeId.toString());
+        json.putPrimitive("feeId", manageItemId.toString());
         json.putPrimitive("name", name);
         json.putPrimitive("amount", String.valueOf(amount));
         json.putElement("schedule", schedule.toJSON());
@@ -61,10 +38,15 @@ public class Fee implements Model, Indexable, Observable {
 
     @Override
     public Fee fromJSON(JSONElement json) {
-        feeId = UUID.fromString(json.valueOf("feeId"));
+        manageItemId = UUID.fromString(json.valueOf("feeId"));
         name = json.valueOf("name");
         amount = Float.valueOf(json.valueOf("amount"));
         schedule = new BetterSchedule().fromJSON(json.search("schedule"));
         return this;
+    }
+
+    @Override
+    public String getType(){
+        return this.type;
     }
 }
