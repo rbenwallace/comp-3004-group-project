@@ -7,19 +7,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29a5ab38-cd03-43b4-a2db-9050a3581dff" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_date.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_filter.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_basement_15_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_basement_15_0_1_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_tasks_15_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_tasks_15_0_1_aar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Fee.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Fee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/BetterSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Schedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCtrl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ScheduleChangeListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_bubble.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_feed.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_feed.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
@@ -35,63 +54,88 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/MongoDB/MongoDB.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_feed.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+            <state relative-caret-position="334">
+              <caret line="53" column="47" selection-start-line="53" selection-start-column="47" selection-end-line="53" selection-end-column="47" />
             </state>
           </provider>
+          <provider editor-type-id="android-designer2" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/MongoDB/SecurityLink.java">
-          <provider selected="true" editor-type-id="text-editor">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_filter.xml">
+          <provider editor-type-id="text-editor">
             <state relative-caret-position="68">
-              <caret line="6" column="22" selection-start-line="6" selection-start-column="22" selection-end-line="6" selection-end-column="22" />
+              <caret line="5" column="37" lean-forward="true" selection-start-line="5" selection-start-column="37" selection-end-line="5" selection-end-column="37" />
+              <folding>
+                <element signature="e#2827#3000#0" />
+              </folding>
             </state>
           </provider>
+          <provider selected="true" editor-type-id="android-designer2" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Schedule.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_bubble.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2686">
-              <caret line="172" column="7" selection-start-line="172" selection-start-column="7" selection-end-line="172" selection-end-column="7" />
+            <state relative-caret-position="289">
+              <caret line="29" column="25" lean-forward="true" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer2" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCtrl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="258" column="55" lean-forward="true" selection-start-line="258" selection-start-column="55" selection-end-line="258" selection-end-column="55" />
               <folding>
-                <element signature="e#2460#2502#0" expanded="true" />
-                <element signature="e#3780#3781#0" expanded="true" />
-                <element signature="e#3808#3809#0" expanded="true" />
-                <element signature="e#4326#4327#0" expanded="true" />
-                <element signature="e#4352#4353#0" expanded="true" />
-                <element signature="e#4867#4868#0" expanded="true" />
-                <element signature="e#4897#4898#0" expanded="true" />
-                <element signature="e#6305#6306#0" expanded="true" />
-                <element signature="e#6348#6349#0" expanded="true" />
-                <element signature="e#5762#5763#0" expanded="true" />
-                <element signature="e#5801#5802#0" expanded="true" />
-                <element signature="e#10496#10497#0" expanded="true" />
-                <element signature="e#10523#10524#0" expanded="true" />
-                <element signature="e#10591#10592#0" expanded="true" />
-                <element signature="e#10619#10620#0" expanded="true" />
-                <element signature="e#10678#10679#0" expanded="true" />
-                <element signature="e#10718#10719#0" expanded="true" />
-                <element signature="e#12831#12832#0" expanded="true" />
-                <element signature="e#12873#12874#0" expanded="true" />
-                <element signature="e#12906#12907#0" expanded="true" />
-                <element signature="e#12942#12943#0" expanded="true" />
-                <element signature="e#10952#10953#0" expanded="true" />
-                <element signature="e#10999#11000#0" expanded="true" />
-                <element signature="method#getIntervalInMillis#0;class#Repeat#0;class#BetterSchedule#0" />
+                <element signature="class#2513:3409" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/House.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+            <state relative-caret-position="-488">
+              <caret line="69" column="44" lean-forward="true" selection-start-line="69" selection-start-column="44" selection-end-line="69" selection-end-column="44" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#5506#5507#0" expanded="true" />
+                <element signature="e#5537#5538#0" expanded="true" />
+                <element signature="e#5578#5579#0" expanded="true" />
+                <element signature="e#5607#5608#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="867">
+              <caret line="76" column="32" selection-start-line="76" selection-start-column="32" selection-end-line="76" selection-end-column="32" />
+              <folding>
+                <element signature="e#1946#1947#0" expanded="true" />
+                <element signature="e#1982#1983#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="54" column="59" lean-forward="true" selection-start-line="54" selection-start-column="59" selection-end-line="54" selection-end-column="59" />
+              <folding>
+                <element signature="e#2489#2490#0" expanded="true" />
+                <element signature="e#2530#2531#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -116,15 +160,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_manage.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_add_fee.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_add_task.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_join_house.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_settings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_my_houses.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_forget_password.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCtrl.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/AddFeeCtrl.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/AddTaskCtrl.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/SettingsCtrl.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
@@ -167,14 +202,23 @@
         <option value="$PROJECT_DIR$/local.properties" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/BetterSchedule.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Schedule.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_date.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_feed.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_bubble.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCtrl.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_filter.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-15" />
-    <option name="y" value="-15" />
-    <option name="width" value="1945" />
-    <option name="height" value="1045" />
+    <option name="x" value="-12" />
+    <option name="y" value="-12" />
+    <option name="width" value="1944" />
+    <option name="height" value="1044" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -183,7 +227,6 @@
     </navigator>
     <panes>
       <pane id="ProjectPane" />
-      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -328,6 +371,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -351,7 +395,18 @@
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="ourhouse" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
+              <item name="fragment" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ourHouse" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+            </path>
+            <path>
+              <item name="ourHouse" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="layout" type="ddeffd01:AndroidResFolderTypeNode" />
             </path>
             <path>
               <item name="ourHouse" type="1abcf292:AndroidViewProjectNode" />
@@ -366,7 +421,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/res/layout" />
     <property name="project.structure.last.edited" value="SDK Location" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -381,6 +436,7 @@
       <recent name="com.uniques.ourhouse.fragment" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Victor\Documents\University\COMP 3004\Project\Git repo\Android\ourHouse\app\src\main\res\layout" />
       <recent name="C:\Users\jlim9\Documents\GitHub\comp-3004-group-project\Android\ourHouse\app\src\main\java\com\uniques\ourhouse\fragment" />
       <recent name="C:\Users\jlim9\Documents\GitHub\comp-3004-group-project\Android\ourHouse\app\src\main\res\layout" />
     </key>
@@ -535,9 +591,9 @@
       <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
       <window_info anchor="bottom" id="TODO" order="3" />
       <window_info anchor="bottom" id="Logcat" order="4" />
-      <window_info anchor="bottom" id="Version Control" order="5" />
+      <window_info anchor="bottom" id="Version Control" order="5" weight="0.3285968" />
       <window_info anchor="bottom" id="Terminal" order="6" />
-      <window_info anchor="bottom" id="Run" order="7" />
+      <window_info anchor="bottom" id="Run" order="7" weight="0.3285968" />
       <window_info anchor="bottom" id="Debug" order="8" />
       <window_info anchor="bottom" id="Find" order="9" weight="0.3285968" />
       <window_info anchor="right" id="Palette&#9;" order="0" />
@@ -549,97 +605,6 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/ModelLink.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_feed.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="63" selection-start-line="6" selection-start-column="33" selection-end-line="6" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="44" column="44" selection-start-line="44" selection-start-column="44" selection-end-line="44" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/LoginFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="39" selection-start-line="39" selection-end-line="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/navigation.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="51" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/MyHousesCtrl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="31" column="2" selection-start-line="31" selection-start-column="2" selection-end-line="31" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/SignUpFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="58" selection-start-line="58" selection-end-line="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Location.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/MongoDB/MongoDB.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/House.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="60" column="23" selection-start-line="60" selection-start-column="23" selection-end-line="60" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/LoginCtrl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2023">
-          <caret line="156" column="16" selection-start-line="163" selection-start-column="31" selection-end-line="168" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/ActivityCtrl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_calculate_amount_to_pay.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -651,13 +616,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-78">
           <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="39" column="13" lean-forward="true" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -729,13 +687,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="27" column="32" lean-forward="true" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/LS_Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -765,13 +716,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_performance.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor" />
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="70" column="2" selection-start-line="70" selection-start-column="2" selection-end-line="70" selection-end-column="2" />
+        <state relative-caret-position="187">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -779,12 +730,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_add_fee.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2149">
           <caret line="145" column="13" selection-start-line="145" selection-start-column="13" selection-end-line="145" selection-end-column="13" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AddFeeFragment.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -809,10 +760,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_manage.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-136" />
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/ManageCtrl.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -822,12 +773,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_amount_paid.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="407">
           <caret line="86" column="51" selection-start-line="86" selection-start-column="51" selection-end-line="86" selection-end-column="51" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/AmountPaidFragment.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -899,36 +850,148 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Schedule.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2686">
-          <caret line="172" column="7" selection-start-line="172" selection-start-column="7" selection-end-line="172" selection-end-column="7" />
+        <state relative-caret-position="12835">
+          <caret line="807" column="52" selection-start-line="807" selection-start-column="52" selection-end-line="807" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="43" selection-start-line="8" selection-start-column="43" selection-end-line="8" selection-end-column="43" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/SignUpCtrl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Util.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="10" column="19" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/TaskRotationCard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/House.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_date.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/model/Event.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="867">
+          <caret line="76" column="32" selection-start-line="76" selection-start-column="32" selection-end-line="76" selection-end-column="32" />
           <folding>
-            <element signature="e#2460#2502#0" expanded="true" />
-            <element signature="e#3780#3781#0" expanded="true" />
-            <element signature="e#3808#3809#0" expanded="true" />
-            <element signature="e#4326#4327#0" expanded="true" />
-            <element signature="e#4352#4353#0" expanded="true" />
-            <element signature="e#4867#4868#0" expanded="true" />
-            <element signature="e#4897#4898#0" expanded="true" />
-            <element signature="e#6305#6306#0" expanded="true" />
-            <element signature="e#6348#6349#0" expanded="true" />
-            <element signature="e#5762#5763#0" expanded="true" />
-            <element signature="e#5801#5802#0" expanded="true" />
-            <element signature="e#10496#10497#0" expanded="true" />
-            <element signature="e#10523#10524#0" expanded="true" />
-            <element signature="e#10591#10592#0" expanded="true" />
-            <element signature="e#10619#10620#0" expanded="true" />
-            <element signature="e#10678#10679#0" expanded="true" />
-            <element signature="e#10718#10719#0" expanded="true" />
-            <element signature="e#12831#12832#0" expanded="true" />
-            <element signature="e#12873#12874#0" expanded="true" />
-            <element signature="e#12906#12907#0" expanded="true" />
-            <element signature="e#12942#12943#0" expanded="true" />
-            <element signature="e#10952#10953#0" expanded="true" />
-            <element signature="e#10999#11000#0" expanded="true" />
-            <element signature="method#getIntervalInMillis#0;class#Repeat#0;class#BetterSchedule#0" />
+            <element signature="e#1946#1947#0" expanded="true" />
+            <element signature="e#1982#1983#0" expanded="true" />
           </folding>
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/util/Comparable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="70">
+          <caret line="15" column="46" lean-forward="true" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/Splash.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="44" column="28" lean-forward="true" selection-start-line="40" selection-start-column="8" selection-end-line="44" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/fragment/FeedFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_feed.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="334">
+          <caret line="53" column="47" selection-start-line="53" selection-start-column="47" selection-end-line="53" selection-end-column="47" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/RecyclerAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="54" column="59" lean-forward="true" selection-start-line="54" selection-start-column="59" selection-end-line="54" selection-end-column="59" />
+          <folding>
+            <element signature="e#2489#2490#0" expanded="true" />
+            <element signature="e#2530#2531#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_filter.xml">
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="5" column="37" lean-forward="true" selection-start-line="5" selection-start-column="37" selection-end-line="5" selection-end-column="37" />
+          <folding>
+            <element signature="e#2827#3000#0" />
+          </folding>
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCtrl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="258" column="55" lean-forward="true" selection-start-line="258" selection-start-column="55" selection-end-line="258" selection-end-column="55" />
+          <folding>
+            <element signature="class#2513:3409" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/uniques/ourhouse/controller/FeedCard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-488">
+          <caret line="69" column="44" lean-forward="true" selection-start-line="69" selection-start-column="44" selection-end-line="69" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#5506#5507#0" expanded="true" />
+            <element signature="e#5537#5538#0" expanded="true" />
+            <element signature="e#5578#5579#0" expanded="true" />
+            <element signature="e#5607#5608#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_card_feed_bubble.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="29" column="25" lean-forward="true" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
   </component>
 </project>

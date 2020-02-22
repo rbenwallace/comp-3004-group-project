@@ -1,6 +1,5 @@
 package com.uniques.ourhouse.controller;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ViewSelector viewSelector;
+    private ViewSelector<T> viewSelector;
     private int animationId = -1;
     private RecyclerView recyclerView;
     private List<T> cards;
@@ -23,9 +22,9 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
     public RecyclerAdapter(RecyclerView recyclerView, List<T> cards, int layoutId) {
         this.recyclerView = recyclerView;
         this.cards = cards;
-        this.viewSelector = new ViewSelector() {
+        this.viewSelector = new ViewSelector<T>() {
             @Override
-            public int getItemViewType(RecyclerCard card) {
+            public int getItemViewType(T card) {
                 return 0;
             }
 
@@ -39,9 +38,9 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
     public RecyclerAdapter(RecyclerView recyclerView, List<T> cards, int layoutId, int animationId) {
         this.recyclerView = recyclerView;
         this.cards = cards;
-        this.viewSelector = new ViewSelector() {
+        this.viewSelector = new ViewSelector<T>() {
             @Override
-            public int getItemViewType(RecyclerCard card) {
+            public int getItemViewType(T card) {
                 return 0;
             }
 
@@ -53,9 +52,9 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
         this.animationId = animationId;
     }
 
-    public interface ViewSelector {
+    public interface ViewSelector<T extends RecyclerCard> {
 
-        int getItemViewType(RecyclerCard card);
+        int getItemViewType(T card);
 
         int getViewLayoutId(int itemViewType);
 
@@ -73,7 +72,7 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
             this.itemView = itemView;
         }
 
-        void setCard(RecyclerCard card) {
+        void setCard(T card) {
             this.card = card;
             View cv = itemView.findViewById(
                     viewSelector.getCardViewId(viewSelector.getItemViewType(card)));
@@ -125,7 +124,7 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
         }
     }
 
-    void setViewSelector(ViewSelector viewSelector) {
+    void setViewSelector(ViewSelector<T> viewSelector) {
         this.viewSelector = viewSelector;
     }
 

@@ -50,7 +50,7 @@ public class FeedFragment extends Fragment<FeedCtrl> {
         RecyclerAdapter<FeedCard> adapter = new RecyclerAdapter<>(
                 homeRecycler,
                 controller.observableCards,
-                R.layout.content_card_feed);
+                R.layout.content_card_feed_bubble);
         homeRecycler.setAdapter(adapter);
         controller.setRecyclerAdapter(adapter);
 
