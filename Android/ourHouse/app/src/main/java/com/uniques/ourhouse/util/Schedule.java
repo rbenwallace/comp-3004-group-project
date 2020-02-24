@@ -180,6 +180,20 @@ public class Schedule implements Comparable, Model {
         this.endType = endType;
     }
 
+    /**
+     * Makes this Schedule end after 1000 occurrences.
+     * <br/>
+     * Will initialise a repeat-schedule if one does not exist yet.
+     * <br/>
+     * Note: this method can take a little longer than usual (due to it trying to find the date of the final occurrence)
+     */
+    public void setEndPseudoIndefinite() {
+        if (repeatBetterSchedule == null) {
+            initRepeatSchedule();
+        }
+        repeatBetterSchedule.endAfterXTimes(1000);
+    }
+
     public Repeat getRepeatSchedule() {
         return repeatBetterSchedule;
     }
@@ -728,7 +742,7 @@ public class Schedule implements Comparable, Model {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(start);
             for (int i = 1; i <= times; i++) {
-                System.out.println("INTERVAL=" + getIntervalInMillis(calendar));
+//                System.out.println("INTERVAL=" + getIntervalInMillis(calendar));
                 calendar.add(Calendar.MILLISECOND, (int) getIntervalInMillis(calendar));
             }
             setEndType(EndType.AFTER_TIMES);
