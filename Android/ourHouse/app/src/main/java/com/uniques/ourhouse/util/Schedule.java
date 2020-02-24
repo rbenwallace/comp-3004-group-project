@@ -70,8 +70,8 @@ public class Schedule implements Comparable, Model {
     private boolean pauseStartEndChecking, pendingStartEndChange;
 
     public Schedule() {
-//        this.start = new Date();
-//        this.end = this.start;
+        this.start = new Date();
+        this.end = this.start;
         endType = EndType.ON_DATE;
     }
 
