@@ -19,10 +19,16 @@ public class User implements Model, Observable, Indexable {
     private String emailAddress;
     private String phoneNumber;
 
-    public User(String fullName, String emailAddress, String phoneNumber) {
+    //testing
+    private int performance;
+
+    //testing int num
+    public User(String fullName, String emailAddress, String phoneNumber, int num) {
         parseFullName(fullName);
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
+        //testing
+        this.performance = num;
     }
 
     public User() {}
@@ -32,6 +38,9 @@ public class User implements Model, Observable, Indexable {
     public UUID getId() {
         return userID;
     }
+
+    //testing
+    public int getPerformance () { return performance; }
 
     @Override
     public String getName() {
