@@ -20,7 +20,6 @@ import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
-import com.uniques.ourhouse.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,14 +58,6 @@ public class PerformanceCtrl implements FragmentCtrl {
             }
         });
 
-        //testing
-        int test = 0;
-
-        User ben = new User("ben", "a", "1", 5);
-        User seb = new User("seb", "b", "2", 6);
-        User jon = new User("jon", "c", "3", 2);
-
-
         pieChart = (PieChart) view.findViewById(R.id.idPieChart);
         pieChart.setUsePercentValues(true);
 
@@ -98,16 +89,9 @@ public class PerformanceCtrl implements FragmentCtrl {
         //for (int i=0; i<database size; i++)
         //don't forget to floor/ceiling number in database#
         //entries.add(new BarEntry(i, database#[i], databasename[i]));
-        test += seb.getPerformance();
-        test += seb.getPerformance();
-
-
-        entries.add(new BarEntry(0, 50, "Name 1"));
-        entries.add(new BarEntry(1, 20, "Name 2"));
-        entries.add(new BarEntry(2, 100, "Name 3"));
-        entries.add(new BarEntry(3, 44, "Name 4"));
-        entries.add(new BarEntry(4, 56, "Name 5"));
-        entries.add(new BarEntry(5, 20, ben.getFirstName()));
+        entries.add(new BarEntry(0, 57, "Name 1"));
+        entries.add(new BarEntry(1, 0, "Name 2"));
+        entries.add(new BarEntry(2, 42, "Name 3"));
 
         BarDataSet bardataset = new BarDataSet(entries, "label");
         bardataset.setDrawValues(false);
