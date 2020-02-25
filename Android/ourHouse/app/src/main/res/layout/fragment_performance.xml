@@ -63,27 +63,25 @@
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/idPieChart"
-        android:layout_width="167dp"
-        android:layout_height="172dp"
+        android:layout_width="199dp"
+        android:layout_height="205dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.118"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.296">
-    </com.github.mikephil.charting.charts.PieChart>
+        app:layout_constraintVertical_bias="0.376"></com.github.mikephil.charting.charts.PieChart>
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/idBarChart"
-        android:layout_width="167dp"
-        android:layout_height="172dp"
+        android:layout_width="199dp"
+        android:layout_height="205dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.299">
-    </com.github.mikephil.charting.charts.BarChart>
+        app:layout_constraintVertical_bias="0.376"></com.github.mikephil.charting.charts.BarChart>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
