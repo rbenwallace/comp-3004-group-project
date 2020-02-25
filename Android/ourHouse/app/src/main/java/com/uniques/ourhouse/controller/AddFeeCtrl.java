@@ -78,20 +78,22 @@ public class AddFeeCtrl implements FragmentCtrl {
                 String name = String.valueOf(feeName.getText());
                 float amount = Float.parseFloat(String.valueOf(feeAmount.getText()));
                 Schedule schedule = new Schedule();
-                Schedule.pauseStartEndBoundsChecking();
-                schedule.setStart(Calendar.getInstance().getTime());
-                schedule.setEnd(Calendar.getInstance().getTime());
-                Schedule.resumeStartEndBoundsChecking();
                 if(selectedFrequencyText.equals("Once")){
                     schedule.setEndType(Schedule.EndType.ON_DATE);
+                    Schedule.pauseStartEndBoundsChecking();
+                    schedule.setStart(Calendar.getInstance().getTime());
+                    schedule.setEnd(Calendar.getInstance().getTime());
+                    Schedule.resumeStartEndBoundsChecking();
                 }
                 else{
                     schedule.setEndType(Schedule.EndType.AFTER_TIMES);
+                    Schedule.pauseStartEndBoundsChecking();
+                    schedule.setStart(Calendar.getInstance().getTime());
+                    schedule.setEndPseudoIndefinite();
+                    Schedule.resumeStartEndBoundsChecking();
                     if(selectedFrequencyText.equals("Other")){
-                        //TODO Implement when user wants custom frequency
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                         schedule.getRepeatSchedule().setDelay(Integer.valueOf(String.valueOf(otherFeeFrequency.getText())));
-
                     }
                     else if(selectedFrequencyText.equals("Yearly")){
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
@@ -107,7 +109,7 @@ public class AddFeeCtrl implements FragmentCtrl {
                     }
                 }
                 Fee fee = new Fee(name, amount, schedule);
-                System.out.println(fee.consoleFormat("Wallace"));
+                Log.d(AddFeeFragment.TAG, fee.consoleFormat("FEE ADDED: "));
                 Toast.makeText(activity, "Fee Added", Toast.LENGTH_SHORT).show();
                 activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
             }

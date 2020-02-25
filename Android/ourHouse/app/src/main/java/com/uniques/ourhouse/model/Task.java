@@ -7,7 +7,6 @@ import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class Task extends ManageItem implements Model, Indexable, Observable {
@@ -25,7 +24,7 @@ public class Task extends ManageItem implements Model, Indexable, Observable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "] , Difficulty:" + difficulty + ", Due Date: " + schedule.getEnd().toString() + ", Date Created: " + schedule.getStart().toString();
+        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "] , Difficulty:" + difficulty + ", First Time Task is Due: " + schedule.getStart().toString();
     }
 
     @Override

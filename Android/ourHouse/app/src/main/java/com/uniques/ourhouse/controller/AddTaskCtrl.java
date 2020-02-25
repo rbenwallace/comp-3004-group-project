@@ -77,20 +77,22 @@ public class AddTaskCtrl implements FragmentCtrl {
                     selectedDifficultyNum = 3;
                 }
                 Schedule schedule = new Schedule();
-                Schedule.pauseStartEndBoundsChecking();
-                schedule.setStart(Calendar.getInstance().getTime());
-                schedule.setEnd(date);
-                Schedule.resumeStartEndBoundsChecking();
                 if(selectedFrequencyText.equals("Once")){
                     schedule.setEndType(Schedule.EndType.ON_DATE);
+                    Schedule.pauseStartEndBoundsChecking();
+                    schedule.setStart(date);
+                    schedule.setEnd(date);
+                    Schedule.resumeStartEndBoundsChecking();
                 }
                 else{
                     schedule.setEndType(Schedule.EndType.AFTER_TIMES);
+                    Schedule.pauseStartEndBoundsChecking();
+                    schedule.setStart(date);
+                    schedule.setEndPseudoIndefinite();
+                    Schedule.resumeStartEndBoundsChecking();
                     if(selectedFrequencyText.equals("Other")){
-                        //TODO properly Implement when user wants custom frequency
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                         schedule.getRepeatSchedule().setDelay(Integer.valueOf(String.valueOf(otherTaskFrequency.getText())));
-
                     }
                     else if(selectedFrequencyText.equals("Yearly")){
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
@@ -106,7 +108,7 @@ public class AddTaskCtrl implements FragmentCtrl {
                     }
                 }
                 Task task = new Task(name, schedule, selectedDifficultyNum);
-                System.out.println(task.consoleFormat("Wallace"));
+                Log.d(AddTaskFragment.TAG, task.consoleFormat("TASK ADDED: "));
                 Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();
                 activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
             }
