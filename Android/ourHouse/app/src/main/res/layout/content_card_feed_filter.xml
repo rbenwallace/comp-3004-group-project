@@ -70,23 +70,27 @@
             android:orientation="vertical">
 
             <Button
+                android:id="@+id/feed_filter_btnAssignedToMe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:background="@color/colorPrimary"
                 android:padding="10dp"
                 android:text="Assigned To Me"
+                android:textAlignment="textStart"
                 android:textColor="@color/colorTextInverse"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/feed_filter_btnAssignedToPerson"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:background="@color/colorPrimary"
                 android:padding="10dp"
                 android:text="Assigned To: &lt;Person&gt;"
+                android:textAlignment="textStart"
                 android:textColor="@color/colorTextInverse"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -99,19 +103,19 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/feed_filter_btnShowLate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
-                android:background="@color/colorInverse"
                 android:padding="10dp"
                 android:text="Show Late"
                 android:textColor="@color/colorTextPrimary"
                 android:textSize="16sp" />
 
             <Button
+                android:id="@+id/feed_filter_btnShowOnTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorInverse"
                 android:padding="10dp"
                 android:text="Show On-Time"
                 android:textColor="@color/colorTextPrimary"

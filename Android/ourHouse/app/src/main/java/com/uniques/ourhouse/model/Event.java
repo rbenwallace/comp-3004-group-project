@@ -23,9 +23,11 @@ public class Event implements Model, Observable, Indexable {
 
     public static Event[] testEvents() {
         long now = new Date().getTime();
+        Event r = new Event("Recycling Bin Day", new Date(now), new User("Ben", "", ""));
+        r.setDateCompleted(new Date(now + 76543210));
         return new Event[]{
                 new Event("Dishes", new Date(now + 1000000), new User("Victor", "", "")),
-                new Event("Recycling Bin Day", new Date(now), new User("Ben", "", "")),
+                r,
                 new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""))};
     }
 
@@ -66,6 +68,14 @@ public class Event implements Model, Observable, Indexable {
 
     public Date getDateCompleted() {
         return dateCompleted;
+    }
+
+    public boolean isLate() {
+        return dateCompleted.after(dueDate);
+    }
+
+    public void setDateCompleted(Date dateCompleted) {
+        this.dateCompleted = dateCompleted;
     }
 
     @Override
