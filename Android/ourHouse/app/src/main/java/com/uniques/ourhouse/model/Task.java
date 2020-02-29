@@ -9,68 +9,47 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import java.util.UUID;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+public class Task extends ManageItem implements Model, Indexable, Observable {
+    private String type;
+    private int difficulty;
+    //private UUID manageItemOwner;
 
-public class Task implements Model, Indexable, Observable {
+    public Task(){}
 
-    private UUID taskId = UUID.randomUUID();
-    private String name;
-    private Schedule schedule;
-
-    @NonNull
-    @Override
-    public UUID getId() {
-        return taskId;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public int getCompareType() {
-        return COMPLEX;
-    }
-
-    @Override
-    public Comparable getCompareObject() {
-        return schedule;
+    public Task(String name, Schedule schedule, int difficulty) {
+        super(name, schedule);
+        this.type = "Task";
+        this.difficulty = difficulty;
     }
 
     @Override
     public String consoleFormat(String prefix) {
-        return "Task (" + taskId.toString() + ") [" + name + "]";
+        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "] , Difficulty:" + difficulty + ", First Time Task is Due: " + schedule.getStart().toString();
     }
 
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
-        json.putPrimitive("taskId", taskId.toString());
+        json.putPrimitive("manageItemId", manageItemId.toString());
         json.putPrimitive("name", name);
+        json.putPrimitive("type", type);
+        json.putPrimitive("difficulty", String.valueOf(difficulty));
         json.putElement("schedule", schedule.toJSON());
         return json.getRootNode();
     }
 
     @Override
     public Task fromJSON(JSONElement json) {
-        taskId = UUID.fromString(json.valueOf("taskId"));
+        manageItemId = UUID.fromString(json.valueOf("manageItemId"));
         name = json.valueOf("name");
+        type = json.valueOf("type");
+        difficulty = Integer.valueOf(json.valueOf("difficulty"));
         schedule = new Schedule().fromJSON(json.search("schedule"));
         return null;
     }
 
     @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj instanceof Task) {
-            return ((Task) obj).taskId.equals(taskId);
-        }
-        return false;
+    public String getType(){
+        return this.type;
     }
 }
