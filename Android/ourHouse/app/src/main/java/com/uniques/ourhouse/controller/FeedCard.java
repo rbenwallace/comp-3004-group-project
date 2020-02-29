@@ -2,12 +2,15 @@ package com.uniques.ourhouse.controller;
 
 import android.annotation.SuppressLint;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.User;
+import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Comparable;
 import com.uniques.ourhouse.util.Observable;
 
@@ -32,8 +35,11 @@ public final class FeedCard implements RecyclerCard, Comparable {
         return object;
     }
 
+    private FeedCtrl controller;
     private FeedCardType cardType;
     private FeedCardObject object;
+    private boolean isExpanded;
+
     private FragmentActivity activity;
     private View smallView;
     private View largeView;
@@ -48,12 +54,16 @@ public final class FeedCard implements RecyclerCard, Comparable {
     private TextView largeTxtDueDate;
     private TextView largeTxtAssignedTo;
     private TextView largeTxtCompletedDate;
-    private boolean isExpanded;
+    private Button btnAssignedToMe;
+    private Button btnAssignedToPerson;
+    private Button btnShowLate;
+    private Button btnShowOnTime;
 
-    public FeedCard(FeedCardType cardType, FeedCardObject object, FragmentActivity activity) {
+    public FeedCard(FeedCardType cardType, FeedCardObject object, FeedCtrl controller) {
         this.cardType = cardType;
         this.object = object;
-        this.activity = activity;
+        this.controller = controller;
+        this.activity = controller.activity;
         isExpanded = false;
     }
 
@@ -64,6 +74,31 @@ public final class FeedCard implements RecyclerCard, Comparable {
             smallView = layout.findViewById(R.id.feed_filter_parent);
             closePanel = layout.findViewById(R.id.feed_filter_close);
             optionsPanel = layout.findViewById(R.id.feed_filter_options);
+            btnAssignedToMe = layout.findViewById(R.id.feed_filter_btnAssignedToMe);
+            btnAssignedToPerson = layout.findViewById(R.id.feed_filter_btnAssignedToPerson);
+            btnShowLate = layout.findViewById(R.id.feed_filter_btnShowLate);
+            btnShowOnTime = layout.findViewById(R.id.feed_filter_btnShowOnTime);
+
+            btnAssignedToMe.setOnClickListener(v -> {
+                User me = Session.getSession().getLoggedInUser();
+                if (controller.filterUser == me) {
+                    controller.filterUser = null;
+                } else {
+                    controller.filterUser = me;
+                }
+                controller.updateInfoAndReopenFilter();
+            });
+            btnAssignedToPerson.setOnClickListener(v -> {
+
+            });
+            btnShowLate.setOnClickListener(v -> {
+                Settings.FEED_SHOW_LATE.set(!Settings.FEED_SHOW_LATE.<Boolean>get());
+                controller.updateInfoAndReopenFilter();
+            });
+            btnShowOnTime.setOnClickListener(v -> {
+                Settings.FEED_SHOW_ON_TIME.set(!Settings.FEED_SHOW_ON_TIME.<Boolean>get());
+                controller.updateInfoAndReopenFilter();
+            });
         }
         if (cardType == FeedCardType.DATE) {
             txtDate = layout.findViewById(R.id.feed_txtDateMarker);
@@ -93,6 +128,24 @@ public final class FeedCard implements RecyclerCard, Comparable {
 //                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 closePanel.setVisibility(View.VISIBLE);
                 optionsPanel.setVisibility(View.VISIBLE);
+
+                boolean assignedToMe = controller.filterUser == Session.getSession().getLoggedInUser();
+                boolean assignedToPerson = !assignedToMe && controller.filterUser == null;
+
+                btnAssignedToMe.setBackgroundColor(activity.getColor(
+                        assignedToMe ? R.color.colorPrimary : R.color.colorInverse));
+                btnAssignedToMe.setTextColor(activity.getColor(
+                        assignedToMe ? R.color.colorInverse : R.color.colorTextPrimary));
+
+                btnAssignedToMe.setBackgroundColor(activity.getColor(
+                        assignedToPerson ? R.color.colorInverse : R.color.colorPrimary));
+                btnAssignedToMe.setTextColor(activity.getColor(
+                        assignedToPerson ? R.color.colorTextPrimary : R.color.colorInverse));
+
+                btnShowLate.setBackgroundColor(activity.getColor(
+                        Settings.FEED_SHOW_LATE.get() ? R.color.colorPrimaryLight : R.color.colorInverse));
+                btnShowOnTime.setBackgroundColor(activity.getColor(
+                        Settings.FEED_SHOW_ON_TIME.get() ? R.color.colorPrimaryLight : R.color.colorInverse));
             } else {
 //                smallView.setLayoutParams(new LinearLayout.LayoutParams(
 //                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -145,6 +198,10 @@ public final class FeedCard implements RecyclerCard, Comparable {
     @Override
     public boolean equals(@Nullable Object obj) {
         return obj instanceof FeedCard && ((FeedCard) obj).object.equals(object);
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 
     private void handleClick() {
