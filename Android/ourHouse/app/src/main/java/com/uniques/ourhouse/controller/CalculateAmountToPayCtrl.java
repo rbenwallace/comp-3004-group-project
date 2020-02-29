@@ -27,7 +27,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     }
 
     public void init(View view) {
-        ImageButton hamburgermenu;
+        ImageButton hamburgerMenu;
 
         Button leftButton = (Button) view.findViewById(R.id.left_button);
         Button rightButton = (Button) view.findViewById(R.id.right_button);
@@ -52,8 +52,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             }
         });
 
-        hamburgermenu = (ImageButton) view.findViewById(R.id.HamburgerMenu);
-        hamburgermenu.setOnClickListener(new View.OnClickListener() {
+        hamburgerMenu = (ImageButton) view.findViewById(R.id.HamburgerMenu);
+        hamburgerMenu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Toast.makeText(activity, "Year", Toast.LENGTH_LONG).show();
                 LayoutInflater inflater = (LayoutInflater)
@@ -66,7 +66,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
                 final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
                 // show the popup window
                 // which view you pass in doesn't matter, it is only used for the window tolken
-                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                popupWindow.showAtLocation(view, Gravity.LEFT, 10, 0);
                 // dismiss the popup window when touched
             }
         });
