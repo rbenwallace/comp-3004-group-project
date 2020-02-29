@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchUser;
-import com.uniques.ourhouse.session.Session;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,9 +39,6 @@ public class Splash extends AppCompatActivity {
 
     private static void delayStart(AppCompatActivity activity, Class destinationClass, boolean signedIn) {
         new Handler().postDelayed(() -> {
-            if (Session.getSession() == null) {
-                Session.newSession(activity);
-            }
             Intent intent = new Intent(activity, destinationClass).putExtra("loading:connected", signedIn);
             activity.startActivity(intent);
             activity.finish();

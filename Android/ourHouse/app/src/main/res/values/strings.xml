@@ -41,8 +41,6 @@
     <string name="switch_house">Switch House</string>
     <string name="delete_house">Delete House</string>
     <string name="logout">Logout</string>
-    <string name="tax">Apply Tax</string>
-    <string name="tax_rate">Tax %</string>
     <string name="task_num_days">Number of Days</string>
     <string name="task_num_dayds">Number of Days</string>
     <string name="appbar_scrolling_view_behavior">Number of Days</string>

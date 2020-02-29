@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_blue">
 
     <LinearLayout
@@ -28,8 +27,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableLeft="@drawable/description"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical"
+            android:drawablePadding="8dp"
+            android:gravity="center"
             android:padding="5dp"
             android:text="@string/task_details"
             android:textColor="@color/black"
@@ -49,15 +48,14 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/date"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical"
+            android:drawablePadding="8dp"
+            android:gravity="center"
             android:padding="5dp"
             android:text="@string/task_deadline"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
         <DatePicker
-            android:id="@+id/addTask_datePicked"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -71,8 +69,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/rotation"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical"
+            android:drawablePadding="8dp"
+            android:gravity="center"
             android:padding="5dp"
             android:text="@string/task_frequency"
             android:textColor="@color/black"
@@ -82,11 +80,9 @@
             android:id="@+id/addTask_radioFrequency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checkedButton="@+id/addTask_once"
             android:layout_marginTop="8dp">
 
             <RadioButton
-                android:id="@+id/addTask_once"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Once"
@@ -94,47 +90,30 @@
                 tools:layout_editor_absoluteY="363dp" />
 
             <RadioButton
-                android:id="@+id/addTask_daily"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Daily"
-                tools:layout_editor_absoluteX="56dp"
-                tools:layout_editor_absoluteY="363dp" />
-
-            <RadioButton
-                android:id="@+id/addTask_weekly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Weekly"
                 tools:layout_editor_absoluteX="56dp"
                 tools:layout_editor_absoluteY="318dp" />
 
             <RadioButton
-                android:id="@+id/addTask_monthly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Monthly"
                 tools:layout_editor_absoluteX="56dp"
                 tools:layout_editor_absoluteY="318dp" />
 
             <RadioButton
-                android:id="@+id/addTask_yearly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Yearly"
-                tools:layout_editor_absoluteX="56dp"
-                tools:layout_editor_absoluteY="318dp" />
-
-            <RadioButton
-                android:id="@+id/addTask_other"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Other"
                 tools:layout_editor_absoluteX="56dp"
                 tools:layout_editor_absoluteY="318dp" />
 
             <EditText
-                android:id="@+id/addTask_editNumberOfDays"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -150,8 +129,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/difficulty"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical"
+            android:drawablePadding="8dp"
+            android:gravity="center"
             android:padding="5dp"
             android:text="@string/task_difficulty"
             android:textColor="@color/black"
@@ -161,25 +140,23 @@
             android:id="@+id/addTask_radioDifficulty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checkedButton="@+id/addTask_easy"
             android:layout_marginTop="8dp">
 
             <RadioButton
-                android:id="@+id/addTask_easy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Easy" />
 
             <RadioButton
-                android:id="@+id/addTask_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Medium" />
 
             <RadioButton
-                android:id="@+id/addTask_hard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Hard" />
 
         </RadioGroup>
@@ -188,21 +165,9 @@
             android:id="@+id/addTask_btnAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:background="@drawable/loginbutton_selector"
-            android:text="@string/add" />
-
-        <Button
-            android:id="@+id/addTask_btnBack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
             android:layout_marginBottom="36dp"
             android:background="@drawable/loginbutton_selector"
-            android:text="@string/back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:text="@string/add" />
 
     </LinearLayout>
 </ScrollView>

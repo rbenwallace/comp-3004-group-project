@@ -9,29 +9,51 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import java.util.UUID;
 
-public class Fee extends ManageItem implements Model, Indexable, Observable {
+import androidx.annotation.NonNull;
+
+public class Fee implements Model, Indexable, Observable {
+
+    private UUID feeId = UUID.randomUUID();
+    private String name;
     private float amount;
-    private String type;
+    private Schedule schedule;
 
-    public Fee(){}
+    @NonNull
+    @Override
+    public UUID getId() {
+        return feeId;
+    }
 
-    public Fee(String name, float amount, Schedule schedule){
-        super(name, schedule);
-        this.amount = amount;
-        this.type = "Fee";
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int getCompareType() {
+        return STRING;
+    }
+
+    @Override
+    public Comparable getCompareObject() {
+        return name;
     }
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), name: [" + name + "]   " + ", Amount: " + amount + ", Date Created: " + schedule.getStart().toString();
+        return "Fee (" + feeId.toString() + ") [" + name + "]";
     }
 
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
-        json.putPrimitive("feeId", manageItemId.toString());
+        json.putPrimitive("feeId", feeId.toString());
         json.putPrimitive("name", name);
-        json.putPrimitive("type", type);
         json.putPrimitive("amount", String.valueOf(amount));
         json.putElement("schedule", schedule.toJSON());
         return json.getRootNode();
@@ -39,16 +61,10 @@ public class Fee extends ManageItem implements Model, Indexable, Observable {
 
     @Override
     public Fee fromJSON(JSONElement json) {
-        manageItemId = UUID.fromString(json.valueOf("feeId"));
+        feeId = UUID.fromString(json.valueOf("feeId"));
         name = json.valueOf("name");
-        type = json.valueOf("type");
         amount = Float.valueOf(json.valueOf("amount"));
         schedule = new Schedule().fromJSON(json.search("schedule"));
         return this;
-    }
-
-    @Override
-    public String getType(){
-        return this.type;
     }
 }

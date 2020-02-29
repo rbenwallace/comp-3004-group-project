@@ -67,7 +67,7 @@ public class Schedule implements Comparable, Model {
     private EndType endType;
     private Repeat repeatBetterSchedule;
     private List<ChangeListener> listeners = new ArrayList<>();
-    private static boolean pauseStartEndChecking, pendingStartEndChange;
+    private boolean pauseStartEndChecking, pendingStartEndChange;
 
     public Schedule() {
         this.start = new Date();
@@ -90,7 +90,7 @@ public class Schedule implements Comparable, Model {
      * <br/>
      * Don't forget to call {@link #resumeStartEndBoundsChecking()} when you're done.
      */
-    public static void pauseStartEndBoundsChecking() {
+    void pauseStartEndBoundsChecking() {
         pauseStartEndChecking = true;
         pendingStartEndChange = false;
     }
@@ -99,7 +99,7 @@ public class Schedule implements Comparable, Model {
      * Resumes bounds checking on start and end Dates. <b>This method MUST be called after calling</b>
      * {@link #pauseStartEndBoundsChecking()}
      */
-    public static void resumeStartEndBoundsChecking() {
+    void resumeStartEndBoundsChecking() {
         pauseStartEndChecking = false;
         pendingStartEndChange = false;
     }
