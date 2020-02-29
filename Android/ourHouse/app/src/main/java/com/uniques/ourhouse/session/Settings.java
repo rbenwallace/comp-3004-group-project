@@ -18,7 +18,32 @@ public enum Settings {
         }
 
         @Override
-        void setToDefault() {
+        UUID getDefault() {
+            return null;
+        }
+    }),
+
+    FEED_SHOW_LATE(new DefaultHandler<Boolean>() {
+        @Override
+        String getKey() {
+            return "feed.showLate";
+        }
+
+        @Override
+        Boolean getDefault() {
+            return true;
+        }
+    }),
+
+    FEED_SHOW_ON_TIME(new DefaultHandler<Boolean>() {
+        @Override
+        String getKey() {
+            return "feed.showOnTime";
+        }
+
+        @Override
+        Boolean getDefault() {
+            return true;
         }
     });
 
@@ -79,11 +104,11 @@ public enum Settings {
             if (parent.elementExists(getKey())) {
                 read(parent);
             } else {
-                setToDefault();
+                obj = getDefault();
             }
         }
 
-        abstract void setToDefault();
+        abstract T getDefault();
 
         protected abstract void read(JSONElement parent);
 
