@@ -54,7 +54,7 @@ public class SettingsFragment extends Fragment<SettingsCtrl> {
         personRecycler.setAdapter(adapter);
         controller.setRecyclerAdapter(adapter);
 
-        controller.updateInfo();
+        //controller.updateInfo();
     }
 
     @Override
