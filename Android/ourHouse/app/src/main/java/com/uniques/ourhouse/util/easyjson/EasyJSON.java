@@ -46,7 +46,6 @@ import androidx.annotation.NonNull;
  * <p>
  * Initial commit by Victor Olaitan on 09/03/2017.
  */
-@SuppressWarnings("unused")
 public class EasyJSON {
     /**
      * @return an empty EasyJSON instance
@@ -75,7 +74,7 @@ public class EasyJSON {
      * @throws EasyJSONException if the file's JSON structure is incompatible with EasyJSON.
      */
     public static EasyJSON open(File file) throws EasyJSONException {
-        return privateOpen(file.getAbsolutePath());
+        return new EasyJSON(file.getAbsolutePath());
     }
 
     /**
@@ -86,44 +85,9 @@ public class EasyJSON {
      * @throws EasyJSONException if the file's JSON structure is incompatible with EasyJSON.
      */
     public static EasyJSON open(String filePath) throws EasyJSONException {
-        return privateOpen(filePath);
+        return new EasyJSON(filePath);
     }
 
-    /**
-     * Attempts to parse the specified JSON-string into an EasyJSON structure.
-     *
-     * @param jsonAsText the JSON content stringified to text
-     * @return The parsed EasyJSON structure
-     * @throws EasyJSONException if the JSON structure is incompatible with EasyJSON.
-     */
-    public static EasyJSON parse(String jsonAsText) throws EasyJSONException {
-        EasyJSON json = new EasyJSON();
-        try {
-            json.init((JSONObject) (new JSONParser()).parse(jsonAsText));
-        } catch (ParseException e) {
-            throw new EasyJSONException(EasyJSONException.FILE_NOT_JSON, e);
-        }
-        return json;
-    }
-
-    private static EasyJSON privateOpen(String filePath) throws EasyJSONException {
-        EasyJSON json = new EasyJSON();
-        try {
-            if (!filePath.equals("")) {
-                json.init((JSONObject) (new JSONParser()).parse(new FileReader(filePath)));
-                json.filePath = filePath;
-            } else {
-                throw new UnexpectedTokenException("The file path specified is invalid.");
-            }
-        } catch (ParseException e) {
-            throw new EasyJSONException(EasyJSONException.FILE_NOT_JSON, e);
-        } catch (IOException e) {
-            throw new EasyJSONException(EasyJSONException.LOAD_ERROR, e);
-        }
-        return json;
-    }
-
-    @NonNull
     private JSONElement rootNode;
     private String filePath;
 
@@ -143,21 +107,35 @@ public class EasyJSON {
         rootNode = new JSONElement(this, null, JSONElementType.ROOT, null, null);
     }
 
-    private void init(JSONObject obj) throws EasyJSONException {
-        for (Object key : obj.keySet()) {
-            if (!(key instanceof String)) {
-                throw new UnexpectedTokenException("EasyJSON can't handle non-string keys.");
+    private EasyJSON(String filePath) throws EasyJSONException {
+        rootNode = new JSONElement(this, null, JSONElementType.ROOT, null, null);
+        try {
+            if (!filePath.equals("")) {
+                JSONObject obj;
+                obj = (JSONObject) (new JSONParser()).parse(new FileReader(filePath));
+                for (Object key : obj.keySet()) {
+                    if (!(key instanceof String)) {
+                        throw new UnexpectedTokenException("EasyJSON can't handle non-string keys.");
+                    }
+                    Object value = obj.get(key);
+                    JSONElementType type = JSONElementType.PRIMITIVE;
+                    if (value instanceof JSONArray) {
+                        type = JSONElementType.ARRAY;
+                    } else if (value instanceof JSONObject) {
+                        type = JSONElementType.STRUCTURE;
+                    }
+                    JSONElement parentElement = new JSONElement(this, null, type, key.toString(), value);
+                    iterateElement(parentElement);
+                    rootNode.getChildren().add(parentElement);
+                }
+                this.filePath = filePath;
+            } else {
+                throw new UnexpectedTokenException("The file path specified is invalid.");
             }
-            Object value = obj.get(key);
-            JSONElementType type = JSONElementType.PRIMITIVE;
-            if (value instanceof JSONArray) {
-                type = JSONElementType.ARRAY;
-            } else if (value instanceof JSONObject) {
-                type = JSONElementType.STRUCTURE;
-            }
-            JSONElement parentElement = new JSONElement(this, null, type, key.toString(), value);
-            iterateElement(parentElement);
-            rootNode.getChildren().add(parentElement);
+        } catch (ParseException e) {
+            throw new EasyJSONException(EasyJSONException.FILE_NOT_JSON, e);
+        } catch (IOException e) {
+            throw new EasyJSONException(EasyJSONException.LOAD_ERROR, e);
         }
     }
 
