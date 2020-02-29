@@ -6,6 +6,8 @@ import android.widget.Button;
 
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
+import com.uniques.ourhouse.fragment.FragmentId;
+import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.ReadOnlyNameable;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard> {
     private FragmentActivity activity;
+    private RecyclerView personRecycler;
 
     public List<TaskRotationCard> observableCards;
     private RecyclerAdapter<TaskRotationCard> recyclerAdapter;
@@ -48,6 +51,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     @Override
     public void init(View view) {
         Log.d(SettingsFragment.TAG, "Add Fee Clicked");
+        RecyclerView personRecycler = view.findViewById(R.id.settings_recycler);
 
         Button btnLogout = view.findViewById(R.id.settings_btnLogout);
         Button btnSwitchHouse = view.findViewById(R.id.settings_btnDeleteHouse);
@@ -60,11 +64,37 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
         observableCards.add(new TaskRotationCard(new ObservableString("Seb")));
         observableCards.add(new TaskRotationCard(new ObservableString("Vic")));
         observableCards.add(new TaskRotationCard(new ObservableString("Jon")));
+
+        Button settingsBackButton = (Button) view.findViewById(R.id.settings_btnBackHouse);
+        Button settingsSaveButton = (Button) view.findViewById(R.id.settings_btnSaveHouse);
+
+        settingsBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(4);
+                activity.pushFragment(FragmentId.GET(ManageFragment.TAG));
+            }
+        });
+        settingsSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(4);
+                observableCards.add(new TaskRotationCard(new ObservableString("Test")));
+                updateInfo();
+            }
+        });
     }
 
     @Override
     public void updateInfo() {
-
+        /*RecyclerAdapter<TaskRotationCard> adapter = new RecyclerAdapter<>(
+                personRecycler,
+                observableCards,
+                R.layout.roommate_item);
+        personRecycler.setAdapter(adapter);
+        setRecyclerAdapter(adapter);*/
     }
 
     @Override

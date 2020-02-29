@@ -61,6 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/loginbutton_selector"
             android:drawableStart="@drawable/rotation"
             android:drawablePadding="8dp"
@@ -69,6 +70,11 @@
             android:text="@string/edit_task_rotation"
             android:textColor="@color/black"
             android:textSize="18sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/settings_recycler"
+            android:layout_width="407dp"
+            android:layout_height="184dp" />
 
         <CheckBox
             android:id="@+id/settings_chkShowLateTasks"
@@ -135,10 +141,13 @@
             android:background="@drawable/loginbutton_selector"
             android:text="@string/save" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/settings_recycler"
-            android:layout_width="407dp"
-            android:layout_height="184dp" />
+        <Button
+            android:id="@+id/settings_btnBackHouse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/loginbutton_selector"
+            android:text="@string/back" />
 
     </LinearLayout>
 
