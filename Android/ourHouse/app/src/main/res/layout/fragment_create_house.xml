@@ -10,40 +10,86 @@
         android:id="@+id/house"
         android:src="@drawable/house"/>
 
-    <EditText
-        android:id="@+id/houseName_create"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/house"
+    <RelativeLayout
+        android:layout_width="250dp"
+        android:id="@+id/houseR"
         android:layout_marginHorizontal="80dp"
-        android:layout_centerHorizontal="true"
+        android:layout_margin="0dp"
         android:gravity="center"
-        android:hint="@string/house_name"
-        android:textSize="20dp"
-        android:paddingHorizontal="20dp">
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/house"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/houseName_create"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:maxEms="1"
+            android:inputType="textPersonName"
+            android:gravity="center"
+            android:hint="@string/house_name"
+            android:textSize="20sp">
 
-    </EditText>
+        </EditText>
 
-    <EditText
-        android:id="@+id/addRoomate"
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/houseKey"
+        android:layout_alignBaseline="@+id/houseR"
+        android:layout_below="@+id/house"
+        android:textSize="14sp"
+        android:layout_toRightOf="@+id/houseR"
+        android:hint="#2343"
+        >
+    </TextView>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:hint="roommateEmail@email.com"
-        android:drawableStart="@drawable/add_friend"
-        android:drawablePadding="8dp"
-        android:textSize="16sp"
-        android:layout_marginTop="10dp"
-        android:textAlignment="gravity"
-        android:gravity="center_vertical"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/houseName_create"/>
+        android:id="@+id/roomateLayoutR"
+        android:layout_below="@+id/houseR"
+        android:gravity="center"
+        >
+        <EditText
+            android:id="@+id/addRoomate"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:hint="roommateEmail@email.com"
+            android:drawableStart="@drawable/add_friend"
+            android:inputType="textEmailAddress"
+            android:drawablePadding="8dp"
+            android:maxLength="100"
+            android:textSize="14sp"
+            android:layout_marginTop="10dp"
+            android:textAlignment="gravity"
+            android:gravity="center_vertical" />
+        <Button
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sendRoomateEmail"
+            android:layout_toRightOf="@+id/addRoomate"
+            android:layout_alignBaseline="@+id/addRoomate"
+            android:text="Send"
+            android:layout_marginLeft="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/colorTextPrimary"
+            android:background="@drawable/loginbutton_selector"
+
+            >
+
+        </Button>
+
+    </RelativeLayout>
+
+
 
     <TextView
         android:id="@+id/myHouses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addRoomate"
+        android:layout_below="@id/roomateLayoutR"
         android:layout_marginTop="20dp"
         android:text="Added roommates"
         android:gravity="center"

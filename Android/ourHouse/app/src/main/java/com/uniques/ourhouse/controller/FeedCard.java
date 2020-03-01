@@ -2,7 +2,6 @@ package com.uniques.ourhouse.controller;
 
 import android.annotation.SuppressLint;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,8 +11,6 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.session.Session;
-import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Comparable;
 import com.uniques.ourhouse.util.Observable;
 
@@ -40,7 +37,6 @@ public final class FeedCard implements RecyclerCard, Comparable {
         return object;
     }
 
-    private FeedCtrl controller;
     private FeedCardType cardType;
     private FeedCardObject object;
     private FeedCardSpecialization specialization;
@@ -190,7 +186,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
                         isLate ? R.drawable.icons8_puzzled_80 : R.drawable.icons8_angel_80));
             } else {
                 largeTxtTitle.setText(object.getName());
-                largeTxtAssignedTo.setText(object.getPerson().getFullName());
+                largeTxtAssignedTo.setText(object.getPerson().getName());
                 largeTxtDueDate.setText(new SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
                         .format(object.getDueDate()));
                 if (object.getDateCompleted() != null) {

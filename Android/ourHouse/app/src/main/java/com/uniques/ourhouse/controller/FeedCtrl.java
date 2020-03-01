@@ -8,7 +8,6 @@ import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Comparable;
 import com.uniques.ourhouse.util.RecyclerCtrl;
 
@@ -23,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
-    FragmentActivity activity;
+    private FragmentActivity activity;
     private TextView txtPastEvents;
     private TextView txtUpcomingEvents;
     private boolean showingPastEvents;
@@ -57,11 +56,6 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         });
     }
 
-    void updateInfoAndReopenFilter() {
-        pendingReopenFilter = true;
-        updateInfo();
-    }
-
     @Override
     public void updateInfo() {
         txtPastEvents.setTextColor(activity.getColor(showingPastEvents ? R.color.colorTextPrimary : R.color.colorTextSecondary));
@@ -76,7 +70,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 
         List<FeedCard> feedCardList = new ArrayList<>();
 
-        FeedCard filterCard = new FeedCard(FeedCard.FeedCardType.FILTER, new FeedCard.FeedCardObject() {
+        feedCardList.add(new FeedCard(FeedCard.FeedCardType.FILTER, new FeedCard.FeedCardObject() {
             @Override
             public Date getDueDate() {
                 return null;
@@ -170,7 +164,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 if (occursSameField(date, now, Calendar.DAY_OF_YEAR, 0)) {
                     if (!doneToday) {
                         feedCardList.add(
-                                new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
+                                new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, activity));
                         doneToday = true;
                     }
                 } else if (occursSameField(date, now, Calendar.WEEK_OF_YEAR, 0)) {
@@ -178,21 +172,21 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                     if (occursSameField(date, now, Calendar.DAY_OF_YEAR, 1)) {
                         if (!doneDayDiff) {
                             feedCardList.add(
-                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
+                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, activity));
                             doneDayDiff = true;
                         }
                         // if date just occurs this week
                     } else {
                         if (!doneWeek) {
                             feedCardList.add(
-                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
+                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, activity));
                             doneWeek = true;
                         }
                     }
                 } else if (occursSameField(date, now, Calendar.WEEK_OF_YEAR, 1)) {
                     if (!doneWeekDiff) {
                         feedCardList.add(
-                                new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
+                                new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, activity));
                         doneWeekDiff = true;
                     }
                 } else {
@@ -201,7 +195,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                     int year = cal.get(Calendar.YEAR);
                     if (!doneMonths.contains(month + ":" + year)) {
                         feedCardList.add(
-                                new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
+                                new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, activity));
                         doneMonths.add(month + ":" + year);
                     }
                 }
@@ -251,7 +245,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 public boolean equals(@Nullable Object obj) {
                     return obj instanceof Event && obj.equals(event);
                 }
-            }, this));
+            }, activity));
         }
         if (showingPastEvents) {
             feedCardList.sort((o1, o2) -> -o1.compareTo(o2));
