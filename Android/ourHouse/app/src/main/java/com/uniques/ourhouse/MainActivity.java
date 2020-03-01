@@ -80,7 +80,7 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void pushFragment(FragmentId fragmentId, Object... args) {
-        Fragment fragment = null;
+        Fragment fragment;
         try {
             fragment = fragmentId.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {

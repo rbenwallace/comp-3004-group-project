@@ -115,7 +115,7 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + firstName + lastName + " num: " + phoneNumber;
+        return prefix + "name: (" + firstName + " " + lastName + "), num: (" + phoneNumber + ")";
     }
 
     public Document toBsonDocument() {
@@ -179,15 +179,9 @@ public class User implements Model, Observable, Indexable {
         return false;
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "User{" +
-                "userID=" + userID +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", emailAddress='" + emailAddress + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", performance=" + performance +
-                '}';
+        return consoleFormat("[User] ");
     }
 }

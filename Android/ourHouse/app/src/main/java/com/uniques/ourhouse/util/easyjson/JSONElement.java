@@ -4,9 +4,11 @@ import com.uniques.ourhouse.util.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 
+@SuppressWarnings("unused")
 public class JSONElement implements Iterable<JSONElement> {
     private EasyJSON easyJSONStructure;
     private JSONElement parent;
@@ -62,6 +64,10 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public JSONElement putElement(String key, JSONElement jsonElement) {
+        Object[] deconstructedKey = deconstructKey(key);
+        if (deconstructedKey[0] != this) {
+            return ((JSONElement) deconstructedKey[0]).putElement((String) deconstructedKey[1], jsonElement);
+        }
         switch (jsonElement.type) {
             case PRIMITIVE:
                 return putPrimitive(key, jsonElement);
@@ -76,6 +82,10 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public JSONElement putPrimitive(Object value) {
+        Object[] deconstructedKey = deconstructKey(key);
+        if (deconstructedKey[0] != this) {
+            return ((JSONElement) deconstructedKey[0]).putPrimitive((String) deconstructedKey[1], value);
+        }
         JSONElement element;
         if (value instanceof JSONElement) {
             element = (JSONElement) value;
@@ -89,21 +99,24 @@ public class JSONElement implements Iterable<JSONElement> {
 
     @NonNull
     public JSONElement putPrimitive(String key, Object value) {
+        Object[] deconstructedKey = deconstructKey(key);
+        if (deconstructedKey[0] != this) {
+            return ((JSONElement) deconstructedKey[0]).putPrimitive((String) deconstructedKey[1], value);
+        }
         JSONElement search = search(key);
         if (search == null) {
             JSONElement element;
             if (value instanceof JSONElement) {
                 element = (JSONElement) value;
-                element.easyJSONStructure = easyJSONStructure;
-                element.parent = this;
+                claimElement(element);
             } else {
                 element = new JSONElement(easyJSONStructure, this, JSONElementType.PRIMITIVE, key, value);
+                children.add(element);
             }
-            children.add(element);
             return element;
         } else {
             if (value instanceof JSONElement) {
-                search.merge((JSONElement) value);
+                search.overwriteWith((JSONElement) value);
             } else {
                 search.value = value;
             }
@@ -112,6 +125,10 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public JSONElement putStructure(String key) {
+        Object[] deconstructedKey = deconstructKey(key);
+        if (deconstructedKey[0] != this) {
+            ((JSONElement) deconstructedKey[0]).putStructure((String) deconstructedKey[1], items);
+        }
         JSONElement element = search(key);
         if (element == null) {
             element = new JSONElement(easyJSONStructure, this, JSONElementType.STRUCTURE, key, null);
@@ -123,12 +140,20 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public JSONElement putStructure(String key, EasyJSON easyJSON) {
+        Object[] deconstructedKey = deconstructKey(key);
+        if (deconstructedKey[0] != this) {
+            return ((JSONElement) deconstructedKey[0]).putStructure((String) deconstructedKey[1], easyJSON);
+        }
         easyJSON.getRootNode().easyJSONStructure = easyJSONStructure;
         easyJSON.getRootNode().parent = this;
         return putStructure(key, easyJSON.getRootNode());
     }
 
     public JSONElement putStructure(String key, JSONElement structure) {
+        Object[] deconstructedKey = deconstructKey(key);
+        if (deconstructedKey[0] != this) {
+            return ((JSONElement) deconstructedKey[0]).putStructure((String) deconstructedKey[1], structure);
+        }
         JSONElement searchResult = search(key);
         if (searchResult == null) {
             structure.type = JSONElementType.STRUCTURE;
@@ -136,11 +161,15 @@ public class JSONElement implements Iterable<JSONElement> {
             claimElement(structure);
             return structure;
         } else {
-            return searchResult.merge(structure);
+            return searchResult.overwriteWith(structure);
         }
     }
 
     public JSONElement putArray(String key, Object... items) {
+        Object[] deconstructedKey = deconstructKey(key);
+        if (deconstructedKey[0] != this) {
+            return ((JSONElement) deconstructedKey[0]).putArray((String) deconstructedKey[1], items);
+        }
         JSONElement search = search(key);
         if (search == null || search.type != JSONElementType.ARRAY) {
             JSONElement element = new JSONElement(easyJSONStructure, this, JSONElementType.ARRAY, key, null);
@@ -167,8 +196,54 @@ public class JSONElement implements Iterable<JSONElement> {
         }
     }
 
+    public void removeElement(String... location) {
+        JSONElement element = search(location);
+        if (element != null) {
+            element.getParent().children.remove(element);
+        }
+    }
+
     public boolean elementExists(String... location) {
         return search(location) != null;
+    }
+
+    /**
+     * Will deconstruct simple & complex location keys (e.g "a.b.c") to return both the
+     * suitable parent element and the final key that should be used to add the child element.
+     * <br/><br/>
+     * In the case of a simple key, the suitable parent is 'this' and the final key === key (param)
+     * <br/><br/>
+     * In the case of a complex key, the suitable parent will never be 'this' and the final key !== key (param)
+     * <br/><br/>
+     * Please be mindful of this when using this method.
+     * @param key simple/complex key you want to deconstruct
+     * @return Object[] {suitable_parent: JSONElement, final_key: String}
+     * @throws RuntimeException if any part (before/after '.') of a complex key has < 1 character
+     */
+    public Object[] deconstructKey(String key) {
+        JSONElement result = this;
+        String finalKey = key;
+        if (key.contains(Pattern.quote("."))) {
+            String[] parts = key.split(Pattern.quote("."));
+            for (int i = 0; i < parts.length; ++i) {
+                String part = parts[i];
+                if (i == parts.length - 1) {
+                    finalKey = part;
+                    break;
+                }
+                if (part.length() == 0) {
+                    throw new RuntimeException("EasyJSON: '" + key + "' is an invalid complex location key. "
+                            + "When using complex location keys (e.g 'a.b.c'), all parts before and after a '.' must contain >= 1 character!");
+                }
+                JSONElement innerSearch = result.search(part);
+                if (innerSearch == null) {
+                    result = result.putStructure(part);
+                } else {
+                    result = innerSearch;
+                }
+            }
+        }
+        return new Object[] {result, finalKey};
     }
 
     public JSONElement search(String... location) {
@@ -176,7 +251,7 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     private JSONElement deepSearch(JSONElement element, String[] location, int locPosition) {
-        for (int i = 0; locPosition < location.length && i < element.children.size(); i++) {
+        for (int i = 0; locPosition < location.length && i < element.children.size(); ++i) {
             JSONElement child = (JSONElement) element.children.get(i);
             if (child.key != null) {
                 if (child.key.equals(location[locPosition])) {
@@ -227,6 +302,7 @@ public class JSONElement implements Iterable<JSONElement> {
 
     /**
      * overwrites any existing elements with keys
+     *
      * @param jsonElement
      */
     public void combine(JSONElement jsonElement) {
@@ -237,6 +313,7 @@ public class JSONElement implements Iterable<JSONElement> {
 
     /**
      * may cause duplicate keys, use carefully!
+     *
      * @param jsonElement
      */
     private void claimElement(JSONElement jsonElement) {
@@ -245,7 +322,7 @@ public class JSONElement implements Iterable<JSONElement> {
         children.add(jsonElement);
     }
 
-    JSONElement merge(JSONElement newElement) {
+    JSONElement overwriteWith(JSONElement newElement) {
         type = newElement.type;
         children = newElement.children;
         value = newElement.value;

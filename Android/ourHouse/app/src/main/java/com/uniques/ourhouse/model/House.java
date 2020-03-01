@@ -53,6 +53,12 @@ public class House implements Model, Indexable, Observable {
     private boolean penalizeLateTasks;
     private MongoDB myDatabase = new MongoDB();
 
+    public House() {
+        name = "";
+        occupants = new User[0];
+        rotation = new Rotation();
+    }
+
     @NonNull
     @Override
     public ObjectId getId() {
@@ -206,6 +212,10 @@ public class House implements Model, Indexable, Observable {
 
         public void setRotation(ArrayList<User> rotation) {
             this.rotation = rotation;
+        }
+
+        private Rotation() {
+            rotation = new User[0];
         }
 
         @Override

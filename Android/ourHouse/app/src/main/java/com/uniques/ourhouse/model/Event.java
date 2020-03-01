@@ -26,7 +26,9 @@ public class Event implements Model, Observable, Indexable {
     private Date dateCompleted;
 
     public static Event[] testEvents() {
-        long now = new Date().getTime();
+        long now = new Date().getTime() - 80000000;
+        Event r = new Event("Recycling Bin Day", new Date(now), new User("Ben", "", ""));
+        r.setDateCompleted(new Date(now + 76543210));
         return new Event[]{
                 new Event("Dishes", new Date(now + 1000000), new User("Victor", "", "", 0)),
                 new Event("Recycling Bin Day", new Date(now), new User("Ben", "", "", 0)),

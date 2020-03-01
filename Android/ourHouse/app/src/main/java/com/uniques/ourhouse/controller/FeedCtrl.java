@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     private TextView txtPastEvents;
     private TextView txtUpcomingEvents;
     private boolean showingPastEvents;
+    private boolean pendingReopenFilter;
 
     public List<FeedCard> observableCards;
     private RecyclerAdapter<FeedCard> cardsAdapter;
@@ -101,14 +103,26 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 
             @Override
             public void setName(String name) {
-
             }
 
             @Override
             public int compareTo(@NonNull Object o) {
                 return -1;
             }
-        }, activity));
+
+            @Override
+            public Event getEvent() {
+                return null;
+            }
+
+            @Override
+            public boolean equals(@Nullable Object obj) {
+                return obj instanceof FeedCard.FeedCardObject && ((FeedCard.FeedCardObject) obj).getCompareType() == getCompareType();
+            }
+        }, this);
+        filterCard.setExpanded(pendingReopenFilter);
+        pendingReopenFilter = false;
+        feedCardList.add(filterCard);
 
         boolean doneToday = false;
         boolean doneDayDiff = false;
@@ -118,13 +132,33 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         Calendar cal = Calendar.getInstance();
         Date now = new Date();
 
+        UUID filterUser = Settings.FEED_FILTER_USER.get();
+
         Event[] eventArr = showingPastEvents ? Event.testEvents() : new Event[0];
         for (Event event : eventArr) {
+            if (filterUser != null && !filterUser.equals(event.getAssignedTo().getId())) {
+                continue;
+            }
+            if (event.isLate()) {
+                if (!Settings.FEED_SHOW_LATE.<Boolean>get())
+                    continue;
+            } else {
+                if (!Settings.FEED_SHOW_ON_TIME.<Boolean>get())
+                    continue;
+            }
             if (event.getCompareObject() instanceof Date) {
                 cal.setTime((Date) event.getCompareObject());
-                cal.set(Calendar.HOUR_OF_DAY, 0);
-                cal.set(Calendar.MINUTE, 0);
-                cal.set(Calendar.SECOND, 0);
+                if (showingPastEvents) {
+                    cal.set(Calendar.HOUR_OF_DAY, 23);
+                    cal.set(Calendar.MINUTE, 59);
+                    cal.set(Calendar.SECOND, 59);
+                    cal.set(Calendar.MILLISECOND, 999);
+                } else {
+                    cal.set(Calendar.HOUR_OF_DAY, 0);
+                    cal.set(Calendar.MINUTE, 0);
+                    cal.set(Calendar.SECOND, 0);
+                    cal.set(Calendar.MILLISECOND, 0);
+                }
                 Date date = cal.getTime();
                 // if date occurs today
                 if (occursSameField(date, now, Calendar.DAY_OF_YEAR, 0)) {
@@ -166,7 +200,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                     }
                 }
             }
-            feedCardList.add(new FeedCard(FeedCard.FeedCardType.EVENT, new FeedCard.FeedCardObject() {
+            feedCardList.add(new FeedCard(FeedCard.FeedCardType.BUBBLE, new FeedCard.FeedCardObject() {
                 @Override
                 public Date getDueDate() {
                     return event.getDueDate();
@@ -180,6 +214,11 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 @Override
                 public User getPerson() {
                     return event.getAssignedTo();
+                }
+
+                @Override
+                public Event getEvent() {
+                    return event;
                 }
 
                 @Override
@@ -208,7 +247,11 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 }
             }, activity));
         }
-        feedCardList.sort(Comparable::compareTo);
+        if (showingPastEvents) {
+            feedCardList.sort((o1, o2) -> -o1.compareTo(o2));
+        } else {
+            feedCardList.sort(Comparable::compareTo);
+        }
 //        Util.sortList(feedCardList, false);
 
         System.out.println("FEED CTRL " + observableCards.size() + " " + feedCardList.size());
@@ -360,6 +403,11 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 
         @Override
         default void setName(String name) {
+        }
+
+        @Override
+        default Event getEvent() {
+            return null;
         }
     }
 }

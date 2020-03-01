@@ -11,14 +11,51 @@ import java.util.UUID;
 
 public enum Settings {
 
-    OPEN_HOUSE(new DefaultHandler<UUID>() {
+    OPEN_HOUSE(new UUIDHandler() {
         @Override
         String getKey() {
             return "openHouse";
         }
 
         @Override
-        void setToDefault() {
+        UUID getDefault() {
+            return null;
+        }
+    }),
+
+    FEED_FILTER_USER(new UUIDHandler() {
+        @Override
+        String getKey() {
+            return "feed.filterUser";
+        }
+
+        @Override
+        UUID getDefault() {
+            return null;
+        }
+    }),
+
+    FEED_SHOW_LATE(new DefaultHandler<Boolean>() {
+        @Override
+        String getKey() {
+            return "feed.showLate";
+        }
+
+        @Override
+        Boolean getDefault() {
+            return true;
+        }
+    }),
+
+    FEED_SHOW_ON_TIME(new DefaultHandler<Boolean>() {
+        @Override
+        String getKey() {
+            return "feed.showOnTime";
+        }
+
+        @Override
+        Boolean getDefault() {
+            return true;
         }
     });
 
@@ -75,7 +112,7 @@ public enum Settings {
 
         abstract String getKey();
 
-        private void readWithDefault(JSONElement parent) {
+        void readWithDefault(JSONElement parent) {
             if (parent.elementExists(getKey())) {
                 read(parent);
             } else {
@@ -99,7 +136,25 @@ public enum Settings {
 
         @Override
         protected void write(JSONElement parent) {
-            parent.putPrimitive(getKey(), obj);
+            parent.putPrimitive(getKey(), obj.toString());
+        }
+    }
+
+    private static abstract class UUIDHandler extends Handler<UUID> {
+
+        @Override
+        protected void read(JSONElement parent) {
+            String uuidString = parent.valueOf(getKey());
+            obj = uuidString == null ? null : UUID.fromString(uuidString);
+        }
+
+        @Override
+        protected void write(JSONElement parent) {
+            if (obj == null) {
+                parent.removeElement(getKey());
+            } else {
+                parent.putPrimitive(getKey(), obj.toString());
+            }
         }
     }
 }

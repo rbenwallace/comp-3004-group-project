@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/feed_filter_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,6 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
@@ -29,6 +31,16 @@
             android:text="Filter"
             android:textColor="@color/colorTextPrimary"
             android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/feed_filter_txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="14sp"
+            tools:text="(Victor), show late, hide on-time" />
 
         <LinearLayout
             android:id="@+id/feed_filter_close"
@@ -74,22 +86,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:background="@color/colorPrimary"
+                android:elevation="0dp"
                 android:padding="10dp"
                 android:text="Assigned To Me"
                 android:textColor="@color/colorTextInverse"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="16sp" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:background="@color/colorPrimary"
+                android:elevation="0dp"
                 android:padding="10dp"
                 android:text="Assigned To: &lt;Person&gt;"
                 android:textColor="@color/colorTextInverse"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -102,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
-                android:background="@color/colorInverse"
+                android:elevation="0dp"
                 android:padding="10dp"
                 android:text="Show Late"
                 android:textColor="@color/colorTextPrimary"
@@ -111,7 +123,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorInverse"
+                android:elevation="0dp"
                 android:padding="10dp"
                 android:text="Show On-Time"
                 android:textColor="@color/colorTextPrimary"
