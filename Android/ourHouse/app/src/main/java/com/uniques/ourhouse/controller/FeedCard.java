@@ -120,7 +120,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
                 txtTitle.setText(object.getName());
                 txtDate.setText(new SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
                         .format(cardType == FeedCardType.EVENT && object.getDateCompleted() != null ? object.getDateCompleted() : object.getDueDate()));
-                txtName.setText(object.getPerson().getFirstName());
+                txtName.setText(object.getPerson().getName());
 
                 txtStatus.setText(isLate ? "Late" : "On Time");
                 txtStatus.setTextColor(activity.getColor(isLate ? R.color.feedCardLate : R.color.feedCardOnTime));
@@ -128,7 +128,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
                 imgFace.setImageDrawable(activity.getDrawable(isLate ? R.drawable.icons8_puzzled_80 : R.drawable.icons8_angel_80));
             } else {
                 largeTxtTitle.setText(object.getName());
-                largeTxtAssignedTo.setText(object.getPerson().getFullName());
+                largeTxtAssignedTo.setText(object.getPerson().getName());
                 largeTxtDueDate.setText(new SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
                         .format(object.getDueDate()));
                 if (object.getDateCompleted() != null) {

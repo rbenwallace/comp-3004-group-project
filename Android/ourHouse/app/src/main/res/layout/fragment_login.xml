@@ -12,6 +12,7 @@
         android:src="@drawable/house"
         >
     </ImageView>
+
     <ScrollView
         android:layout_width="match_parent"
         android:background="@color/colorPrimaryLight"
@@ -23,8 +24,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="20dp" >
-
-
 
             <LinearLayout
                 android:id="@+id/login_layout"
@@ -123,10 +122,14 @@
 
 
             </LinearLayout>
-
-
-
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:text="Verify your email">
+            </TextView>
 
         </RelativeLayout>
 

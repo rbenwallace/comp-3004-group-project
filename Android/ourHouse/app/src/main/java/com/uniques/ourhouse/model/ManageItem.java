@@ -10,9 +10,11 @@ import java.util.UUID;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.bson.types.ObjectId;
+
 public abstract class ManageItem implements Model, Indexable, Observable {
 
-    protected UUID manageItemId = UUID.randomUUID();
+    protected ObjectId manageItemId = new ObjectId();
     protected String name;
     //private UUID manageItemOwner;
     protected Schedule schedule;
@@ -26,7 +28,7 @@ public abstract class ManageItem implements Model, Indexable, Observable {
 
     @NonNull
     @Override
-    public UUID getId() {
+    public ObjectId getId() {
         return manageItemId;
     }
 
@@ -48,7 +50,7 @@ public abstract class ManageItem implements Model, Indexable, Observable {
     }
 
     @Override
-    public UUID getCompareObject() {
+    public ObjectId getCompareObject() {
         return manageItemId;
     }
 

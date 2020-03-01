@@ -10,7 +10,7 @@ public final class Session {
 
     public static boolean newSession(Context context) {
         baseSession = new Session();
-        baseSession.database = new LocalStore(context);
+//        baseSession.database = new LocalStore(context);
 //        baseSession.security = new LocalSecurity(context) {
 //            @Override
 //            DatabaseLink getDatabaseLink() {

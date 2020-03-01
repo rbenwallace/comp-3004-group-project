@@ -1,19 +1,25 @@
 package com.uniques.ourhouse.model;
 
+import android.util.Log;
+
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
+import com.google.gson.JsonObject;
 
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class User implements Model, Observable, Indexable {
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
-    private UUID userID = UUID.randomUUID();
+public class User implements Model, Observable, Indexable {
+    public static final String USER_COLLECTION = "Users";
+    private ObjectId userID;
     private String firstName;
     private String lastName;
     private String emailAddress;
@@ -23,19 +29,39 @@ public class User implements Model, Observable, Indexable {
     private int performance;
 
     //testing int num
-    public User(String fullName, String emailAddress, String phoneNumber, int num) {
-        parseFullName(fullName);
+    public User(ObjectId userID, String firstName, String lastName, String emailAddress, int num) {
+        this.userID = userID;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.phoneNumber = phoneNumber;
         //testing
         this.performance = num;
+    }
+
+    //testing int num
+    public User(String firstName, String lastName, String emailAddress, int num) {
+        this.userID = new ObjectId();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailAddress = emailAddress;
+        //testing
+        this.performance = num;
+    }
+
+    public User(String firstName, String lastName, String emailAddress) {
+        this.userID = new ObjectId();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailAddress = emailAddress;
+        //testing
+        this.performance = 0;
     }
 
     public User() {}
 
     @NonNull
     @Override
-    public UUID getId() {
+    public ObjectId getId() {
         return userID;
     }
 
@@ -44,11 +70,7 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public String getName() {
-        return getFullName();
-    }
-
-    public String getFullName() {
-        return (firstName + " " + lastName).trim();
+        return firstName+" "+lastName;
     }
 
     public String getEmailAddress() {
@@ -59,27 +81,6 @@ public class User implements Model, Observable, Indexable {
         this.emailAddress = emailAddress;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void parseFullName(String name) {
-        if (name.contains(",")) {
-            String[] parts = name.split(",");
-            firstName = parts[0].trim();
-            if (parts.length > 1) {
-                lastName = (parts[0] + parts[1]).trim();
-            } else {
-                lastName = "";
-            }
-        } else if (name.contains(" ")) {
-            firstName = name.substring(0, name.indexOf(' ')).trim();
-            lastName = name.substring(name.indexOf(' ') + 1).trim();
-        } else {
-            firstName = name;
-            lastName = "";
-        }
-    }
 
     @Override
     public int getCompareType() {
@@ -88,17 +89,54 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public Comparable getCompareObject() {
-        return getFullName();
+        return userID;
     }
 
     @Override
     public void setName(String name) {
-        parseFullName(name);
+
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Override
     public String consoleFormat(String prefix) {
         return prefix + firstName + lastName + " num: " + phoneNumber;
+    }
+
+    public Document toBsonDocument() {
+        final Document asDoc = new Document();
+        if(userID != null)
+            asDoc.put("_id", userID);
+        asDoc.put("firstName", firstName);
+        asDoc.put("lastName", lastName);
+        asDoc.put("email", emailAddress);
+        asDoc.put("performance", performance);
+        return asDoc;
+    }
+
+    public static User fromBsonDocument(final Document doc){
+        return new User(
+                (ObjectId) doc.get("_id"),
+                doc.getString("firstName"),
+                doc.getString("lastName"),
+                doc.getString("email"),
+                doc.getInteger("performance")
+        );
     }
 
     @Override
@@ -107,17 +145,30 @@ public class User implements Model, Observable, Indexable {
         json.putPrimitive("userId", userID.toString());
         json.putPrimitive("fname", firstName);
         json.putPrimitive("lname", lastName);
-        json.putPrimitive("phoneNumber", phoneNumber);
+        json.putPrimitive("email", emailAddress);
+        json.putPrimitive("performance", performance);
         return json.getRootNode();
     }
 
     @Override
     public User fromJSON(JSONElement json) {
-        userID = UUID.fromString(json.valueOf("userId"));
+        userID = (ObjectId) json.valueOf("userId");
         firstName = json.valueOf("fname");
         lastName = json.valueOf("lname");
-        phoneNumber = json.valueOf("phoneNumber");
+        emailAddress = json.valueOf("email");
+        performance = json.valueOf("performance");
         return this;
+    }
+
+    public static User fromJSON(JsonObject obj) {
+        JsonObject id = obj.get("_id").getAsJsonObject();
+        String myID = id.get("$oid").getAsString();
+        String firstName = obj.get("firstName").getAsString();
+        String lastName = obj.get("lastName").getAsString();
+        String myEmail = obj.get("email").getAsString();
+        Integer prefNum = obj.get("performance").getAsInt();
+        User i = new User(new ObjectId(myID), firstName, lastName, myEmail, prefNum);
+        return new User(new ObjectId(myID), firstName, lastName, myEmail, prefNum);
     }
 
     @Override
@@ -126,5 +177,17 @@ public class User implements Model, Observable, Indexable {
             return ((User) obj).userID.equals(userID);
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userID=" + userID +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", performance=" + performance +
+                '}';
     }
 }
