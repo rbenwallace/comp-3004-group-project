@@ -9,13 +9,17 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class Event implements Model, Observable, Indexable {
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
-    private UUID eventId = UUID.randomUUID();
+    public static final String EVENT_COLLECTION = "Events";
+    private ObjectId eventId;
     private String title;
     private User assignedTo;
     private Date dueDate;
@@ -31,7 +35,19 @@ public class Event implements Model, Observable, Indexable {
                 new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""))};
     }
 
-    public Event() {
+    public Event(ObjectId eventId, String title, User assignedTo, Date dueDate, Date dateCompleted) {
+        this.eventId = eventId;
+        this.title = title;
+        this.assignedTo = assignedTo;
+        this.dueDate = dueDate;
+        this.dateCompleted = dateCompleted;
+    }
+    public Event(String title, User assignedTo, Date dueDate, Date dateCompleted) {
+        this.eventId = new ObjectId();
+        this.title = title;
+        this.assignedTo = assignedTo;
+        this.dueDate = dueDate;
+        this.dateCompleted = dateCompleted;
     }
 
     public Event(String title, Date dueDate, User assignedTo) {
@@ -42,9 +58,12 @@ public class Event implements Model, Observable, Indexable {
         dateCompleted = new Date(dueDate.getTime());
     }
 
+    public Event() {
+    }
+
     @NonNull
     @Override
-    public UUID getId() {
+    public ObjectId getId() {
         return eventId;
     }
 
@@ -92,6 +111,28 @@ public class Event implements Model, Observable, Indexable {
         return title + ": " + assignedTo;
     }
 
+    public Document toBsonDocument() {
+        final Document asDoc = new Document();
+        if(eventId != null)
+            asDoc.put("_id", eventId);
+        asDoc.put("title", title);
+        asDoc.put("assignedTo", assignedTo.toBsonDocument());
+        asDoc.put("dueDate", dueDate);
+        asDoc.put("dateCompleted", dateCompleted);
+        return asDoc;
+    }
+
+    public static Event fromBsonDocument(final Document doc){
+        User assignedTo = User.fromBsonDocument((Document) doc.get("assignedTo"));
+        return new Event(
+                (ObjectId) doc.get("_id"),
+                doc.getString("title"),
+                assignedTo,
+                doc.getDate("dueDate"),
+                doc.getDate("dateCompleted")
+        );
+    }
+
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
@@ -105,9 +146,12 @@ public class Event implements Model, Observable, Indexable {
 
     @Override
     public Event fromJSON(JSONElement json) {
-        eventId = UUID.fromString(json.valueOf("eventId"));
+        Consumer<User> consumer = returnedObject -> {
+            assignedTo = returnedObject;
+        };
+        eventId = (ObjectId) json.valueOf("eventId");
         title = json.valueOf("title");
-        assignedTo = Session.getSession().getDatabase().getUser(UUID.fromString(json.valueOf("assignedTo")));
+        Session.getSession().getDatabase().getUser((ObjectId) json.valueOf("assignedTo"), consumer);
         dueDate = new Date((long) json.valueOf("dueDate"));
         dateCompleted = new Date((long) json.valueOf("dateCompleted"));
         return this;
