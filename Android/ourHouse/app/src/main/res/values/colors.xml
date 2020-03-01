@@ -14,8 +14,8 @@
     <color name="colorTextPrimary">#212121</color>
     <color name="colorTextSecondary">#757575</color>
     <color name="colorTextInverse">#FFFFFF</color>
-    <color name="colorTextMuted">#BDBDBD</color>
-
+    <color name="colorTextMuted">#BDBDBD</color>ffcccb
+    <color name="red">#ff0000</color>
     <color name="feedCardOnTime">#4caf50</color>
     <color name="feedCardLate">#F44336</color>
 </resources>

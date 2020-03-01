@@ -25,6 +25,7 @@ public final class Session {
 //                return false;
 //            }
 //        };
+
         Settings.init(context);
         return true;
     }

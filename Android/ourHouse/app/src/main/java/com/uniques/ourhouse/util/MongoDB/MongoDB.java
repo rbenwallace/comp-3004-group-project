@@ -9,8 +9,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
@@ -29,8 +31,11 @@ import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.DatabaseLink;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -84,7 +89,6 @@ public class MongoDB implements DatabaseLink {
         Log.d("brownpeopleshit", "Bottom");
         return query;
     }
-
     public Document getCurrentUserCustomData() {
         Log.d("whitepeopleshit", "OKOK");
         if(client.getAuth().getUser().getCustomData() != null){
@@ -93,7 +97,46 @@ public class MongoDB implements DatabaseLink {
         }
         return null;
     }
-    //Get current user's User Object through shared preferences
+
+    public ArrayList<House> getLocalHouseArray(FragmentActivity activity){
+        try {
+            SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString("myHousesList", null);
+            Type type = new TypeToken<ArrayList<String>>(){}.getType();
+            ArrayList<String> myArray = gson.fromJson(json, type);
+            Log.d("checkingHouses GET", myArray.toString());
+            if(myArray == null) return null;
+            ArrayList<House> myHouses = new ArrayList<>();
+            JsonObject obj;
+            for(String s : myArray){
+                obj = new JsonParser().parse(s).getAsJsonObject();
+                myHouses.add(House.fromJSON(obj));
+            }
+            return myHouses;
+        }
+        catch (Error e){
+            Log.d("User", "shared pref user not available");
+            return null;
+        }
+    }
+
+    public void updateLocalHouseArray(ArrayList<House> myList, FragmentActivity activity){
+        Log.d("checkingHouses ADD", myList.toString());
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        ArrayList<String> jsonHolders = new ArrayList<>();
+        for(House h : myList){
+            jsonHolders.add(h.toBsonDocument().toJson());
+        }
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonHolders);
+        editor.putString("myHousesList", json);
+        editor.apply();
+        Log.d("checkingHouses ADD end", myList.toString());
+    }
+
+    //Local user and house manipulation through shared preferences
     public static User getCurrentLocalUser(FragmentActivity activity){
         try {
             SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
@@ -110,6 +153,7 @@ public class MongoDB implements DatabaseLink {
             return null;
         }
     }
+
     public static House getCurrentLocalHouse(FragmentActivity activity){
         try {
             SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
@@ -136,13 +180,7 @@ public class MongoDB implements DatabaseLink {
                 if (task.isSuccessful()) {
                     Log.d("app", String.format("successfully inserted item with id %s",
                             task.getResult().getInsertedId()));
-                    SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    Log.d("User", toString());
-                    String json = user.toBsonDocument().toJson();
-                    Log.d("User", json);
-                    editor.putString("myUser", json);
-                    editor.apply();
+                    setLocalUser(user, activity);
                 } else {
                     Log.e("app", "failed to insert document with: ", task.getException());
                 }
@@ -159,14 +197,7 @@ public class MongoDB implements DatabaseLink {
                 if (task.isSuccessful()) {
                     Log.d("app", String.format("successfully inserted item with id %s",
                             task.getResult().getInsertedId()));
-                    String[] objectID = task.getResult().getInsertedId().toString().split("=");
-                    SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    Log.d("User", toString());
-                    String json = house.toBsonDocument().toJson();
-                    Log.d("User", json);
-                    editor.putString("myHouse", json);
-                    editor.apply();
+                    setLocalHouse(house, activity);
                     boolConsumer.accept(true);
                 } else {
                     Log.e("app", "failed to insert document with: ", task.getException());
@@ -175,6 +206,22 @@ public class MongoDB implements DatabaseLink {
             }
         });
 
+    }
+
+    public void setLocalUser(User user, FragmentActivity activity) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String json = user.toBsonDocument().toJson();
+        editor.putString("myUser", json);
+        editor.apply();
+    }
+
+    public void setLocalHouse(House house, FragmentActivity activity) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String json = house.toBsonDocument().toJson();
+        editor.putString("myHouse", json);
+        editor.apply();
     }
 
     @Override

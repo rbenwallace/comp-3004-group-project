@@ -307,4 +307,18 @@ public class House implements Model, Indexable, Observable {
         penalizeLateTasks = json.valueOf("penalizeLateTasks");
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "House{" +
+                "houseId=" + houseId +
+                ", houseKey='" + houseKey + '\'' +
+                ", owner=" + owner +
+                ", name='" + name + '\'' +
+                ", occupants=" + occupants +
+                ", rotation=" + rotation +
+                ", showTaskDifficulty=" + showTaskDifficulty +
+                ", penalizeLateTasks=" + penalizeLateTasks +
+                '}';
+    }
 }
