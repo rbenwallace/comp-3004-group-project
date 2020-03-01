@@ -24,6 +24,12 @@ public class House implements Model, Indexable, Observable {
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
 
+    public House() {
+        name = "";
+        occupants = new User[0];
+        rotation = new Rotation();
+    }
+
     @NonNull
     @Override
     public UUID getId() {
@@ -133,6 +139,10 @@ public class House implements Model, Indexable, Observable {
     public static class Rotation implements Model {
 
         private User[] rotation;
+
+        private Rotation() {
+            rotation = new User[0];
+        }
 
         @Override
         public String consoleFormat(String prefix) {

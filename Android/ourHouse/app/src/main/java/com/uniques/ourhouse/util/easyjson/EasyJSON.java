@@ -252,7 +252,7 @@ public class EasyJSON {
     }
 
     private JSONElement morphRootNode(JSONElement newRoot) {
-        return rootNode.merge(newRoot);
+        return rootNode.overwriteWith(newRoot);
     }
 
     public JSONObject exportToJSONObject() throws EasyJSONException {

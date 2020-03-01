@@ -10,6 +10,7 @@ public final class Session {
 
     public static boolean newSession(Context context) {
         baseSession = new Session();
+        baseSession.user = new User("Test user", "email@test.com", "1234567890");
         baseSession.database = new LocalStore(context);
 //        baseSession.security = new LocalSecurity(context) {
 //            @Override

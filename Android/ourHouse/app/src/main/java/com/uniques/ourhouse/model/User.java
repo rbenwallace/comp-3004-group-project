@@ -89,7 +89,7 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + firstName + lastName + " num: " + phoneNumber;
+        return prefix + "name: (" + firstName + " " + lastName + "), num: (" + phoneNumber + ")";
     }
 
     @Override
@@ -117,5 +117,11 @@ public class User implements Model, Observable, Indexable {
             return ((User) obj).userID.equals(userID);
         }
         return false;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return consoleFormat("[User] ");
     }
 }
