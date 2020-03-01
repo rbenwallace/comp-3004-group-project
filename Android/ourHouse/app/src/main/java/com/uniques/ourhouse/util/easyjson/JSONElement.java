@@ -127,7 +127,7 @@ public class JSONElement implements Iterable<JSONElement> {
     public JSONElement putStructure(String key) {
         Object[] deconstructedKey = deconstructKey(key);
         if (deconstructedKey[0] != this) {
-            ((JSONElement) deconstructedKey[0]).putStructure((String) deconstructedKey[1], items);
+            ((JSONElement) deconstructedKey[0]).putStructure((String) deconstructedKey[1]);
         }
         JSONElement element = search(key);
         if (element == null) {
