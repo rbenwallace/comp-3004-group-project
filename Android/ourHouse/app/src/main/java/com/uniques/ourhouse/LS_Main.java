@@ -3,8 +3,6 @@ package com.uniques.ourhouse;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.fragment.app.FragmentManager;
-
 import com.uniques.ourhouse.fragment.CreateHouseFragment;
 import com.uniques.ourhouse.fragment.ForgotPasswordFragment;
 import com.uniques.ourhouse.fragment.Fragment;
@@ -15,10 +13,11 @@ import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SignUpFragment;
 
+import androidx.fragment.app.FragmentManager;
+
 public class LS_Main extends FragmentActivity {
     public static final String TAG = "LS_Main";
     static final int LAYOUT_ID = R.layout.activity_ls__main;
-
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override

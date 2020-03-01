@@ -7,16 +7,16 @@ import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import java.util.Date;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class Event implements Model, Observable, Indexable {
-import org.bson.Document;
-import org.bson.types.ObjectId;
 
     public static final String EVENT_COLLECTION = "Events";
     private ObjectId eventId;
