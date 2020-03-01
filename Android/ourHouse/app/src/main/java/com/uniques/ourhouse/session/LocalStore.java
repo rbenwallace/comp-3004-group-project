@@ -13,13 +13,11 @@ import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.easyjson.SafeJSONElementType;
 
-import org.bson.types.ObjectId;
-
 import java.io.File;
 import java.util.Objects;
 import java.util.UUID;
 
-final class LocalStore implements DatabaseLinkLocal {
+final class LocalStore implements DatabaseLink {
     private static final String USER_FILE = "user.json";
     private static final String HOUSE_FILE = "house.json";
     private static final String TASKS_FILE = "tasks.json";
@@ -33,27 +31,27 @@ final class LocalStore implements DatabaseLinkLocal {
     }
 
     @Override
-    public User getUser(ObjectId id) {
+    public User getUser(UUID id) {
         return new User().fromJSON(searchLocal(USER_FILE, id));
     }
 
     @Override
-    public Event getEvent(ObjectId id) {
+    public Event getEvent(UUID id) {
         return new Event().fromJSON(searchLocal(EVENTS_FILE, id));
     }
 
     @Override
-    public Task getTask(ObjectId id) {
+    public Task getTask(UUID id) {
         return new Task().fromJSON(searchLocal(TASKS_FILE, id));
     }
 
     @Override
-    public Fee getFee(ObjectId id) {
+    public Fee getFee(UUID id) {
         return new Fee().fromJSON(searchLocal(FEES_FILE, id));
     }
 
     @Override
-    public House getHouse(ObjectId id) {
+    public House getHouse(UUID id) {
         return new House().fromJSON(searchLocal(HOUSE_FILE, id));
     }
 
@@ -82,7 +80,7 @@ final class LocalStore implements DatabaseLinkLocal {
         return saveLocal(HOUSE_FILE, house);
     }
 
-    private JSONElement searchLocal(String fileName, ObjectId id) {
+    private JSONElement searchLocal(String fileName, UUID id) {
         return Objects.requireNonNull(Objects.requireNonNull(retrieveLocal(fileName)).search(id.toString()));
     }
 

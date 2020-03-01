@@ -18,6 +18,7 @@ import com.uniques.ourhouse.fragment.SignUpFragment;
 public class LS_Main extends FragmentActivity {
     public static final String TAG = "LS_Main";
     static final int LAYOUT_ID = R.layout.activity_ls__main;
+
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override

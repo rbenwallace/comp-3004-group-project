@@ -116,11 +116,11 @@ public enum Settings {
             if (parent.elementExists(getKey())) {
                 read(parent);
             } else {
-                setToDefault();
+                obj = getDefault();
             }
         }
 
-        abstract void setToDefault();
+        abstract T getDefault();
 
         protected abstract void read(JSONElement parent);
 

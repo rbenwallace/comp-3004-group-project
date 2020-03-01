@@ -1,6 +1,5 @@
 package com.uniques.ourhouse.controller;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,17 +11,9 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.JoinHouseFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
-import com.uniques.ourhouse.model.House;
-import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.util.MongoDB.MongoDB;
-
-import java.util.function.Consumer;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class MyHousesCtrl implements FragmentCtrl {
     private FragmentActivity activity;
-    private MongoDB myDatabase;
 
     public MyHousesCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -30,11 +21,8 @@ public class MyHousesCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        myDatabase = new MongoDB();
         Log.d(SettingsFragment.TAG, "Add Fee Clicked");
-        User myUser = MongoDB.getCurrentLocalUser(activity);
-        Log.d("iminmemomscar", myUser.toString());
-        House myHouse = MongoDB.getCurrentLocalHouse(activity);
+
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
 

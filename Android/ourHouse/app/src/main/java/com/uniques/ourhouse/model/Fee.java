@@ -7,24 +7,13 @@ import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
-import org.bson.Document;
-import org.bson.types.ObjectId;
-
 import java.util.UUID;
 
 public class Fee extends ManageItem implements Model, Indexable, Observable {
-    public static final String FEE_COLLECTION = "Fees";
     private float amount;
     private String type;
 
     public Fee(){}
-
-    public Fee(ObjectId feeId, String name, float amount, Schedule schedule){
-        super(name, schedule);
-        manageItemId = feeId;
-        this.amount = amount;
-        this.type = "Fee";
-    }
 
     public Fee(String name, float amount, Schedule schedule){
         super(name, schedule);
@@ -48,27 +37,9 @@ public class Fee extends ManageItem implements Model, Indexable, Observable {
         return json.getRootNode();
     }
 
-    public Document toBsonDocument() {
-        final Document asDoc = new Document();
-        asDoc.put("_id", manageItemId);
-        asDoc.put("name", name);
-        asDoc.put("amount", amount);
-        asDoc.put("scheduel", schedule);
-        return asDoc;
-    }
-
-    public static Fee fromBsonDocument(final Document doc){
-        return new Fee(
-                (ObjectId) doc.get("_id"),
-                doc.getString("name"),
-                (Float)doc.get("amount"),
-                (Schedule) doc.get("scheduel")
-        );
-    }
-
     @Override
     public Fee fromJSON(JSONElement json) {
-        manageItemId = (ObjectId)json.valueOf("feeId");
+        manageItemId = UUID.fromString(json.valueOf("feeId"));
         name = json.valueOf("name");
         type = json.valueOf("type");
         amount = Float.valueOf(json.valueOf("amount"));

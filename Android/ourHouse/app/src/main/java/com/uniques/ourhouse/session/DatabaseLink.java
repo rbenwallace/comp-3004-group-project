@@ -6,29 +6,27 @@ import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
 
-import org.bson.types.ObjectId;
-
-import java.util.function.Consumer;
+import java.util.UUID;
 
 public interface DatabaseLink {
 
-    void getUser(ObjectId id, Consumer<User> consumer);
+    User getUser(UUID id);
 
-    void getEvent(ObjectId id, Consumer<Event> consumer);
+    Event getEvent(UUID id);
 
-    void getTask(ObjectId id, Consumer<Task> consumer);
+    Task getTask(UUID id);
 
-    void getFee(ObjectId id, Consumer<Fee> consumer);
+    Fee getFee(UUID id);
 
-    void getHouse(ObjectId id, Consumer<House> consumer);
+    House getHouse(UUID id);
 
-    void postUser(User user, Consumer<Boolean> consumer);
+    boolean postUser(User user);
 
-    void postEvent(Event event, Consumer<Boolean> consumer);
+    boolean postEvent(Event event);
 
-    void postTask(Task post_task, Consumer<Boolean> consumer);
+    boolean postTask(Task task);
 
-    void postFee(Fee fee, Consumer<Boolean> consumer);
+    boolean postFee(Fee fee);
 
-    void postHouse(House house, Consumer<Boolean> consumer);
+    boolean postHouse(House house);
 }

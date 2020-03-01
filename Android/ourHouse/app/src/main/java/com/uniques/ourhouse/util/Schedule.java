@@ -1,6 +1,5 @@
 package com.uniques.ourhouse.util;
 
-import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.exception.InvalidArgumentException;
@@ -16,9 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-
-import org.bson.Document;
-import org.bson.types.ObjectId;
 
 /**
  * <p>
@@ -366,18 +362,6 @@ public class Schedule implements Comparable, Model {
         }
 
         return format.trim();
-    }
-
-    public Document toBsonDocument() {
-        final Document asDoc = new Document();
-        //idk what this class is
-        return asDoc;
-    }
-
-    public static Schedule fromBsonDocument(final Document doc){
-        return new Schedule(
-                //what the guy above said
-        );
     }
 
     @Override
