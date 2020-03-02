@@ -46,6 +46,10 @@ public class AddTaskFragment extends Fragment<AddTaskCtrl> {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+    }
+
+    @Override
     public boolean onHomeUpPressed() {
         return false;
     }

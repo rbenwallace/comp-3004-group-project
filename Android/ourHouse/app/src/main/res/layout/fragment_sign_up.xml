@@ -79,7 +79,7 @@
                 android:drawableLeft="@drawable/password"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
-                android:hint="@string/passowrd"
+                android:hint="@string/password"
                 android:inputType="textPassword"
                 android:padding="10dp"
                 android:singleLine="true"

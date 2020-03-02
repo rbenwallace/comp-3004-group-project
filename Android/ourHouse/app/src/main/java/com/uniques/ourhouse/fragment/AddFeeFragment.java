@@ -46,6 +46,10 @@ public class AddFeeFragment extends Fragment<AddFeeCtrl> {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+    }
+
+    @Override
     public boolean onHomeUpPressed() {
         return false;
     }

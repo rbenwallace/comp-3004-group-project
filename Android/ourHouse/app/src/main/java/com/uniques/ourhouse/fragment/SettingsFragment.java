@@ -63,6 +63,10 @@ public class SettingsFragment extends Fragment<SettingsCtrl> {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+    }
+
+    @Override
     public boolean onHomeUpPressed() {
         return false;
     }

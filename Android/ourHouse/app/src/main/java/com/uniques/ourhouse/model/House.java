@@ -3,7 +3,6 @@ package com.uniques.ourhouse.model;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
-import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
@@ -31,9 +30,9 @@ public class House implements Model, Indexable, Observable {
     private String name;
     private ArrayList<User> occupants;
     private Rotation rotation;
+    private String password;
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
-    private MongoDB myDatabase = new MongoDB();
 
     @NonNull
     @Override
@@ -47,24 +46,26 @@ public class House implements Model, Indexable, Observable {
 
     public static final String HOUSE_COLLECTION = "Houses";
 
-    public House(ObjectId id, String housekey, User owner, String name, ArrayList<User> occupants, House.Rotation rotation, boolean showTaskDifficulty, boolean penalizeLateTasks) {
+    public House(ObjectId id, String housekey, User owner, String name, ArrayList<User> occupants, House.Rotation rotation, String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
         this.houseId = id;
         this.houseKey = housekey;
         this.owner = owner;
         this.name = name;
         this.occupants = occupants;
         this.rotation = rotation;
+        this.password = password;
         this.showTaskDifficulty = showTaskDifficulty;
         this.penalizeLateTasks = penalizeLateTasks;
     }
 
-    public House(String name, User owner, ArrayList<User> occupants, House.Rotation rotation, boolean showTaskDifficulty, boolean penalizeLateTasks) {
+    public House(String name, User owner, ArrayList<User> occupants, House.Rotation rotation, String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
         this.houseId = new ObjectId();
         this.houseKey = name + Session.keyGen();
         this.owner = owner;
         this.name = name;
         this.occupants = occupants;
         this.rotation = rotation;
+        this.password = password;
         this.showTaskDifficulty = showTaskDifficulty;
         this.penalizeLateTasks = penalizeLateTasks;
     }
@@ -99,6 +100,14 @@ public class House implements Model, Indexable, Observable {
             return;
         }
         Log.d("House", "No user in this House");
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -141,6 +150,7 @@ public class House implements Model, Indexable, Observable {
         asDoc.put("name", name);
         asDoc.put("occupants", occupantsDoc);
         asDoc.put("rotation", rotationDoc);
+        asDoc.put("password", password);
         asDoc.put("showTaskDifficulty", showTaskDifficulty);
         asDoc.put("penalizeLateTasks", penalizeLateTasks);
         return asDoc;
@@ -162,9 +172,10 @@ public class House implements Model, Indexable, Observable {
         rotDoc.forEach((key, value) -> {
             rotation.rotation.add(User.fromBsonDocument((Document) value));
         });
+        String password = doc.getString("password");
         Boolean showTaskDifficulty = doc.getBoolean("showTaskDifficulty");
         Boolean penalizeLateTasks = doc.getBoolean("penalizeLateTasks");
-        return new House(houseId, houseKey, owner, name, occupants, rotation, showTaskDifficulty, penalizeLateTasks);
+        return new House(houseId, houseKey, owner, name, occupants, rotation, password, showTaskDifficulty, penalizeLateTasks);
     }
 
     @Override
@@ -257,9 +268,10 @@ public class House implements Model, Indexable, Observable {
                 rot.add(User.fromJSON(rotation.get(key).getAsJsonObject()));
             }
         }
-        boolean showTaskDifficulty = obj.get("showTaskDifficulty").getAsBoolean();
-        boolean penalizeLateTasks = obj.get("penalizeLateTasks").getAsBoolean();
-        return new House(new ObjectId(myID), myKey, owner, name, occs, actualRotation, showTaskDifficulty, penalizeLateTasks);
+        String password = obj.get("password").getAsString();
+        Boolean showTaskDifficulty = obj.get("showTaskDifficulty").getAsBoolean();
+        Boolean penalizeLateTasks = obj.get("penalizeLateTasks").getAsBoolean();
+        return new House(new ObjectId(myID), myKey, owner, name, occs, actualRotation, password, showTaskDifficulty, penalizeLateTasks);
     }
 
     @Override
@@ -290,6 +302,7 @@ public class House implements Model, Indexable, Observable {
         for (int i = 0; i < occupants.size(); ++i) {
             Session.getSession().getDatabase().getUser(occupants.get(i).getValue(), c);
         }
+        password = json.valueOf("password");
         showTaskDifficulty = json.valueOf("showTaskDifficulty");
         penalizeLateTasks = json.valueOf("penalizeLateTasks");
         new Rotation().fromJSON(json.search("rotation"), rotation -> {

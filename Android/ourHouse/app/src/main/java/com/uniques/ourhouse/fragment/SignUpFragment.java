@@ -6,9 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchUser;
@@ -17,6 +14,9 @@ import com.uniques.ourhouse.LS_Main;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.controller.SignUpCtrl;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class SignUpFragment extends Fragment<SignUpCtrl> {
     public static final String TAG = "SignUpFragment";
@@ -50,6 +50,10 @@ public class SignUpFragment extends Fragment<SignUpCtrl> {
     @Override
     public FragmentId getFragmentId() {
         return setupId(ActivityId.GET(ACTIVITY_TAG));
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
     }
 
     @Override

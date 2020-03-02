@@ -5,13 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.uniques.ourhouse.ActivityId;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.controller.PerformanceCtrl;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class PerformanceFragment extends Fragment<PerformanceCtrl> {
     public static final String TAG = "PerformanceFragment";
@@ -43,6 +43,10 @@ public class PerformanceFragment extends Fragment<PerformanceCtrl> {
     @Override
     public FragmentId getFragmentId() {
         return setupId(ActivityId.GET(ACTIVITY_TAG));
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
     }
 
     @Override
