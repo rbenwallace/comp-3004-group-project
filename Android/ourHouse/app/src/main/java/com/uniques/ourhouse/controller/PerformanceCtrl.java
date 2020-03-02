@@ -43,7 +43,6 @@ public class PerformanceCtrl implements FragmentCtrl {
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Left", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG));
@@ -52,7 +51,6 @@ public class PerformanceCtrl implements FragmentCtrl {
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Right", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
                 activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG));

@@ -26,11 +26,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:drawableStart="@drawable/small_house"
                 android:drawablePadding="8dp"
@@ -42,7 +42,7 @@
 
             <EditText
                 android:id="@+id/settings_editHouseName"
-                android:layout_width="0dp"
+                android:layout_width="291dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
@@ -103,7 +103,7 @@
             android:paddingVertical="5dp"
             android:text="@string/switch_house"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/settings_btnDeleteHouse"
@@ -117,7 +117,7 @@
             android:paddingVertical="5dp"
             android:text="@string/delete_house"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/settings_btnLogout"
@@ -131,7 +131,7 @@
             android:paddingVertical="5dp"
             android:text="@string/logout"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/settings_btnSaveHouse"

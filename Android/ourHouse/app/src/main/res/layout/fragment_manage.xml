@@ -13,7 +13,7 @@
         android:padding="10dp"
         android:text="@string/manage"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <Button
@@ -29,7 +29,7 @@
         android:paddingVertical="5dp"
         android:text="@string/add_task"
         android:textColor="@color/black"
-        android:textSize="34sp" />
+        android:textSize="26sp" />
 
     <Button
         android:id="@+id/manage_btnAddFee"
@@ -45,7 +45,7 @@
         android:paddingVertical="5dp"
         android:text="@string/add_fee"
         android:textColor="@color/black"
-        android:textSize="34sp" />
+        android:textSize="26sp" />
 
     <Button
         android:id="@+id/manage_btnSettings"
@@ -61,6 +61,6 @@
         android:paddingVertical="5dp"
         android:text="@string/settings"
         android:textColor="@color/black"
-        android:textSize="34sp" />
+        android:textSize="26sp" />
 
 </RelativeLayout>
