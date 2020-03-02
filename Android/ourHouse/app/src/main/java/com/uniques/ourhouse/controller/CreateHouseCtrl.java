@@ -1,14 +1,9 @@
 package com.uniques.ourhouse.controller;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.nfc.Tag;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -83,37 +78,31 @@ public class CreateHouseCtrl implements FragmentCtrl {
         occupants.add(myUser);
         rotation.addUserToRotation(myUser);
 
-        password.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                key = Session.keyGen();
-                myDatabase.checkKey(key, checkFunction);
-            }
+        password.setOnClickListener(v -> {
+            key = Session.keyGen();
+            myDatabase.checkKey(key, checkFunction);
         });
 
-        createHouse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!passwordCorrect()){
-                    password.setBackgroundColor(Color.RED);
-                    confirmPassword.setBackgroundColor(Color.RED);
-                }
-                House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
-                //add the house to the array
-                ArrayList<House> myHouses = myDatabase.getLocalHouseArray(activity);
-                if(myHouses == null) {
-                    myHouses = new ArrayList<>();
-                    myHouses.add(newHouse);
-                    Log.d("checkingHouses ADD", myHouses.toString());
-                    myDatabase.updateLocalHouseArray(myHouses, activity);
-                }
-                else {
-                    myHouses.add(newHouse);
-                    Log.d("checkingHouses ADD", myHouses.toString());
-                    myDatabase.updateLocalHouseArray(myHouses, activity);
-                }
-                myDatabase.addMyHouse(newHouse, activity, boolConsumer);
+        createHouse.setOnClickListener(view1 -> {
+            if(!passwordCorrect()){
+                password.setBackgroundColor(Color.RED);
+                confirmPassword.setBackgroundColor(Color.RED);
             }
+            House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
+            //add the house to the array
+            ArrayList<House> myHouses = myDatabase.getLocalHouseArray(activity);
+            if(myHouses == null) {
+                myHouses = new ArrayList<>();
+                myHouses.add(newHouse);
+                Log.d("checkingHouses ADD", myHouses.toString());
+                myDatabase.updateLocalHouseArray(myHouses, activity);
+            }
+            else {
+                myHouses.add(newHouse);
+                Log.d("checkingHouses ADD", myHouses.toString());
+                myDatabase.updateLocalHouseArray(myHouses, activity);
+            }
+            myDatabase.addMyHouse(newHouse, activity, boolConsumer);
         });
     }
 

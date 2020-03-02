@@ -302,7 +302,6 @@ public class House implements Model, Indexable, Observable {
         for (int i = 0; i < occupants.size(); ++i) {
             Session.getSession().getDatabase().getUser(occupants.get(i).getValue(), c);
         }
-        rotation = new Rotation().fromJSON(json.search("rotation"));
         password = json.valueOf("password");
         showTaskDifficulty = json.valueOf("showTaskDifficulty");
         penalizeLateTasks = json.valueOf("penalizeLateTasks");

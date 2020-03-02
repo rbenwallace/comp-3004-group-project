@@ -1,21 +1,19 @@
 package com.uniques.ourhouse.model;
 
-import android.util.Log;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Stack;
-import java.util.UUID;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
@@ -39,6 +37,7 @@ public class User implements Model, Observable, Indexable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
+        this.myHouses = myHouses;
         //testing
         this.performance = num;
     }
