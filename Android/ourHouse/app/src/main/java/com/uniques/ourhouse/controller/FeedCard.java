@@ -27,6 +27,8 @@ import java.util.function.Consumer;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
+import org.bson.types.ObjectId;
+
 @SuppressLint("SetTextI18n")
 public final class FeedCard implements RecyclerCard, Comparable {
 

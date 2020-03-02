@@ -20,6 +20,7 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.JoinHouseFragment;
 import com.uniques.ourhouse.model.House;
+import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.MongoDB;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class MyHousesCtrl implements FragmentCtrl {
     private ListView housesList;
     private House selectedHouse;
     private ArrayList<House> myHouses;
-    private int housePositionSelected;
+    private Button logoutBtn;
 
     public MyHousesCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -44,6 +45,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         housesList = (ListView) view.findViewById(R.id.myHousesList);
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
+        logoutBtn = (Button) view.findViewById(R.id.logoutBtnMH);
         //Gather houses if there are any from the shared pref Houses
         myHouses = myDatabase.getLocalHouseArray(activity);
         Log.d("checkingHouses", myHouses.toString());
@@ -64,7 +66,6 @@ public class MyHousesCtrl implements FragmentCtrl {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedHouse = myHouses.get(i);
-                housePositionSelected = i;
                 myDatabase.setLocalHouse(selectedHouse, activity);
                 Intent intent = new Intent(activity, MainActivity.class);
                 activity.startActivity(intent);
@@ -97,6 +98,7 @@ public class MyHousesCtrl implements FragmentCtrl {
                 btnDeleteHouse.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        House temp = myHouses.get(i);
                         houses.remove(i);
                         //If its the current House change it and delete, else just delete
                         if(myHouses.get(i) == myDatabase.getCurrentLocalHouse(activity)){
@@ -109,6 +111,8 @@ public class MyHousesCtrl implements FragmentCtrl {
                         else
                             myHouses.remove(i);
                         //Remove From lists and notify Listview
+                        User myUser = MongoDB.getCurrentLocalUser(activity);
+                        myUser.removeHouseId(temp.getId());
                         myDatabase.updateLocalHouseArray(myHouses, activity);
                         adapter.notifyDataSetChanged();
                         popupWindow.dismiss();
@@ -117,10 +121,16 @@ public class MyHousesCtrl implements FragmentCtrl {
                 return true;
             }
         });
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myDatabase.clearLocalHouses(activity);
+                myDatabase.clearLocalCurHouse(activity);
+                myDatabase.clearLocalCurUser(activity);
+                myDatabase.getAuth().logout();
+            }
+        });
 
-//        User myUser = MongoDB.getCurrentLocalUser(activity);
-//        Log.d("iminmemomscar", myUser.toString());
-//        House myHouse = MongoDB.getCurrentLocalHouse(activity);
         createHouse.setOnClickListener(view1 -> {
             Toast.makeText(activity, "Going to CreateHouseFragment", Toast.LENGTH_LONG).show();
             //TODO NAVIGATE TO NEXT FRAGMENT

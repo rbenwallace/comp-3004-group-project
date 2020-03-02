@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
@@ -22,12 +23,14 @@ import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
 
+import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -191,6 +194,9 @@ public class MongoDB implements DatabaseLink {
                 if (task.isSuccessful()) {
                     Log.d("app", String.format("successfully inserted item with id %s",
                             task.getResult().getInsertedId()));
+                    User myUser = getCurrentLocalUser(activity);
+                    myUser.addHouseId(house.getId());
+                    setLocalUser(myUser, activity);
                     setLocalHouse(house, activity);
                     boolConsumer.accept(true);
                 } else {
@@ -215,6 +221,55 @@ public class MongoDB implements DatabaseLink {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String json = house.toBsonDocument().toJson();
         editor.putString("myHouse", json);
+        editor.apply();
+    }
+
+    public void getMultipleHouses(String name, Consumer<ArrayList<House>> consumer) {
+        ArrayList<House> houses = new ArrayList<>();
+        String pattern = "^"+name;
+        BsonRegularExpression nameRE = new BsonRegularExpression(pattern);
+        Document filterDoc = new Document()
+                .append("key", new Document().append("$regex", nameRE));
+        RemoteFindIterable findResults = housesColl
+                .find(filterDoc)
+                .limit(20)
+                .sort(new Document().append("name", 1));
+        Log.d("MongoDB", filterDoc.toString());
+        findResults.forEach(house -> {
+            Log.d("app", String.format("successfully found:  %s", house.toString()));
+            houses.add(House.fromBsonDocument((Document)house));
+        });
+        consumer.accept(houses);
+    }
+
+    public void clearLocalHouses(FragmentActivity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //IDK IF IT HAS TO BE A CLEAR OR NULL?
+//        ArrayList<String> jsonHolders = new ArrayList<>();
+        Gson gson = new Gson();
+        String json = gson.toJson(null);
+        editor.putString("myHousesList", json);
+        editor.apply();
+    }
+    public void clearLocalCurHouse(FragmentActivity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //IDK IF IT HAS TO BE A CLEAR OR NULL?
+//        ArrayList<String> jsonHolders = new ArrayList<>();
+        Gson gson = new Gson();
+        String json = gson.toJson(null);
+        editor.putString("myHouse", json);
+        editor.apply();
+    }
+    public void clearLocalCurUser(FragmentActivity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //IDK IF IT HAS TO BE A CLEAR OR NULL?
+//        ArrayList<String> jsonHolders = new ArrayList<>();
+        Gson gson = new Gson();
+        String json = gson.toJson(null);
+        editor.putString("myUser", json);
         editor.apply();
     }
 
@@ -681,4 +736,7 @@ public class MongoDB implements DatabaseLink {
             }
         });
     }
+
+//     add the delete stuff leave deletetion of user till end because its confusing
+
 }

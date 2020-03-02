@@ -16,13 +16,13 @@
         android:id="@+id/houseName_join"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="@string/house_name"
+        android:hint="@string/house_nameKey"
         android:textSize="26dp"
+        android:inputType="text"
         android:paddingHorizontal="20dp"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/house">
-
     </EditText>
 
     <TextView
@@ -52,8 +52,8 @@
         android:layout_below="@+id/border">
         <ListView
             android:layout_width="match_parent"
+            android:id="@+id/housesListJoin"
             android:layout_height="match_parent">
-
         </ListView>
     </RelativeLayout>
 
