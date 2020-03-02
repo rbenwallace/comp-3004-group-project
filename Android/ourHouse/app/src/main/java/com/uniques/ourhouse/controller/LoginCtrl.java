@@ -68,11 +68,7 @@ public class LoginCtrl implements FragmentCtrl {
             if (MongoDB.getCurrentLocalUser(activity) == null) {
                 Consumer<User> myUser = user -> {
                     if (user != null) {
-                        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        String json = user.toBsonDocument().toJson();
-                        editor.putString("myUser", json);
-                        editor.apply();
+                        myDatabase.setLocalUser(user, activity);
                     }
                 };
                 myDatabase.getUser(new ObjectId(myDatabase.getAuth().getUser().getId()), myUser);
@@ -218,11 +214,7 @@ public class LoginCtrl implements FragmentCtrl {
                 //TODO IF USER IS REAL DONT ADD JUST GRAB
                 Consumer<User> userConsumer = user -> {
                     if(user != null){
-                        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        String json = user.toBsonDocument().toJson();
-                        editor.putString("myUser", json);
-                        editor.apply();
+                        myDatabase.setLocalUser(user, activity);
                         Toast.makeText(activity, "OurHouse welcomes you!", Toast.LENGTH_SHORT).show();
                     }
                     else{

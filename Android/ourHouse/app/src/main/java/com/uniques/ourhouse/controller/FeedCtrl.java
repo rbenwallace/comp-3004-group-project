@@ -126,7 +126,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
             public boolean equals(@Nullable Object obj) {
                 return obj instanceof FeedCard.FeedCardObject && ((FeedCard.FeedCardObject) obj).getCompareType() == getCompareType();
             }
-        }, this);
+        }, this));
         filterCard.setExpanded(pendingReopenFilter);
         pendingReopenFilter = false;
         feedCardList.add(filterCard);

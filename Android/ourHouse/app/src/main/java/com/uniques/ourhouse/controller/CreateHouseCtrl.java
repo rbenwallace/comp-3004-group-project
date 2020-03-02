@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -75,6 +76,8 @@ public class CreateHouseCtrl implements FragmentCtrl {
         ArrayList<String> users = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, users);
 
+
+
         sendRoomateEmailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,6 +116,19 @@ public class CreateHouseCtrl implements FragmentCtrl {
             @Override
             public void onClick(View view) {
                 House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, taskDiff.isChecked(), penLateTasks.isChecked());
+                //add the house to the array
+                ArrayList<House> myHouses = myDatabase.getLocalHouseArray(activity);
+                if(myHouses == null) {
+                    myHouses = new ArrayList<>();
+                    myHouses.add(newHouse);
+                    Log.d("checkingHouses ADD", myHouses.toString());
+                    myDatabase.updateLocalHouseArray(myHouses, activity);
+                }
+                else {
+                    myHouses.add(newHouse);
+                    Log.d("checkingHouses ADD", myHouses.toString());
+                    myDatabase.updateLocalHouseArray(myHouses, activity);
+                }
                 myDatabase.addMyHouse(newHouse, activity, boolConsumer);
             }
         });

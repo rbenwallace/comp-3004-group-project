@@ -47,6 +47,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
     private FeedCardObject object;
     private FeedCardSpecialization specialization;
     private boolean isExpanded;
+    private FeedCtrl controller;
 
     private FragmentActivity activity;
 

@@ -41,6 +41,7 @@
     <string name="edit_task_rotation">Edit Task Rotation</string>
     <string name="switch_house">Switch House</string>
     <string name="delete_house">Delete House</string>
+    <string name="cancel">Cancel</string>
     <string name="logout">Logout</string>
     <string name="tax">Apply Tax</string>
     <string name="tax_rate">Tax %</string>
