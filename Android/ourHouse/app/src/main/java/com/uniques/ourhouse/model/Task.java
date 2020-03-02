@@ -1,16 +1,16 @@
 package com.uniques.ourhouse.model;
 
-import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
+import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Task extends ManageItem implements Model, Indexable, Observable {
     public static final String TASK_COLLECTION = "Tasks";
@@ -69,13 +69,15 @@ public class Task extends ManageItem implements Model, Indexable, Observable {
     }
 
     @Override
-    public Task fromJSON(JSONElement json) {
+    public void fromJSON(JSONElement json, Consumer consumer) {
         manageItemId = (ObjectId) json.valueOf("manageItemId");
         name = json.valueOf("name");
         type = json.valueOf("type");
-        difficulty = Integer.valueOf(json.valueOf("difficulty"));
-        schedule = new Schedule().fromJSON(json.search("schedule"));
-        return null;
+        difficulty = json.valueOf("difficulty");
+        new Schedule().fromJSON(json.search("schedule"), schedule -> {
+            this.schedule = (Schedule) schedule;
+            consumer.accept(this);
+        });
     }
 
     @Override

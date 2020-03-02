@@ -64,15 +64,11 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public JSONElement putElement(String key, JSONElement jsonElement) {
-        Object[] deconstructedKey = deconstructKey(key);
-        if (deconstructedKey[0] != this) {
-            return ((JSONElement) deconstructedKey[0]).putElement((String) deconstructedKey[1], jsonElement);
-        }
         switch (jsonElement.type) {
             case PRIMITIVE:
                 return putPrimitive(key, jsonElement);
             case ARRAY:
-                return putArray(key, jsonElement);
+                return putArray(key, jsonElement.children.toArray());
             case STRUCTURE:
                 return putStructure(key, jsonElement);
             case ROOT:
@@ -172,17 +168,17 @@ public class JSONElement implements Iterable<JSONElement> {
         }
         JSONElement search = search(key);
         if (search == null || search.type != JSONElementType.ARRAY) {
-            JSONElement element = new JSONElement(easyJSONStructure, this, JSONElementType.ARRAY, key, null);
+            JSONElement arrayElement = new JSONElement(easyJSONStructure, this, JSONElementType.ARRAY, key, null);
             for (Object item : items) {
                 if (item instanceof JSONElement) {
                     JSONElement itemElement = (JSONElement) item;
-                    element.putElement(itemElement.getKey(), itemElement);
+                    arrayElement.putElement(itemElement.getKey(), itemElement);
                 } else {
-                    element.putPrimitive(item);
+                    arrayElement.putPrimitive(item);
                 }
             }
-            children.add(element);
-            return element;
+            children.add(arrayElement);
+            return arrayElement;
         } else {
             for (Object item : items) {
                 if (item instanceof JSONElement) {
@@ -223,7 +219,7 @@ public class JSONElement implements Iterable<JSONElement> {
     public Object[] deconstructKey(String key) {
         JSONElement result = this;
         String finalKey = key;
-        if (key.contains(Pattern.quote("."))) {
+        if (key.contains(".")) {
             String[] parts = key.split(Pattern.quote("."));
             for (int i = 0; i < parts.length; ++i) {
                 String part = parts[i];

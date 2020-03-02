@@ -31,15 +31,15 @@ import androidx.annotation.NonNull;
 import static android.content.Context.MODE_PRIVATE;
 
 public class MongoDB implements DatabaseLink {
-    public static final String DATABASE = "ourHouseD";
+    private static final String DATABASE = "ourHouseD";
     public static final String TAG = "MongoDB";
-    public StitchAppClient client = Splash.client;
-    public RemoteMongoClient mongoClient = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
-    public RemoteMongoCollection<Document> userColl = mongoClient.getDatabase(DATABASE).getCollection(User.USER_COLLECTION);
-    public RemoteMongoCollection<Document> housesColl = mongoClient.getDatabase(DATABASE).getCollection(House.HOUSE_COLLECTION);
-    public RemoteMongoCollection<Document> eventColl = mongoClient.getDatabase(DATABASE).getCollection(Event.EVENT_COLLECTION);
-    public RemoteMongoCollection<Document> taskColl = mongoClient.getDatabase(DATABASE).getCollection(Task.TASK_COLLECTION);
-    public RemoteMongoCollection<Document> feeColl = mongoClient.getDatabase(DATABASE).getCollection(Fee.FEE_COLLECTION);
+    private StitchAppClient client = Splash.client;
+    private RemoteMongoClient mongoClient = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+    private RemoteMongoCollection<Document> userColl = mongoClient.getDatabase(DATABASE).getCollection(User.USER_COLLECTION);
+    private RemoteMongoCollection<Document> housesColl = mongoClient.getDatabase(DATABASE).getCollection(House.HOUSE_COLLECTION);
+    private RemoteMongoCollection<Document> eventColl = mongoClient.getDatabase(DATABASE).getCollection(Event.EVENT_COLLECTION);
+    private RemoteMongoCollection<Document> taskColl = mongoClient.getDatabase(DATABASE).getCollection(Task.TASK_COLLECTION);
+    private RemoteMongoCollection<Document> feeColl = mongoClient.getDatabase(DATABASE).getCollection(Fee.FEE_COLLECTION);
 
 
     public StitchAuth getAuth() {
@@ -608,14 +608,6 @@ public class MongoDB implements DatabaseLink {
                 }
             }
         });
-    }
-
-    public String keyGen(){
-        String [] selectFrom ={"1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
-        Random rn = new Random();
-        String key = "#" + selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)] +
-                selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)];
-        return key;
     }
 
     public void checkKey(String id, Consumer<Boolean> consumer){

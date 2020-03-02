@@ -10,6 +10,8 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import java.util.function.Consumer;
+
 public class Fee extends ManageItem implements Model, Indexable, Observable {
     public static final String FEE_COLLECTION = "Fees";
     private float amount;
@@ -65,13 +67,15 @@ public class Fee extends ManageItem implements Model, Indexable, Observable {
     }
 
     @Override
-    public Fee fromJSON(JSONElement json) {
-        manageItemId = (ObjectId)json.valueOf("feeId");
+    public void fromJSON(JSONElement json, Consumer consumer) {
+        manageItemId = new ObjectId(json.<String>valueOf("feeId"));
         name = json.valueOf("name");
         type = json.valueOf("type");
-        amount = Float.valueOf(json.valueOf("amount"));
-        schedule = new Schedule().fromJSON(json.search("schedule"));
-        return this;
+        amount = json.valueOf("amount");
+        new Schedule().fromJSON(json.search("schedule"), schedule -> {
+            this.schedule = (Schedule) schedule;
+            consumer.accept(this);
+        });
     }
 
     @Override

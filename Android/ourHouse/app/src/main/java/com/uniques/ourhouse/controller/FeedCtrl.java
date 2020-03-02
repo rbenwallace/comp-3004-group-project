@@ -12,12 +12,13 @@ import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Comparable;
 import com.uniques.ourhouse.util.RecyclerCtrl;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -138,7 +139,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         Calendar cal = Calendar.getInstance();
         Date now = new Date();
 
-        UUID filterUser = Settings.FEED_FILTER_USER.get();
+        ObjectId filterUser = Settings.FEED_FILTER_USER.get();
 
         Event[] eventArr = showingPastEvents ? Event.testEvents() : new Event[0];
         for (Event event : eventArr) {
@@ -286,9 +287,13 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 int previousIndex;
                 for (previousIndex = i; previousIndex < observableCards.size(); ++previousIndex) {
                     if (observableCards.get(previousIndex).equals(feedCard)) {
-                        observableCards.remove(previousIndex);
-                        observableCards.add(i, feedCard);
-                        cardsAdapter.notifyItemMoved(previousIndex, i);
+                        if (previousIndex != i) {
+                            observableCards.remove(previousIndex);
+                            observableCards.add(i, feedCard);
+                            cardsAdapter.notifyItemMoved(previousIndex, i);
+                        } else {
+                            observableCards.get(i).updateInfo();
+                        }
                     }
                 }
             }

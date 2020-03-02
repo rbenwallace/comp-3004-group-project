@@ -1,6 +1,5 @@
 package com.uniques.ourhouse.util;
 
-import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.exception.InvalidArgumentException;
@@ -8,17 +7,17 @@ import com.uniques.ourhouse.util.exception.InvalidCombinationException;
 import com.uniques.ourhouse.util.exception.InvalidRangeException;
 import com.uniques.ourhouse.util.exception.UnsupportedFunctionCallException;
 
+import org.bson.Document;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
-
-import org.bson.Document;
-import org.bson.types.ObjectId;
 
 /**
  * <p>
@@ -392,13 +391,13 @@ public class Schedule implements Comparable, Model {
     }
 
     @Override
-    public Schedule fromJSON(JSONElement json) {
+    public void fromJSON(JSONElement json, Consumer consumer) {
         start = new Date(json.<Long>valueOf("start"));
         end = new Date(json.<Long>valueOf("end"));
         endType = EndType.valueOf(json.valueOf("endType"));
         if (json.elementExists("repeatBetterSchedule"))
             repeatBetterSchedule = new Repeat().fromJSON(json.search("repeatBetterSchedule"));
-        return this;
+        consumer.accept(this);
     }
 
     /**

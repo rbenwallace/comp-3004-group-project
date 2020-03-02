@@ -17,13 +17,13 @@ import org.bson.types.ObjectId;
 
 import java.io.File;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.function.Consumer;
 
-final class LocalStore implements DatabaseLinkLocal {
+final class LocalStore implements DatabaseLink {
     private static final String USER_FILE = "user.json";
     private static final String HOUSE_FILE = "house.json";
     private static final String TASKS_FILE = "tasks.json";
-    private static final String FEES_FILE = "tasks.json";
+    private static final String FEES_FILE = "fees.json";
     private static final String EVENTS_FILE = "events.json";
 
     private Context context;
@@ -33,76 +33,77 @@ final class LocalStore implements DatabaseLinkLocal {
     }
 
     @Override
-    public User getUser(ObjectId id) {
-        return new User().fromJSON(searchLocal(USER_FILE, id));
+    public void getUser(ObjectId id, Consumer<User> consumer) {
+        new User().fromJSON(searchLocal(USER_FILE, id), consumer);
     }
 
     @Override
-    public Event getEvent(ObjectId id) {
-        return new Event().fromJSON(searchLocal(EVENTS_FILE, id));
+    public void getEvent(ObjectId id, Consumer<Event> consumer) {
+        new Event().fromJSON(searchLocal(EVENTS_FILE, id), consumer);
     }
 
     @Override
-    public Task getTask(ObjectId id) {
-        return new Task().fromJSON(searchLocal(TASKS_FILE, id));
+    public void getTask(ObjectId id, Consumer<Task> consumer) {
+        new Task().fromJSON(searchLocal(TASKS_FILE, id), consumer);
     }
 
     @Override
-    public Fee getFee(ObjectId id) {
-        return new Fee().fromJSON(searchLocal(FEES_FILE, id));
+    public void getFee(ObjectId id, Consumer<Fee> consumer) {
+        new Fee().fromJSON(searchLocal(FEES_FILE, id), consumer);
     }
 
     @Override
-    public House getHouse(ObjectId id) {
-        return new House().fromJSON(searchLocal(HOUSE_FILE, id));
+    public void getHouse(ObjectId id, Consumer<House> consumer) {
+        new House().fromJSON(searchLocal(HOUSE_FILE, id), consumer);
     }
 
     @Override
-    public boolean postUser(User user) {
-        return saveLocal(USER_FILE, user);
+    public void postUser(User user, Consumer<Boolean> consumer) {
+        saveLocal(USER_FILE, user, consumer);
     }
 
     @Override
-    public boolean postEvent(Event event) {
-        return saveLocal(EVENTS_FILE, event);
+    public void postEvent(Event event, Consumer<Boolean> consumer) {
+        saveLocal(EVENTS_FILE, event, consumer);
     }
 
     @Override
-    public boolean postTask(Task task) {
-        return saveLocal(TASKS_FILE, task);
+    public void postTask(Task task, Consumer<Boolean> consumer) {
+        saveLocal(TASKS_FILE, task, consumer);
     }
 
     @Override
-    public boolean postFee(Fee fee) {
-        return saveLocal(FEES_FILE, fee);
+    public void postFee(Fee fee, Consumer<Boolean> consumer) {
+        saveLocal(FEES_FILE, fee, consumer);
     }
 
     @Override
-    public boolean postHouse(House house) {
-        return saveLocal(HOUSE_FILE, house);
+    public void postHouse(House house, Consumer<Boolean> consumer) {
+        saveLocal(HOUSE_FILE, house, consumer);
     }
 
     private JSONElement searchLocal(String fileName, ObjectId id) {
         return Objects.requireNonNull(Objects.requireNonNull(retrieveLocal(fileName)).search(id.toString()));
     }
 
-    private boolean saveLocal(String filename, Indexable model) {
+    private void saveLocal(String filename, Indexable model, Consumer<Boolean> consumer) {
         EasyJSON json = Objects.requireNonNull(retrieveLocal(filename));
         json.putStructure(model.getId().toString(), model.toJSON());
         try {
             json.save();
+            consumer.accept(true);
         } catch (EasyJSONException e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
+        consumer.accept(false);
     }
 
     private EasyJSON retrieveLocal(String fileName) {
         File file = getLocalFile(fileName);
         if (!file.exists()) {
             populateStores();
-            return retrieveLocal(fileName);
+//            return retrieveLocal(fileName);
+            file = getLocalFile(fileName);
         }
         try {
             return EasyJSON.open(file);

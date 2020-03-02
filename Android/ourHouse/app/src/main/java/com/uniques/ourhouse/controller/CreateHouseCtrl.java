@@ -14,11 +14,11 @@ import android.widget.TextView;
 
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
-
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.session.Session;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -49,7 +49,7 @@ public class CreateHouseCtrl implements FragmentCtrl {
                 keyNumber.setText(key);
             }
             else{
-                key = myDatabase.keyGen();
+                key = Session.keyGen();
                 houseName.setText(houseName.getText());
             }
         };
@@ -105,7 +105,7 @@ public class CreateHouseCtrl implements FragmentCtrl {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                key = myDatabase.keyGen();
+                key = Session.keyGen();
                 myDatabase.checkKey(key, checkFunction);
             }
         });

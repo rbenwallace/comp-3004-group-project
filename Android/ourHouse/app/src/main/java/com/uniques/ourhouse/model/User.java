@@ -1,21 +1,19 @@
 package com.uniques.ourhouse.model;
 
-import android.util.Log;
-
+import com.google.gson.JsonObject;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
-import com.google.gson.JsonObject;
-
-import java.util.UUID;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+
+import java.util.function.Consumer;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class User implements Model, Observable, Indexable {
     public static final String USER_COLLECTION = "Users";
@@ -151,13 +149,13 @@ public class User implements Model, Observable, Indexable {
     }
 
     @Override
-    public User fromJSON(JSONElement json) {
+    public void fromJSON(JSONElement json, Consumer consumer) {
         userID = (ObjectId) json.valueOf("userId");
         firstName = json.valueOf("fname");
         lastName = json.valueOf("lname");
         emailAddress = json.valueOf("email");
         performance = json.valueOf("performance");
-        return this;
+        consumer.accept(this);
     }
 
     public static User fromJSON(JsonObject obj) {

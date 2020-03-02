@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.uniques.ourhouse.model.User;
 
+import java.util.Random;
+
 public final class Session {
 
     private static Session baseSession;
@@ -32,6 +34,14 @@ public final class Session {
 
     public static Session getSession() {
         return baseSession;
+    }
+
+    public static String keyGen() {
+        String [] selectFrom ={"1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
+        Random rn = new Random();
+        String key = "#" + selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)] +
+                selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)];
+        return key;
     }
 
     private User user;
