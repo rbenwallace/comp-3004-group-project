@@ -7,17 +7,17 @@ import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import java.util.Date;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.bson.Document;
-import org.bson.types.ObjectId;
-
 public class Event implements Model, Observable, Indexable {
+
     public static final String EVENT_COLLECTION = "Events";
     private ObjectId eventId;
     private String title;
@@ -30,9 +30,9 @@ public class Event implements Model, Observable, Indexable {
         Event r = new Event("Recycling Bin Day", new Date(now), new User("Ben", "", ""));
         r.setDateCompleted(new Date(now + 76543210));
         return new Event[]{
-                new Event("Dishes", new Date(now + 1000000), new User("Victor", "", "", 0)),
-                new Event("Recycling Bin Day", new Date(now), new User("Ben", "", "", 0)),
-                new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", "", 0))};
+                new Event("Dishes", new Date(now + 1000000), new User("Victor", "", "")),
+                r,
+                new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""))};
     }
 
     public Event(ObjectId eventId, String title, User assignedTo, Date dueDate, Date dateCompleted) {
@@ -42,6 +42,7 @@ public class Event implements Model, Observable, Indexable {
         this.dueDate = dueDate;
         this.dateCompleted = dateCompleted;
     }
+
     public Event(String title, User assignedTo, Date dueDate, Date dateCompleted) {
         this.eventId = new ObjectId();
         this.title = title;
@@ -89,6 +90,14 @@ public class Event implements Model, Observable, Indexable {
         return dateCompleted;
     }
 
+    public boolean isLate() {
+        return dateCompleted.after(dueDate);
+    }
+
+    public void setDateCompleted(Date dateCompleted) {
+        this.dateCompleted = dateCompleted;
+    }
+
     @Override
     public int getCompareType() {
         return DATE;
@@ -105,7 +114,7 @@ public class Event implements Model, Observable, Indexable {
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
-        if(eventId != null)
+        if (eventId != null)
             asDoc.put("_id", eventId);
         asDoc.put("title", title);
         asDoc.put("assignedTo", assignedTo.toBsonDocument());
@@ -114,7 +123,7 @@ public class Event implements Model, Observable, Indexable {
         return asDoc;
     }
 
-    public static Event fromBsonDocument(final Document doc){
+    public static Event fromBsonDocument(final Document doc) {
         User assignedTo = User.fromBsonDocument((Document) doc.get("assignedTo"));
         return new Event(
                 (ObjectId) doc.get("_id"),
@@ -128,7 +137,7 @@ public class Event implements Model, Observable, Indexable {
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
-        json.putPrimitive("eventId", eventId);
+        json.putPrimitive("_id", eventId.toString());
         json.putPrimitive("title", title);
         json.putPrimitive("assignedTo", assignedTo.getId().toString());
         json.putPrimitive("dueDate", dueDate.getTime());
@@ -137,16 +146,16 @@ public class Event implements Model, Observable, Indexable {
     }
 
     @Override
-    public Event fromJSON(JSONElement json) {
-        Consumer<User> consumer = returnedObject -> {
-            assignedTo = returnedObject;
-        };
-        eventId = (ObjectId) json.valueOf("eventId");
-        title = json.valueOf("title");
-        Session.getSession().getDatabase().getUser((ObjectId) json.valueOf("assignedTo"), consumer);
-        dueDate = new Date((long) json.valueOf("dueDate"));
-        dateCompleted = new Date((long) json.valueOf("dateCompleted"));
-        return this;
+    public void fromJSON(JSONElement json, Consumer consumer) {
+        Event that = this;
+        Session.getSession().getDatabase().getUser(new ObjectId(json.<String>valueOf("assignedTo")), user -> {
+            eventId = new ObjectId(json.<String>valueOf("eventId"));
+            title = json.valueOf("title");
+            assignedTo = user;
+            dueDate = new Date((long) json.valueOf("dueDate"));
+            dateCompleted = new Date((long) json.valueOf("dateCompleted"));
+            consumer.accept(that);
+        });
     }
 
     @Override

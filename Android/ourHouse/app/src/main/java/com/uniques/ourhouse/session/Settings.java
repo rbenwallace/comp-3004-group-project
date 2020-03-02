@@ -6,31 +6,32 @@ import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
+import org.bson.types.ObjectId;
+
 import java.io.File;
-import java.util.UUID;
 
 public enum Settings {
 
-    OPEN_HOUSE(new UUIDHandler() {
+    OPEN_HOUSE(new ObjectIdHandler() {
         @Override
         String getKey() {
             return "openHouse";
         }
 
         @Override
-        UUID getDefault() {
+        ObjectId getDefault() {
             return null;
         }
     }),
 
-    FEED_FILTER_USER(new UUIDHandler() {
+    FEED_FILTER_USER(new ObjectIdHandler() {
         @Override
         String getKey() {
             return "feed.filterUser";
         }
 
         @Override
-        UUID getDefault() {
+        ObjectId getDefault() {
             return null;
         }
     }),
@@ -116,11 +117,11 @@ public enum Settings {
             if (parent.elementExists(getKey())) {
                 read(parent);
             } else {
-                setToDefault();
+                obj = getDefault();
             }
         }
 
-        abstract void setToDefault();
+        abstract T getDefault();
 
         protected abstract void read(JSONElement parent);
 
@@ -140,12 +141,12 @@ public enum Settings {
         }
     }
 
-    private static abstract class UUIDHandler extends Handler<UUID> {
+    private static abstract class ObjectIdHandler extends Handler<ObjectId> {
 
         @Override
         protected void read(JSONElement parent) {
-            String uuidString = parent.valueOf(getKey());
-            obj = uuidString == null ? null : UUID.fromString(uuidString);
+            String idString = parent.valueOf(getKey());
+            obj = idString == null ? null : new ObjectId(idString);
         }
 
         @Override

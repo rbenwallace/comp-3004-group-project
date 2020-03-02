@@ -4,7 +4,6 @@ local.properties
 build/
 .gradle/
 .idea/workspace.xml
-.settings
 .idea/libraries
 .DS_Store
 .idea/tasks.xml

@@ -17,10 +17,12 @@ import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Comparable;
 import com.uniques.ourhouse.util.Observable;
 
+import org.bson.types.ObjectId;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
+import java.util.function.Consumer;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -42,11 +44,11 @@ public final class FeedCard implements RecyclerCard, Comparable {
         return object;
     }
 
+    private FeedCtrl controller;
     private FeedCardType cardType;
     private FeedCardObject object;
     private FeedCardSpecialization specialization;
     private boolean isExpanded;
-    private FeedCtrl controller;
 
     private FragmentActivity activity;
 
@@ -254,58 +256,64 @@ public final class FeedCard implements RecyclerCard, Comparable {
         }
 
         public void updateInfo() {
+            Consumer<User> filterUserConsumer = filterUser -> {
 
-            User filterUser = Session.getSession().getDatabase().getUser(Settings.FEED_FILTER_USER.get());
+                boolean assignedToMe = filterUser != null && filterUser.equals(Session.getSession().getLoggedInUser().getId());
+                boolean assignedToPerson = !assignedToMe && filterUser != null;
+                boolean showLate = Settings.FEED_SHOW_LATE.get();
+                boolean showOnTime = Settings.FEED_SHOW_ON_TIME.get();
 
-            boolean assignedToMe = filterUser.equals(Session.getSession().getLoggedInUser());
-            boolean assignedToPerson = !assignedToMe && filterUser != null;
-            boolean showLate = Settings.FEED_SHOW_LATE.get();
-            boolean showOnTime = Settings.FEED_SHOW_ON_TIME.get();
-
-            if (isExpanded) {
+                if (isExpanded) {
 //                smallView.setLayoutParams(new LinearLayout.LayoutParams(
 //                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                closePanel.setVisibility(View.VISIBLE);
-                optionsPanel.setVisibility(View.VISIBLE);
-                txtTitle.setVisibility(View.GONE);
+                    closePanel.setVisibility(View.VISIBLE);
+                    optionsPanel.setVisibility(View.VISIBLE);
+                    txtTitle.setVisibility(View.GONE);
 
 //                System.out.println("FILTER usr= " + controller.filterUser);
 
-                btnAssignedToMe.setBackgroundColor(activity.getColor(
-                        assignedToMe ? R.color.colorPrimary : R.color.colorInverse));
-                btnAssignedToMe.setTextColor(activity.getColor(
-                        assignedToMe ? R.color.colorInverse : R.color.colorTextPrimary));
+                    btnAssignedToMe.setBackgroundColor(activity.getColor(
+                            assignedToMe ? R.color.colorPrimary : R.color.colorInverse));
+                    btnAssignedToMe.setTextColor(activity.getColor(
+                            assignedToMe ? R.color.colorInverse : R.color.colorTextPrimary));
 
-                btnAssignedToPerson.setBackgroundColor(activity.getColor(
-                        assignedToPerson ? R.color.colorPrimary : R.color.colorInverse));
-                btnAssignedToPerson.setTextColor(activity.getColor(
-                        assignedToPerson ? R.color.colorInverse : R.color.colorTextPrimary));
+                    btnAssignedToPerson.setBackgroundColor(activity.getColor(
+                            assignedToPerson ? R.color.colorPrimary : R.color.colorInverse));
+                    btnAssignedToPerson.setTextColor(activity.getColor(
+                            assignedToPerson ? R.color.colorInverse : R.color.colorTextPrimary));
 
-                btnShowLate.setBackgroundColor(activity.getColor(
-                        showLate ? R.color.colorPrimaryLight : R.color.colorInverse));
-                btnShowOnTime.setBackgroundColor(activity.getColor(
-                        showOnTime ? R.color.colorPrimaryLight : R.color.colorInverse));
+                    btnShowLate.setBackgroundColor(activity.getColor(
+                            showLate ? R.color.colorPrimaryLight : R.color.colorInverse));
+                    btnShowOnTime.setBackgroundColor(activity.getColor(
+                            showOnTime ? R.color.colorPrimaryLight : R.color.colorInverse));
 
-            } else {
+                } else {
 //                smallView.setLayoutParams(new LinearLayout.LayoutParams(
 //                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                closePanel.setVisibility(View.GONE);
-                optionsPanel.setVisibility(View.GONE);
-                txtTitle.setVisibility(View.VISIBLE);
+                    closePanel.setVisibility(View.GONE);
+                    optionsPanel.setVisibility(View.GONE);
+                    txtTitle.setVisibility(View.VISIBLE);
 
-                String title = "";
-                if (assignedToMe || assignedToPerson) {
-                    title += "(" + filterUser.getFirstName() + ")   ";
-                }
-                if (showLate == showOnTime) {
-                    if (!showLate) {
-                        title += "hide late, hide on-time";
+                    String title = "";
+                    if (assignedToMe || assignedToPerson) {
+                        title += "(" + filterUser.getFirstName() + ")   ";
                     }
-                } else {
-                    title += showLate ? "show late, " : "hide late, ";
-                    title += showOnTime ? "show on-time" : "hide on-time";
+                    if (showLate == showOnTime) {
+                        if (!showLate) {
+                            title += "hide late, hide on-time";
+                        }
+                    } else {
+                        title += showLate ? "show late, " : "hide late, ";
+                        title += showOnTime ? "show on-time" : "hide on-time";
+                    }
+                    txtTitle.setText(title);
                 }
-                txtTitle.setText(title);
+            };
+
+            if (Settings.FEED_FILTER_USER.get() == null) {
+                filterUserConsumer.accept(null);
+            } else {
+                Session.getSession().getDatabase().getUser(Settings.FEED_FILTER_USER.get(), filterUserConsumer);
             }
         }
     }

@@ -8,8 +8,6 @@ import com.uniques.ourhouse.model.User;
 
 import org.bson.types.ObjectId;
 
-import java.util.function.Consumer;
-
 public interface DatabaseLinkLocal {
 
     public User getUser(ObjectId id);

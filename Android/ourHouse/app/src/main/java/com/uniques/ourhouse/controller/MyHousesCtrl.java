@@ -21,7 +21,7 @@ import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.JoinHouseFragment;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.util.MongoDB.MongoDB;
+import com.uniques.ourhouse.session.MongoDB;
 
 import java.util.ArrayList;
 

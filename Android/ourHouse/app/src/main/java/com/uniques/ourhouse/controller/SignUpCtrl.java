@@ -21,8 +21,7 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.SignUpFragment;
-import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.util.MongoDB.MongoDB;
+import com.uniques.ourhouse.session.MongoDB;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

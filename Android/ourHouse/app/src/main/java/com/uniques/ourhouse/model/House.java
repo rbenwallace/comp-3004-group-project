@@ -2,45 +2,27 @@ package com.uniques.ourhouse.model;
 
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.gson.JsonObject;
-import com.mongodb.BasicDBObject;
-import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
+import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
-import com.uniques.ourhouse.util.MongoDB.MongoDB;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.easyjson.SafeJSONElementType;
 
-import java.lang.reflect.Array;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.bson.BsonReader;
-import org.bson.BsonWriter;
-import org.bson.Document;
-import org.bson.codecs.Codec;
-import org.bson.codecs.DecoderContext;
-import org.bson.codecs.DocumentCodec;
-import org.bson.codecs.EncoderContext;
-import org.bson.types.ObjectId;
-import org.json.JSONObject;
-
-import javax.xml.transform.dom.DOMLocator;
 
 public class House implements Model, Indexable, Observable {
     private ObjectId houseId;
@@ -59,6 +41,7 @@ public class House implements Model, Indexable, Observable {
     public ObjectId getId() {
         return houseId;
     }
+
     public String getKeyId() {
         return houseKey;
     }
@@ -79,7 +62,7 @@ public class House implements Model, Indexable, Observable {
 
     public House(String name, User owner, ArrayList<User> occupants, House.Rotation rotation, String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
         this.houseId = new ObjectId();
-        this.houseKey = name + myDatabase.keyGen();
+        this.houseKey = name + Session.keyGen();
         this.owner = owner;
         this.name = name;
         this.occupants = occupants;
@@ -88,8 +71,11 @@ public class House implements Model, Indexable, Observable {
         this.showTaskDifficulty = showTaskDifficulty;
         this.penalizeLateTasks = penalizeLateTasks;
     }
-    public House(){
-        this.houseId = new ObjectId();
+
+    public House() {
+        houseId = new ObjectId();
+        occupants = new ArrayList<>();
+        rotation = new Rotation();
     }
 
     @Override
@@ -111,7 +97,7 @@ public class House implements Model, Indexable, Observable {
     }
 
     public void removeOccupant(User occupant) {
-        if(occupants.contains(occupant)) {
+        if (occupants.contains(occupant)) {
             occupants.remove(occupant);
             return;
         }
@@ -151,15 +137,15 @@ public class House implements Model, Indexable, Observable {
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
-        if(houseId != null)
+        if (houseId != null)
             asDoc.put("_id", houseId);
         asDoc.put("key", houseKey);
         Document occupantsDoc = new Document();
-        for(User user : occupants){
+        for (User user : occupants) {
             occupantsDoc.put(user.getEmailAddress(), user.toBsonDocument());
         }
         Document rotationDoc = new Document();
-        for(User user : rotation.rotation){
+        for (User user : rotation.rotation) {
             rotationDoc.put(user.getEmailAddress(), user.toBsonDocument());
         }
         asDoc.put("owner", owner.toBsonDocument());
@@ -179,14 +165,14 @@ public class House implements Model, Indexable, Observable {
         String name = doc.getString("name");
         Document occDoc = (Document) (doc.get("occupants"));
         ArrayList<User> occupants = new ArrayList<>();
-        occDoc.forEach((key, value)-> {
-            occupants.add(User.fromBsonDocument((Document)value));
+        occDoc.forEach((key, value) -> {
+            occupants.add(User.fromBsonDocument((Document) value));
         });
         Rotation rotation = new Rotation();
         rotation.rotation.clear();
         Document rotDoc = (Document) (doc.get("rotation"));
-        rotDoc.forEach((key, value)-> {
-            rotation.rotation.add(User.fromBsonDocument((Document)value));
+        rotDoc.forEach((key, value) -> {
+            rotation.rotation.add(User.fromBsonDocument((Document) value));
         });
         String password = doc.getString("password");
         Boolean showTaskDifficulty = doc.getBoolean("showTaskDifficulty");
@@ -209,8 +195,9 @@ public class House implements Model, Indexable, Observable {
         public Rotation(ArrayList<User> rotation) {
             this.rotation = rotation;
         }
+
         public Rotation() {
-            rotation = new ArrayList<User>();
+            rotation = new ArrayList<>();
         }
 
         public ArrayList<User> getRotation() {
@@ -225,6 +212,7 @@ public class House implements Model, Indexable, Observable {
         public String consoleFormat(String prefix) {
             return rotation.toString();
         }
+
         public void addUserToRotation(User user) {
             rotation.add(user);
         }
@@ -241,15 +229,15 @@ public class House implements Model, Indexable, Observable {
         }
 
         @Override
-        public Rotation fromJSON(JSONElement json) {
+        public void fromJSON(JSONElement json, Consumer consumer) {
             Consumer<User> aUser = a -> rotation.add(a);
             List<JSONElement> users = json.getChildren();
             int usersLength = users.size();
-            rotation = new ArrayList<User>();
+            rotation = new ArrayList<>();
             for (int i = 0; i < usersLength; ++i) {
-                Session.getSession().getDatabase().getUser((ObjectId)users.get(i).getValue(), aUser);
+                Session.getSession().getDatabase().getUser(new ObjectId(users.get(i).<String>getValue()), aUser);
             }
-            return null;
+            consumer.accept(this);
         }
     }
 
@@ -264,7 +252,7 @@ public class House implements Model, Indexable, Observable {
         Set<String> keys = occupants.keySet();
         Iterator<String> keyIt = keys.iterator();
         ArrayList<User> occs = new ArrayList<User>();
-        while(keyIt.hasNext()) {
+        while (keyIt.hasNext()) {
             String key = keyIt.next();
             if (occupants.get(key) != null) {
                 occs.add(User.fromJSON(occupants.get(key).getAsJsonObject()));
@@ -276,7 +264,7 @@ public class House implements Model, Indexable, Observable {
         ArrayList<User> rot = new ArrayList<User>();
         Rotation actualRotation = new Rotation();
         actualRotation.setRotation(rot);
-        while(keyIt.hasNext()) {
+        while (keyIt.hasNext()) {
             String key = keyIt.next();
             if (rotation.get(key) != null) {
                 rot.add(User.fromJSON(rotation.get(key).getAsJsonObject()));
@@ -290,37 +278,40 @@ public class House implements Model, Indexable, Observable {
 
     @Override
     public JSONElement toJSON() {
-//        EasyJSON json = EasyJSON.create();
-//        json.putPrimitive(houseId, houseId.toString());
-//        json.putPrimitive(name, name);
-//        json.putArray(Fields.Occupants);
-//        for (User occupant : occupants) {
-//            json.search(Fields.Occupants).putPrimitive(occupant.getId().toString());
-//        }
-//        json.putElement(Fields.Rotation, rotation.toJSON());
-//        json.putPrimitive(Fields.ShowTaskDIfficulty, showTaskDifficulty);
-//        json.putPrimitive(Fields.PenalizeLateTasks, penalizeLateTasks);
-//        return json.getRootNode();
-        return null;
+        EasyJSON json = EasyJSON.create();
+        json.putPrimitive("houseId", houseId.toString());
+        json.putPrimitive("name", name);
+        json.putArray("occupants");
+        for (User occupant : occupants) {
+            json.search("occupants").putPrimitive(occupant.getId().toString());
+        }
+        json.putElement("rotation", rotation.toJSON());
+        json.putPrimitive("showTaskDifficulty", showTaskDifficulty);
+        json.putPrimitive("penalizeLateTasks", penalizeLateTasks);
+        return json.getRootNode();
     }
 
     @Override
-    public House fromJSON(JSONElement json) {
-        houseId = json.valueOf("houseId");
-        Consumer<User> consumer = user -> {
+    public void fromJSON(JSONElement json, Consumer consumer) {
+        House that = this;
+        houseId = new ObjectId(json.<String>valueOf("houseId"));
+        Consumer<User> c = user -> {
             this.occupants.add(user);
         };
         name = json.valueOf("name");
         List<JSONElement> occupants = json.search("occupants").getChildren();
-        this.occupants = new ArrayList<User>();
+        this.occupants = new ArrayList<>();
         for (int i = 0; i < occupants.size(); ++i) {
-            Session.getSession().getDatabase().getUser(occupants.get(i).getValue(), consumer);
+            Session.getSession().getDatabase().getUser(occupants.get(i).getValue(), c);
         }
         rotation = new Rotation().fromJSON(json.search("rotation"));
         password = json.valueOf("password");
         showTaskDifficulty = json.valueOf("showTaskDifficulty");
         penalizeLateTasks = json.valueOf("penalizeLateTasks");
-        return this;
+        new Rotation().fromJSON(json.search("rotation"), rotation -> {
+            that.rotation = (Rotation) rotation;
+            consumer.accept(that);
+        });
     }
 
     @Override

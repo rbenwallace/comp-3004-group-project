@@ -16,25 +16,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
-
 import com.uniques.ourhouse.fragment.FragmentActivity;
-import com.uniques.ourhouse.fragment.SettingsFragment;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.util.MongoDB.MongoDB;
+import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.session.Session;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.function.Consumer;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class CreateHouseCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -62,7 +53,7 @@ public class CreateHouseCtrl implements FragmentCtrl {
                 keyNumber.setText(key);
             }
             else{
-                key = myDatabase.keyGen();
+                key = Session.keyGen();
                 houseName.setText(houseName.getText());
             }
         };
@@ -94,9 +85,9 @@ public class CreateHouseCtrl implements FragmentCtrl {
 
         password.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                password.setBackgroundColor(activity.getColor(R.color.background_blue));
-                confirmPassword.setBackgroundColor(activity.getColor(R.color.background_blue));
+            public void afterTextChanged(Editable editable) {
+                key = Session.keyGen();
+                myDatabase.checkKey(key, checkFunction);
             }
         });
 

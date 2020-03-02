@@ -5,12 +5,10 @@ import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.Schedule;
 
-import java.util.UUID;
+import org.bson.types.ObjectId;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.bson.types.ObjectId;
 
 public abstract class ManageItem implements Model, Indexable, Observable {
 

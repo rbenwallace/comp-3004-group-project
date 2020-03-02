@@ -1,6 +1,5 @@
 package com.uniques.ourhouse.controller;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.text.method.HideReturnsTransformationMethod;
@@ -20,12 +19,8 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mongodb.stitch.android.core.Stitch;
-import com.mongodb.stitch.android.core.StitchAppClient;
-import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
-import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.ForgotPasswordFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
@@ -34,7 +29,7 @@ import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SignUpFragment;
 import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.util.MongoDB.MongoDB;
+import com.uniques.ourhouse.session.MongoDB;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -44,7 +39,6 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import static android.content.Context.MODE_PRIVATE;
