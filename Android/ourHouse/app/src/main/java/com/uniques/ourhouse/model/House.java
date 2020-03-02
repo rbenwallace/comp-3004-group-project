@@ -3,7 +3,6 @@ package com.uniques.ourhouse.model;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
-import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
@@ -33,7 +32,6 @@ public class House implements Model, Indexable, Observable {
     private Rotation rotation;
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
-    private MongoDB myDatabase = new MongoDB();
 
     @NonNull
     @Override

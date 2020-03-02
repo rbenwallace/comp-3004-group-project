@@ -46,6 +46,10 @@ public class ForgotPasswordFragment extends Fragment<ForgotPasswordCtrl> {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+    }
+
+    @Override
     public boolean onHomeUpPressed() {
         return false;
     }

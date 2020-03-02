@@ -47,6 +47,10 @@ public class MyHousesFragment extends Fragment<MyHousesCtrl> {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+    }
+
+    @Override
     public boolean onHomeUpPressed() {
         return false;
     }

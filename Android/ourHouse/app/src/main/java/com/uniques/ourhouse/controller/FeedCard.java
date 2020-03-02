@@ -256,7 +256,15 @@ public final class FeedCard implements RecyclerCard, Comparable {
         public void updateInfo() {
             Consumer<User> filterUserConsumer = filterUser -> {
 
-                boolean assignedToMe = filterUser != null && filterUser.equals(Session.getSession().getLoggedInUser().getId());
+                if (filterUser != null) {
+                    System.out.println("*** FEED CARD urs= " + filterUser.getId() + " log= " +
+                            Session.getSession().getLoggedInUser().getId());
+                } else {
+                    System.out.println("*** FEED CARD urs=null log= " +
+                            Session.getSession().getLoggedInUser().getId());
+                }
+
+                boolean assignedToMe = filterUser != null && filterUser.getId().equals(Session.getSession().getLoggedInUser().getId());
                 boolean assignedToPerson = !assignedToMe && filterUser != null;
                 boolean showLate = Settings.FEED_SHOW_LATE.get();
                 boolean showOnTime = Settings.FEED_SHOW_ON_TIME.get();

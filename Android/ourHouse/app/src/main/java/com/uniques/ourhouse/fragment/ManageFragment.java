@@ -46,6 +46,10 @@ public class ManageFragment extends Fragment<ManageCtrl> {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+    }
+
+    @Override
     public boolean onHomeUpPressed() {
         return false;
     }

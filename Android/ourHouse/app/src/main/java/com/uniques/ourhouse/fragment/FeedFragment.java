@@ -63,6 +63,10 @@ public class FeedFragment extends Fragment<FeedCtrl> {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+    }
+
+    @Override
     public boolean onHomeUpPressed() {
         return false;
     }

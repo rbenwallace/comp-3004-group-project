@@ -187,6 +187,8 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
 
     public abstract FragmentId getFragmentId();
 
+    public abstract void acceptArguments(Object... args);
+
     /**
      * @return true if this fragment overrides default behaviour, false otherwise
      */

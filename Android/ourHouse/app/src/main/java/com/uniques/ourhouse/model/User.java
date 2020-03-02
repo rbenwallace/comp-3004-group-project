@@ -55,7 +55,8 @@ public class User implements Model, Observable, Indexable {
         this.performance = 0;
     }
 
-    public User() {}
+    public User() {
+    }
 
     @NonNull
     @Override
@@ -64,11 +65,13 @@ public class User implements Model, Observable, Indexable {
     }
 
     //testing
-    public int getPerformance () { return performance; }
+    public int getPerformance() {
+        return performance;
+    }
 
     @Override
     public String getName() {
-        return firstName+" "+lastName;
+        return firstName + " " + lastName;
     }
 
     public String getEmailAddress() {
@@ -118,7 +121,7 @@ public class User implements Model, Observable, Indexable {
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
-        if(userID != null)
+        if (userID != null)
             asDoc.put("_id", userID);
         asDoc.put("firstName", firstName);
         asDoc.put("lastName", lastName);
@@ -127,7 +130,7 @@ public class User implements Model, Observable, Indexable {
         return asDoc;
     }
 
-    public static User fromBsonDocument(final Document doc){
+    public static User fromBsonDocument(final Document doc) {
         return new User(
                 (ObjectId) doc.get("_id"),
                 doc.getString("firstName"),
@@ -150,7 +153,7 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
-        userID = (ObjectId) json.valueOf("userId");
+        userID = new ObjectId(json.<String>valueOf("userId"));
         firstName = json.valueOf("fname");
         lastName = json.valueOf("lname");
         emailAddress = json.valueOf("email");
