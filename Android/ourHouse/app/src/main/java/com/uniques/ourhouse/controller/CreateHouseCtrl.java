@@ -2,6 +2,7 @@ package com.uniques.ourhouse.controller;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.nfc.Tag;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -37,7 +38,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class CreateHouseCtrl implements FragmentCtrl {
     private FragmentActivity activity;
-    private EditText houseName, roomateName;
+    private EditText houseName, password, confirmPassword;
     private Button createHouse, sendRoomateEmailBtn;
     private ListView roomates;
     private CheckBox taskDiff;
@@ -77,56 +78,36 @@ public class CreateHouseCtrl implements FragmentCtrl {
         };
         myUser = MongoDB.getCurrentLocalUser(activity);
         houseName = (EditText) view.findViewById(R.id.houseName_create);
-        roomateName = (EditText) view.findViewById(R.id.addRoomate);
+        password = (EditText) view.findViewById(R.id.password1CH);
+        password = (EditText) view.findViewById(R.id.password2CH);
         createHouse = (Button) view.findViewById(R.id.createBtn);
-        roomates = (ListView) view.findViewById(R.id.addRoomatesList);
         taskDiff = (CheckBox) view.findViewById(R.id.showDifficulty);
         penLateTasks = (CheckBox) view.findViewById(R.id.penalizeLateTasks);
-        sendRoomateEmailBtn = (Button) view.findViewById(R.id.sendRoomateEmail);
 
         ArrayList<String> users = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, users);
-
-
-
-        sendRoomateEmailBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!roomateName.getText().toString().trim().equals("")){
-                    if(!users.contains(roomateName.getText().toString().trim())) {
-                        users.add(roomateName.getText().toString().trim());
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        });
 
         House.Rotation rotation = new House.Rotation();
         ArrayList<User> occupants = new ArrayList<User>();
         occupants.add(myUser);
         rotation.addUserToRotation(myUser);
-        roomates.setAdapter(adapter);
-        houseName.addTextChangedListener(new TextWatcher() {
+
+        password.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                key = myDatabase.keyGen();
-                myDatabase.checkKey(key, checkFunction);
+            public void onClick(View view) {
+                password.setBackgroundColor(activity.getColor(R.color.background_blue));
+                confirmPassword.setBackgroundColor(activity.getColor(R.color.background_blue));
             }
         });
+
         createHouse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, taskDiff.isChecked(), penLateTasks.isChecked());
+                if(!passwordCorrect()){
+                    password.setBackgroundColor(Color.RED);
+                    confirmPassword.setBackgroundColor(Color.RED);
+                }
+                House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
                 //add the house to the array
                 ArrayList<House> myHouses = myDatabase.getLocalHouseArray(activity);
                 if(myHouses == null) {
@@ -148,6 +129,15 @@ public class CreateHouseCtrl implements FragmentCtrl {
     @Override
     public void updateInfo() {
 
+    }
+    public boolean passwordCorrect(){
+        String passwordText = password.getText().toString().trim();
+        String confirmPasswordText = confirmPassword.getText().toString().trim();
+        if(passwordText.length() > 0){
+            if(passwordText.equals(confirmPasswordText))return true;
+            else return false;
+        }
+        return false;
     }
 
 }

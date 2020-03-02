@@ -12,6 +12,8 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.User;
+import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Comparable;
 import com.uniques.ourhouse.util.Observable;
 
@@ -22,6 +24,8 @@ import java.util.UUID;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+
+import org.bson.types.ObjectId;
 
 @SuppressLint("SetTextI18n")
 public final class FeedCard implements RecyclerCard, Comparable {
@@ -228,7 +232,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
             btnShowOnTime = layout.findViewById(R.id.feed_filter_btnShowOnTime);
 
             btnAssignedToMe.setOnClickListener(v -> {
-                UUID me = Session.getSession().getLoggedInUser().getId();
+                ObjectId me = Session.getSession().getLoggedInUser().getId();
                 if (Settings.FEED_FILTER_USER.get() == me) {
                     Settings.FEED_FILTER_USER.set(null);
                 } else {

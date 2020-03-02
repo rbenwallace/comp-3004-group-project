@@ -237,7 +237,7 @@ public class JSONElement implements Iterable<JSONElement> {
                 }
                 JSONElement innerSearch = result.search(part);
                 if (innerSearch == null) {
-                    result = result.putStructure(part);
+                    result = result.putStructure(paret);
                 } else {
                     result = innerSearch;
                 }

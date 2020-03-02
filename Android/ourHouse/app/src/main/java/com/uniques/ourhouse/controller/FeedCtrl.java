@@ -173,7 +173,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                     if (occursSameField(date, now, Calendar.DAY_OF_YEAR, 1)) {
                         if (!doneDayDiff) {
                             feedCardList.add(
-                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, activity));
+                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, c));
                             doneDayDiff = true;
                         }
                         // if date just occurs this week

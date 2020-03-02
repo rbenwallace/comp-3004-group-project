@@ -217,10 +217,10 @@ public class LoginCtrl implements FragmentCtrl {
         protected void onPostExecute(com.google.android.gms.tasks.Task<StitchUser> loggedInUser, String email, String passwd) {
             if (statusCode == 1) {
                 User newUser = new User(new ObjectId(loggedInUser.getResult().getId()), firstNameCurUser, lastNameCurUser, email, 0);
-                //TODO IF USER IS REAL DONT ADD JUST GRAB
                 Consumer<User> userConsumer = user -> {
                     if(user != null){
                         myDatabase.setLocalUser(user, activity);
+                        //TODO SET LOCAL DATA TO THIS GUY
                         Toast.makeText(activity, "OurHouse welcomes you!", Toast.LENGTH_SHORT).show();
                     }
                     else{
