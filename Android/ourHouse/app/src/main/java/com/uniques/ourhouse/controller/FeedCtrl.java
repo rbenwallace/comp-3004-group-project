@@ -8,6 +8,7 @@ import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.User;
+import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Comparable;
 import com.uniques.ourhouse.util.RecyclerCtrl;
 
@@ -119,7 +120,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
             public boolean equals(@Nullable Object obj) {
                 return obj instanceof FeedCard.FeedCardObject && ((FeedCard.FeedCardObject) obj).getCompareType() == getCompareType();
             }
-        }, this);
+        }, this));
         filterCard.setExpanded(pendingReopenFilter);
         pendingReopenFilter = false;
         feedCardList.add(filterCard);

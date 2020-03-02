@@ -2,6 +2,7 @@ package com.uniques.ourhouse.controller;
 
 import android.annotation.SuppressLint;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
     private FeedCardObject object;
     private FeedCardSpecialization specialization;
     private boolean isExpanded;
+    private FeedCtrl controller;
 
     private FragmentActivity activity;
 
