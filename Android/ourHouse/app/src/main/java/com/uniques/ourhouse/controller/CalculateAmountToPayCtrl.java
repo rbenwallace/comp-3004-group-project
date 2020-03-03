@@ -26,7 +26,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     private FragmentActivity activity;
     private Button selectedMonth;
     private Button selectedYear;
-    private String[] months = {"December", "November", "October", "September", "August", "July", "June", "May", "April", "March", "February", "January"};
+    private boolean menuOpen = false;
+    private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     public CalculateAmountToPayCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -49,8 +50,6 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         Button pastMonthButton10 = (Button) view.findViewById(R.id.month10);
         Button pastMonthButton11 = (Button) view.findViewById(R.id.month11);
 
-        selectedMonth = currentMonth;
-
         Button currentYear = (Button) view.findViewById(R.id.year0);
         Button pastYearButton01 = (Button) view.findViewById(R.id.year01);
         Button pastYearButton02 = (Button) view.findViewById(R.id.year02);
@@ -66,14 +65,20 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         int currentMonthInt = date.getMonth();
         for(int i = 0; i < 12; i++){
             monthButtons[i].setText(months[currentMonthInt]);
-            currentMonthInt = (currentMonthInt + 1) % 12;
+            if(currentMonthInt == 0){
+                currentMonthInt = 11;
+            }
+            else{
+                currentMonthInt -= 1;
+            }
         }
+        selectedMonth = currentMonth;
         for(int i = 0; i < 4; i++){
-            yearButtons[i].setText(String.valueOf(chosenYearInt));
+            yearButtons[i].setText("20"+String.valueOf(chosenYearInt%100));
             chosenYearInt -= 1;
         }
         currentYear.setBackgroundResource(R.drawable.selected_item);
-        currentMonth.setBackgroundResource(R.drawable.selected_item);
+        selectedMonth.setBackgroundResource(R.drawable.selected_item);
 
         currentMonth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,6 +217,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
                 pastYearButton01.setVisibility(View.INVISIBLE);
                 pastYearButton02.setVisibility(View.INVISIBLE);
                 pastYearButton03.setVisibility(View.INVISIBLE);
+                menuOpen = false;
 
             }
         });
@@ -227,6 +233,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
                 pastYearButton01.setVisibility(View.INVISIBLE);
                 pastYearButton02.setVisibility(View.INVISIBLE);
                 pastYearButton03.setVisibility(View.INVISIBLE);
+                menuOpen = false;
 
             }
         });
@@ -242,6 +249,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
                 pastYearButton01.setVisibility(View.INVISIBLE);
                 pastYearButton02.setVisibility(View.INVISIBLE);
                 pastYearButton03.setVisibility(View.INVISIBLE);
+                menuOpen = false;
 
             }
         });
@@ -257,6 +265,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
                 pastYearButton01.setVisibility(View.INVISIBLE);
                 pastYearButton02.setVisibility(View.INVISIBLE);
                 pastYearButton03.setVisibility(View.INVISIBLE);
+                menuOpen = false;
 
             }
         });
@@ -264,10 +273,20 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         ImageButton hamburgerMenu = (ImageButton) activity.findViewById(R.id.HamburgerMenu);
         hamburgerMenu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                currentYear.setVisibility(View.VISIBLE);
-                pastYearButton01.setVisibility(View.VISIBLE);
-                pastYearButton02.setVisibility(View.VISIBLE);
-                pastYearButton03.setVisibility(View.VISIBLE);
+                if(menuOpen){
+                    currentYear.setVisibility(View.INVISIBLE);
+                    pastYearButton01.setVisibility(View.INVISIBLE);
+                    pastYearButton02.setVisibility(View.INVISIBLE);
+                    pastYearButton03.setVisibility(View.INVISIBLE);
+                    menuOpen = false;
+                }
+                else{
+                    currentYear.setVisibility(View.VISIBLE);
+                    pastYearButton01.setVisibility(View.VISIBLE);
+                    pastYearButton02.setVisibility(View.VISIBLE);
+                    pastYearButton03.setVisibility(View.VISIBLE);
+                    menuOpen = true;
+                }
             }
         });
 
