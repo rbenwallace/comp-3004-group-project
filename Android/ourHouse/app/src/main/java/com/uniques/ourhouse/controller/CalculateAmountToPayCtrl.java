@@ -16,6 +16,7 @@ import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
+import com.uniques.ourhouse.fragment.ScreenMonthFragment;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -55,6 +56,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         Button pastYearButton02 = (Button) view.findViewById(R.id.year02);
         Button pastYearButton03 = (Button) view.findViewById(R.id.year03);
 
+        Button calculateButton = (Button) view.findViewById(R.id.calculate);
+
         selectedYear = currentYear;
 
         Button[] monthButtons = {currentMonth, pastMonthButton01, pastMonthButton02, pastMonthButton03, pastMonthButton04, pastMonthButton05, pastMonthButton06, pastMonthButton07, pastMonthButton08, pastMonthButton09, pastMonthButton10, pastMonthButton11};
@@ -79,6 +82,17 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         }
         currentYear.setBackgroundResource(R.drawable.selected_item);
         selectedMonth.setBackgroundResource(R.drawable.selected_item);
+
+        calculateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String month = selectedMonth.getText().toString();
+                String year = selectedYear.getText().toString();
+                activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), month, year);
+                Log.d("wallace: ", month);
+                Log.d("wallace: ", year);
+            }
+        });
 
         currentMonth.setOnClickListener(new View.OnClickListener() {
             @Override
