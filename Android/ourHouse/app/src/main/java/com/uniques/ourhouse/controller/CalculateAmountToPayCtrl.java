@@ -25,6 +25,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class CalculateAmountToPayCtrl implements FragmentCtrl {
     private FragmentActivity activity;
     private Button selectedMonth;
+    private Button selectedYear;
     private String[] months = {"December", "November", "October", "September", "August", "July", "June", "May", "April", "March", "February", "January"};
 
     public CalculateAmountToPayCtrl(FragmentActivity activity) {
@@ -32,7 +33,6 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     }
 
     public void init(View view) {
-        ImageButton hamburgerMenu;
 
         Button leftButton = (Button) view.findViewById(R.id.left_button);
         Button rightButton = (Button) view.findViewById(R.id.right_button);
@@ -56,6 +56,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         Button pastYearButton02 = (Button) view.findViewById(R.id.year02);
         Button pastYearButton03 = (Button) view.findViewById(R.id.year03);
 
+        selectedYear = currentYear;
+
         Button[] monthButtons = {currentMonth, pastMonthButton01, pastMonthButton02, pastMonthButton03, pastMonthButton04, pastMonthButton05, pastMonthButton06, pastMonthButton07, pastMonthButton08, pastMonthButton09, pastMonthButton10, pastMonthButton11};
         Button[] yearButtons = {currentYear, pastYearButton01, pastYearButton02, pastYearButton03};
 
@@ -66,11 +68,11 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             monthButtons[i].setText(months[currentMonthInt]);
             currentMonthInt = (currentMonthInt + 1) % 12;
         }
-        /*for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 4; i++){
             yearButtons[i].setText(String.valueOf(chosenYearInt));
             chosenYearInt -= 1;
         }
-        currentYear.setBackgroundResource(R.drawable.selected_item);*/
+        currentYear.setBackgroundResource(R.drawable.selected_item);
         currentMonth.setBackgroundResource(R.drawable.selected_item);
 
         currentMonth.setOnClickListener(new View.OnClickListener() {
@@ -199,21 +201,73 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             }
         });
 
-        hamburgerMenu = (ImageButton) view.findViewById(R.id.HamburgerMenu);
+        currentYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedYear.setBackgroundResource(R.drawable.loginbutton_selector);
+                currentYear.setBackgroundResource(R.drawable.selected_item);
+                selectedYear = currentYear;
+                
+                currentYear.setVisibility(View.INVISIBLE);
+                pastYearButton01.setVisibility(View.INVISIBLE);
+                pastYearButton02.setVisibility(View.INVISIBLE);
+                pastYearButton03.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        pastYearButton01.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedYear.setBackgroundResource(R.drawable.loginbutton_selector);
+                pastYearButton01.setBackgroundResource(R.drawable.selected_item);
+                selectedYear = pastYearButton01;
+
+                currentYear.setVisibility(View.INVISIBLE);
+                pastYearButton01.setVisibility(View.INVISIBLE);
+                pastYearButton02.setVisibility(View.INVISIBLE);
+                pastYearButton03.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        pastYearButton02.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedYear.setBackgroundResource(R.drawable.loginbutton_selector);
+                pastYearButton02.setBackgroundResource(R.drawable.selected_item);
+                selectedYear = pastYearButton02;
+
+                currentYear.setVisibility(View.INVISIBLE);
+                pastYearButton01.setVisibility(View.INVISIBLE);
+                pastYearButton02.setVisibility(View.INVISIBLE);
+                pastYearButton03.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        pastYearButton03.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedYear.setBackgroundResource(R.drawable.loginbutton_selector);
+                pastYearButton03.setBackgroundResource(R.drawable.selected_item);
+                selectedYear = pastYearButton03;
+
+                currentYear.setVisibility(View.INVISIBLE);
+                pastYearButton01.setVisibility(View.INVISIBLE);
+                pastYearButton02.setVisibility(View.INVISIBLE);
+                pastYearButton03.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        ImageButton hamburgerMenu = (ImageButton) activity.findViewById(R.id.HamburgerMenu);
         hamburgerMenu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                LayoutInflater inflater = (LayoutInflater)
-                        activity.getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupView = inflater.inflate(R.layout.year, null);
-                // create the popup window
-                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                boolean focusable = true; // lets taps outside the popup also dismiss it
-                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-                // show the popup window
-                // which view you pass in doesn't matter, it is only used for the window tolken
-                popupWindow.showAtLocation(view, Gravity.LEFT, 85, -10);
-                // dismiss the popup window when touched
+                currentYear.setVisibility(View.VISIBLE);
+                pastYearButton01.setVisibility(View.VISIBLE);
+                pastYearButton02.setVisibility(View.VISIBLE);
+                pastYearButton03.setVisibility(View.VISIBLE);
             }
         });
 
