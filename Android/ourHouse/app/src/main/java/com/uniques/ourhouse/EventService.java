@@ -24,6 +24,8 @@ import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 
+import org.bson.types.ObjectId;
+
 public class EventService extends JobService {
     private Logic runningLogic;
 
@@ -208,7 +210,7 @@ public class EventService extends JobService {
                 List<Event> events = new ArrayList<>();
                 tasks.forEach(((day, tasks) ->
                         tasks.forEach(task ->
-                                events.add(new Event(task.getName(), user, day, null)))));
+                                events.add(new Event(task.getName(), day, user, null)))));
                 return events;
             }
 

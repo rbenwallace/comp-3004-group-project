@@ -385,26 +385,26 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         asDoc.put("start", start);
         asDoc.put("end", end);
         asDoc.put("endType", endType.toString());
-        if (repeatBetterSchedule != null)
-            asDoc.put("repeatScheduel", repeatBetterSchedule.toJSON());
+        if (repeatSchedule != null)
+            asDoc.put("repeatScheduel", repeatSchedule.toJSON());
         return asDoc;
     }
 
-    public Schedule fromBsonDocument(final Document doc){
-        if(doc.containsKey("repeatScheduel")){
+    public Schedule fromBsonDocument(final Document doc) {
+        if (doc.containsKey("repeatScheduel")) {
             return new Schedule(
                     doc.getDate("start"),
                     doc.getDate("end"),
                     new Repeat().fromJSON((JSONElement) Objects.requireNonNull(doc.get("repeatScheduel")))
             );
-        }
-        else {
+        } else {
             return new Schedule(
                     doc.getDate("start"),
                     doc.getDate("end"),
                     null
             );
         }
+    }
 
 
     @Override

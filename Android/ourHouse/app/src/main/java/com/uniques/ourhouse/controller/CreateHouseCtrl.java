@@ -124,7 +124,6 @@ public class CreateHouseCtrl implements FragmentCtrl {
                     }
                 });
             }
-            myDatabase.addMyHouse(newHouse, activity, boolConsumer);
         });
     }
 
