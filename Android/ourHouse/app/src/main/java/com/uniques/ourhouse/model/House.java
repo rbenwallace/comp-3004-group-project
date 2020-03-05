@@ -112,6 +112,14 @@ public class House implements Model, Indexable, Observable {
         this.password = password;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
     @Override
     public int getCompareType() {
         return STRING;
@@ -137,8 +145,7 @@ public class House implements Model, Indexable, Observable {
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
-        if (houseId != null)
-            asDoc.put("_id", houseId);
+        asDoc.put("_id", houseId);
         asDoc.put("key", houseKey);
         Document occupantsDoc = new Document();
         for (User user : occupants) {
@@ -242,7 +249,6 @@ public class House implements Model, Indexable, Observable {
     }
 
     public static House fromJSON(JsonObject obj) {
-        Log.d("tryingtogetit", obj.toString());
         JsonObject id = obj.get("_id").getAsJsonObject();
         String myID = id.get("$oid").getAsString();
         String myKey = obj.get("key").getAsString();
@@ -304,7 +310,6 @@ public class House implements Model, Indexable, Observable {
         for (int i = 0; i < occupants.size(); ++i) {
             Session.getSession().getDatabase().getUser(occupants.get(i).getValue(), c);
         }
-        rotation = new Rotation().fromJSON(json.search("rotation"));
         password = json.valueOf("password");
         showTaskDifficulty = json.valueOf("showTaskDifficulty");
         penalizeLateTasks = json.valueOf("penalizeLateTasks");

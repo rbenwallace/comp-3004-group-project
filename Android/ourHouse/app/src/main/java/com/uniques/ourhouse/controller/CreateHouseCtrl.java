@@ -1,20 +1,16 @@
 package com.uniques.ourhouse.controller;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.nfc.Tag;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
@@ -23,21 +19,21 @@ import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.util.TextChangeListener;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class CreateHouseCtrl implements FragmentCtrl {
     private FragmentActivity activity;
     private EditText houseName, password, confirmPassword;
-    private Button createHouse, sendRoomateEmailBtn;
-    private ListView roomates;
+    private Button createHouse;
     private CheckBox taskDiff;
     private CheckBox penLateTasks;
     private TextView keyNumber;
     private String key;
     private User myUser;
-    private MongoDB myDatabase;
+//    private DatabaseLink myDatabase = Session.getSession().getDatabase();
+    private MongoDB myDatabase = new MongoDB();
 
     public CreateHouseCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -48,29 +44,10 @@ public class CreateHouseCtrl implements FragmentCtrl {
         key = "";
         myDatabase = new MongoDB();
         keyNumber = (TextView) view.findViewById(R.id.houseKey);
-        Consumer<Boolean> checkFunction = bool-> {
-            if(bool){
-                keyNumber.setText(key);
-            }
-            else{
-                key = Session.keyGen();
-                houseName.setText(houseName.getText());
-            }
-        };
-        Consumer<Boolean> boolConsumer = bool -> {
-            if(bool){
-                Intent intent = new Intent(activity, MainActivity.class);
-                activity.startActivity(intent);
-                activity.finish();
-            }
-            else {
-                Log.d("CreateHouseCrtl", "adding houses error");
-            }
-        };
-        myUser = MongoDB.getCurrentLocalUser(activity);
+        myUser = myDatabase.getCurrentLocalUser(activity);
         houseName = (EditText) view.findViewById(R.id.houseName_create);
         password = (EditText) view.findViewById(R.id.password1CH);
-        password = (EditText) view.findViewById(R.id.password2CH);
+        confirmPassword = (EditText) view.findViewById(R.id.password2CH);
         createHouse = (Button) view.findViewById(R.id.createBtn);
         taskDiff = (CheckBox) view.findViewById(R.id.showDifficulty);
         penLateTasks = (CheckBox) view.findViewById(R.id.penalizeLateTasks);
@@ -83,20 +60,40 @@ public class CreateHouseCtrl implements FragmentCtrl {
         occupants.add(myUser);
         rotation.addUserToRotation(myUser);
 
-        password.setOnClickListener(new View.OnClickListener() {
+        houseName.addTextChangedListener(new TextChangeListener() {
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 key = Session.keyGen();
-                myDatabase.checkKey(key, checkFunction);
+                myDatabase.checkKey(key, bool ->{
+                    if(bool){
+                        keyNumber.setText(key);
+                    }
+                    else{
+                        key = Session.keyGen();
+                        houseName.setText(houseName.getText());
+                    }
+                });
             }
         });
+        password.addTextChangedListener(new TextChangeListener() {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                DrawableCompat.setTint(password.getBackground(), ContextCompat.getColor(activity, R.color.colorPrimaryDark));
+                DrawableCompat.setTint(confirmPassword.getBackground(), ContextCompat.getColor(activity, R.color.colorPrimaryDark));
+
+            }
+        });
+
 
         createHouse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!passwordCorrect()){
-                    password.setBackgroundColor(Color.RED);
-                    confirmPassword.setBackgroundColor(Color.RED);
+                    DrawableCompat.setTint(password.getBackground(), ContextCompat.getColor(activity, R.color.red));
+                    DrawableCompat.setTint(confirmPassword.getBackground(), ContextCompat.getColor(activity, R.color.red));
+//                    password.setBackgroundColor(Color.RED);
+//                    confirmPassword.setBackgroundColor(Color.RED);
+                    return;
                 }
                 House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
                 //add the house to the array
@@ -104,15 +101,27 @@ public class CreateHouseCtrl implements FragmentCtrl {
                 if(myHouses == null) {
                     myHouses = new ArrayList<>();
                     myHouses.add(newHouse);
-                    Log.d("checkingHouses ADD", myHouses.toString());
-                    myDatabase.updateLocalHouseArray(myHouses, activity);
                 }
                 else {
                     myHouses.add(newHouse);
-                    Log.d("checkingHouses ADD", myHouses.toString());
-                    myDatabase.updateLocalHouseArray(myHouses, activity);
                 }
-                myDatabase.addMyHouse(newHouse, activity, boolConsumer);
+                final ArrayList<House> HousesFinal = myHouses;
+                myDatabase.addMyHouse(newHouse, activity, bool ->{
+                    if(bool){
+                        User myUser = myDatabase.getCurrentLocalUser(activity);
+                        myUser.addHouseId(newHouse.getId());
+                        myDatabase.setLocalUser(myUser, activity);
+                        myUser = myDatabase.getCurrentLocalUser(activity);
+                        myDatabase.setLocalHouseArray(HousesFinal, activity);
+                        ArrayList<House> wow = myDatabase.getLocalHouseArray(activity);
+                        Intent intent = new Intent(activity, MainActivity.class);
+                        activity.startActivity(intent);
+                        activity.finish();
+                    }
+                    else {
+                        Log.d("CreateHouseCrtl", "adding houses error");
+                    }
+                });
             }
         });
     }

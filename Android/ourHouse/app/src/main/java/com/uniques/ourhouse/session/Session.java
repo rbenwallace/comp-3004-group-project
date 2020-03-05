@@ -1,8 +1,11 @@
 package com.uniques.ourhouse.session;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.uniques.ourhouse.model.User;
+
+import org.bson.types.ObjectId;
 
 import java.util.Random;
 
@@ -14,6 +17,7 @@ public final class Session {
         baseSession = new Session();
         baseSession.user = new User("Test user", "email@test.com", "1234567890");
         baseSession.database = new LocalStore(context);
+
 //        baseSession.security = new LocalSecurity(context) {
 //            @Override
 //            DatabaseLink getDatabaseLink() {
@@ -21,7 +25,7 @@ public final class Session {
 //            }
 //
 //            @Override
-//            protected boolean onAuthenticate(UUID id, UUID loginKey) {
+//            protected boolean onAuthenticate(ObjectId id, ObjectId loginKey) {
 //                Settings.STUDENT_LOGIN_KEY.set(loginKey);
 //                //todo login
 ////                baseSession.student = baseSession.database.getStudent(id);
@@ -44,6 +48,16 @@ public final class Session {
                 selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)];
         return key;
     }
+
+    public static String getIdFromString(String id) {
+        if(id == null) return null;
+        String [] temp = id.split(":");
+        if(temp.length == 1) return null;
+        String [] temp2 = temp[1].split("[^A-Za-z0-9]+");
+        Log.d("houseid", temp2[1]);
+        return temp2[1];
+    }
+
 
     private User user;
     private DatabaseLink database;

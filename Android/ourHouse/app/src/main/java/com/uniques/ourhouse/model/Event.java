@@ -1,9 +1,13 @@
 package com.uniques.ourhouse.model;
 
+import android.util.Log;
+
+import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
+import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
@@ -20,41 +24,55 @@ public class Event implements Model, Observable, Indexable {
 
     public static final String EVENT_COLLECTION = "Events";
     private ObjectId eventId;
+    private ObjectId assignedHouse;
     private String title;
     private User assignedTo;
     private Date dueDate;
     private Date dateCompleted;
+    private MongoDB myDatabase = new MongoDB();
 
     public static Event[] testEvents() {
         long now = new Date().getTime() - 80000000;
-        Event r = new Event("Recycling Bin Day", new Date(now), new User("Ben", "", ""));
+        Event r = new Event("Recycling Bin Day", new Date(now), new User("Ben", "", ""), new ObjectId());
         r.setDateCompleted(new Date(now + 76543210));
         return new Event[]{
-                new Event("Dishes", new Date(now + 1000000), new User("Victor", "", "")),
+                new Event("Dishes", new Date(now + 1000000), new User("Victor", "", ""), new ObjectId()),
                 r,
-                new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""))};
+                new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""), new ObjectId())};
+    }
+    public static Event[] testEventsWithId() {
+        long now = new Date().getTime() - 80000000;
+        Event r = new Event(new ObjectId(), "Recycling Bin Day", new User("Ben", "", ""), new ObjectId(), new Date(now), null);
+        r.setDateCompleted(new Date(now + 76543210));
+        return new Event[]{
+                new Event("Dishes", new User("Victor", "", ""), new ObjectId(),  new Date(now + 1000000), null),
+                r,
+                new Event("Buy us a TV", new User("Seb", "", ""), new ObjectId(), new Date(now + 2000000), null)};
     }
 
-    public Event(ObjectId eventId, String title, User assignedTo, Date dueDate, Date dateCompleted) {
+    public Event(ObjectId eventId, String title, User assignedTo, ObjectId assignedHouse, Date dueDate, Date dateCompleted) {
         this.eventId = eventId;
         this.title = title;
         this.assignedTo = assignedTo;
+        this.assignedHouse = assignedHouse;
         this.dueDate = dueDate;
         this.dateCompleted = dateCompleted;
     }
 
-    public Event(String title, User assignedTo, Date dueDate, Date dateCompleted) {
+    public Event(String title, User assignedTo, ObjectId assignedHouse, Date dueDate, Date dateCompleted) {
         this.eventId = new ObjectId();
         this.title = title;
         this.assignedTo = assignedTo;
+        this.assignedHouse = assignedHouse;
         this.dueDate = dueDate;
         this.dateCompleted = dateCompleted;
     }
 
-    public Event(String title, Date dueDate, User assignedTo) {
+    public Event(String title, Date dueDate, User assignedTo, ObjectId assignedHouse) {
         this.title = title;
         this.dueDate = dueDate;
         this.assignedTo = assignedTo;
+        this.assignedHouse = assignedHouse;
         // + (new Random().nextBoolean() ? 1000 : -1000)
         dateCompleted = new Date(dueDate.getTime());
     }
@@ -114,24 +132,33 @@ public class Event implements Model, Observable, Indexable {
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
-        if (eventId != null)
-            asDoc.put("_id", eventId);
+        asDoc.put("_id", eventId);
         asDoc.put("title", title);
-        asDoc.put("assignedTo", assignedTo.toBsonDocument());
+        asDoc.put("assignedTo", assignedTo.getId());
+        asDoc.put("assignedHouse", assignedHouse);
         asDoc.put("dueDate", dueDate);
         asDoc.put("dateCompleted", dateCompleted);
         return asDoc;
     }
 
-    public static Event fromBsonDocument(final Document doc) {
-        User assignedTo = User.fromBsonDocument((Document) doc.get("assignedTo"));
-        return new Event(
-                (ObjectId) doc.get("_id"),
-                doc.getString("title"),
-                assignedTo,
-                doc.getDate("dueDate"),
-                doc.getDate("dateCompleted")
-        );
+    public static void FromBsonDocument(final Document doc, Consumer<Event> eventConsumer) {
+        MongoDB myDatabase = new MongoDB();
+        myDatabase.getUser(doc.getObjectId("assignedTo"), user -> {
+            if (user == null) {
+                Log.d("checking", "Null user return");
+                eventConsumer.accept(null);
+            }
+            else {
+                eventConsumer.accept( new Event(
+                        doc.getObjectId("_id"),
+                        doc.getString("title"),
+                        user,
+                        doc.getObjectId("assignedHouse"),
+                        doc.getDate("dueDate"),
+                        doc.getDate("dateCompleted")
+                ));
+            }
+        });
     }
 
     @Override
@@ -140,6 +167,7 @@ public class Event implements Model, Observable, Indexable {
         json.putPrimitive("_id", eventId.toString());
         json.putPrimitive("title", title);
         json.putPrimitive("assignedTo", assignedTo.getId().toString());
+        json.putPrimitive("assignedHouse", assignedHouse.toString());
         json.putPrimitive("dueDate", dueDate.getTime());
         json.putPrimitive("dateCompleted", dateCompleted.getTime());
         return json.getRootNode();
@@ -152,6 +180,7 @@ public class Event implements Model, Observable, Indexable {
             eventId = new ObjectId(json.<String>valueOf("eventId"));
             title = json.valueOf("title");
             assignedTo = user;
+            assignedHouse = new ObjectId(json.<String>valueOf("assignedHouse"));
             dueDate = new Date((long) json.valueOf("dueDate"));
             dateCompleted = new Date((long) json.valueOf("dateCompleted"));
             consumer.accept(that);

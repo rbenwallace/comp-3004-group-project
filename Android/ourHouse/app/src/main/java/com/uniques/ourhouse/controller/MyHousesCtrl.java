@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.controller;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.Toast;
 
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
@@ -19,21 +19,31 @@ import com.uniques.ourhouse.fragment.CreateHouseFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.JoinHouseFragment;
+import com.uniques.ourhouse.fragment.LoginFragment;
+import com.uniques.ourhouse.model.Event;
+import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.model.House;
+import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.util.Schedule;
+
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class MyHousesCtrl implements FragmentCtrl {
     private FragmentActivity activity;
-    private MongoDB myDatabase;
     private ListView housesList;
     private House selectedHouse;
     private ArrayList<House> myHouses;
     private Button logoutBtn;
+//    private DatabaseLink myDatabase = Session.getSession().getDatabase();
+    private MongoDB myDatabase = new MongoDB();
 
     public MyHousesCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -41,23 +51,25 @@ public class MyHousesCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        myDatabase = new MongoDB();
         housesList = (ListView) view.findViewById(R.id.myHousesList);
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
         logoutBtn = (Button) view.findViewById(R.id.logoutBtnMH);
         //Gather houses if there are any from the shared pref Houses
         myHouses = myDatabase.getLocalHouseArray(activity);
-        Log.d("checkingHouses", myHouses.toString());
+        User myUser = myDatabase.getCurrentLocalUser(activity);
+        if(myUser.getMyHouses() == null){
+            myUser.setMyHouses(new ArrayList<ObjectId>());
+            myDatabase.setLocalUser(myUser, activity);
+        }
         if(myHouses == null){
             myHouses = new ArrayList<House>();
-            myDatabase.updateLocalHouseArray(myHouses, activity);
+            myDatabase.setLocalHouseArray(myHouses, activity);
         }
         ArrayList<String> houses = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, houses);
         housesList.setAdapter(adapter);
         for(House h : myHouses){
-            Log.d("checkingHouses " + h.getName(), h.toString());
             houses.add(h.getName());
         }
         adapter.notifyDataSetChanged();
@@ -98,6 +110,9 @@ public class MyHousesCtrl implements FragmentCtrl {
                 btnDeleteHouse.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        myDatabase.deleteUserFromHouse(myHouses.get(i), myUser, aBoolean -> {
+                            if(aBoolean) Log.d("deleteUserFromHouse: ", "Failed");
+                        });
                         House temp = myHouses.get(i);
                         houses.remove(i);
                         //If its the current House change it and delete, else just delete
@@ -105,15 +120,23 @@ public class MyHousesCtrl implements FragmentCtrl {
                             //TODO set to something right
                             myHouses.remove(i);
                             if(myHouses.size() > 0){
-                                myDatabase.setLocalHouse(myHouses.get(1), activity);
+                                myDatabase.setLocalHouse(myHouses.get(0), activity);
                             }
                         }
                         else
                             myHouses.remove(i);
-                        //Remove From lists and notify Listview
-                        User myUser = MongoDB.getCurrentLocalUser(activity);
+                        //Remove from lists and notify Listview
+                        User myUser = myDatabase.getCurrentLocalUser(activity);
+                        ArrayList<House> houses = myDatabase.getLocalHouseArray(activity);
+                        //Strip user from house
+                        temp.removeOccupant(myUser);
+                        temp.getRotation().getRotation().remove(myUser);
+                        myDatabase.setLocalHouseArray(myHouses, activity);
                         myUser.removeHouseId(temp.getId());
-                        myDatabase.updateLocalHouseArray(myHouses, activity);
+                        myDatabase.postHouse(temp, bool ->{
+                            if (bool) Log.d("MyHousesCtrl", "House removed user");
+                        });
+                        //TODO Remove the user from the House from the house
                         adapter.notifyDataSetChanged();
                         popupWindow.dismiss();
                     }
@@ -128,20 +151,22 @@ public class MyHousesCtrl implements FragmentCtrl {
                 myDatabase.clearLocalCurHouse(activity);
                 myDatabase.clearLocalCurUser(activity);
                 myDatabase.getAuth().logout();
+                activity.pushFragment(FragmentId.GET(LoginFragment.TAG));
             }
         });
-
         createHouse.setOnClickListener(view1 -> {
-            Toast.makeText(activity, "Going to CreateHouseFragment", Toast.LENGTH_LONG).show();
+//            Toast.makeText(activity, "Going to CreateHouseFragment", Toast.LENGTH_LONG).show();
             //TODO NAVIGATE TO NEXT FRAGMENT
             activity.pushFragment(FragmentId.GET(CreateHouseFragment.TAG));
         });
         joinHouse.setOnClickListener(view2 -> {
-            Toast.makeText(activity, "Going to JoinHouseFragment", Toast.LENGTH_LONG).show();
+//            Toast.makeText(activity, "Going to JoinHouseFragment", Toast.LENGTH_LONG).show();
             //TODO NAVIGATE TO NEXT FRAGMENT
 //            ((LS_Main) activity).setViewPager(3);
             activity.pushFragment(FragmentId.GET(JoinHouseFragment.TAG));
         });
+
+
     }
 
     @Override

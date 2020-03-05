@@ -2,6 +2,9 @@ package com.uniques.ourhouse.session;
 
 import android.content.Context;
 
+import com.mongodb.stitch.android.core.auth.StitchAuth;
+import com.mongodb.stitch.android.core.auth.StitchUser;
+import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.model.House;
@@ -13,9 +16,11 @@ import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.easyjson.SafeJSONElementType;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -30,6 +35,96 @@ final class LocalStore implements DatabaseLink {
 
     LocalStore(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public StitchAuth getAuth() {
+        return null;
+    }
+
+    @Override
+    public boolean autoAuth() {
+        return false;
+    }
+
+    @Override
+    public boolean isLoggedIn(ObjectId userId) {
+        return false;
+    }
+
+    @Override
+    public void logout(Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public StitchUser getStitchUser() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<House> getLocalHouseArray(FragmentActivity activity) {
+        return null;
+    }
+
+    @Override
+    public User getCurrentLocalUser(FragmentActivity activity) {
+        return null;
+    }
+
+    @Override
+    public House getCurrentLocalHouse(FragmentActivity activity) {
+        return null;
+    }
+
+    @Override
+    public void setLocalHouseArray(ArrayList<House> myList, FragmentActivity activity) {
+
+    }
+
+    @Override
+    public void setLocalUser(User user, FragmentActivity activity) {
+
+    }
+
+    @Override
+    public void setLocalHouse(House house, FragmentActivity activity) {
+
+    }
+
+    @Override
+    public void clearLocalHouses(FragmentActivity activity) {
+
+    }
+
+    @Override
+    public void clearLocalCurHouse(FragmentActivity activity) {
+
+    }
+
+    @Override
+    public void clearLocalCurUser(FragmentActivity activity) {
+
+    }
+
+    @Override
+    public void clearLocalLoginData(FragmentActivity activity) {
+
+    }
+
+    @Override
+    public void addMyUser(User user, FragmentActivity activity) {
+
+    }
+
+    @Override
+    public void addMyHouse(House house, FragmentActivity activity, Consumer<Boolean> boolConsumer) {
+
+    }
+
+    @Override
+    public void findHousesByName(String name, Consumer<ArrayList<House>> consumer) {
+
     }
 
     @Override
@@ -58,6 +153,36 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
+    public void getAllEventsFromHouse(ObjectId houseId, Consumer<ArrayList<Event>> consumer) {
+
+    }
+
+    @Override
+    public void getAllTasksFromHouse(ObjectId houseId, Consumer<ArrayList<Task>> consumer) {
+
+    }
+
+    @Override
+    public void getAllFeesFromHouse(ObjectId houseId, Consumer<ArrayList<Fee>> consumer) {
+
+    }
+
+    @Override
+    public void getAllEventsFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<ArrayList<Event>> consumer) {
+
+    }
+
+    @Override
+    public void getAllTasksFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<ArrayList<Task>> consumer) {
+
+    }
+
+    @Override
+    public void getAllFeesFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<ArrayList<Fee>> consumer) {
+
+    }
+
+    @Override
     public void postUser(User user, Consumer<Boolean> consumer) {
         saveLocal(USER_FILE, user, consumer);
     }
@@ -81,6 +206,127 @@ final class LocalStore implements DatabaseLink {
     public void postHouse(House house, Consumer<Boolean> consumer) {
         saveLocal(HOUSE_FILE, house, consumer);
     }
+
+    @Override
+    public void deleteAllEventsFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteAllTasksFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteAllFeesFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteAllEventsFromUser(ObjectId userId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteAllTasksFromUser(ObjectId userId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteAllFeesFromUser(ObjectId userId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteAllEventsFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteAllTasksFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteAllFeesFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteUser(User user, House userHouse, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteEvent(ObjectId eventId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteTask(ObjectId taskId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteFee(ObjectId feeId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteHouse(ObjectId houseId, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteOwnerFromHouse(House house, User user, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void deleteUserFromHouse(House house, User user, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void updateUser(User user, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void updateFee(Fee fee, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void updateTask(Task task, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void updateEvent(House event, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void updateHouse(House house, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void updateOwner(House house, User user, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public void checkKey(String id, Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
+    public Document getQueryForUser() {
+        return null;
+    }
+
 
     private JSONElement searchLocal(String fileName, ObjectId id) {
         return Objects.requireNonNull(Objects.requireNonNull(retrieveLocal(fileName)).search(id.toString()));

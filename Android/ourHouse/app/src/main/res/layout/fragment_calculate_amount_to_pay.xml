@@ -11,14 +11,13 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="215dp"
-        android:layout_height="361dp"
+        android:layout_width="179dp"
+        android:layout_height="272dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.397"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.451">
+        app:layout_constraintVertical_bias="0.456">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -29,141 +28,219 @@
 
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/month0"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
-                android:text="August"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.178"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/month01"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="September"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button" />
+                app:layout_constraintTop_toBottomOf="@+id/month0" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/month02"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="October"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button2" />
+                app:layout_constraintTop_toBottomOf="@+id/month1" />
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/month03"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="November"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button3" />
+                app:layout_constraintTop_toBottomOf="@+id/month02" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/month04"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="December"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button4" />
+                app:layout_constraintTop_toBottomOf="@+id/month03" />
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/month05"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="January"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button5" />
+                app:layout_constraintTop_toBottomOf="@+id/month04" />
 
             <Button
-                android:id="@+id/button7"
+                android:id="@+id/month06"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="February"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button6" />
+                app:layout_constraintTop_toBottomOf="@+id/month05" />
 
             <Button
-                android:id="@+id/button8"
+                android:id="@+id/month07"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="March"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button7" />
+                app:layout_constraintTop_toBottomOf="@+id/month06" />
 
             <Button
-                android:id="@+id/button9"
+                android:id="@+id/month08"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="April"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button8" />
+                app:layout_constraintTop_toBottomOf="@+id/month07" />
 
             <Button
-                android:id="@+id/button10"
+                android:id="@+id/month09"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="May"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button9" />
+                app:layout_constraintTop_toBottomOf="@+id/month08" />
 
             <Button
-                android:id="@+id/button11"
+                android:id="@+id/month10"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="June"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button10" />
+                app:layout_constraintTop_toBottomOf="@+id/month09" />
 
             <Button
-                android:id="@+id/button12"
+                android:id="@+id/month11"
                 android:layout_width="165dp"
                 android:layout_height="51dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:text="July"
+                android:background="@drawable/loginbutton_selector"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button11" />
-
+                app:layout_constraintTop_toBottomOf="@+id/month10" />
 
         </LinearLayout>
 
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.56">
+
+        <Button
+            android:id="@+id/year0"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/loginbutton_selector"
+            android:text=""
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/year01"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/loginbutton_selector"
+            android:text=""
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/year0" />
+
+        <Button
+            android:id="@+id/year02"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/loginbutton_selector"
+            android:text=""
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/year01" />
+
+        <Button
+            android:id="@+id/year03"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/loginbutton_selector"
+            android:text=""
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/year02"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView"
@@ -178,17 +255,44 @@
         app:layout_constraintVertical_bias="0.915" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="232dp"
-        android:layout_height="26dp"
-        android:text="Swipe left or right to view more"
+        android:id="@+id/swipe"
+        android:layout_width="179dp"
+        android:layout_height="22dp"
+        android:text="Swipe right to view more"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.795" />
+        app:layout_constraintVertical_bias="0.794" />
+
+    <Button
+        android:id="@+id/right_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/loginbutton_selector"
+        android:text="Right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.991"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.869" />
+
+    <Button
+        android:id="@+id/left_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/loginbutton_selector"
+        android:text="Left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.869" />
 
     <TextView
         android:id="@+id/textView3"
@@ -197,36 +301,13 @@
         android:layout_marginTop="48dp"
         android:text="Calculate Amount to Pay"
         android:textAlignment="center"
-        android:textSize="30sp"
+        android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.014" />
 
-    <Button
-        android:id="@+id/left_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Left"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textView2"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.802" />
-
-    <Button
-        android:id="@+id/right_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Right"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.991"
-        app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.802" />
 
     <ImageButton
         android:id="@+id/HamburgerMenu"
@@ -237,10 +318,10 @@
         android:src="@drawable/hamburger_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.103"
+        app:layout_constraintHorizontal_bias="0.167"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.246" />
+        app:layout_constraintVertical_bias="0.294" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

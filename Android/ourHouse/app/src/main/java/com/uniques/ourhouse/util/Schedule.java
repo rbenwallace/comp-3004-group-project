@@ -1,13 +1,20 @@
 package com.uniques.ourhouse.util;
 
+import android.transition.Scene;
+
+import com.google.gson.JsonElement;
+import com.mongodb.DBObject;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
+import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.exception.InvalidArgumentException;
 import com.uniques.ourhouse.util.exception.InvalidCombinationException;
 import com.uniques.ourhouse.util.exception.InvalidRangeException;
 import com.uniques.ourhouse.util.exception.UnsupportedFunctionCallException;
+import org.json.*;
 
 import org.bson.Document;
+import com.mongodb.DBObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -15,6 +22,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
@@ -78,12 +86,14 @@ public class Schedule implements Comparable, Model {
         endType = EndType.ON_DATE;
     }
 
+
     public Schedule(@NonNull Date start, @NonNull Date end, Repeat repeatBetterSchedule) {
         this.start = start;
         this.end = end;
         this.repeatBetterSchedule = repeatBetterSchedule;
         endType = EndType.ON_DATE;
     }
+
 
     /**
      * will pause bounds checking on start and end Dates
@@ -369,14 +379,29 @@ public class Schedule implements Comparable, Model {
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
-        //idk what this class is
+        asDoc.put("start", start);
+        asDoc.put("end", end);
+        asDoc.put("endType", endType.toString());
+        if (repeatBetterSchedule != null)
+            asDoc.put("repeatScheduel", repeatBetterSchedule.toJSON());
         return asDoc;
     }
 
-    public static Schedule fromBsonDocument(final Document doc){
-        return new Schedule(
-                //what the guy above said
-        );
+    public Schedule fromBsonDocument(final Document doc){
+        if(doc.containsKey("repeatScheduel")){
+            return new Schedule(
+                    doc.getDate("start"),
+                    doc.getDate("end"),
+                    new Repeat().fromJSON((JSONElement) Objects.requireNonNull(doc.get("repeatScheduel")))
+            );
+        }
+        else {
+            return new Schedule(
+                    doc.getDate("start"),
+                    doc.getDate("end"),
+                    null
+            );
+        }
     }
 
     @Override
@@ -399,6 +424,7 @@ public class Schedule implements Comparable, Model {
             repeatBetterSchedule = new Repeat().fromJSON(json.search("repeatBetterSchedule"));
         consumer.accept(this);
     }
+
 
     /**
      * ON_DATE = end by a specific date

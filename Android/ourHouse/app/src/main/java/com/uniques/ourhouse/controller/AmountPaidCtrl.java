@@ -55,7 +55,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
         //Number under graph
         //replace with database money
         //loop through database and grab all database#
-        String amount = "string test";
+        String amount = "";
         TextView amountview = (TextView) view.findViewById(R.id.amount);
         amountview.setText(amount);
 

@@ -12,14 +12,18 @@ import androidx.annotation.Nullable;
 
 public abstract class ManageItem implements Model, Indexable, Observable {
 
-    protected ObjectId manageItemId = new ObjectId();
+    protected ObjectId manageItemId;
+    protected ObjectId manageItemOwner;
+    protected ObjectId manageItemHouse;
     protected String name;
-    //private UUID manageItemOwner;
     protected Schedule schedule;
 
     public ManageItem(){}
 
-    public ManageItem(String name, Schedule schedule){
+    public ManageItem(ObjectId idItem, ObjectId owner, ObjectId house, String name, Schedule schedule){
+        manageItemId = idItem;
+        manageItemOwner = owner;
+        manageItemHouse = house;
         this.name = name;
         this.schedule = schedule;
     }
@@ -29,6 +33,12 @@ public abstract class ManageItem implements Model, Indexable, Observable {
     public ObjectId getId() {
         return manageItemId;
     }
+
+    public ObjectId getOwnerId() {
+        return manageItemOwner;
+    }
+
+    public ObjectId getHouseId() { return manageItemOwner; }
 
     @Override
     public String getName() {
@@ -41,6 +51,8 @@ public abstract class ManageItem implements Model, Indexable, Observable {
     }
 
     abstract String getType();
+
+
 
     @Override
     public int getCompareType() {

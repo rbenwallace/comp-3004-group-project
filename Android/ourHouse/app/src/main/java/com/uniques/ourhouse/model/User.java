@@ -2,6 +2,8 @@ package com.uniques.ourhouse.model;
 
 import android.util.Log;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
@@ -27,7 +29,6 @@ public class User implements Model, Observable, Indexable {
     private String firstName;
     private String lastName;
     private String emailAddress;
-    private String phoneNumber;
     private ArrayList<ObjectId> myHouses;
 
     //testing
@@ -40,6 +41,7 @@ public class User implements Model, Observable, Indexable {
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         //testing
+        this.myHouses = myHouses;
         this.performance = num;
     }
 
@@ -103,14 +105,31 @@ public class User implements Model, Observable, Indexable {
     }
 
     public void addHouseId(ObjectId id){
-        if(myHouses.contains(id)){
-            myHouses.add(id);
+        if(id != null) {
+            if(myHouses == null){
+                myHouses = new ArrayList<ObjectId>();
+                myHouses.add(id);
+                return;
+            }
+            if (myHouses.contains(id)) {
+                myHouses.add(id);
+            }
         }
     }
     public void removeHouseId(ObjectId id){
-        if(myHouses.contains(id)){
-            myHouses.remove(id);
+        if(id != null) {
+            if (myHouses.contains(id)) {
+                myHouses.remove(id);
+            }
         }
+    }
+
+    public ArrayList<ObjectId> getMyHouses() {
+        return myHouses;
+    }
+
+    public void setMyHouses(ArrayList<ObjectId> myHouses) {
+        this.myHouses = myHouses;
     }
 
     public String getFirstName() {
@@ -131,27 +150,32 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + "name: (" + firstName + " " + lastName + "), num: (" + phoneNumber + ")";
+        return prefix + "name: (" + firstName + " " + lastName + "), num: (";
     }
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
-        if(userID != null)
-            asDoc.put("_id", userID);
+        Document housesDoc = new Document();
+        for(ObjectId houseId : myHouses){
+            housesDoc.append("house_id", houseId);
+        }
+        asDoc.put("_id", userID);
         asDoc.put("firstName", firstName);
         asDoc.put("lastName", lastName);
         asDoc.put("email", emailAddress);
+        asDoc.put("houses", housesDoc);
         asDoc.put("performance", performance);
         return asDoc;
     }
 
     public static User fromBsonDocument(final Document doc){
         Document housesDoc = (Document)doc.get("houses");
-        ArrayList<ObjectId> houses = new ArrayList<>();
-        housesDoc.forEach((key, value)-> {
-            houses.add((ObjectId)value);
-        });
-
+        ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
+        if(housesDoc != null) {
+            housesDoc.forEach((key, value) -> {
+                houses.add((ObjectId) value);
+            });
+        }
         return new User(
                 (ObjectId) doc.get("_id"),
                 doc.getString("firstName"),
@@ -176,7 +200,7 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
-        userID = (ObjectId) json.valueOf("userId");
+        userID = new ObjectId(json.<String>valueOf("userId"));
         firstName = json.valueOf("fname");
         lastName = json.valueOf("lname");
         emailAddress = json.valueOf("email");
@@ -191,14 +215,19 @@ public class User implements Model, Observable, Indexable {
         String firstName = obj.get("firstName").getAsString();
         String lastName = obj.get("lastName").getAsString();
         String myEmail = obj.get("email").getAsString();
-        JsonObject myHouses = obj.get("houses").getAsJsonObject();
-        Set<String> keys = myHouses.keySet();
-        Iterator<String> keyIt = keys.iterator();
+        JsonObject myHouses;
         ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
-        while(keyIt.hasNext()) {
-            String key = keyIt.next();
-            if (myHouses.get(key) != null) {
-                houses.add(objectIdFromJSON(myHouses.get(key)));
+        if(obj.get("houses") != null) {
+            myHouses = obj.get("houses").getAsJsonObject();
+            Set<String> keys = myHouses.keySet();
+            Iterator<String> keyIt = keys.iterator();
+            houses = new ArrayList<ObjectId>();
+            while (keyIt.hasNext()) {
+                String key = keyIt.next();
+                if (myHouses.get(key) != null) {
+                    if(Session.getIdFromString(myHouses.get(key).toString()).length() > 5)
+                        houses.add(new ObjectId(Session.getIdFromString(myHouses.get(key).toString())));
+                }
             }
         }
         Integer prefNum = obj.get("performance").getAsInt();
@@ -218,9 +247,16 @@ public class User implements Model, Observable, Indexable {
         return new ObjectId(obj.getAsString());
     }
 
-    @NonNull
+
     @Override
     public String toString() {
-        return consoleFormat("[User] ");
+        return "User{" +
+                "userID=" + userID +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", myHouses=" + myHouses +
+                ", performance=" + performance +
+                '}';
     }
 }

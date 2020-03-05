@@ -43,6 +43,7 @@
                     android:singleLine="true"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorPrimaryDark"
                     android:layout_marginTop="20dp"
                     android:drawableLeft="@drawable/email"
                     android:drawablePadding="8dp"
@@ -62,10 +63,11 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/password"
-                    android:drawableRight="@drawable/password_eye_open"
+                    android:drawableRight="@drawable/password_eye_closed"
+                    android:backgroundTint="@color/colorPrimaryDark"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
-                    android:hint="@string/passowrd"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:padding="10dp"
                     android:textColor="@color/colorTextPrimary"
@@ -123,12 +125,14 @@
 
             </LinearLayout>
             <TextView
+                android:id="@+id/errorMessage"
                 android:layout_width="wrap_content"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:text="Verify your email">
+                android:textColor="@color/red"
+                android:textSize="16sp"
+                android:text="">
             </TextView>
 
         </RelativeLayout>
