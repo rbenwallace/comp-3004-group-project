@@ -170,6 +170,11 @@ public class MyHousesCtrl implements FragmentCtrl {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+
+    }
+
+    @Override
     public void updateInfo() {
 
     }

@@ -3,7 +3,6 @@ package com.uniques.ourhouse.controller;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -19,7 +18,6 @@ import com.uniques.ourhouse.fragment.AmountPaidFragment;
 import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
-import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.model.User;
 
 import java.util.ArrayList;
@@ -43,7 +41,6 @@ public class PerformanceCtrl implements FragmentCtrl {
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Left", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG));
@@ -52,7 +49,6 @@ public class PerformanceCtrl implements FragmentCtrl {
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Right", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
                 activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG));
@@ -132,6 +128,11 @@ public class PerformanceCtrl implements FragmentCtrl {
         barChart.setFitBars(true); //make x-axis fit exactly all bars
         barChart.setHighlightFullBarEnabled(true);
         barChart.invalidate(); //refresh
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
+
     }
 
     @Override

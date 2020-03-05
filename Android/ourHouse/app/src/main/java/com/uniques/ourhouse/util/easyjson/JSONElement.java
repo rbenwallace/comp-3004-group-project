@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class JSONElement implements Iterable<JSONElement> {
     private EasyJSON easyJSONStructure;
     private JSONElement parent;
@@ -146,11 +146,13 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public JSONElement putStructure(String key, JSONElement structure) {
-        Object[] deconstructedKey = deconstructKey(key);
-        if (deconstructedKey[0] != this) {
-            return ((JSONElement) deconstructedKey[0]).putStructure((String) deconstructedKey[1], structure);
+        if (key != null) {
+            Object[] deconstructedKey = deconstructKey(key);
+            if (deconstructedKey[0] != this) {
+                return ((JSONElement) deconstructedKey[0]).putStructure((String) deconstructedKey[1], structure);
+            }
         }
-        JSONElement searchResult = search(key);
+        JSONElement searchResult = key == null ? null : search(key);
         if (searchResult == null) {
             structure.type = JSONElementType.STRUCTURE;
             structure.key = key;
@@ -212,6 +214,7 @@ public class JSONElement implements Iterable<JSONElement> {
      * In the case of a complex key, the suitable parent will never be 'this' and the final key !== key (param)
      * <br/><br/>
      * Please be mindful of this when using this method.
+     *
      * @param key simple/complex key you want to deconstruct
      * @return Object[] {suitable_parent: JSONElement, final_key: String}
      * @throws RuntimeException if any part (before/after '.') of a complex key has < 1 character
@@ -239,16 +242,19 @@ public class JSONElement implements Iterable<JSONElement> {
                 }
             }
         }
-        return new Object[] {result, finalKey};
+        return new Object[]{result, finalKey};
     }
 
+    /**
+     * Search for the JSONElement at the specified location
+     */
     public JSONElement search(String... location) {
         return deepSearch(this, location, 0);
     }
 
     private JSONElement deepSearch(JSONElement element, String[] location, int locPosition) {
         for (int i = 0; locPosition < location.length && i < element.children.size(); ++i) {
-            JSONElement child = (JSONElement) element.children.get(i);
+            JSONElement child = element.children.get(i);
             if (child.key != null) {
                 if (child.key.equals(location[locPosition])) {
                     if (locPosition == location.length - 1) {
@@ -262,24 +268,29 @@ public class JSONElement implements Iterable<JSONElement> {
         return null;
     }
 
+    /**
+     * Attempts to retrieve and cast the value of the element at the specific location. If the value
+     * cannot be found, null is returned. <b>This method does not check types, a Runtime
+     * exception my occur</b>
+     * @param location
+     * @param <T>
+     * @return
+     */
     public <T> T valueOf(String... location) {
         JSONElement result = search(location);
-        if (result != null) return (T) result.getValue();
+        if (result != null) {
+            return (T) result.getValue();
+        }
         else return null;
     }
 
-    public String stringValueOf(String defaultString, String... location) {
-        String value;
-        try {
-            value = valueOf(location);
-            if (value != null) {
-                return value;
-            }
-        } catch (Exception ignored) {
-        }
-        return defaultString;
-    }
-
+    /**
+     * Attempts to retrieve and cast the value of the element at the specific location. If the value
+     * cannot be found, casted or is null, defaultValue is returned
+     *
+     * @param location path to the element whose value you want
+     * @param <T>      expected type of the value
+     */
     public <T> T valueOf(T defaultValue, String... location) {
         T value;
         try {
@@ -292,25 +303,33 @@ public class JSONElement implements Iterable<JSONElement> {
         return defaultValue;
     }
 
+    /**
+     * Wrapper method for {@link #combine(JSONElement)} using {@link EasyJSON#getRootNode()}
+     */
     public void combine(EasyJSON easyJSONStructure) {
         combine(easyJSONStructure.getRootNode());
     }
 
     /**
-     * overwrites any existing elements with keys
-     *
-     * @param jsonElement
+     * Children of the supplied element that have keys matching children in this element are used to
+     * overwrite the values of the corresponding child in this element.
+     * <br/>
+     * <code>
+     * {"foo": "bar", "abc": 123}.combine({"abc": "xyz"}) --> {"foo": "bar", "abc": "xyz"}
+     * </code>
      */
     public void combine(JSONElement jsonElement) {
-        for (int i = 0; i < jsonElement.children.size(); i++) {
-            putElement((JSONElement) jsonElement.children.get(i));
+        for (JSONElement element : jsonElement) {
+            JSONElement match = search(element.key);
+            if (match != null) {
+                match.overwriteWith(element);
+            }
         }
     }
 
     /**
-     * may cause duplicate keys, use carefully!
-     *
-     * @param jsonElement
+     * Adds the supplied element to this element's children, updating it's easyJSONStructure and
+     * parent in the process to the corresponding values in (this).
      */
     private void claimElement(JSONElement jsonElement) {
         jsonElement.easyJSONStructure = easyJSONStructure;
@@ -318,6 +337,13 @@ public class JSONElement implements Iterable<JSONElement> {
         children.add(jsonElement);
     }
 
+    /**
+     * Overwrites this element with data in newElement. Specifically, it will adopt newElement's
+     * key, children, and value.
+     *
+     * @param newElement element whose data you want to adopt
+     * @return this element
+     */
     JSONElement overwriteWith(JSONElement newElement) {
         type = newElement.type;
         children = newElement.children;

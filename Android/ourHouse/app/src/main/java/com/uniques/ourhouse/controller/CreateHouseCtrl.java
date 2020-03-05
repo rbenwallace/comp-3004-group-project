@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.controller;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -123,7 +124,13 @@ public class CreateHouseCtrl implements FragmentCtrl {
                     }
                 });
             }
+            myDatabase.addMyHouse(newHouse, activity, boolConsumer);
         });
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
+
     }
 
     @Override

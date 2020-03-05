@@ -9,10 +9,10 @@
 
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/calculate_date"
         android:layout_width="369dp"
         android:layout_height="78dp"
-        android:text="string/*variable*(month and year)"
+        android:text=""
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"

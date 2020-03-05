@@ -1,6 +1,5 @@
 package com.uniques.ourhouse.model;
 
-import android.util.Log;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.uniques.ourhouse.session.Session;
@@ -10,14 +9,12 @@ import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Stack;
-import java.util.UUID;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
@@ -40,6 +37,7 @@ public class User implements Model, Observable, Indexable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
+        this.myHouses = myHouses;
         //testing
         this.myHouses = myHouses;
         this.performance = num;
@@ -66,7 +64,8 @@ public class User implements Model, Observable, Indexable {
         this.performance = 0;
     }
 
-    public User() {}
+    public User() {
+    }
 
     @NonNull
     @Override
@@ -75,11 +74,13 @@ public class User implements Model, Observable, Indexable {
     }
 
     //testing
-    public int getPerformance () { return performance; }
+    public int getPerformance() {
+        return performance;
+    }
 
     @Override
     public String getName() {
-        return firstName+" "+lastName;
+        return firstName + " " + lastName;
     }
 
     public String getEmailAddress() {

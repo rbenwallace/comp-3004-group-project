@@ -27,6 +27,9 @@ import com.uniques.ourhouse.session.MongoDB;
 
 import java.util.ArrayList;
 import java.util.Timer;
+import com.uniques.ourhouse.util.TextChangeListener;
+
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -131,6 +134,11 @@ public class JoinHouseCtrl implements FragmentCtrl {
 //            ((LS_Main) activity).setViewPager(3);
             activity.startActivity(new Intent(activity, MainActivity.class));
         });
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
+
     }
 
     @Override

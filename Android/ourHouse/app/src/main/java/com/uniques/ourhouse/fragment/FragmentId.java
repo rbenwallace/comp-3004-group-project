@@ -4,6 +4,8 @@ import com.uniques.ourhouse.ActivityId;
 
 import java.util.HashMap;
 
+import androidx.annotation.Nullable;
+
 public final class FragmentId {
     private static final HashMap<String, FragmentId> fragmentIds = new HashMap<>();
 
@@ -13,6 +15,12 @@ public final class FragmentId {
     private ActivityId defaultActivityId;
     private boolean isBaseFragment;
 
+    /**
+     * Gets the fragment id associated with the supplied name.
+     * This is usually found in the fragment implementation (e.g. Fragment.TAG)
+     * @param fragmentName name associated with fragmentId
+     */
+    @Nullable
     public static FragmentId GET(String fragmentName) {
         return fragmentIds.get(fragmentName);
     }

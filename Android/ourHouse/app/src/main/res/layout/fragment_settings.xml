@@ -114,7 +114,7 @@
             android:paddingVertical="5dp"
             android:text="@string/switch_house"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/settings_btnDeleteHouse"
@@ -128,7 +128,7 @@
             android:paddingVertical="5dp"
             android:text="@string/delete_house"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/settings_btnLogout"
@@ -142,7 +142,7 @@
             android:paddingVertical="5dp"
             android:text="@string/logout"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 

@@ -4,7 +4,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -36,7 +35,6 @@ public class AmountPaidCtrl implements FragmentCtrl {
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Left", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG));
@@ -45,7 +43,6 @@ public class AmountPaidCtrl implements FragmentCtrl {
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Right", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
                 activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG));
@@ -93,6 +90,11 @@ public class AmountPaidCtrl implements FragmentCtrl {
         barChart.setFitBars(true); //make x-axis fit exactly all bars
         barChart.setHighlightFullBarEnabled(true);
         barChart.invalidate(); //refresh
+
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
 
     }
 

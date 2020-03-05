@@ -58,6 +58,11 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         });
     }
 
+    @Override
+    public void acceptArguments(Object... args) {
+
+    }
+
     void updateInfoAndReopenFilter() {
         pendingReopenFilter = true;
         updateInfo();

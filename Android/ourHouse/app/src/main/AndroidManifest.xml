@@ -8,10 +8,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:windowSoftInputMode="adjustResize"
-        android:hardwareAccelerated="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".LS_Main"/>
+        android:theme="@style/AppTheme"
+        android:windowSoftInputMode="adjustResize">
+        <service
+            android:name=".EventService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity android:name=".LS_Main" />
         <activity android:name=".fragment.SignUpFragment" />
         <activity android:name=".fragment.LoginFragment" />
         <activity android:name=".Splash">

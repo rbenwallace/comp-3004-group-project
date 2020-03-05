@@ -36,6 +36,8 @@ import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.MongoDB;
 
+import org.bson.types.ObjectId;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -43,8 +45,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
-
-import org.bson.types.ObjectId;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -150,6 +150,12 @@ public class LoginCtrl implements FragmentCtrl {
             }
         });
     }
+
+    @Override
+    public void acceptArguments(Object... args) {
+
+    }
+
     private void changePasswordDisplay () {
         if (showPassword == 0) {
             showPassword = 1;

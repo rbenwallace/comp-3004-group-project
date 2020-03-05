@@ -50,6 +50,10 @@ public abstract class ManageItem implements Model, Indexable, Observable {
         this.name = name;
     }
 
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
     abstract String getType();
 
 

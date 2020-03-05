@@ -8,8 +8,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
@@ -26,6 +24,8 @@ import com.uniques.ourhouse.session.MongoDB;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.uniques.ourhouse.controller.LoginCtrl.regEx;
@@ -101,6 +101,11 @@ public class SignUpCtrl implements FragmentCtrl {
                 }
             });
         });
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
+
     }
 
     @Override

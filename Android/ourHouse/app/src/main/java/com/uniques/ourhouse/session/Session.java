@@ -18,6 +18,7 @@ public final class Session {
         baseSession.user = new User("Test user", "email@test.com", "1234567890");
         baseSession.database = new LocalStore(context);
 
+        baseSession.database.postUser(baseSession.user, v -> {});
 //        baseSession.security = new LocalSecurity(context) {
 //            @Override
 //            DatabaseLink getDatabaseLink() {

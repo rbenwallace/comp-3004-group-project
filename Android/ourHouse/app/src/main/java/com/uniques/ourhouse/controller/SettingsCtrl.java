@@ -88,6 +88,11 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+
+    }
+
+    @Override
     public void updateInfo() {
         /*RecyclerAdapter<TaskRotationCard> adapter = new RecyclerAdapter<>(
                 personRecycler,

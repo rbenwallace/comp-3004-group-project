@@ -3,7 +3,6 @@ package com.uniques.ourhouse.model;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
-import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
@@ -18,6 +17,7 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class House implements Model, Indexable, Observable {
+    public static final String HOUSE_COLLECTION = "Houses";
+
     private ObjectId houseId;
     private String houseKey;
     private User owner;
@@ -34,7 +36,18 @@ public class House implements Model, Indexable, Observable {
     private String password;
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
-    private MongoDB myDatabase = new MongoDB();
+
+    public static House testHouse() {
+        Rotation rotation = new Rotation();
+        rotation.addUserToRotation(Session.getSession().getLoggedInUser());
+        rotation.addUserToRotation(new User("User", "A", "email1"));
+        rotation.addUserToRotation(new User("User", "B", "email2"));
+        rotation.addUserToRotation(new User("User", "C", "email3"));
+        House house = new House("Test House", Session.getSession().getLoggedInUser(),
+                new ArrayList<>(), rotation, "password", true, true);
+        house.setName("Test House");
+        return house;
+    }
 
     @NonNull
     @Override
@@ -45,8 +58,6 @@ public class House implements Model, Indexable, Observable {
     public String getKeyId() {
         return houseKey;
     }
-
-    public static final String HOUSE_COLLECTION = "Houses";
 
     public House(ObjectId id, String housekey, User owner, String name, ArrayList<User> occupants, House.Rotation rotation, String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
         this.houseId = id;
@@ -195,7 +206,7 @@ public class House implements Model, Indexable, Observable {
         return false;
     }
 
-    public static class Rotation implements Model {
+    public static class Rotation implements Model, Iterable<User> {
 
         private ArrayList<User> rotation;
 
@@ -224,7 +235,6 @@ public class House implements Model, Indexable, Observable {
             rotation.add(user);
         }
 
-
         @Override
         public JSONElement toJSON() {
             EasyJSON json = EasyJSON.create();
@@ -245,6 +255,12 @@ public class House implements Model, Indexable, Observable {
                 Session.getSession().getDatabase().getUser(new ObjectId(users.get(i).<String>getValue()), aUser);
             }
             consumer.accept(this);
+        }
+
+        @NonNull
+        @Override
+        public Iterator<User> iterator() {
+            return new PriorityQueue<>(rotation).iterator();
         }
     }
 

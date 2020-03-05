@@ -13,12 +13,42 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.Objects;
+import java.util.Date;
 import java.util.function.Consumer;
 
 public class Task extends ManageItem implements Model, Indexable, Observable {
     public static final String TASK_COLLECTION = "Tasks";
+    private static final int DIFFICULTY_EASY = 1;
+    private static final int DIFFICULTY_MEDIUM = 2;
+    private static final int DIFFICULTY_HARD = 3;
+
     private String type;
     private int difficulty;
+
+    public static Task[] testTasks() {
+//        Event r = new Event("Recycling Bin Day", new Date(now), new User("Ben", "", ""));
+//        r.setDateCompleted(new Date(now + 76543210));
+//        return new Event[]{
+//                new Event("Dishes", new Date(now + 1000000), new User("Victor", "", "")),
+//                r,
+//                new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""))};
+        Schedule.Repeat repeat;
+        Task r = new Task("Recycling", new Schedule(), DIFFICULTY_EASY);
+        repeat = r.schedule.initRepeatSchedule();
+        repeat.setType(Schedule.RepeatType.ITERATIVE);
+        repeat.setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+        r.schedule.setEndPseudoIndefinite();
+
+        Task d = new Task("Dishes", new Schedule(), DIFFICULTY_MEDIUM);
+        repeat = d.schedule.initRepeatSchedule();
+        repeat.setType(Schedule.RepeatType.ITERATIVE);
+        repeat.setRepeatBasis(Schedule.RepeatBasis.DAILY);
+        d.schedule.setEndPseudoIndefinite();
+
+        Task t = new Task("Buy us a TV", new Schedule(), DIFFICULTY_HARD);
+        t.schedule.setEnd(new Date(new Date().getTime() + 176543210));
+        return new Task[] {r, d, t};
+    }
 
     public Task(){}
 
@@ -38,6 +68,15 @@ public class Task extends ManageItem implements Model, Indexable, Observable {
         super(new ObjectId(), new ObjectId(), new ObjectId(), name, schedule);
         this.type = "Task";
         this.difficulty = difficulty;
+    }
+
+    @Override
+    public String getType(){
+        return this.type;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
     }
 
     @Override
@@ -95,10 +134,5 @@ public class Task extends ManageItem implements Model, Indexable, Observable {
             this.schedule = (Schedule) schedule;
             consumer.accept(this);
         });
-    }
-
-    @Override
-    public String getType(){
-        return this.type;
     }
 }
