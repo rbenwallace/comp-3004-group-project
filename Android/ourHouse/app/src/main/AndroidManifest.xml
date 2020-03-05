@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize">
         <service
-            android:name=".controller.EventService"
+            android:name=".EventService"
             android:enabled="true"
             android:exported="true"></service>
 

@@ -1,4 +1,4 @@
-package com.uniques.ourhouse.controller;
+package com.uniques.ourhouse;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import androidx.annotation.NonNull;
 
 public class EventService extends JobService {
     private Logic runningLogic;
@@ -74,6 +76,7 @@ public class EventService extends JobService {
                     Date dayOfOccurrence = initializeDay(occurrence);
 
                     if (occurrences.containsKey(dayOfOccurrence)) {
+                        //noinspection ConstantConditions
                         occurrences.get(dayOfOccurrence).add(t);
                     } else {
                         ArrayList<Task> l = new ArrayList<>();
@@ -92,6 +95,8 @@ public class EventService extends JobService {
                 results.add(new UsersTasks(user));
             }
 
+            if (results.isEmpty()) return null;
+
             Iterator<Date> days = occurrences.keySet().iterator();
             Date curDay;
             while (days.hasNext()) {
@@ -101,6 +106,7 @@ public class EventService extends JobService {
                 daysTasks.addAll(occurrences.get(curDay));
 
                 while (!daysTasks.isEmpty()) {
+                    //noinspection ConstantConditions
                     results.peek().assignTask(curDay, daysTasks.poll());
                     results.offer(results.poll());
                 }
@@ -188,12 +194,14 @@ public class EventService extends JobService {
 
             private void assignTask(Date day, Task task) {
                 if (tasks.containsKey(day)) {
+                    //noinspection ConstantConditions
                     tasks.get(day).add(task);
                 } else {
                     List<Task> l = new ArrayList<>();
                     l.add(task);
                     tasks.put(day, l);
                 }
+                totalDifficulty += task.getDifficulty();
             }
 
             private List<Event> createEvents() {
@@ -205,7 +213,7 @@ public class EventService extends JobService {
             }
 
             @Override
-            public int compareTo(Object o) {
+            public int compareTo(@NonNull Object o) {
                 if (o instanceof UsersTasks) {
                     return totalDifficulty - ((UsersTasks) o).totalDifficulty;
                 } else return 0;

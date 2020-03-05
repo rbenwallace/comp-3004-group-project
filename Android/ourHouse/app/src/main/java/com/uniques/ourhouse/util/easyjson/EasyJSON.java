@@ -27,6 +27,8 @@ import androidx.annotation.NonNull;
  * {@code json.search("pets", "dogs").putPrimitive("rottweiler");}
  * <br>
  * {@code json.search("pets").putArray("cats", "i'm not a cat guy");}
+ * <br>
+ * {@code json.putPrimitive("eat.your", "veggies");}
  * <p>
  * will result in a structure like this:
  * <p>
@@ -39,6 +41,12 @@ import androidx.annotation.NonNull;
  * "cats":["i'm not a cat guy"],
  * <p>
  * "dogs":["pug", "rottweiler"]
+ * <p>
+ * }
+ * <p>
+ * "eat":{
+ * <p>
+ * "your": "veggies"
  * <p>
  * }
  * <p>
