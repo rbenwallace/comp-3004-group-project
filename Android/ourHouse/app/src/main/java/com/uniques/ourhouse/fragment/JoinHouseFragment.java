@@ -26,7 +26,7 @@ public class JoinHouseFragment extends Fragment<JoinHouseCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new JoinHouseCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
+            setController(new JoinHouseCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this)));
         }
 
         super.onCreateView(inflater, container, savedInstanceState);
@@ -44,10 +44,6 @@ public class JoinHouseFragment extends Fragment<JoinHouseCtrl> {
     @Override
     public FragmentId getFragmentId() {
         return setupId(ActivityId.GET(ACTIVITY_TAG));
-    }
-
-    @Override
-    public void acceptArguments(Object... args) {
     }
 
     @Override

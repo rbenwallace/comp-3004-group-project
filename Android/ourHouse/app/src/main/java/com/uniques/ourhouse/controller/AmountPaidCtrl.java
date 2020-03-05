@@ -4,7 +4,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -91,6 +90,11 @@ public class AmountPaidCtrl implements FragmentCtrl {
         barChart.setFitBars(true); //make x-axis fit exactly all bars
         barChart.setHighlightFullBarEnabled(true);
         barChart.invalidate(); //refresh
+
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
 
     }
 

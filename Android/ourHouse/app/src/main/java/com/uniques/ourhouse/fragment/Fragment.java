@@ -73,6 +73,10 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
         savedObjects.remove(fragmentId + ":" + key);
     }*/
 
+    public Fragment() {
+        allowDestruction = true;
+    }
+
     public T getController() {
         return controller;
     }
@@ -83,6 +87,7 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
         this.controller = controller;
         if (arguments != null) {
             this.controller.acceptArguments(arguments);
+            arguments = null;
         }
     }
 
@@ -191,7 +196,7 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
 
     public abstract FragmentId getFragmentId();
 
-    public void acceptArguments(Object... args) {
+    public void offerArguments(Object... args) {
         arguments = args;
     }
 

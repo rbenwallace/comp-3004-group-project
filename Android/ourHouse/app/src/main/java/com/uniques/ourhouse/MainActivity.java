@@ -78,12 +78,24 @@ public class MainActivity extends FragmentActivity {
         return ActivityId.SET(this.getClass(), TAG, LAYOUT_ID);
     }
 
+    /**
+     * Push a fragment to the fragment stack. Note, this will not pop any previous instances of
+     * fragments from the stack -- it will simply create a new fragment and push that to the stack.
+     *
+     * @param fragmentId FragmentId of the fragment to add. It is crucial to specify the right id
+     *                   because it's what's used to generate a new instance
+     * @param args       any arguments you want to pass. Please note this is a spread argument. Passing
+     *                   an array in the form pushFragment(--, Object[]) will result in only a single
+     *                   object (representing the array) being passed.
+     * @see #popFragment(FragmentId) popping a fragment from the stack
+     * @see FragmentId#GET(String) getting a fragmentId
+     */
     @Override
     public void pushFragment(FragmentId fragmentId, Object... args) {
         Fragment fragment;
         try {
             fragment = fragmentId.newInstance();
-            fragment.acceptArguments(args);
+            fragment.offerArguments(args);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return;
@@ -95,14 +107,21 @@ public class MainActivity extends FragmentActivity {
                 .commit();
     }
 
+    /**
+     * This method will pop any and all fragments up to and including the first fragment who's
+     * fragmentId matches the supplied id. If there are 3 fragments before the fragment you want to
+     * pop, all 4 fragments will be removed from the stack. This is done to preserve the order of
+     * assignment.
+     *
+     * @param fragmentId id of the fragment you want to pop
+     * @see FragmentId#GET(String) getting a fragmentId
+     */
     @Override
     public void popFragment(FragmentId fragmentId) {
         try {
             fragmentManager.popBackStack(
                     String.valueOf(fragmentId), FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentStack.pop().destroy();
-
-            System.out.println("==== got here ====");
 
             if (currentFragment() != null && currentFragment().getFragmentId().isBaseFragment()) {
                 navView.setVisibility(View.VISIBLE);

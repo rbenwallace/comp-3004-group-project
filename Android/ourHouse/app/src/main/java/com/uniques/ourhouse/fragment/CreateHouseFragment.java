@@ -26,7 +26,7 @@ public class CreateHouseFragment extends Fragment<CreateHouseCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new CreateHouseCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
+            setController(new CreateHouseCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this)));
         }
 
         super.onCreateView(inflater, container, savedInstanceState);
@@ -44,10 +44,6 @@ public class CreateHouseFragment extends Fragment<CreateHouseCtrl> {
     @Override
     public FragmentId getFragmentId() {
         return setupId(ActivityId.GET(ACTIVITY_TAG));
-    }
-
-    @Override
-    public void acceptArguments(Object... args) {
     }
 
     @Override

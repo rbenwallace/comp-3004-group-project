@@ -33,7 +33,7 @@ public class SignUpFragment extends Fragment<SignUpCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new SignUpCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
+            setController(new SignUpCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this)));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
@@ -50,10 +50,6 @@ public class SignUpFragment extends Fragment<SignUpCtrl> {
     @Override
     public FragmentId getFragmentId() {
         return setupId(ActivityId.GET(ACTIVITY_TAG));
-    }
-
-    @Override
-    public void acceptArguments(Object... args) {
     }
 
     @Override

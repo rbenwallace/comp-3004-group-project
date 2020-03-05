@@ -117,6 +117,12 @@ public class LoginCtrl implements FragmentCtrl {
             }
         });
     }
+
+    @Override
+    public void acceptArguments(Object... args) {
+
+    }
+
     private void changePasswordDisplay () {
         if (showPassword == 0) {
             Toast.makeText(activity, "show password", Toast.LENGTH_LONG).show();

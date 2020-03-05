@@ -116,6 +116,11 @@ public class AddTaskCtrl implements FragmentCtrl {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+
+    }
+
+    @Override
     public void updateInfo() {
 
     }

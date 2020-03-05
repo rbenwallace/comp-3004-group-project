@@ -2,7 +2,6 @@ package com.uniques.ourhouse.controller;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.uniques.ourhouse.R;
@@ -32,6 +31,11 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         TextView calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(month + " : " + year);
         Log.d(ScreenMonthFragment.TAG, "Screen Month Clicked");
+    }
+
+    @Override
+    public void acceptArguments(Object... args) {
+
     }
 
     @Override

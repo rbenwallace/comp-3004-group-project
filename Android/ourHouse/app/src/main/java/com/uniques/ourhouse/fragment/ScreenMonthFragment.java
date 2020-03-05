@@ -1,7 +1,6 @@
 package com.uniques.ourhouse.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,7 @@ public class ScreenMonthFragment extends Fragment<ScreenMonthCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new ScreenMonthCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this), month, year);
+            setController(new ScreenMonthCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this), month, year));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
@@ -48,11 +47,12 @@ public class ScreenMonthFragment extends Fragment<ScreenMonthCtrl> {
         return setupId(ActivityId.GET(ACTIVITY_TAG));
     }
 
-    @Override
-    public void acceptArguments(Object... args) {
-        Log.d("wallace: ", month);
-        Log.d("wallace: ", year);
-    }
+    // NOTE FROM Victor: Fragment (base class) now forwards arguments to the controller
+//    @Override
+//    public void acceptArguments(Object... args) {
+//        Log.d("wallace: ", month);
+//        Log.d("wallace: ", year);
+//    }
 
     @Override
     public boolean onHomeUpPressed() {

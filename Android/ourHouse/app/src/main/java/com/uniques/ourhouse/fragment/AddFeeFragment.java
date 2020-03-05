@@ -26,7 +26,7 @@ public class AddFeeFragment extends Fragment<AddFeeCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new AddFeeCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
+            setController(new AddFeeCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this)));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
@@ -43,10 +43,6 @@ public class AddFeeFragment extends Fragment<AddFeeCtrl> {
     @Override
     public FragmentId getFragmentId() {
         return setupId(ActivityId.GET(ACTIVITY_TAG));
-    }
-
-    @Override
-    public void acceptArguments(Object... args) {
     }
 
     @Override
