@@ -83,6 +83,7 @@ public class MainActivity extends FragmentActivity {
         Fragment fragment;
         try {
             fragment = fragmentId.newInstance();
+            fragment.acceptArguments(args);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return;

@@ -10,4 +10,6 @@ public interface FragmentCtrl extends ActivityCtrl {
     }
 
     void init(View view);
+
+    void acceptArguments(Object... args);
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -59,7 +60,7 @@ import androidx.annotation.NonNull;
  * @see Repeat#setMonths(int...) Repeat.setMonths(int...)
  */
 @SuppressWarnings("unused | WeakerAccess")
-public class Schedule implements Comparable, Model {
+public class Schedule implements Comparable, Model, Iterable<Date> {
     private static final long DAY_IN_MILLS = 66400000;
 
     @NonNull
@@ -68,7 +69,7 @@ public class Schedule implements Comparable, Model {
     private Date end;
     @NonNull
     private EndType endType;
-    private Repeat repeatBetterSchedule;
+    private Repeat repeatSchedule;
     private List<ChangeListener> listeners = new ArrayList<>();
     private static boolean pauseStartEndChecking, pendingStartEndChange;
 
@@ -78,10 +79,10 @@ public class Schedule implements Comparable, Model {
         endType = EndType.ON_DATE;
     }
 
-    public Schedule(@NonNull Date start, @NonNull Date end, Repeat repeatBetterSchedule) {
+    public Schedule(@NonNull Date start, @NonNull Date end, Repeat repeatSchedule) {
         this.start = start;
         this.end = end;
-        this.repeatBetterSchedule = repeatBetterSchedule;
+        this.repeatSchedule = repeatSchedule;
         endType = EndType.ON_DATE;
     }
 
@@ -181,7 +182,7 @@ public class Schedule implements Comparable, Model {
      * Updates this schedule's end type. This method will auto-initialize this schedule's repeat-schedule.
      */
     public void setEndType(@NonNull EndType endType) {
-        if (endType == EndType.AFTER_TIMES && repeatBetterSchedule == null)
+        if (endType == EndType.AFTER_TIMES && repeatSchedule == null)
             initRepeatSchedule();
 
         this.endType = endType;
@@ -191,18 +192,20 @@ public class Schedule implements Comparable, Model {
      * Makes this Schedule end after 1000 occurrences.
      * <br/>
      * Will initialise a repeat-schedule if one does not exist yet.
-     * <br/>
+     * <br/><br/>
+     * <b>Note: call this method after you've defined your repeat-schedule, otherwise, it will have undefined behaviour</b>
+     * <br/><br/>
      * Note: this method can take a little longer than usual (due to it trying to find the date of the final occurrence)
      */
     public void setEndPseudoIndefinite() {
-        if (repeatBetterSchedule == null) {
+        if (repeatSchedule == null) {
             initRepeatSchedule();
         }
-        repeatBetterSchedule.endAfterXTimes(1000);
+        repeatSchedule.endAfterXTimes(1000);
     }
 
     public Repeat getRepeatSchedule() {
-        return repeatBetterSchedule;
+        return repeatSchedule;
     }
 
     /**
@@ -210,12 +213,13 @@ public class Schedule implements Comparable, Model {
      *
      * @see Repeat Repeat class
      */
-    public void initRepeatSchedule() {
-        repeatBetterSchedule = new Repeat();
+    public Repeat initRepeatSchedule() {
+        repeatSchedule = new Repeat();
         mainListener.onRepeatToggled(true);
-        mainListener.onRepeatTypeChange(repeatBetterSchedule.type);
-        mainListener.onRepeatBasisChange(repeatBetterSchedule.repeatBasis);
-        mainListener.onRepeatDelayChange(repeatBetterSchedule.delay);
+        mainListener.onRepeatTypeChange(repeatSchedule.type);
+        mainListener.onRepeatBasisChange(repeatSchedule.repeatBasis);
+        mainListener.onRepeatDelayChange(repeatSchedule.delay);
+        return repeatSchedule;
     }
 
     /**
@@ -223,7 +227,7 @@ public class Schedule implements Comparable, Model {
      * Has the same effect whether or not a repeat-schedule is set.
      */
     private void removeRepeatBetterSchedule() {
-        repeatBetterSchedule = null;
+        repeatSchedule = null;
         mainListener.onRepeatToggled(false);
     }
 
@@ -255,10 +259,10 @@ public class Schedule implements Comparable, Model {
         if (occursOn(calendar, start, year, dayOYear) || occursOn(calendar, end, year, dayOYear))
             return true;
 
-        if (repeatBetterSchedule == null)
+        if (repeatSchedule == null)
             return false;
 
-        return repeatBetterSchedule.occursOn(calendar, year, dayOYear);
+        return repeatSchedule.occursOn(calendar, year, dayOYear);
     }
 
     private boolean occursOn(Calendar calendar, Date myDate, int year, int dayOYear) {
@@ -351,16 +355,16 @@ public class Schedule implements Comparable, Model {
             format += "start " + dateFormat.format(start) + ", end " + dateFormat.format(end);
         }
 
-        if (repeatBetterSchedule != null) {
+        if (repeatSchedule != null) {
             format += ", repeats every " +
-                    repeatBetterSchedule.delay + " " + repeatBetterSchedule.formatRepeatBasis();
+                    repeatSchedule.delay + " " + repeatSchedule.formatRepeatBasis();
 
-            if (repeatBetterSchedule.hasMonths()) {
-                format += " on months " + repeatBetterSchedule.formatMonths();
-            } else if (repeatBetterSchedule.hasWeeks()) {
-                format += " on " + repeatBetterSchedule.formatWeeks() + "weeks";
-            } else if (repeatBetterSchedule.hasDays()) {
-                format += " on days " + repeatBetterSchedule.formatMonths();
+            if (repeatSchedule.hasMonths()) {
+                format += " on months " + repeatSchedule.formatMonths();
+            } else if (repeatSchedule.hasWeeks()) {
+                format += " on " + repeatSchedule.formatWeeks() + "weeks";
+            } else if (repeatSchedule.hasDays()) {
+                format += " on days " + repeatSchedule.formatMonths();
             }
         }
 
@@ -373,7 +377,7 @@ public class Schedule implements Comparable, Model {
         return asDoc;
     }
 
-    public static Schedule fromBsonDocument(final Document doc){
+    public static Schedule fromBsonDocument(final Document doc) {
         return new Schedule(
                 //what the guy above said
         );
@@ -385,8 +389,8 @@ public class Schedule implements Comparable, Model {
         json.putPrimitive("start", start.getTime());
         json.putPrimitive("end", end.getTime());
         json.putPrimitive("endType", endType.toString());
-        if (repeatBetterSchedule != null)
-            json.putStructure("repeatBetterSchedule", repeatBetterSchedule.toJSON());
+        if (repeatSchedule != null)
+            json.putStructure("repeatBetterSchedule", repeatSchedule.toJSON());
         return json.getRootNode();
     }
 
@@ -396,8 +400,27 @@ public class Schedule implements Comparable, Model {
         end = new Date(json.<Long>valueOf("end"));
         endType = EndType.valueOf(json.valueOf("endType"));
         if (json.elementExists("repeatBetterSchedule"))
-            repeatBetterSchedule = new Repeat().fromJSON(json.search("repeatBetterSchedule"));
+            repeatSchedule = new Repeat().fromJSON(json.search("repeatBetterSchedule"));
         consumer.accept(this);
+    }
+
+    @NonNull
+    public Iterable<Date> finiteIterable(Date upperBound) {
+        if (repeatSchedule != null) {
+            return repeatSchedule.finiteIterable(upperBound);
+        } else {
+            return () -> new OneItemIterator<>(start.after(upperBound) ? null : start);
+        }
+    }
+
+    @NonNull
+    @Override
+    public Iterator<Date> iterator() {
+        if (repeatSchedule != null) {
+            return repeatSchedule.iterator();
+        } else {
+            return new OneItemIterator<>(start);
+        }
     }
 
     /**
@@ -453,7 +476,7 @@ public class Schedule implements Comparable, Model {
      * @see Repeat#setWeeks(int...) Repeat.setWeeks(int...)
      * @see Repeat#setMonths(int...) Repeat.setMonths(int...)
      */
-    public class Repeat {
+    public class Repeat implements Iterable<Date> {
 
         private RepeatType type = RepeatType.ITERATIVE;
         private RepeatBasis repeatBasis = RepeatBasis.WEEKLY;
@@ -823,6 +846,54 @@ public class Schedule implements Comparable, Model {
             }
             return this;
         }
+
+        @NonNull
+        public Iterable<Date> finiteIterable(Date upperBound) {
+            return () -> new RepeatIterator(start, upperBound) {
+                @Override
+                long getIntervalInMillis(Calendar calendar) {
+                    return Repeat.this.getIntervalInMillis(calendar);
+                }
+            };
+        }
+
+        @NonNull
+        @Override
+        public Iterator<Date> iterator() {
+            return new RepeatIterator(start, end) {
+                @Override
+                long getIntervalInMillis(Calendar calendar) {
+                    return Repeat.this.getIntervalInMillis(calendar);
+                }
+            };
+        }
+    }
+
+    private static abstract class RepeatIterator implements Iterator<Date> {
+        private final Calendar calendar;
+        private final Date end;
+        private boolean hasNext;
+
+        private RepeatIterator(Date start, Date end) {
+            calendar = Calendar.getInstance();
+            calendar.setTime(start);
+            this.end = end;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return hasNext;
+        }
+
+        @Override
+        public Date next() {
+            Date d = calendar.getTime();
+            calendar.add(Calendar.MILLISECOND, (int) getIntervalInMillis(calendar));
+            hasNext = !calendar.getTime().after(end);
+            return d;
+        }
+
+        abstract long getIntervalInMillis(Calendar calendar);
     }
 
     /**
@@ -851,29 +922,29 @@ public class Schedule implements Comparable, Model {
             for (ChangeListener listener : listeners) {
                 listener.onStartChange(newStart);
             }
-            if (repeatBetterSchedule != null && repeatBetterSchedule.type == RepeatType.RELATIVE) {
+            if (repeatSchedule != null && repeatSchedule.type == RepeatType.RELATIVE) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(newStart);
-                switch (repeatBetterSchedule.repeatBasis) {
+                switch (repeatSchedule.repeatBasis) {
                     case WEEKLY:
-                        if (repeatBetterSchedule.getDays().length == 1) {
-                            if (repeatBetterSchedule.hasDays() && !repeatBetterSchedule.hasWeeks() && !repeatBetterSchedule.hasMonths())
-                                repeatBetterSchedule.clearRelatives();
-                            repeatBetterSchedule.setDays(calendar.get(Calendar.DAY_OF_WEEK));
+                        if (repeatSchedule.getDays().length == 1) {
+                            if (repeatSchedule.hasDays() && !repeatSchedule.hasWeeks() && !repeatSchedule.hasMonths())
+                                repeatSchedule.clearRelatives();
+                            repeatSchedule.setDays(calendar.get(Calendar.DAY_OF_WEEK));
                         }
                         break;
                     case MONTHLY:
-                        if (repeatBetterSchedule.getWeeks().length == 1) {
-                            if (!repeatBetterSchedule.hasDays() && repeatBetterSchedule.hasWeeks() && !repeatBetterSchedule.hasMonths())
-                                repeatBetterSchedule.clearRelatives();
-                            repeatBetterSchedule.setWeeks(calendar.get(Calendar.WEEK_OF_MONTH));
+                        if (repeatSchedule.getWeeks().length == 1) {
+                            if (!repeatSchedule.hasDays() && repeatSchedule.hasWeeks() && !repeatSchedule.hasMonths())
+                                repeatSchedule.clearRelatives();
+                            repeatSchedule.setWeeks(calendar.get(Calendar.WEEK_OF_MONTH));
                         }
                         break;
                     case YEARLY:
-                        if (repeatBetterSchedule.getMonths().length == 1) {
-                            if (!repeatBetterSchedule.hasDays() && !repeatBetterSchedule.hasWeeks() && repeatBetterSchedule.hasMonths())
-                                repeatBetterSchedule.clearRelatives();
-                            repeatBetterSchedule.setMonths(calendar.get(Calendar.MONTH));
+                        if (repeatSchedule.getMonths().length == 1) {
+                            if (!repeatSchedule.hasDays() && !repeatSchedule.hasWeeks() && repeatSchedule.hasMonths())
+                                repeatSchedule.clearRelatives();
+                            repeatSchedule.setMonths(calendar.get(Calendar.MONTH));
                         }
                         break;
                 }

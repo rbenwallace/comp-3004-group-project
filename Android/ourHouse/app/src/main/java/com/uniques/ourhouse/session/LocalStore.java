@@ -162,9 +162,7 @@ final class LocalStore implements DatabaseLink {
     }
 
     private void populateStores() {
-        House house = new House();
-        house.setName("Test House");
-        populateNewStore(HOUSES_FILE, house);
+        populateNewStore(HOUSES_FILE, House.testHouse());
     }
 
     private void populateNewStore(String fileName, Indexable... models) {

@@ -18,6 +18,7 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
     //TODO fix saved objects
 //    private static HashMap<String, Model> savedObjects = new HashMap<>();
     protected T controller;
+    private Object[] arguments;
     private boolean allowDestruction, pendingDestruction;
     protected boolean destroyOnCreateView;
 
@@ -80,6 +81,9 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
         if (this.controller != null)
             this.controller.onDestroy();
         this.controller = controller;
+        if (arguments != null) {
+            this.controller.acceptArguments(arguments);
+        }
     }
 
     private void clearSavedObjects(FragmentId fragmentId) {
@@ -187,7 +191,9 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
 
     public abstract FragmentId getFragmentId();
 
-    public abstract void acceptArguments(Object... args);
+    public void acceptArguments(Object... args) {
+        arguments = args;
+    }
 
     /**
      * @return true if this fragment overrides default behaviour, false otherwise

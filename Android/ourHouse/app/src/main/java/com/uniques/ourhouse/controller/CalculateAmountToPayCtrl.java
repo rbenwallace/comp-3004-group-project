@@ -76,6 +76,10 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     }
 
     @Override
+    public void acceptArguments(Object... args) {
+    }
+
+    @Override
     public void updateInfo() {
 
     }
