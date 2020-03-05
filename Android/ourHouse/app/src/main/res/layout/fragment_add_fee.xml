@@ -38,7 +38,7 @@
 
         <EditText
             android:id="@+id/addFee_editName"
-            android:layout_width="match_parent"
+            android:layout_width="317dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:ems="10"
@@ -85,17 +85,17 @@
 
             <EditText
                 android:id="@+id/addFee_editTaxRate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="5dp"
+                android:layout_width="151dp"
+                android:layout_height="match_parent"
                 android:ems="10"
                 android:gravity="bottom"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:paddingHorizontal="5dp" />
 
             <Button
                 android:id="@+id/addFee_addTax"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
                 android:layout_marginLeft="8dp"
                 android:background="@drawable/loginbutton_selector"
                 android:text="@string/tax" />

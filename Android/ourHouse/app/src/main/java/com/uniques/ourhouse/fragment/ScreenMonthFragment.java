@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class ScreenMonthFragment extends Fragment<ScreenMonthCtrl> {
+    private String month;
+    private String year;
     public static final String TAG = "ScreenMonthFragment";
     private static final String ACTIVITY_TAG = MainActivity.TAG;
-    private static final int LAYOUT_ID = R.layout.fragment_add_fee;
+    private static final int LAYOUT_ID = R.layout.fragment_screen_month;
 
     public static FragmentId setupId(ActivityId activityId) {
         return FragmentId.SET(ScreenMonthFragment.class, TAG, LAYOUT_ID, activityId);
@@ -26,7 +29,7 @@ public class ScreenMonthFragment extends Fragment<ScreenMonthCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            controller = new ScreenMonthCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this));
+            controller = new ScreenMonthCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this), month, year);
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);
@@ -47,6 +50,8 @@ public class ScreenMonthFragment extends Fragment<ScreenMonthCtrl> {
 
     @Override
     public void acceptArguments(Object... args) {
+        Log.d("wallace: ", month);
+        Log.d("wallace: ", year);
     }
 
     @Override
