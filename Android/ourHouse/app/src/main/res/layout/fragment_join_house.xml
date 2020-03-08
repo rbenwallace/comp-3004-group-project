@@ -13,76 +13,47 @@
         android:src="@drawable/house"
         >
     </ImageView>
-    <ScrollView
+    <SearchView
+        android:id="@+id/houseName_join"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/house"
+        android:queryHint="@string/house_nameKey"
+        android:queryBackground="@drawable/layout_bg"
+        android:iconifiedByDefault="false"
+        android:layout_centerHorizontal="true">
+
+    </SearchView>
+
+    <TextView
+        android:id="@+id/myHouses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/house">
+        android:layout_below="@id/houseName_join"
+        android:layout_marginTop="40dp"
+        android:text="Houses"
+        android:gravity="center"
+        android:textSize="34sp"
+        android:textColor="@color/colorTextPrimary"/>
 
-        <RelativeLayout
+    <View
+        android:id="@+id/border"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorTextPrimary"
+        android:layout_below="@id/myHouses"/>
+    <RelativeLayout
+        android:id="@+id/housesList"
+        android:layout_width="match_parent"
+        android:background="@color/colorInverse"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/border">
+        <ListView
             android:layout_width="match_parent"
-            android:background="@color/colorPrimaryLight"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/houseName_join"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:hint="@string/house_nameKey"
-                android:textSize="26dp"
-                android:inputType="text"
-                android:paddingHorizontal="20dp"
-                android:gravity="center"
-                android:layout_centerHorizontal="true">
-            </EditText>
-
-            <TextView
-                android:id="@+id/myHouses"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/houseName_join"
-                android:layout_marginTop="40dp"
-                android:text="Houses"
-                android:gravity="center"
-                android:textSize="34sp"
-                android:textColor="@color/colorTextPrimary"/>
-
-            <View
-                android:id="@+id/border"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/colorTextPrimary"
-                android:layout_below="@id/myHouses"/>
-            <RelativeLayout
-                android:id="@+id/housesList"
-                android:layout_width="match_parent"
-                android:background="@color/colorInverse"
-                android:layout_height="300dp"
-                android:layout_below="@+id/border">
-                <ListView
-                    android:layout_width="match_parent"
-                    android:id="@+id/housesListJoin"
-                    android:layout_height="match_parent">
-                </ListView>
-            </RelativeLayout>
-            <Button
-                android:id="@+id/joinHouseBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginHorizontal="40dp"
-                android:layout_marginTop="30dp"
-                android:layout_below="@+id/housesList"
-                android:background="@drawable/loginbutton_selector"
-                android:paddingHorizontal="40dp"
-                android:paddingVertical="5dp"
-                android:text="Join House"
-                android:textColor="@color/colorTextPrimary"
-                android:textSize="20sp"/>
-
-        </RelativeLayout>
-
-    </ScrollView>
+            android:id="@+id/housesListJoin"
+            android:layout_height="match_parent">
+        </ListView>
+    </RelativeLayout>
 
 
 </RelativeLayout>

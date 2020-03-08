@@ -23,6 +23,8 @@ import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.TextChangeListener;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CreateHouseCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -39,7 +41,6 @@ public class CreateHouseCtrl implements FragmentCtrl {
     public CreateHouseCtrl(FragmentActivity activity) {
         this.activity = activity;
     }
-
     @Override
     public void init(View view) {
         key = "";
@@ -52,15 +53,12 @@ public class CreateHouseCtrl implements FragmentCtrl {
         createHouse = (Button) view.findViewById(R.id.createBtn);
         taskDiff = (CheckBox) view.findViewById(R.id.showDifficulty);
         penLateTasks = (CheckBox) view.findViewById(R.id.penalizeLateTasks);
-
         ArrayList<String> users = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, users);
-
         House.Rotation rotation = new House.Rotation();
         ArrayList<User> occupants = new ArrayList<User>();
         occupants.add(myUser);
         rotation.addUserToRotation(myUser);
-
         houseName.addTextChangedListener(new TextChangeListener() {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -81,11 +79,8 @@ public class CreateHouseCtrl implements FragmentCtrl {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 DrawableCompat.setTint(password.getBackground(), ContextCompat.getColor(activity, R.color.colorPrimaryDark));
                 DrawableCompat.setTint(confirmPassword.getBackground(), ContextCompat.getColor(activity, R.color.colorPrimaryDark));
-
             }
         });
-
-
         createHouse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,12 +104,14 @@ public class CreateHouseCtrl implements FragmentCtrl {
                 final ArrayList<House> HousesFinal = myHouses;
                 myDatabase.addMyHouse(newHouse, activity, bool ->{
                     if(bool){
-                        User myUser = myDatabase.getCurrentLocalUser(activity);
                         myUser.addHouseId(newHouse.getId());
+                        myUser.addHouseName(newHouse.getKeyId());
                         myDatabase.setLocalUser(myUser, activity);
-                        myUser = myDatabase.getCurrentLocalUser(activity);
+                        myDatabase.updateUser(myUser, coolean ->{
+                            if(!coolean)Log.d("CreateHouseCtrl", "updating User failed");
+                            if(coolean)Log.d("CreateHouseCtrl", "updating User Passed");
+                        });
                         myDatabase.setLocalHouseArray(HousesFinal, activity);
-                        ArrayList<House> wow = myDatabase.getLocalHouseArray(activity);
                         Intent intent = new Intent(activity, MainActivity.class);
                         activity.startActivity(intent);
                         activity.finish();
@@ -136,6 +133,7 @@ public class CreateHouseCtrl implements FragmentCtrl {
     public void updateInfo() {
 
     }
+
     public boolean passwordCorrect(){
         String passwordText = password.getText().toString().trim();
         String confirmPasswordText = confirmPassword.getText().toString().trim();

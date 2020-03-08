@@ -29,6 +29,7 @@ import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -273,6 +274,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                             task.getResult().getInsertedId()));
                     User myUser = getCurrentLocalUser(activity);
                     myUser.addHouseId(house.getId());
+                    myUser.addHouseName(house.getKeyId());
                     setLocalUser(myUser, activity);
                     setLocalHouse(house, activity);
                     ArrayList<House> curHouseList = getLocalHouseArray(activity);
@@ -448,6 +450,34 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             }
         });
     } //tested
+    @Override
+    public void getHousesForHouseArray(ArrayList<ObjectId> userHouses, Consumer<ArrayList<House>> consumer){
+        ArrayList<House> houses = new ArrayList<>();
+        Document filterDoc = new Document()
+                .append("_id", new Document().append("$in", userHouses));
+        housesColl.count(filterDoc).addOnCompleteListener(new OnCompleteListener<Long>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Long> task) {
+                if(task.isSuccessful()){
+                    final Long numDocs = task.getResult();
+                    RemoteFindIterable findResults = housesColl
+                            .find(filterDoc);
+                    count = 0L;
+                    findResults.forEach(house -> {
+                        Document myDoc = (Document) house;
+                        House searchHouse = House.fromBsonDocument(myDoc);
+                        houses.add(searchHouse);
+                        count++;
+                        if(count == numDocs)
+                            consumer.accept(houses);
+                    });
+                }
+                else{
+                    consumer.accept(houses);
+                }
+            }
+        });
+    }
     //All returns are in Decending order im tired rn so like if u want it opposite just change the -1 to a 1 in the .sort inside the functions
     @Override
     public void getAllEventsFromHouse(ObjectId houseId, Consumer<ArrayList<Event>> consumer){

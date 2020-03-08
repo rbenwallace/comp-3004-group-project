@@ -1,7 +1,10 @@
 package com.uniques.ourhouse.model;
 
+import android.util.Log;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
@@ -27,12 +30,13 @@ public class User implements Model, Observable, Indexable {
     private String lastName;
     private String emailAddress;
     private ArrayList<ObjectId> myHouses;
+    private ArrayList<String> myHousesNames;
 
     //testing
     private int performance;
 
     //testing int num
-    public User(ObjectId userID, String firstName, String lastName, String emailAddress, ArrayList<ObjectId> myHouses, int num) {
+    public User(ObjectId userID, String firstName, String lastName, String emailAddress, ArrayList<ObjectId> myHouses, ArrayList<String> myHousesNames, int num) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -41,6 +45,7 @@ public class User implements Model, Observable, Indexable {
         //testing
         this.myHouses = myHouses;
         this.performance = num;
+        this.myHousesNames = myHousesNames;
     }
 
     //testing int num
@@ -49,7 +54,8 @@ public class User implements Model, Observable, Indexable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.myHouses = new ArrayList<>();
+        myHouses = new ArrayList<>();
+        myHousesNames = new ArrayList<>();
         //testing
         this.performance = num;
     }
@@ -60,6 +66,7 @@ public class User implements Model, Observable, Indexable {
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.myHouses = new ArrayList<>();
+        myHousesNames = new ArrayList<>();
         //testing
         this.performance = 0;
     }
@@ -112,9 +119,29 @@ public class User implements Model, Observable, Indexable {
                 myHouses.add(id);
                 return;
             }
-            if (myHouses.contains(id)) {
+            if (!myHouses.contains(id)) {
+                for(ObjectId newID : myHouses)
                 myHouses.add(id);
+
             }
+        }
+    }
+    public void addHouseName(String name){
+        if(name != null) {
+            if(myHousesNames == null){
+                myHousesNames = new ArrayList<String>();
+                myHousesNames.add(name);
+                return;
+            }
+            if (!myHousesNames.contains(name)) {
+                for(String nameTemp : myHousesNames)
+                myHousesNames.add(name);
+            }
+        }
+    }
+    public void removeHouseName(String name){
+        if(name != null) {
+            myHouses.remove(name);
         }
     }
     public void removeHouseId(ObjectId id){
@@ -157,8 +184,8 @@ public class User implements Model, Observable, Indexable {
     public Document toBsonDocument() {
         final Document asDoc = new Document();
         Document housesDoc = new Document();
-        for(ObjectId houseId : myHouses){
-            housesDoc.append("house_id", houseId);
+        for(int i = 0; i < myHouses.size(); i++){
+            housesDoc.append(myHousesNames.get(i), myHouses.get(i));//cant have multiple identities of the same name
         }
         asDoc.put("_id", userID);
         asDoc.put("firstName", firstName);
@@ -172,8 +199,10 @@ public class User implements Model, Observable, Indexable {
     public static User fromBsonDocument(final Document doc){
         Document housesDoc = (Document)doc.get("houses");
         ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
+        ArrayList<String> housesNames = new ArrayList<String>();
         if(housesDoc != null) {
             housesDoc.forEach((key, value) -> {
+                housesNames.add(key);
                 houses.add((ObjectId) value);
             });
         }
@@ -183,6 +212,7 @@ public class User implements Model, Observable, Indexable {
                 doc.getString("lastName"),
                 doc.getString("email"),
                 houses,
+                housesNames,
                 doc.getInteger("performance")
         );
     }
@@ -218,22 +248,23 @@ public class User implements Model, Observable, Indexable {
         String myEmail = obj.get("email").getAsString();
         JsonObject myHouses;
         ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
+        ArrayList<String> housesNames = new ArrayList<String>();
         if(obj.get("houses") != null) {
             myHouses = obj.get("houses").getAsJsonObject();
             Set<String> keys = myHouses.keySet();
             Iterator<String> keyIt = keys.iterator();
-            houses = new ArrayList<ObjectId>();
             while (keyIt.hasNext()) {
                 String key = keyIt.next();
                 if (myHouses.get(key) != null) {
-                    if(Session.getIdFromString(myHouses.get(key).toString()).length() > 5)
+                    if(Session.getIdFromString(myHouses.get(key).toString()).length() > 5) {
+                        housesNames.add(key);
                         houses.add(new ObjectId(Session.getIdFromString(myHouses.get(key).toString())));
+                    }
                 }
             }
         }
-        Integer prefNum = obj.get("performance").getAsInt();
-        User i = new User(new ObjectId(myID), firstName, lastName, myEmail, houses, prefNum);
-        return new User(new ObjectId(myID), firstName, lastName, myEmail, houses, prefNum);
+        int prefNum = obj.get("performance").getAsInt();
+        return new User(new ObjectId(myID), firstName, lastName, myEmail, houses, housesNames, prefNum);
     }
 
     @Override

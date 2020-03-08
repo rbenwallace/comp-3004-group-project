@@ -67,6 +67,7 @@ public interface DatabaseLink {
     void getTask(ObjectId id, Consumer<Task> consumer);
     void getFee(ObjectId id, Consumer<Fee> consumer);
     void getHouse(ObjectId id, Consumer<House> consumer);
+    void getHousesForHouseArray(ArrayList<ObjectId> userHouses, Consumer<ArrayList<House>> consumer);
     void getAllEventsFromHouse(ObjectId houseId, Consumer<ArrayList<Event>> consumer);
     void getAllTasksFromHouse(ObjectId houseId, Consumer<ArrayList<Task>> consumer);
     void getAllFeesFromHouse(ObjectId houseId, Consumer<ArrayList<Fee>> consumer);
