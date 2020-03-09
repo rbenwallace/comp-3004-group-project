@@ -9,6 +9,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.FeedFragment;
@@ -16,13 +17,19 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.model.Task;
+import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.util.Schedule;
+
+import org.bson.types.ObjectId;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class AddTaskCtrl implements FragmentCtrl {
     private FragmentActivity activity;
+    private MongoDB myDatabase = new MongoDB();
+    private ObjectId userId;
+    private ObjectId houseId;
 
     public AddTaskCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -30,7 +37,6 @@ public class AddTaskCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        Log.d(AddTaskFragment.TAG, "Add Fee Clicked");
         Button addTaskBackButton = (Button) view.findViewById(R.id.addTask_btnBack);
         Button addTaskAddButton = (Button) view.findViewById(R.id.addTask_btnAdd);
         TextView taskName = (TextView) view.findViewById(R.id.addTask_editDescription);
@@ -38,6 +44,13 @@ public class AddTaskCtrl implements FragmentCtrl {
         RadioGroup taskDifficulty = (RadioGroup) view.findViewById(R.id.addTask_radioDifficulty);
         TextView otherTaskFrequency = (TextView) view.findViewById(R.id.addTask_editNumberOfDays);
         DatePicker datePicker = (DatePicker) view.findViewById(R.id.addTask_datePicked);
+        TextView taskViewTitle = (TextView) view.findViewById(R.id.addTask_title);
+
+        userId = myDatabase.getCurrentLocalUser(this.activity).getId();
+        houseId = myDatabase.getCurrentLocalHouse(this.activity).getId();
+
+        taskViewTitle.setText("Add Task");
+        addTaskAddButton.setText("ADD");
 
         addTaskBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,8 +120,15 @@ public class AddTaskCtrl implements FragmentCtrl {
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                     }
                 }
-                Task task = new Task(name, schedule, selectedDifficultyNum);
-                Log.d(AddTaskFragment.TAG, task.consoleFormat("TASK ADDED: "));
+                Task task = new Task(userId, houseId, name, schedule, selectedDifficultyNum);
+                myDatabase.postTask(task, bool->{
+                    if(bool){
+                        Log.d(AddTaskFragment.TAG, "Task Added to Database");
+                    }
+                    else{
+                        Log.d(AddTaskFragment.TAG, "Task not received by Database");
+                    }
+                });
                 Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();
                 activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
             }

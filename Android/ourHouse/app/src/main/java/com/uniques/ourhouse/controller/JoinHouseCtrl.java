@@ -1,11 +1,14 @@
 package com.uniques.ourhouse.controller;
 
+import android.app.UiAutomation;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,6 +35,8 @@ import com.uniques.ourhouse.util.TextChangeListener;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import androidx.annotation.RequiresApi;
+
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class JoinHouseCtrl implements FragmentCtrl {
@@ -48,6 +53,7 @@ public class JoinHouseCtrl implements FragmentCtrl {
         this.activity = activity;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void init(View view) {
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);

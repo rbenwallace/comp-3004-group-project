@@ -26,7 +26,7 @@ public class Splash extends AppCompatActivity {
         client = Stitch.getAppClient("ourhouse-notdj");
         currentUser = Splash.client.getAuth().getUser();
         Log.d("Splash", "launching LS");
-        delayStart(this, MainActivity.class, true);
+        delayStart(this, LS_Main.class, true);
     }
 
 
