@@ -42,6 +42,7 @@ public class MyHousesCtrl implements FragmentCtrl {
     private House selectedHouse;
     private ArrayList<House> myHouses;
     private Button logoutBtn;
+    private User myUser;
 //    private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private MongoDB myDatabase = new MongoDB();
 
@@ -57,7 +58,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         logoutBtn = (Button) view.findViewById(R.id.logoutBtnMH);
         //Gather houses if there are any from the shared pref Houses
         myHouses = myDatabase.getLocalHouseArray(activity);
-        User myUser = myDatabase.getCurrentLocalUser(activity);
+        myUser = myDatabase.getCurrentLocalUser(activity);
         if(myUser.getMyHouses() == null){
             myUser.setMyHouses(new ArrayList<ObjectId>());
             myDatabase.setLocalUser(myUser, activity);
@@ -133,7 +134,10 @@ public class MyHousesCtrl implements FragmentCtrl {
                         temp.getRotation().getRotation().remove(myUser);
                         myDatabase.setLocalHouseArray(myHouses, activity);
                         myUser.removeHouseId(temp.getId());
-                        myDatabase.postHouse(temp, bool ->{
+                        myDatabase.updateUser(myUser, bool->{
+                            if(!bool) Log.d("MyHousesCtrl", "Failed to update User to Database");
+                        });
+                        myDatabase.updateHouse(temp, bool ->{
                             if (bool) Log.d("MyHousesCtrl", "House removed user");
                         });
                         //TODO Remove the user from the House from the house

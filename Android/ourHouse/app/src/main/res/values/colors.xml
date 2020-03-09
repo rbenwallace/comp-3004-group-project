@@ -4,6 +4,7 @@
     <color name="button_blue">#A3E0FF</color>
     <color name="darker_blue">#0DA5F3</color>
     <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
     <color name="button_selectorcolor">#9E9E9E</color>
     <color name="colorPrimary">#03A9F4</color>
     <color name="colorPrimaryLight">#B3E5FC</color>

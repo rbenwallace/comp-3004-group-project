@@ -75,14 +75,19 @@ public class LoginCtrl implements FragmentCtrl {
         if (myDatabase.getAuth().isLoggedIn()) {
             //If there is a user but its not currently set up with shared pref, set it up
             if (myDatabase.getCurrentLocalUser(activity) == null) {
-                Consumer<User> myUser = user -> {
+                myDatabase.getUser(new ObjectId(myDatabase.getAuth().getUser().getId()), user ->{
                     System.out.println("I am right here");
                     if (user != null) {
-                        myDatabase.setLocalUser(user, activity);
+                        myDatabase.getHousesForHouseArray(user.getMyHouses(), houses->{
+                            if(houses != null){
+                                myDatabase.setLocalHouseArray(houses, activity);
+
+                            }
+                        });
                         activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+
                     }
-                };
-                myDatabase.getUser(new ObjectId(myDatabase.getAuth().getUser().getId()), myUser);
+                });
             }
             //If so just go into houses
             else {
@@ -247,12 +252,11 @@ public class LoginCtrl implements FragmentCtrl {
         protected void onPostExecute(com.google.android.gms.tasks.Task<StitchUser> loggedInUser, String email, String passwd) {
             //If accepted
             if (statusCode == 1) {
-                User newUser = new User(new ObjectId(loggedInUser.getResult().getId()), firstNameCurUser, lastNameCurUser, email, new ArrayList<ObjectId>(), 0);
+                User newUser = new User(new ObjectId(loggedInUser.getResult().getId()), firstNameCurUser, lastNameCurUser, email, new ArrayList<ObjectId>(),new ArrayList<String>(), 0);
                 myDatabase.getUser(newUser.getId(), user -> {
                     //If there is a user change local user, and set the local login data
                     if(user != null){
                         myDatabase.setLocalUser(user, activity);
-                        User m = myDatabase.getCurrentLocalUser(activity);
                         //setLocalLoginData
                         ArrayList<String> transferInfoArray = new ArrayList<>();
                         transferInfoArray.add(user.getFirstName());
@@ -266,17 +270,18 @@ public class LoginCtrl implements FragmentCtrl {
                         editor.apply();
 
                         //populate local house list
-                        ArrayList<House> myHouses = new ArrayList<>();
-                        if(user.getMyHouses() != null){
-                            for(ObjectId id : user.getMyHouses())
-                                myDatabase.getHouse(id, house -> {
-                                    if(house != null)
-                                        myHouses.add(house);
-                                    myDatabase.setLocalHouseArray(myHouses, activity);
-                                });
-                        }
-                        //users house ids need to be gathered and put inside the houses
-                        Toast.makeText(activity, "Logged in successfully", Toast.LENGTH_SHORT).show();
+                        System.out.println("I am right here");
+                        Log.d("yourACunt", "user" + user.toString());
+                        myDatabase.getHousesForHouseArray(user.getMyHouses(), houses->{
+                            if(houses != null){
+                                for(House h : houses) Log.d("yourACunt", h.toString());
+                                myDatabase.setLocalHouseArray(houses, activity);
+                                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+                            }
+                            else{
+                                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+                            }
+                        });
                     }
                     //If not add the new user
                     else{

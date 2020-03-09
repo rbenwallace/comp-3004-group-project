@@ -190,6 +190,11 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
+    public void getHousesForHouseArray(ArrayList<ObjectId> userHouses, Consumer<ArrayList<House>> consumer) {
+
+    }
+
+    @Override
     public void getAllEventsFromHouse(ObjectId houseId, Consumer<ArrayList<Event>> consumer) {
 
     }
