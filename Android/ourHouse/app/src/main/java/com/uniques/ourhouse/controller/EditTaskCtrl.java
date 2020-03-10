@@ -20,7 +20,6 @@ import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.MongoDB;
-import com.uniques.ourhouse.util.House;
 import com.uniques.ourhouse.util.Schedule;
 
 import org.bson.types.ObjectId;
