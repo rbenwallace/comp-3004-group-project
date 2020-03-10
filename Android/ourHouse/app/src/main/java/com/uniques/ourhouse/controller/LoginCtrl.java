@@ -53,6 +53,7 @@ public class LoginCtrl implements FragmentCtrl {
     private int showPassword = 1, numberOfPwClicks = 0;
     private EditText email;
     private EditText password;
+    private Button forgetPassword;
     private StitchUser currentUser;
     private String firstNameCurUser;
     private String lastNameCurUser;
@@ -99,7 +100,7 @@ public class LoginCtrl implements FragmentCtrl {
         password = view.findViewById(R.id.login_password);
         Button backToSignUp = view.findViewById(R.id.createAccount);
         Button loginBtn = view.findViewById(R.id.loginBtn);
-        Button forgetPassword = view.findViewById(R.id.forgot_password);
+        forgetPassword = view.findViewById(R.id.forgot_password);
         errorDisplay = view.findViewById(R.id.errorMessage);
         password.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -321,7 +322,6 @@ public class LoginCtrl implements FragmentCtrl {
                     });
                 }
                 else{
-                    Log.d("hello", "Mylo");
                     pd.setVisibility(View.GONE);
                     password.setText("");
                     activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);

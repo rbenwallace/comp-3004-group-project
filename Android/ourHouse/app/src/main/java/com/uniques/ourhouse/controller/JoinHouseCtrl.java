@@ -16,6 +16,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
@@ -28,14 +33,13 @@ import com.uniques.ourhouse.session.MongoDB;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import com.uniques.ourhouse.util.TextChangeListener;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class JoinHouseCtrl implements FragmentCtrl {
+public class JoinHouseCtrl implements FragmentCtrl{
     private FragmentActivity activity;
     private ArrayList<House> searchedHouses;
 //    private DatabaseLink myDatabase = Session.getSession().getDatabase();
@@ -59,6 +63,7 @@ public class JoinHouseCtrl implements FragmentCtrl {
         housesList.setClickable(true);
         searchedHouses = new ArrayList<>();
         houses = new ArrayList<>();
+        housesList = view.findViewById(R.id.housesListJoin);
         adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, houses);
         housesList.setAdapter(adapter);
         myUser = myDatabase.getCurrentLocalUser(activity);
@@ -94,7 +99,6 @@ public class JoinHouseCtrl implements FragmentCtrl {
                     Log.d("CheckingHouses", Integer.toString(myList.size()));
                     searchedHouses = myList;
                     houses.clear();
-                    adapter.clear();
                     for(int i = 0; i < searchedHouses.size(); i= i+1){
                         Log.d("CheckingHousesInside", i + " total: " + searchedHouses.size());
                         houses.add(searchedHouses.get(i).getKeyId());
@@ -103,12 +107,15 @@ public class JoinHouseCtrl implements FragmentCtrl {
                     Log.d("CheckingHousesStringList", Integer.toString(houses.size()));
                     Log.d("CheckingHousesList", Integer.toString(housesList.getChildCount()));
                     adapter.notifyDataSetChanged();
-                    relList.getChildAt(0).callOnClick();
                     updateInfo();
                 });
                 return true;
             }
         });
+        for(House h : searchedHouses){
+            Log.d("checkingHouses " + h.getName(), h.toString());
+            houses.add(h.getName());
+        }
         housesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -154,10 +161,6 @@ public class JoinHouseCtrl implements FragmentCtrl {
                 });
             }
         });
-        for(House h : searchedHouses){
-            Log.d("checkingHouses " + h.getName(), h.toString());
-            houses.add(h.getName());
-        }
     }
 
     @Override
@@ -167,7 +170,6 @@ public class JoinHouseCtrl implements FragmentCtrl {
 
     @Override
     public void updateInfo() {
-        housesList.performClick();
     }
 
 

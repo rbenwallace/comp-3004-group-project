@@ -51,6 +51,7 @@
     <string name="task_num_days">Number of Days</string>
     <string name="task_num_dayds">Number of Days</string>
     <string name="appbar_scrolling_view_behavior">Number of Days</string>
+    <string name="error_invalid_email">Email provided is invalid</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

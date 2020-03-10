@@ -11,19 +11,15 @@ public abstract class SecurityLink {
     protected abstract boolean autoAuthenticate(UUID id, UUID loginKey);
 
     abstract class SecureAuthenticator implements AuthenticationListener {
-
         AuthenticationListener authListener;
-
         SecureAuthenticator() {
             authListener = new AuthenticationListener() {
                 @Override
                 public void onRegistered(User user) {
                 }
-
                 @Override
                 public void onSuccess(UUID userId, UUID loginKey) {
                 }
-
                 @Override
                 public void onFail(String email, String password) {
                 }
