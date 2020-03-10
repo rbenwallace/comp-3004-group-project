@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
+import com.uniques.ourhouse.fragment.EditTaskFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.model.Event;
@@ -154,7 +155,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
 
             layout.setOnClickListener(v -> handleClick());
             layout.findViewById(R.id.feed_card_pnlEdit).setOnClickListener(v ->
-                    activity.pushFragment(FragmentId.GET(AddTaskFragment.TAG), object.getEvent().getId()));
+                    activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getId()));
             layout.findViewById(R.id.feed_card_pnlComplete).setOnClickListener(v -> {
                 object.getEvent().setDateCompleted(isComplete ? null : new Date());
                 isComplete = !isComplete;

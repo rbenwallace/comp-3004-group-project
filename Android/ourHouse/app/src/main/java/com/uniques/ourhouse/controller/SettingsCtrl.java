@@ -5,13 +5,19 @@ import android.view.View;
 import android.widget.Button;
 
 import com.uniques.ourhouse.R;
+import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
+import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.ManageFragment;
+import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
+import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.ReadOnlyNameable;
 import com.uniques.ourhouse.util.RecyclerCtrl;
+
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +30,8 @@ import androidx.recyclerview.widget.RecyclerView;
 public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard> {
     private FragmentActivity activity;
     private RecyclerView personRecycler;
+    private MongoDB myDatabase = new MongoDB();
+    private ObjectId houseId;
 
     public List<TaskRotationCard> observableCards;
     private RecyclerAdapter<TaskRotationCard> recyclerAdapter;
@@ -57,6 +65,8 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
         Button btnSwitchHouse = view.findViewById(R.id.settings_btnDeleteHouse);
         Button btnDeleteHouse = view.findViewById(R.id.settings_btnSwitchHouse);
 
+        houseId = myDatabase.getCurrentLocalHouse(this.activity).getId();
+
         //todo implement buttons
 
         observableCards = new ArrayList<>();
@@ -67,6 +77,49 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
         Button settingsBackButton = (Button) view.findViewById(R.id.settings_btnBackHouse);
         Button settingsSaveButton = (Button) view.findViewById(R.id.settings_btnSaveHouse);
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(4);
+                myDatabase.logout(bool->{
+                    if(bool){
+                        Log.d(AddTaskFragment.TAG, "User Successfully Logged Out");
+                    }
+                    else{
+                        Log.d(AddTaskFragment.TAG, "User not Logged Out");
+                    }
+                });
+                activity.pushFragment(FragmentId.GET(LoginFragment.TAG));
+            }
+        });
+
+        btnSwitchHouse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(4);
+                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+            }
+        });
+
+        btnDeleteHouse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(4);
+                myDatabase.deleteHouse(houseId, bool->{
+                    if(bool){
+                        Log.d(AddTaskFragment.TAG, "House Successfully Deleted");
+                    }
+                    else{
+                        Log.d(AddTaskFragment.TAG, "House not Deleted");
+                    }
+                });
+                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+            }
+        });
 
         settingsBackButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -15,12 +15,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/addTask_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="@string/add_task"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="25sp"
                 android:textStyle="bold" />
@@ -237,7 +238,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:background="@drawable/loginbutton_selector"
-            android:text="@string/add" />
+            android:text="" />
 
         <View
             android:layout_width="match_parent"
