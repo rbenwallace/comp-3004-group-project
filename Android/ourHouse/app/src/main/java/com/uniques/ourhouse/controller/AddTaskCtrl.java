@@ -70,7 +70,8 @@ public class AddTaskCtrl implements FragmentCtrl {
                 int month = datePicker.getMonth();
                 int year = datePicker.getYear();
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, day);
+                calendar.set(year, month, day, 23, 59, 59);
+                calendar.set(Calendar.MILLISECOND, 0);
                 Date date = calendar.getTime();
                 if(String.valueOf(taskName.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherTaskFrequency.getText()).equals(""))){
                     Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
