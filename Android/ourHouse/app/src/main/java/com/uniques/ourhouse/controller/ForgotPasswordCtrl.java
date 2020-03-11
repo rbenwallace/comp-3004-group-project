@@ -24,7 +24,6 @@ public class ForgotPasswordCtrl implements FragmentCtrl {
         backTOLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Going to LoginFragment", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(0);
                 activity.popFragment(FragmentId.GET(ForgotPasswordFragment.TAG));

@@ -208,14 +208,13 @@ public class EditTaskCtrl implements FragmentCtrl {
                 }
                 Schedule schedule = new Schedule();
                 if(selectedFrequencyText.equals("Once")){
-                    schedule.setEndType(Schedule.EndType.ON_DATE);
                     Schedule.pauseStartEndBoundsChecking();
                     schedule.setStart(date);
                     schedule.setEnd(date);
                     Schedule.resumeStartEndBoundsChecking();
+                    schedule.setEndType(Schedule.EndType.ON_DATE);
                 }
                 else{
-                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
                     Schedule.pauseStartEndBoundsChecking();
                     schedule.setStart(date);
                     schedule.setEndPseudoIndefinite();
@@ -236,7 +235,9 @@ public class EditTaskCtrl implements FragmentCtrl {
                     else if(selectedFrequencyText.equals("Daily")){
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                     }
+                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
                 }
+                System.out.println("");
                 Task task = new Task(taskId, userId, houseId, name, schedule, selectedDifficultyNum);
                 myDatabase.updateTask(task, bool->{
                     if(bool){

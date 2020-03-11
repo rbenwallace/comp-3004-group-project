@@ -154,7 +154,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
             largeTxtComplete = layout.findViewById(R.id.feed_card_large_txtComplete);
 
             layout.setOnClickListener(v -> handleClick());
-            String taskIdStr = "5e60ad4613d8ee3d69f5004c";
+            String taskIdStr = "5e6810c3bd4f6f554e13dc06";
             layout.findViewById(R.id.feed_card_pnlEdit).setOnClickListener(v ->
                     activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getId(), taskIdStr));
             layout.findViewById(R.id.feed_card_pnlComplete).setOnClickListener(v -> {

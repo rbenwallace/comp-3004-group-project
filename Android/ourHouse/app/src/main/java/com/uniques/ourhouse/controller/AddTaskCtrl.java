@@ -92,21 +92,20 @@ public class AddTaskCtrl implements FragmentCtrl {
                 }
                 Schedule schedule = new Schedule();
                 if(selectedFrequencyText.equals("Once")){
-                    schedule.setEndType(Schedule.EndType.ON_DATE);
                     Schedule.pauseStartEndBoundsChecking();
                     schedule.setStart(date);
                     schedule.setEnd(date);
                     Schedule.resumeStartEndBoundsChecking();
+                    schedule.setEndType(Schedule.EndType.ON_DATE);
                 }
                 else{
-                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
                     Schedule.pauseStartEndBoundsChecking();
                     schedule.setStart(date);
                     schedule.setEndPseudoIndefinite();
                     Schedule.resumeStartEndBoundsChecking();
                     if(selectedFrequencyText.equals("Other")){
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                        schedule.getRepeatSchedule().setDelay(Integer.valueOf(String.valueOf(otherTaskFrequency.getText())));
+                        schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherTaskFrequency.getText())));
                     }
                     else if(selectedFrequencyText.equals("Yearly")){
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
@@ -120,17 +119,19 @@ public class AddTaskCtrl implements FragmentCtrl {
                     else if(selectedFrequencyText.equals("Daily")){
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                     }
+                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
                 }
                 Task task = new Task(userId, houseId, name, schedule, selectedDifficultyNum);
                 myDatabase.postTask(task, bool->{
                     if(bool){
                         Log.d(AddTaskFragment.TAG, "Task Added to Database");
+                        Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Log.d(AddTaskFragment.TAG, "Task not received by Database");
+                        Toast.makeText(activity, "Task Not Added", Toast.LENGTH_SHORT).show();
                     }
                 });
-                Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();
                 activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
             }
         });
