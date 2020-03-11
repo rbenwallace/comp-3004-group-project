@@ -1,17 +1,25 @@
 package com.uniques.ourhouse.controller;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.uniques.ourhouse.LS_Main;
+import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
+import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
+import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.ReadOnlyNameable;
@@ -58,12 +66,9 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
     @Override
     public void init(View view) {
-        Log.d(SettingsFragment.TAG, "Add Fee Clicked");
         RecyclerView personRecycler = view.findViewById(R.id.settings_recycler);
 
-        Button btnLogout = view.findViewById(R.id.settings_btnLogout);
-        Button btnSwitchHouse = view.findViewById(R.id.settings_btnDeleteHouse);
-        Button btnDeleteHouse = view.findViewById(R.id.settings_btnSwitchHouse);
+        Button btnSwitchHouse = view.findViewById(R.id.settings_btnSwitchHouse);
 
         houseId = myDatabase.getCurrentLocalHouse(this.activity).getId();
 
@@ -77,47 +82,23 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
         Button settingsBackButton = (Button) view.findViewById(R.id.settings_btnBackHouse);
         Button settingsSaveButton = (Button) view.findViewById(R.id.settings_btnSaveHouse);
+        TextView houseName = (TextView) view.findViewById(R.id.settings_editHouseName);
+        CheckBox showTaskDifficultyButton = (CheckBox) view.findViewById(R.id.settings_chkShowDifficulty);
+        CheckBox showLateTasksButton = (CheckBox) view.findViewById(R.id.settings_chkShowLateTasks);
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
-                myDatabase.logout(bool->{
-                    if(bool){
-                        Log.d(AddTaskFragment.TAG, "User Successfully Logged Out");
-                    }
-                    else{
-                        Log.d(AddTaskFragment.TAG, "User not Logged Out");
-                    }
-                });
-                activity.pushFragment(FragmentId.GET(LoginFragment.TAG));
-            }
-        });
+        House house = myDatabase.getCurrentLocalHouse(activity);
+        houseName.setText(house.getName());
+        if(house.getPenalizeLateTasks()){ showLateTasksButton.performClick(); }
+        if(house.getShowTaskDifficulty()){ showTaskDifficultyButton.performClick(); }
 
         btnSwitchHouse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
-            }
-        });
-
-        btnDeleteHouse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
-                myDatabase.deleteHouse(houseId, bool->{
-                    if(bool){
-                        Log.d(AddTaskFragment.TAG, "House Successfully Deleted");
-                    }
-                    else{
-                        Log.d(AddTaskFragment.TAG, "House not Deleted");
-                    }
-                });
-                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+//                ((LS_Main) activity).setViewPager(4);=
+                myDatabase.clearLocalCurHouse(activity);
+                Intent intent = new Intent(activity, LS_Main.class);
+                activity.startActivity(intent);
             }
         });
 
@@ -134,8 +115,34 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                observableCards.add(new TaskRotationCard(new ObservableString("Test")));
-                updateInfo();
+                ///observableCards.add(new TaskRotationCard(new ObservableString("Test")));
+                //updateInfo();
+                if(showLateTasksButton.isChecked()){
+                    house.setPenalizeLateTasks(true);
+                }
+                else{
+                    house.setPenalizeLateTasks(false);
+                }
+                if(showTaskDifficultyButton.isChecked()){
+                    house.setShowTaskDifficulty(true);
+                }
+                else{
+                    house.setShowTaskDifficulty(false);
+                }
+                String name = houseName.getText().toString();
+                house.setName(name);
+                myDatabase.updateHouse(house, aBoolean -> {
+                    if(aBoolean){
+                        Log.d(AddTaskFragment.TAG, "House saved in database");
+                        Toast.makeText(activity, "House Saved", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Log.d(AddTaskFragment.TAG, "House not saved in database");
+                        Toast.makeText(activity, "House Not Saved", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                myDatabase.setLocalHouse(house, activity);
+                activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
             }
         });
     }

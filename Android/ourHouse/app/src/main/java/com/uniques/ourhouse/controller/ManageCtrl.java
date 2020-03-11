@@ -30,7 +30,6 @@ public class ManageCtrl implements FragmentCtrl {
         addFeeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Add Fee", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 activity.pushFragment(FragmentId.GET(AddFeeFragment.TAG));
@@ -39,7 +38,6 @@ public class ManageCtrl implements FragmentCtrl {
         addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Add Task", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
                 activity.pushFragment(FragmentId.GET(AddTaskFragment.TAG));
@@ -48,7 +46,6 @@ public class ManageCtrl implements FragmentCtrl {
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "SettingsFragment", Toast.LENGTH_LONG).show();
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(6);
                 activity.pushFragment(FragmentId.GET(SettingsFragment.TAG));

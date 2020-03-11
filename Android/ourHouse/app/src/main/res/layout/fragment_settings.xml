@@ -53,17 +53,14 @@
                 android:textColorHint="@color/black"
                 android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/settings_btnEditTaskRotation"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_below="@+id/settings_editHouseName"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/loginbutton_selector"
+                android:layout_marginBottom="10dp"
                 android:drawableStart="@drawable/rotation"
                 android:drawablePadding="8dp"
-                android:layout_centerHorizontal="true"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="@string/edit_task_rotation"
@@ -113,34 +110,6 @@
             android:paddingHorizontal="40dp"
             android:paddingVertical="5dp"
             android:text="@string/switch_house"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/settings_btnDeleteHouse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/loginbutton_selector"
-            android:drawableStart="@drawable/delete"
-            android:drawablePadding="8dp"
-            android:paddingHorizontal="40dp"
-            android:paddingVertical="5dp"
-            android:text="@string/delete_house"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/settings_btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/loginbutton_selector"
-            android:drawableStart="@drawable/logout"
-            android:drawablePadding="8dp"
-            android:paddingHorizontal="40dp"
-            android:paddingVertical="5dp"
-            android:text="@string/logout"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
