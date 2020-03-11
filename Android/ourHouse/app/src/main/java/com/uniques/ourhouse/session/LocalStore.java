@@ -105,7 +105,7 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
-    public void saveLocalHouse(House oldHouse, House newHouse, FragmentActivity activity) {
+    public void saveLocalHouse(House newHouse, FragmentActivity activity) {
 
     }
 

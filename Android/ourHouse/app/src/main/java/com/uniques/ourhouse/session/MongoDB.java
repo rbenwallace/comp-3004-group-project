@@ -200,16 +200,19 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     }
     @Override
-    public void saveLocalHouse(House oldHouse, House newHouse, FragmentActivity activity) {
+    public void saveLocalHouse(House newHouse, FragmentActivity activity) {
         ArrayList<House> houses = getLocalHouseArray(activity);
-        houses.remove(oldHouse);
-        houses.add(newHouse);
+        int i;
+        for(i = 0; i < houses.size(); i++){
+            if(houses.get(i).getId() == newHouse.getId()){
+                break;
+            }
+        }
         User myUser = getCurrentLocalUser(activity);
-        myUser.deleteHouse(oldHouse);
-        myUser.addHouse(newHouse);
+        myUser.changeHouse(houses.get(i).getKeyId(), newHouse);
         updateUser(myUser, bool->{
-
         });
+        houses.set(i, newHouse);
         setLocalHouse(newHouse, activity);
         setLocalHouseArray(houses, activity);
     }
