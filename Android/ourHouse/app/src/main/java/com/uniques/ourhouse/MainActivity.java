@@ -9,6 +9,7 @@ import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.AmountPaidFragment;
 import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
+import com.uniques.ourhouse.fragment.EditFeeFragment;
 import com.uniques.ourhouse.fragment.EditTaskFragment;
 import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.Fragment;
@@ -47,6 +48,7 @@ public class MainActivity extends FragmentActivity {
         PerformanceFragment.setupId(getActivityId());
         ScreenMonthFragment.setupId(getActivityId());
         EditTaskFragment.setupId(getActivityId());
+        EditFeeFragment.setupId(getActivityId());
 
         BottomNavigationView navigation = findViewById(R.id.main_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

@@ -34,7 +34,6 @@ public class EditTaskCtrl implements FragmentCtrl {
     private ObjectId userId;
     private ObjectId houseId;
     private ObjectId taskId;
-    private Task modifiedTask;
     private Calendar oldCalendar;
 
     public EditTaskCtrl(FragmentActivity activity) {
@@ -44,7 +43,7 @@ public class EditTaskCtrl implements FragmentCtrl {
     @SuppressLint("SetTextI18n")
     @Override
     public void init(View view) {
-        Log.d(AddTaskFragment.TAG, "Edit Task Clicked");
+        Log.d(EditTaskFragment.TAG, "Edit Task Clicked");
         Button editTaskBackButton = (Button) view.findViewById(R.id.addTask_btnBack);
         TextView taskName = (TextView) view.findViewById(R.id.addTask_editDescription);
         RadioGroup taskFrequencies = (RadioGroup) view.findViewById(R.id.addTask_radioFrequency);
@@ -82,9 +81,8 @@ public class EditTaskCtrl implements FragmentCtrl {
         }
 
         myDatabase.getTask(taskId, task -> {
-            modifiedTask = new Task(userId, houseId, task.getName(), task.getSchedule(), task.getDifficulty());
-            taskName.setText(modifiedTask.getName());
-            int difficulty = modifiedTask.getDifficulty();
+            taskName.setText(task.getName());
+            int difficulty = task.getDifficulty();
             if(difficulty == 1){
                 easyButton.performClick();
             }
@@ -239,11 +237,12 @@ public class EditTaskCtrl implements FragmentCtrl {
                 Task task = new Task(taskId, userId, houseId, name, schedule, selectedDifficultyNum);
                 myDatabase.updateTask(task, bool->{
                     if(bool){
-                        Log.d(AddTaskFragment.TAG, "Task updated in the Database");
+                        Log.d(EditTaskFragment.TAG, "Task updated in the Database");
                         Toast.makeText(activity, "Task Saved", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        Log.d(AddTaskFragment.TAG, "Task not updated in the  Database");
+                        Log.d(EditTaskFragment.TAG, "Task not updated in the  Database");
+                        Toast.makeText(activity, "Task Not Saved", Toast.LENGTH_SHORT).show();
                     }
                 });
                 activity.pushFragment(FragmentId.GET(FeedFragment.TAG));

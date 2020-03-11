@@ -173,12 +173,14 @@ public class AddFeeCtrl implements FragmentCtrl {
                 myDatabase.postFee(fee, bool->{
                     if(bool){
                         Log.d(AddTaskFragment.TAG, "Fee Added to Database");
+                        Toast.makeText(activity, "Fee Added", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Log.d(AddTaskFragment.TAG, "Fee not received by Database");
+                        Toast.makeText(activity, "Fee Not Added", Toast.LENGTH_SHORT).show();
                     }
                 });
-                Toast.makeText(activity, "Fee Added", Toast.LENGTH_SHORT).show();
+
                 activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
             }
         });

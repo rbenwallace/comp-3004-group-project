@@ -41,6 +41,8 @@ public class Fee extends ManageItem implements Model, Indexable, Observable {
         this.type = "Fee";
     }
 
+    public float getAmount(){ return amount; }
+
     @Override
     public String consoleFormat(String prefix) {
         return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), " + manageItemOwner.toString() + "), " + "id: (" + manageItemHouse.toString() + "name: [" + name + "]   " + ", Amount: " + amount + ", Date Created: " + schedule.getStart().toString();
