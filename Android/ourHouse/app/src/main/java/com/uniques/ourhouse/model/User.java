@@ -155,6 +155,14 @@ public class User implements Model, Observable, Indexable {
     public ArrayList<ObjectId> getMyHouses() {
         return myHouses;
     }
+    public void deleteHouse(House house) {
+        myHouses.remove(house.getId());
+        myHousesNames.remove(house.getKeyId());
+    }
+    public void addHouse(House house) {
+        myHouses.add(house.getId());
+        myHousesNames.add(house.getKeyId());
+    }
 
     public void setMyHouses(ArrayList<ObjectId> myHouses) {
         this.myHouses = myHouses;

@@ -196,6 +196,22 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         String json = house.toBsonDocument().toJson();
         editor.putString("myHouse", json);
         editor.apply();
+        ArrayList<House> houses = getLocalHouseArray(activity);
+
+    }
+    @Override
+    public void saveLocalHouse(House oldHouse, House newHouse, FragmentActivity activity) {
+        ArrayList<House> houses = getLocalHouseArray(activity);
+        houses.remove(oldHouse);
+        houses.add(newHouse);
+        User myUser = getCurrentLocalUser(activity);
+        myUser.deleteHouse(oldHouse);
+        myUser.addHouse(newHouse);
+        updateUser(myUser, bool->{
+
+        });
+        setLocalHouse(newHouse, activity);
+        setLocalHouseArray(houses, activity);
     }
     @Override
     public void clearLocalHouses(FragmentActivity activity){

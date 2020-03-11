@@ -47,6 +47,7 @@ public interface DatabaseLink {
     void setLocalHouseArray(ArrayList<House> myList, FragmentActivity activity);
     void setLocalUser(User user, FragmentActivity activity);
     void setLocalHouse(House house, FragmentActivity activity);
+    void saveLocalHouse(House oldHouse, House newHouse, FragmentActivity activity);
     void clearLocalHouses(FragmentActivity activity);
     void clearLocalCurHouse(FragmentActivity activity);
     void clearLocalCurUser(FragmentActivity activity);
