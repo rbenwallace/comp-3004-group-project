@@ -299,4 +299,20 @@ public class User implements Model, Observable, Indexable {
                 ", performance=" + performance +
                 '}';
     }
+
+    public void changeHouse(String keyId, House newHouse) {
+        int i;
+        for(i = 0; i < myHousesNames.size(); i++){
+            if(myHousesNames.get(i).equals(keyId)){
+                break;
+            }
+        }
+        myHousesNames.set(i, newHouse.getKeyId());
+        for(i = 0; i < myHouses.size(); i++){
+            if(myHouses.get(i).equals(newHouse.getId())){
+                break;
+            }
+        }
+        myHouses.set(i, newHouse.getId());
+    }
 }
