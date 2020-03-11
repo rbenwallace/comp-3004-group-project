@@ -119,8 +119,6 @@ public class EditTaskCtrl implements FragmentCtrl {
                 }
             }
         });
-
-
         editTaskBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
