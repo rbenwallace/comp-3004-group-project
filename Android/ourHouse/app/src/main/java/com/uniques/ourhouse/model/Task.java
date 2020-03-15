@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Date;
 import java.util.function.Consumer;
 
-public class Task extends ManageItem implements Model, Indexable, Observable {
+public class Task extends ManageItem implements Indexable, Observable {
     public static final String TASK_COLLECTION = "Tasks";
     private static final int DIFFICULTY_EASY = 1;
     private static final int DIFFICULTY_MEDIUM = 2;

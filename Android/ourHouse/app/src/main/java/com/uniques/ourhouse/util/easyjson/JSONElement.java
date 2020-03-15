@@ -78,16 +78,17 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public JSONElement putPrimitive(Object value) {
-        Object[] deconstructedKey = deconstructKey(key);
-        if (deconstructedKey[0] != this) {
-            return ((JSONElement) deconstructedKey[0]).putPrimitive((String) deconstructedKey[1], value);
-        }
         JSONElement element;
         if (value instanceof JSONElement) {
             element = (JSONElement) value;
             element.parent = this;
         } else {
-            element = new JSONElement(easyJSONStructure, this, JSONElementType.PRIMITIVE, null, value);
+            element = new JSONElement(
+                    easyJSONStructure,
+                    this,
+                    JSONElementType.PRIMITIVE,
+                    null,
+                    value == null ? null : value.toString());
         }
         children.add(element);
         return element;
@@ -174,7 +175,7 @@ public class JSONElement implements Iterable<JSONElement> {
             for (Object item : items) {
                 if (item instanceof JSONElement) {
                     JSONElement itemElement = (JSONElement) item;
-                    arrayElement.putElement(itemElement.getKey(), itemElement);
+                    arrayElement.putElement(null, itemElement);
                 } else {
                     arrayElement.putPrimitive(item);
                 }
@@ -194,11 +195,9 @@ public class JSONElement implements Iterable<JSONElement> {
         }
     }
 
-    public void removeElement(String... location) {
+    public boolean removeElement(String... location) {
         JSONElement element = search(location);
-        if (element != null) {
-            element.getParent().children.remove(element);
-        }
+        return element == null || element.getParent().children.remove(element);
     }
 
     public boolean elementExists(String... location) {
@@ -220,6 +219,9 @@ public class JSONElement implements Iterable<JSONElement> {
      * @throws RuntimeException if any part (before/after '.') of a complex key has < 1 character
      */
     public Object[] deconstructKey(String key) {
+        if (key == null) {
+            return new Object[]{this, null};
+        }
         JSONElement result = this;
         String finalKey = key;
         if (key.contains(".")) {
@@ -272,6 +274,7 @@ public class JSONElement implements Iterable<JSONElement> {
      * Attempts to retrieve and cast the value of the element at the specific location. If the value
      * cannot be found, null is returned. <b>This method does not check types, a Runtime
      * exception my occur</b>
+     *
      * @param location
      * @param <T>
      * @return
@@ -280,8 +283,7 @@ public class JSONElement implements Iterable<JSONElement> {
         JSONElement result = search(location);
         if (result != null) {
             return (T) result.getValue();
-        }
-        else return null;
+        } else return null;
     }
 
     /**

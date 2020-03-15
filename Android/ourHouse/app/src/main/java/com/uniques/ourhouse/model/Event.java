@@ -2,12 +2,9 @@ package com.uniques.ourhouse.model;
 
 import android.util.Log;
 
-import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
-import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
-import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
@@ -20,7 +17,7 @@ import java.util.function.Consumer;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class Event implements Model, Observable, Indexable {
+public class Event implements Observable, Indexable {
 
     public static final String EVENT_COLLECTION = "Events";
     private ObjectId eventId;
@@ -29,7 +26,6 @@ public class Event implements Model, Observable, Indexable {
     private User assignedTo;
     private Date dueDate;
     private Date dateCompleted;
-    private MongoDB myDatabase = new MongoDB();
 
     public static Event[] testEvents() {
         long now = new Date().getTime() - 80000000;
@@ -40,12 +36,13 @@ public class Event implements Model, Observable, Indexable {
                 r,
                 new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""), new ObjectId())};
     }
+
     public static Event[] testEventsWithId() {
         long now = new Date().getTime() - 80000000;
         Event r = new Event(new ObjectId(), "Recycling Bin Day", new User("Ben", "", ""), new ObjectId(), new Date(now), null);
         r.setDateCompleted(new Date(now + 76543210));
         return new Event[]{
-                new Event("Dishes", new User("Victor", "", ""), new ObjectId(),  new Date(now + 1000000), null),
+                new Event("Dishes", new User("Victor", "", ""), new ObjectId(), new Date(now + 1000000), null),
                 r,
                 new Event("Buy us a TV", new User("Seb", "", ""), new ObjectId(), new Date(now + 2000000), null)};
     }
@@ -74,7 +71,7 @@ public class Event implements Model, Observable, Indexable {
         this.assignedTo = assignedTo;
         this.assignedHouse = assignedHouse;
         // + (new Random().nextBoolean() ? 1000 : -1000)
-        dateCompleted = new Date(dueDate.getTime());
+//        dateCompleted = new Date(dueDate.getTime());
     }
 
     public Event() {
@@ -109,7 +106,8 @@ public class Event implements Model, Observable, Indexable {
     }
 
     public boolean isLate() {
-        return dateCompleted.after(dueDate);
+        return dateCompleted != null ?
+                dateCompleted.after(dueDate) : System.currentTimeMillis() > dueDate.getTime();
     }
 
     public void setDateCompleted(Date dateCompleted) {
@@ -127,7 +125,7 @@ public class Event implements Model, Observable, Indexable {
     }
 
     public String consoleFormat(String prefix) {
-        return title + ": " + assignedTo;
+        return title + " (>" + assignedTo.consoleFormat("") + "), due (" + dueDate + "), completed (" + dateCompleted + ")";
     }
 
     public Document toBsonDocument() {
@@ -142,14 +140,12 @@ public class Event implements Model, Observable, Indexable {
     }
 
     public static void FromBsonDocument(final Document doc, Consumer<Event> eventConsumer) {
-        MongoDB myDatabase = new MongoDB();
-        myDatabase.getUser(doc.getObjectId("assignedTo"), user -> {
+        Session.getSession().getDatabase().getUser(doc.getObjectId("assignedTo"), user -> {
             if (user == null) {
                 Log.d("checking", "Null user return");
                 eventConsumer.accept(null);
-            }
-            else {
-                eventConsumer.accept( new Event(
+            } else {
+                eventConsumer.accept(new Event(
                         doc.getObjectId("_id"),
                         doc.getString("title"),
                         user,
@@ -190,5 +186,11 @@ public class Event implements Model, Observable, Indexable {
     @Override
     public boolean equals(@Nullable Object obj) {
         return obj instanceof Event && ((Event) obj).eventId.equals(eventId);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return consoleFormat("[Event] ");
     }
 }

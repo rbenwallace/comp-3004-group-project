@@ -54,7 +54,7 @@ public final class ActivityId {
         return activityClass.newInstance();
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 

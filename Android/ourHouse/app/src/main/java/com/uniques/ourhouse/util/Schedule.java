@@ -1,20 +1,13 @@
 package com.uniques.ourhouse.util;
 
-import android.transition.Scene;
-
-import com.google.gson.JsonElement;
-import com.mongodb.DBObject;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
-import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.exception.InvalidArgumentException;
 import com.uniques.ourhouse.util.exception.InvalidCombinationException;
 import com.uniques.ourhouse.util.exception.InvalidRangeException;
 import com.uniques.ourhouse.util.exception.UnsupportedFunctionCallException;
-import org.json.*;
 
 import org.bson.Document;
-import com.mongodb.DBObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -258,19 +251,23 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         int year = calendar.get(Calendar.YEAR);
 
         calendar.setTime(end);
+        // if it has already ended
         if (calendar.get(Calendar.YEAR) < year || calendar.get(Calendar.DAY_OF_YEAR) < dayOYear)
             return false;
 
         calendar.setTime(start);
+        // if it hasn't started
         if (calendar.get(Calendar.YEAR) > year || calendar.get(Calendar.DAY_OF_YEAR) > dayOYear)
             return false;
 
+        // if supplied date is on start or on end date(s)
         if (occursOn(calendar, start, year, dayOYear) || occursOn(calendar, end, year, dayOYear))
             return true;
 
         if (repeatSchedule == null)
             return false;
 
+        // check further occurrences
         return repeatSchedule.occursOn(calendar, year, dayOYear);
     }
 
@@ -428,12 +425,22 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         consumer.accept(this);
     }
 
+    /**
+     * Creates a repeat iterator for all occurrences of this schedule >= lowerBound and <= upperBound
+     *
+     * @param lowerBound date from which to begin producing occurrences
+     * @param upperBound date after which no occurrences should be produced
+     */
     @NonNull
-    public Iterable<Date> finiteIterable(Date upperBound) {
+    public Iterable<Date> finiteIterable(Date lowerBound, Date upperBound) {
         if (repeatSchedule != null) {
-            return repeatSchedule.finiteIterable(upperBound);
+            return repeatSchedule.finiteIterable(lowerBound, upperBound);
         } else {
-            return () -> new OneItemIterator<>(start.after(upperBound) ? null : start);
+            if (start.before(lowerBound) || start.after(upperBound)) {
+                return () -> new OneItemIterator<>(null);
+            } else {
+                return () -> new OneItemIterator<>(start);
+            }
         }
     }
 
@@ -872,11 +879,15 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         }
 
         @NonNull
-        public Iterable<Date> finiteIterable(Date upperBound) {
-            return () -> new RepeatIterator(start, upperBound) {
+        public Iterable<Date> finiteIterable(Date lowerBound, Date upperBound) {
+            return () -> new RepeatIterator(lowerBound, upperBound, start, end) {
                 @Override
                 long getIntervalInMillis(Calendar calendar) {
-                    return Repeat.this.getIntervalInMillis(calendar);
+                    if (calendar.getTime().before(start)) {
+                        return start.getTime() - calendar.getTime().getTime();
+                    } else {
+                        return Repeat.this.getIntervalInMillis(calendar);
+                    }
                 }
             };
         }
@@ -884,7 +895,7 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         @NonNull
         @Override
         public Iterator<Date> iterator() {
-            return new RepeatIterator(start, end) {
+            return new RepeatIterator(start, end, start, end) {
                 @Override
                 long getIntervalInMillis(Calendar calendar) {
                     return Repeat.this.getIntervalInMillis(calendar);
@@ -895,13 +906,36 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
 
     private static abstract class RepeatIterator implements Iterator<Date> {
         private final Calendar calendar;
+        private final Date realEnd;
         private final Date end;
         private boolean hasNext;
 
-        private RepeatIterator(Date start, Date end) {
+        private RepeatIterator(Date start, Date end, Date realStart, Date realEnd) {
             calendar = Calendar.getInstance();
-            calendar.setTime(start);
+            if (start.after(end) || realStart.after(realEnd)) {
+                throw new RuntimeException("(start || realStart) cannot be after (end || realEnd)");
+            }
+            if (start.before(realStart)) {
+                calendar.setTime(realStart);
+            } else if (start.equals(realStart)) {
+                calendar.setTime(start);
+            } else {
+                if (start.after(realEnd)) {
+                    hasNext = false;
+                } else {
+                    calendar.setTime(realStart);
+                    long currentTime;
+                    long interval;
+                    while (calendar.getTime().before(start)) {
+                        currentTime = calendar.getTimeInMillis();
+                        interval = getIntervalInMillis(calendar);
+                        calendar.setTimeInMillis(currentTime + interval);
+                    }
+                }
+            }
+            this.realEnd = realEnd;
             this.end = end;
+            hasNext = !calendar.getTime().after(realEnd) && !calendar.getTime().after(end);
         }
 
         @Override
@@ -912,9 +946,14 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         @Override
         public Date next() {
             Date d = calendar.getTime();
-            calendar.add(Calendar.MILLISECOND, (int) getIntervalInMillis(calendar));
-            hasNext = !calendar.getTime().after(end);
+            updateTime();
             return d;
+        }
+
+        private void updateTime() {
+            long currentTime = calendar.getTimeInMillis();
+            calendar.setTimeInMillis(currentTime + getIntervalInMillis(calendar));
+            hasNext = !calendar.getTime().after(realEnd) && !calendar.getTime().after(end);
         }
 
         abstract long getIntervalInMillis(Calendar calendar);

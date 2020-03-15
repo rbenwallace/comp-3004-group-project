@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,14 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.stitch.android.core.auth.StitchUser;
-import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.ForgotPasswordFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
@@ -32,19 +30,16 @@ import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SignUpFragment;
-import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
-import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.session.DatabaseLink;
+import com.uniques.ourhouse.session.Session;
 
 import org.bson.types.ObjectId;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import androidx.annotation.NonNull;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -58,8 +53,7 @@ public class LoginCtrl implements FragmentCtrl {
     private String lastNameCurUser;
     private TextView errorDisplay;
     private ArrayList<String> transferedArrayFromSignUp;
-//    public DatabaseLink myDatabase = Session.getSession().getDatabase();
-    private MongoDB myDatabase = new MongoDB();
+    public DatabaseLink database = Session.getSession().getDatabase();
 
 
     public static final String regEx = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
@@ -72,23 +66,11 @@ public class LoginCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
 
-        if (myDatabase.getAuth().isLoggedIn()) {
-            //If there is a user but its not currently set up with shared pref, set it up
-            if (myDatabase.getCurrentLocalUser(activity) == null) {
-                Consumer<User> myUser = user -> {
-                    System.out.println("I am right here");
-                    if (user != null) {
-                        myDatabase.setLocalUser(user, activity);
-                        activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
-                    }
-                };
-                myDatabase.getUser(new ObjectId(myDatabase.getAuth().getUser().getId()), myUser);
-            }
-            //If so just go into houses
-            else {
-                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
-            }
+        if (Session.getSession().isLoggedIn()) {
+            activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+            return;
         }
+
         //Grab compoments
         email = view.findViewById(R.id.login_emailid);
         password = view.findViewById(R.id.login_password);
@@ -104,8 +86,8 @@ public class LoginCtrl implements FragmentCtrl {
                 final int DRAWABLE_RIGHT = 2;
                 final int DRAWABLE_BOTTOM = 3;
 
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (password.getRight() - password.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (password.getRight() - password.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         changePasswordDisplay();
                         return true;
                     }
@@ -143,7 +125,7 @@ public class LoginCtrl implements FragmentCtrl {
         loginBtn.setOnClickListener(view14 -> {
             if (checkValidation()) {
                 Log.d("sitch-auth", email.getText().toString().trim() + ", " + password.getText().toString().trim());
-                new getLoginTask(view).execute(email.getText().toString().trim(), password.getText().toString().trim());
+                new GetLoginTask(view).execute(email.getText().toString().trim(), password.getText().toString().trim());
             } else {
                 Log.d(LoginFragment.TAG, "Login failed");
                 Snackbar.make(view, "Invalid email or password", BaseTransientBottomBar.LENGTH_LONG);
@@ -156,7 +138,7 @@ public class LoginCtrl implements FragmentCtrl {
 
     }
 
-    private void changePasswordDisplay () {
+    private void changePasswordDisplay() {
         if (showPassword == 0) {
             showPassword = 1;
             password.setCompoundDrawablesWithIntrinsicBounds(R.drawable.password, 0, R.drawable.password_eye_closed, 0);
@@ -168,7 +150,7 @@ public class LoginCtrl implements FragmentCtrl {
         }
     }
 
-    private boolean checkValidation () {
+    private boolean checkValidation() {
         // Get email id and password
         String getEmailId = email.getText().toString();
         String getPassword = password.getText().toString();
@@ -196,16 +178,20 @@ public class LoginCtrl implements FragmentCtrl {
     }
 
     @Override
-    public void updateInfo () {
+    public void updateInfo() {
 
     }
+
     //Creates a login simmulation
-    private class getLoginTask extends AsyncTask<String, Void, Void> {
-        private ProgressBar pd;
+    private class GetLoginTask extends AsyncTask<String, Void, Void> {
         private byte statusCode;
+        private String firstNameCurUser;
+        private String lastNameCurUser;
+        private int numberOfPwClicks;
+        private ProgressBar pd;
         private View view;
 
-        public getLoginTask(View view) {
+        private GetLoginTask(View view) {
             this.view = view;
         }
 
@@ -224,35 +210,26 @@ public class LoginCtrl implements FragmentCtrl {
 
         @Override
         protected Void doInBackground(String... params) {
-            try {
-                UserPasswordCredential credential = new UserPasswordCredential(params[0], params[1]);
-                myDatabase.getAuth().loginWithCredential(credential).addOnCompleteListener(new OnCompleteListener<StitchUser>() {
-                    @Override
-                    public void onComplete(@NonNull final Task<StitchUser> task) {
-                        if (task.isSuccessful()) {
-                            statusCode = 1;
-                            onPostExecute(task, params[0], params[1]);
-                        } else {
-                            statusCode = 0;
-                            onPostExecute(task, params[0], params[1]);
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                Log.e("stitch-auth", "Authentication Failed!" + e);
-            }
+            Session.getSession().getSecureAuthenticator().authenticateUser(params[0], params[1], (exception, userId) -> {
+                if (exception == null) {
+                    statusCode = 1;
+                    onPostExecute(new Pair<>(null, userId), params[0], params[1]);
+                } else {
+                    statusCode = 0;
+                    onPostExecute(new Pair<>(exception, null), params[0], params[1]);
+                }
+            });
             return null;
         }
 
-        protected void onPostExecute(com.google.android.gms.tasks.Task<StitchUser> loggedInUser, String email, String passwd) {
+        void onPostExecute(Pair<Exception, ObjectId> result, String email, String passwd) {
             //If accepted
             if (statusCode == 1) {
-                User newUser = new User(new ObjectId(loggedInUser.getResult().getId()), firstNameCurUser, lastNameCurUser, email, new ArrayList<ObjectId>(), 0);
-                myDatabase.getUser(newUser.getId(), user -> {
+                User newUser = new User(result.second, firstNameCurUser, lastNameCurUser, email, new ArrayList<>(), 0);
+                database.getUser(newUser.getId(), user -> {
                     //If there is a user change local user, and set the local login data
-                    if(user != null){
-                        myDatabase.setLocalUser(user, activity);
-                        User m = myDatabase.getCurrentLocalUser(activity);
+                    if (user != null) {
+                        Session.getSession().setLoggedInUser(user);
                         //setLocalLoginData
                         ArrayList<String> transferInfoArray = new ArrayList<>();
                         transferInfoArray.add(user.getFirstName());
@@ -265,64 +242,41 @@ public class LoginCtrl implements FragmentCtrl {
                         editor.putString("loginData", json);
                         editor.apply();
 
-                        //populate local house list
-                        ArrayList<House> myHouses = new ArrayList<>();
-                        if(user.getMyHouses() != null){
-                            for(ObjectId id : user.getMyHouses())
-                                myDatabase.getHouse(id, house -> {
-                                    if(house != null)
-                                        myHouses.add(house);
-                                    myDatabase.setLocalHouseArray(myHouses, activity);
-                                });
-                        }
                         //users house ids need to be gathered and put inside the houses
                         Toast.makeText(activity, "Logged in successfully", Toast.LENGTH_SHORT).show();
-                    }
-                    //If not add the new user
-                    else{
-                        myDatabase.setLocalUser(newUser, activity);
-                        myDatabase.addMyUser(newUser, activity);
+
+                        activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
                     }
                     activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
                     pd.setVisibility(View.GONE);
                 });
             } else {
                 Log.e("stitch-auth", "Authentication Failed.");
-                if(numberOfPwClicks < 2){
+                if (numberOfPwClicks < 2) {
                     numberOfPwClicks++;
                     Log.d("hello", "hello");
-                    UserPasswordCredential credential = new UserPasswordCredential(email, passwd);
-                    myDatabase.getAuth().loginWithCredential(credential).addOnCompleteListener(new OnCompleteListener<StitchUser>() {
-                        @Override
-                        public void onComplete(@NonNull final Task<StitchUser> task) {
-                            if (task.isSuccessful()) {
-                                statusCode = 1;
-                                onPostExecute(task, email, passwd);
-                            } else {
-                                pd.setVisibility(View.GONE);
-                                errorDisplay.setVisibility(View.VISIBLE);
-                                if(loggedInUser.getException().getMessage() != null) {
-                                    errorDisplay.setText(loggedInUser.getException().getMessage().toUpperCase());
-                                    new Handler().postDelayed(new Runnable() {
-                                        public void run() {
-                                            errorDisplay.setVisibility(View.GONE);
-                                        }
-                                    }, 5000);
-                                    activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                }
+                    Session.getSession().getSecureAuthenticator().authenticateUser(email, passwd, (exception, userId) -> {
+                        if (exception == null) {
+                            statusCode = 1;
+                            onPostExecute(new Pair<>(null, userId), email, passwd);
+                        } else {
+                            pd.setVisibility(View.GONE);
+                            errorDisplay.setVisibility(View.VISIBLE);
+                            if (result.first.getMessage() != null) {
+                                errorDisplay.setText(result.first.getMessage().toUpperCase());
+                                new Handler().postDelayed(() -> errorDisplay.setVisibility(View.GONE), 5000);
+                                activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             }
                         }
                     });
-                }
-                else{
+                } else {
                     Log.d("hello", "Mylo");
                     pd.setVisibility(View.GONE);
                     password.setText("");
                     activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     numberOfPwClicks = 0;
                     errorDisplay.setVisibility(View.VISIBLE);
-                    errorDisplay.setText(loggedInUser.getException().getMessage().toUpperCase());
+                    errorDisplay.setText(result.first.getMessage() == null ? "" : result.first.getMessage().toUpperCase());
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
                             errorDisplay.setVisibility(View.GONE);

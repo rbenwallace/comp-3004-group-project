@@ -2,9 +2,6 @@ package com.uniques.ourhouse.session;
 
 import android.content.Context;
 
-import com.mongodb.stitch.android.core.auth.StitchAuth;
-import com.mongodb.stitch.android.core.auth.StitchUser;
-import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.model.House;
@@ -16,11 +13,11 @@ import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.easyjson.SafeJSONElementType;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -50,93 +47,29 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
-    public StitchAuth getAuth() {
-        return null;
-    }
-
-    @Override
-    public boolean autoAuth() {
-        return false;
-    }
-
-    @Override
-    public boolean isLoggedIn(ObjectId userId) {
-        return false;
-    }
-
-    @Override
-    public void logout(Consumer<Boolean> consumer) {
-
-    }
-
-    @Override
-    public StitchUser getStitchUser() {
-        return null;
-    }
-
-    @Override
-    public ArrayList<House> getLocalHouseArray(FragmentActivity activity) {
-        return null;
-    }
-
-    @Override
-    public User getCurrentLocalUser(FragmentActivity activity) {
-        return null;
-    }
-
-    @Override
-    public House getCurrentLocalHouse(FragmentActivity activity) {
-        return null;
-    }
-
-    @Override
-    public void setLocalHouseArray(ArrayList<House> myList, FragmentActivity activity) {
-
-    }
-
-    @Override
-    public void setLocalUser(User user, FragmentActivity activity) {
-
-    }
-
-    @Override
-    public void setLocalHouse(House house, FragmentActivity activity) {
-
-    }
-
-    @Override
-    public void clearLocalHouses(FragmentActivity activity) {
-
-    }
-
-    @Override
-    public void clearLocalCurHouse(FragmentActivity activity) {
-
-    }
-
-    @Override
-    public void clearLocalCurUser(FragmentActivity activity) {
-
-    }
-
-    @Override
-    public void clearLocalLoginData(FragmentActivity activity) {
-
-    }
-
-    @Override
-    public void addMyUser(User user, FragmentActivity activity) {
-
-    }
-
-    @Override
-    public void addMyHouse(House house, FragmentActivity activity, Consumer<Boolean> boolConsumer) {
-
-    }
-
-    @Override
-    public void findHousesByName(String name, Consumer<ArrayList<House>> consumer) {
-
+    public void findHousesByName(String name, Consumer<List<House>> consumer) {
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(HOUSES_FILE));
+        List<JSONElement> houses = json.getRootNode().getChildren();
+        List<House> results = new ArrayList<>();
+        for (int i = houses.size() - 1; i >= 0; --i) {
+            JSONElement element = houses.get(i);
+            if (!element.getKey().startsWith(name)) {
+                houses.remove(i);
+            }
+        }
+        if (houses.isEmpty()) {
+            consumer.accept(results);
+            return;
+        }
+        houses.forEach(element -> {
+            new House().fromJSON(element, house -> {
+                results.add((House) house);
+                houses.remove(element);
+                if (houses.isEmpty()) {
+                    consumer.accept(results);
+                }
+            });
+        });
     }
 
     @Override
@@ -190,33 +123,174 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
-    public void getAllEventsFromHouse(ObjectId houseId, Consumer<ArrayList<Event>> consumer) {
-
+    public void getAllEventsFromHouse(ObjectId houseId, Consumer<List<Event>> consumer) {
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(EVENTS_FILE));
+            List<JSONElement> events = json.getRootNode().getChildren();
+            for (int i = events.size() - 1; i >= 0; --i) {
+                JSONElement element = events.get(i);
+                if (!element.valueOf("assignedHouse").equals(houseId.toString())) {
+                    events.remove(i);
+                }
+            }
+            List<Event> results = new ArrayList<>();
+            if (events.isEmpty()) {
+                consumer.accept(results);
+                return;
+            }
+            events.forEach(element -> {
+                new Event().fromJSON(element, event -> {
+                    results.add((Event) event);
+                    events.remove(element);
+                    if (events.isEmpty()) {
+                        consumer.accept(results);
+                    }
+                });
+            });
+        });
     }
 
     @Override
-    public void getAllTasksFromHouse(ObjectId houseId, Consumer<ArrayList<Task>> consumer) {
-
+    public void getAllTasksFromHouse(ObjectId houseId, Consumer<List<Task>> consumer) {
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(TASKS_FILE));
+            List<JSONElement> tasks = json.getRootNode().getChildren();
+            for (int i = tasks.size() - 1; i >= 0; --i) {
+                JSONElement element = tasks.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())) {
+                    tasks.remove(i);
+                }
+            }
+            List<Task> results = new ArrayList<>();
+            if (tasks.isEmpty()) {
+                consumer.accept(results);
+                return;
+            }
+            tasks.forEach(element -> {
+                new Task().fromJSON(element, task -> {
+                    results.add((Task) task);
+                    tasks.remove(element);
+                    if (tasks.isEmpty()) {
+                        consumer.accept(results);
+                    }
+                });
+            });
+        });
     }
 
     @Override
-    public void getAllFeesFromHouse(ObjectId houseId, Consumer<ArrayList<Fee>> consumer) {
-
+    public void getAllFeesFromHouse(ObjectId houseId, Consumer<List<Fee>> consumer) {
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(FEES_FILE));
+            List<JSONElement> fees = json.getRootNode().getChildren();
+            for (int i = fees.size() - 1; i >= 0; --i) {
+                JSONElement element = fees.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())) {
+                    fees.remove(i);
+                }
+            }
+            List<Fee> results = new ArrayList<>();
+            if (fees.isEmpty()) {
+                consumer.accept(results);
+                return;
+            }
+            fees.forEach(element -> {
+                new Fee().fromJSON(element, fee -> {
+                    results.add((Fee) fee);
+                    fees.remove(element);
+                    if (fees.isEmpty()) {
+                        consumer.accept(results);
+                    }
+                });
+            });
+        });
     }
 
     @Override
-    public void getAllEventsFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<ArrayList<Event>> consumer) {
-
+    public void getAllEventsFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Event>> consumer) {
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(EVENTS_FILE));
+            List<JSONElement> events = json.getRootNode().getChildren();
+            for (int i = events.size() - 1; i >= 0; --i) {
+                JSONElement element = events.get(i);
+                if (!element.valueOf("assignedHouse").equals(houseId.toString())
+                        || !element.valueOf("assignedTo").equals(userId.toString())) {
+                    events.remove(i);
+                }
+            }
+            List<Event> results = new ArrayList<>();
+            if (events.isEmpty()) {
+                consumer.accept(results);
+                return;
+            }
+            events.forEach(element -> {
+                new Event().fromJSON(element, event -> {
+                    results.add((Event) event);
+                    events.remove(element);
+                    if (events.isEmpty()) {
+                        consumer.accept(results);
+                    }
+                });
+            });
+        });
     }
 
     @Override
-    public void getAllTasksFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<ArrayList<Task>> consumer) {
-
+    public void getAllTasksFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Task>> consumer) {
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(TASKS_FILE));
+            List<JSONElement> tasks = json.getRootNode().getChildren();
+            for (int i = tasks.size() - 1; i >= 0; --i) {
+                JSONElement element = tasks.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())
+                        || !element.valueOf("userId").equals(userId.toString())) {
+                    tasks.remove(i);
+                }
+            }
+            List<Task> results = new ArrayList<>();
+            if (tasks.isEmpty()) {
+                consumer.accept(results);
+                return;
+            }
+            tasks.forEach(element -> {
+                new Task().fromJSON(element, task -> {
+                    results.add((Task) task);
+                    tasks.remove(element);
+                    if (tasks.isEmpty()) {
+                        consumer.accept(results);
+                    }
+                });
+            });
+        });
     }
 
     @Override
-    public void getAllFeesFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<ArrayList<Fee>> consumer) {
-
+    public void getAllFeesFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Fee>> consumer) {
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(FEES_FILE));
+            List<JSONElement> fees = json.getRootNode().getChildren();
+            for (int i = fees.size() - 1; i >= 0; --i) {
+                JSONElement element = fees.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())
+                        || !element.valueOf("userId").equals(userId.toString())) {
+                    fees.remove(i);
+                }
+            }
+            List<Fee> results = new ArrayList<>();
+            if (fees.isEmpty()) {
+                consumer.accept(results);
+                return;
+            }
+            fees.forEach(element -> {
+                new Fee().fromJSON(element, fee -> {
+                    results.add((Fee) fee);
+                    fees.remove(element);
+                    if (fees.isEmpty()) {
+                        consumer.accept(results);
+                    }
+                });
+            });
+        });
     }
 
     @Override
@@ -246,128 +320,347 @@ final class LocalStore implements DatabaseLink {
 
     @Override
     public void deleteAllEventsFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
-
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(EVENTS_FILE));
+            List<JSONElement> events = json.getRootNode().getChildren();
+            for (int i = events.size() - 1; i >= 0; --i) {
+                JSONElement element = events.get(i);
+                if (!element.valueOf("assignedHouse").equals(houseId.toString())
+                        || !element.valueOf("assignedTo").equals(userId.toString())) {
+                    events.remove(i);
+                }
+            }
+            events.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+            try {
+                json.save();
+                consumer.accept(true);
+            } catch (EasyJSONException e) {
+                e.printStackTrace();
+                consumer.accept(false);
+            }
+        });
     }
 
     @Override
     public void deleteAllTasksFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
-
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(TASKS_FILE));
+            List<JSONElement> tasks = json.getRootNode().getChildren();
+            for (int i = tasks.size() - 1; i >= 0; --i) {
+                JSONElement element = tasks.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())
+                        || !element.valueOf("userId").equals(userId.toString())) {
+                    tasks.remove(i);
+                }
+            }
+            tasks.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+            try {
+                json.save();
+                consumer.accept(true);
+            } catch (EasyJSONException e) {
+                e.printStackTrace();
+                consumer.accept(false);
+            }
+        });
     }
 
     @Override
     public void deleteAllFeesFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
-
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(FEES_FILE));
+            List<JSONElement> fees = json.getRootNode().getChildren();
+            for (int i = fees.size() - 1; i >= 0; --i) {
+                JSONElement element = fees.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())
+                        || !element.valueOf("userId").equals(userId.toString())) {
+                    fees.remove(i);
+                }
+            }
+            fees.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+            try {
+                json.save();
+                consumer.accept(true);
+            } catch (EasyJSONException e) {
+                e.printStackTrace();
+                consumer.accept(false);
+            }
+        });
     }
 
     @Override
     public void deleteAllEventsFromUser(ObjectId userId, Consumer<Boolean> consumer) {
-
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(EVENTS_FILE));
+        List<JSONElement> events = json.getRootNode().getChildren();
+        for (int i = events.size() - 1; i >= 0; --i) {
+            JSONElement element = events.get(i);
+            if (!element.valueOf("assignedTo").equals(userId.toString())) {
+                events.remove(i);
+            }
+        }
+        events.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+        try {
+            json.save();
+            consumer.accept(true);
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
+            consumer.accept(false);
+        }
     }
 
     @Override
     public void deleteAllTasksFromUser(ObjectId userId, Consumer<Boolean> consumer) {
-
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(TASKS_FILE));
+        List<JSONElement> tasks = json.getRootNode().getChildren();
+        for (int i = tasks.size() - 1; i >= 0; --i) {
+            JSONElement element = tasks.get(i);
+            if (!element.valueOf("userId").equals(userId.toString())) {
+                tasks.remove(i);
+            }
+        }
+        tasks.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+        try {
+            json.save();
+            consumer.accept(true);
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
+            consumer.accept(false);
+        }
     }
 
     @Override
     public void deleteAllFeesFromUser(ObjectId userId, Consumer<Boolean> consumer) {
-
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(FEES_FILE));
+        List<JSONElement> fees = json.getRootNode().getChildren();
+        for (int i = fees.size() - 1; i >= 0; --i) {
+            JSONElement element = fees.get(i);
+            if (!element.valueOf("userId").equals(userId.toString())) {
+                fees.remove(i);
+            }
+        }
+        fees.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+        try {
+            json.save();
+            consumer.accept(true);
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
+            consumer.accept(false);
+        }
     }
 
     @Override
     public void deleteAllEventsFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
-
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(FEES_FILE));
+            List<JSONElement> fees = json.getRootNode().getChildren();
+            for (int i = fees.size() - 1; i >= 0; --i) {
+                JSONElement element = fees.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())) {
+                    fees.remove(i);
+                }
+            }
+            fees.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+            try {
+                json.save();
+                consumer.accept(true);
+            } catch (EasyJSONException e) {
+                e.printStackTrace();
+                consumer.accept(false);
+            }
+        });
     }
 
     @Override
     public void deleteAllTasksFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
-
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(TASKS_FILE));
+            List<JSONElement> tasks = json.getRootNode().getChildren();
+            for (int i = tasks.size() - 1; i >= 0; --i) {
+                JSONElement element = tasks.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())) {
+                    tasks.remove(i);
+                }
+            }
+            tasks.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+            try {
+                json.save();
+                consumer.accept(true);
+            } catch (EasyJSONException e) {
+                e.printStackTrace();
+                consumer.accept(false);
+            }
+        });
     }
 
     @Override
     public void deleteAllFeesFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
-
+        getHouse(houseId, house -> {
+            EasyJSON json = Objects.requireNonNull(retrieveLocal(FEES_FILE));
+            List<JSONElement> fees = json.getRootNode().getChildren();
+            for (int i = fees.size() - 1; i >= 0; --i) {
+                JSONElement element = fees.get(i);
+                if (!element.valueOf("houseId").equals(houseId.toString())) {
+                    fees.remove(i);
+                }
+            }
+            fees.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+            try {
+                json.save();
+                consumer.accept(true);
+            } catch (EasyJSONException e) {
+                e.printStackTrace();
+                consumer.accept(false);
+            }
+        });
     }
 
     @Override
-    public void deleteUser(User user, House userHouse, Consumer<Boolean> consumer) {
-
+    public void deleteUser(User user, Consumer<Boolean> consumer) {
+        deleteAllEventsFromUser(user.getId(), s1 -> {
+            if (!s1) {
+                consumer.accept(false);
+                return;
+            }
+            deleteAllTasksFromUser(user.getId(), s2 -> {
+                if (!s2) {
+                    consumer.accept(false);
+                    return;
+                }
+                deleteAllFeesFromUser(user.getId(), s3 -> {
+                    if (!s3) {
+                        consumer.accept(false);
+                        return;
+                    }
+//                    deleteUserFromHouse(userHouse, user, s4 -> {
+//                        if (!s4) {
+//                            consumer.accept(false);
+//                            return;
+//                        }
+                    EasyJSON json = Objects.requireNonNull(retrieveLocal(USERS_FILE));
+                    json.removeElement(user.getId().toString());
+                    try {
+                        json.save();
+                        consumer.accept(true);
+                    } catch (EasyJSONException e) {
+                        e.printStackTrace();
+                        consumer.accept(false);
+                    }
+//                    });
+                });
+            });
+        });
     }
 
     @Override
-    public void deleteEvent(ObjectId eventId, Consumer<Boolean> consumer) {
-
+    public void deleteEvent(Event event, Consumer<Boolean> consumer) {
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(EVENTS_FILE));
+        json.removeElement(event.getId().toString());
+        try {
+            json.save();
+            consumer.accept(true);
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
+            consumer.accept(false);
+        }
     }
 
     @Override
-    public void deleteTask(ObjectId taskId, Consumer<Boolean> consumer) {
-
+    public void deleteTask(Task task, Consumer<Boolean> consumer) {
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(TASKS_FILE));
+        json.removeElement(task.getId().toString());
+        try {
+            json.save();
+            consumer.accept(true);
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
+            consumer.accept(false);
+        }
     }
 
     @Override
-    public void deleteFee(ObjectId feeId, Consumer<Boolean> consumer) {
-
+    public void deleteFee(Fee fee, Consumer<Boolean> consumer) {
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(FEES_FILE));
+        json.removeElement(fee.getId().toString());
+        try {
+            json.save();
+            consumer.accept(true);
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
+            consumer.accept(false);
+        }
     }
 
     @Override
-    public void deleteHouse(ObjectId houseId, Consumer<Boolean> consumer) {
-
-    }
-
-    @Override
-    public void deleteOwnerFromHouse(House house, User user, Consumer<Boolean> consumer) {
-
+    public void deleteHouse(House house, Consumer<Boolean> consumer) {
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(HOUSES_FILE));
+        json.removeElement(house.getId().toString());
+        try {
+            json.save();
+            consumer.accept(true);
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
+            consumer.accept(false);
+        }
     }
 
     @Override
     public void deleteUserFromHouse(House house, User user, Consumer<Boolean> consumer) {
-
+        house.removeOccupant(user);
+        updateHouse(house, consumer);
     }
 
     @Override
     public void updateUser(User user, Consumer<Boolean> consumer) {
-
+        postUser(user, consumer);
     }
 
     @Override
     public void updateFee(Fee fee, Consumer<Boolean> consumer) {
-
+        postFee(fee, consumer);
     }
 
     @Override
     public void updateTask(Task task, Consumer<Boolean> consumer) {
-
+        postTask(task, consumer);
     }
 
     @Override
-    public void updateEvent(House event, Consumer<Boolean> consumer) {
-
+    public void updateEvent(Event event, Consumer<Boolean> consumer) {
+        postEvent(event, consumer);
     }
 
     @Override
     public void updateHouse(House house, Consumer<Boolean> consumer) {
-
+        postHouse(house, consumer);
     }
 
     @Override
     public void updateOwner(House house, User user, Consumer<Boolean> consumer) {
-
+        house.setOwner(user);
+        updateHouse(house, consumer);
     }
 
     @Override
-    public void checkKey(String id, Consumer<Boolean> consumer) {
-
+    public void checkIfHouseKeyExists(String id, Consumer<Boolean> consumer) {
     }
 
     @Override
-    public Document getQueryForUser() {
-        return null;
-    }
+    public void clearLocalState(Consumer<Boolean> consumer) {
+        if (getLocalFile(USERS_FILE).delete())
+            if (getLocalFile(HOUSES_FILE).delete())
+                if (getLocalFile(TASKS_FILE).delete())
+                    if (getLocalFile(FEES_FILE).delete())
+                        if (getLocalFile(EVENTS_FILE).delete()) {
+                            consumer.accept(true);
+                            return;
+                        }
 
+        consumer.accept(false);
+    }
 
     private JSONElement searchLocal(String fileName, ObjectId id) {
         return Objects.requireNonNull(Objects.requireNonNull(retrieveLocal(fileName)).search(id.toString()));
     }
+
     private JSONElement searchLocal(EasyJSON json, ObjectId id) {
         return json.search(id.toString());
     }

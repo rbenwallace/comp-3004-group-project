@@ -8,31 +8,25 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
-import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.SignUpFragment;
-import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.session.Session;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import androidx.annotation.NonNull;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.uniques.ourhouse.controller.LoginCtrl.regEx;
 
 public class SignUpCtrl implements FragmentCtrl {
     private FragmentActivity activity;
-    private MongoDB myDatabase;
     private static Button login;
     private static CheckBox terms_conditions;
     public static StitchAppClient client;
@@ -45,7 +39,6 @@ public class SignUpCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         client = Stitch.getAppClient("ourhouse-notdj");
-        myDatabase = new MongoDB();
         EditText editFirstName = view.findViewById(R.id.firstName);
         EditText editLastName = view.findViewById(R.id.lastName);
         EditText editEmail = view.findViewById(R.id.userEmailId);
@@ -65,39 +58,34 @@ public class SignUpCtrl implements FragmentCtrl {
                 Toast.makeText(activity, "Passwords don't match", Toast.LENGTH_LONG);
                 return;
             }
-            if (!checkValidation(view, editEmail.getText().toString().trim(), editPassword.getText().toString().trim())){
+            if (!checkValidation(view, editEmail.getText().toString().trim(), editPassword.getText().toString().trim())) {
                 Log.d(SignUpFragment.TAG, "Invalid Credentials");
                 return;
             }
-            if(!agreement.isChecked()){
+            if (!agreement.isChecked()) {
                 Log.d(SignUpFragment.TAG, "Terms and Conditions unchecked");
                 Toast.makeText(activity, "unchecked", Toast.LENGTH_SHORT).show();
                 return;
             }
-            UserPasswordAuthProviderClient emailPassClient = client.getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
+            Session.getSession().getSecureAuthenticator().registerUser(editEmail.getText().toString().trim(), editPassword.getText().toString().trim(), exception -> {
+                if (exception == null) {
+                    Log.d("stitch", "Successfully sent account confirmation email");
 
-            emailPassClient.registerWithEmail(editEmail.getText().toString().trim(), editPassword.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull final Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Log.d("stitch", "Successfully sent account confirmation email");
-
-                        Toast.makeText(activity, "Confirm your email " + editFirstName.getText().toString(), Toast.LENGTH_SHORT).show();
-                        ArrayList<String> transferInfoArray = new ArrayList<>();
-                        transferInfoArray.add(editFirstName.getText().toString().trim());
-                        transferInfoArray.add(editLastName.getText().toString().trim());
-                        transferInfoArray.add(editEmail.getText().toString().trim());
-                        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(transferInfoArray);
-                        editor.putString("loginData", json);
-                        editor.apply();
-                        activity.pushFragment(FragmentId.GET(LoginFragment.TAG));
-                    } else {
-                        Log.e("stitch", "Error registering new user:", task.getException());
-                        Toast.makeText(activity, task.getException().toString(), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(activity, "Confirm your email " + editFirstName.getText().toString(), Toast.LENGTH_SHORT).show();
+                    ArrayList<String> transferInfoArray = new ArrayList<>();
+                    transferInfoArray.add(editFirstName.getText().toString().trim());
+                    transferInfoArray.add(editLastName.getText().toString().trim());
+                    transferInfoArray.add(editEmail.getText().toString().trim());
+                    SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(transferInfoArray);
+                    editor.putString("loginData", json);
+                    editor.apply();
+                    activity.pushFragment(FragmentId.GET(LoginFragment.TAG));
+                } else {
+                    Log.e("stitch", "Error registering new user:", exception);
+                    Toast.makeText(activity, exception.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
         });

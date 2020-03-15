@@ -24,19 +24,18 @@ import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 
-import org.bson.types.ObjectId;
-
 public class EventService extends JobService {
     private Logic runningLogic;
 
     @Override
     public boolean onStartJob(JobParameters params) {
+        System.out.println("EVENT-SERVICE: starting Logic");
         if (Session.getSession() == null) {
             Session.newSession(this);
         }
         runningLogic = new Logic(failedEvents -> {
             runningLogic = null;
-            System.out.println("EVENT-SERVICE failedEvents= " + failedEvents);
+            System.out.println("EVENT-SERVICE: failedEvents= " + failedEvents);
         });
         runningLogic.doInBackground(Session.getSession());
         return true;
@@ -69,12 +68,13 @@ public class EventService extends JobService {
             if (isCancelled()) return null;
 
             Calendar cal = initializeMonth();
+            Date lowerBound = cal.getTime();
             Date upperBound = upperBoundOfMonth(cal.getTime());
 
             for (Task t : tasks) {
                 Schedule schedule = t.getSchedule();
 
-                for (Date occurrence : schedule.finiteIterable(upperBound)) {
+                for (Date occurrence : schedule.finiteIterable(lowerBound, upperBound)) {
                     Date dayOfOccurrence = initializeDay(occurrence);
 
                     if (occurrences.containsKey(dayOfOccurrence)) {

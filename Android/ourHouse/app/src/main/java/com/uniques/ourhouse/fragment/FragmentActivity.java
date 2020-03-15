@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.uniques.ourhouse.ActivityId;
 
@@ -21,12 +22,10 @@ public abstract class FragmentActivity extends AppCompatActivity {
             savedInstances = new HashMap<>();
     }
 
-    @NonNull
-    protected static FragmentActivity saveInstance(ActivityId activityId, @NonNull FragmentActivity activity) {
+    protected static void saveInstance(ActivityId activityId, @NonNull FragmentActivity activity) {
         checkMapNotNull();
-        System.out.println("==== SAVED ====");
+        Log.d(activityId.getName(), "Activity instance saved");
         savedInstances.put(activityId, activity);
-        return activity;
     }
 
     //    @NonNull
@@ -78,7 +77,7 @@ public abstract class FragmentActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Fragment fragment = currentFragment();
-        System.out.println("=== back press");
+        Log.d(getActivityId().getName(), "=== back press");
         if (fragment == null || !fragment.onBackPressed()) {
             if (fragmentStack.size() > 1) super.onBackPressed();
             else if (allowPopAllFragments) super.onBackPressed();

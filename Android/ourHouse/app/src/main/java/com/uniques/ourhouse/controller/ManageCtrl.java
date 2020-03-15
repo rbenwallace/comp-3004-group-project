@@ -26,33 +26,24 @@ public class ManageCtrl implements FragmentCtrl {
         Button addTaskButton = (Button) view.findViewById(R.id.manage_btnAddTask);
         Button settingsButton = (Button) view.findViewById(R.id.manage_btnSettings);
 
-        Log.d(ManageFragment.TAG, "onCreatedView: Started");
-        addFeeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(activity, "Add Fee", Toast.LENGTH_LONG).show();
-                //TODO NAVIGATE TO NEXT FRAGMENT
+        Log.d(ManageFragment.TAG, "Controller init()");
+        addFeeButton.setOnClickListener(view1 -> {
+            Toast.makeText(activity, "Add Fee", Toast.LENGTH_LONG).show();
+            //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(AddFeeFragment.TAG));
-            }
+            activity.pushFragment(FragmentId.GET(AddFeeFragment.TAG));
         });
-        addTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(activity, "Add Task", Toast.LENGTH_LONG).show();
-                //TODO NAVIGATE TO NEXT FRAGMENT
+        addTaskButton.setOnClickListener(view12 -> {
+            Toast.makeText(activity, "Add Task", Toast.LENGTH_LONG).show();
+            //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(AddTaskFragment.TAG));
-            }
+            activity.pushFragment(FragmentId.GET(AddTaskFragment.TAG));
         });
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(activity, "SettingsFragment", Toast.LENGTH_LONG).show();
-                //TODO NAVIGATE TO NEXT FRAGMENT
+        settingsButton.setOnClickListener(view13 -> {
+            Toast.makeText(activity, "SettingsFragment", Toast.LENGTH_LONG).show();
+            //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(6);
-                activity.pushFragment(FragmentId.GET(SettingsFragment.TAG));
-            }
+            activity.pushFragment(FragmentId.GET(SettingsFragment.TAG));
         });
 
     }
