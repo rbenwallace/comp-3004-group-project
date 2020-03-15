@@ -17,7 +17,7 @@ public abstract class SecurityLink {
 
     abstract ObjectId getLoggedInUserId();
 
-    public abstract static class SecureAuthenticator {
+    public interface SecureAuthenticator {
 
 //        AuthenticationListener authListener;
 //
@@ -46,7 +46,7 @@ public abstract class SecurityLink {
          * @param email supplied email address
          * @param password supplied password
          */
-        public abstract void registerUser(String email, String password, Consumer<Exception> callback);
+        void registerUser(String email, String password, Consumer<Exception> callback);
 
 //        public void listenToAuth(AuthenticationListener authListener) {
 //            this.authListener = authListener;
@@ -58,13 +58,13 @@ public abstract class SecurityLink {
 //         * @see AuthenticationListener#onSuccess(UUID, UUID)
 //         * @see AuthenticationListener#onFail(String, String)
          */
-        public abstract void authenticateUser(String username, String password, BiConsumer<Exception, ObjectId> callback);
+        void authenticateUser(String username, String password, BiConsumer<Exception, ObjectId> callback);
 
         /**
          * Logout the user from the current session
          * @param activity the current activity
          */
-        public abstract void logout(FragmentActivity activity, Consumer<Boolean> consumer);
+        void logout(FragmentActivity activity, Consumer<Boolean> consumer);
     }
 
 //    interface AuthenticationListener {

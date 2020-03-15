@@ -32,7 +32,7 @@ class DatabaseCoordinator implements DatabaseLink {
         this.remoteDatabase = remoteDatabase;
     }
 
-    public DatabaseLink getRemoteDatabase() {
+    DatabaseLink getRemoteDatabase() {
         return remoteDatabase;
     }
 

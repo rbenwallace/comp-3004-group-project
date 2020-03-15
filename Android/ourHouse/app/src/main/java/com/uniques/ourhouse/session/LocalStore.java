@@ -657,10 +657,6 @@ final class LocalStore implements DatabaseLink {
         consumer.accept(false);
     }
 
-    private JSONElement searchLocal(String fileName, ObjectId id) {
-        return Objects.requireNonNull(Objects.requireNonNull(retrieveLocal(fileName)).search(id.toString()));
-    }
-
     private JSONElement searchLocal(EasyJSON json, ObjectId id) {
         return json.search(id.toString());
     }
