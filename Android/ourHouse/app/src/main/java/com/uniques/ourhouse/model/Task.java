@@ -90,15 +90,15 @@ public class Task extends ManageItem implements Indexable, Observable {
         asDoc.put("userId", manageItemOwner);
         asDoc.put("houseId", manageItemHouse);
         asDoc.put("name", name);
-        asDoc.put("scheduel", schedule.toBsonDocument());//Fix
+        asDoc.put("schedule", schedule.toBsonDocument());//Fix
         asDoc.put("difficulty", difficulty);
         return asDoc;
     }
 
     public static Task fromBsonDocument(final Document doc){
         Schedule schedule = new Schedule();
-        Log.d("checking", doc.get("scheduel").toString());
-        schedule = schedule.fromBsonDocument((Document) Objects.requireNonNull(doc.get("scheduel")));
+        Log.d("checking", doc.get("schedule").toString());
+        schedule = schedule.fromBsonDocument((Document) Objects.requireNonNull(doc.get("schedule")));
         return new Task(
                 doc.getObjectId("_id"),
                 doc.getObjectId("userId"),

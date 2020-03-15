@@ -9,6 +9,7 @@ import com.uniques.ourhouse.util.exception.UnsupportedFunctionCallException;
 
 import org.bson.Document;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -383,16 +384,18 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         asDoc.put("end", end);
         asDoc.put("endType", endType.toString());
         if (repeatSchedule != null)
-            asDoc.put("repeatScheduel", repeatSchedule.toJSON());
+            asDoc.put("repeatSchedule", repeatSchedule.toBsonDocument());
         return asDoc;
     }
 
     public Schedule fromBsonDocument(final Document doc) {
-        if (doc.containsKey("repeatScheduel")) {
+        if (doc.containsKey("repeatSchedule")) {
+            Repeat temp = new Repeat();
+            temp.fromBsonDocument((Document) Objects.requireNonNull(doc.get("repeatSchedule")));
             return new Schedule(
                     doc.getDate("start"),
                     doc.getDate("end"),
-                    new Repeat().fromJSON((JSONElement) Objects.requireNonNull(doc.get("repeatScheduel")))
+                    temp
             );
         } else {
             return new Schedule(
@@ -876,6 +879,41 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
                 months[i] = json.search("months").getChildren().get(i).<Long>getValue().intValue();
             }
             return this;
+        }
+
+        public Document toBsonDocument() {
+            final Document asDoc = new Document();
+            asDoc.put("type", type.toString());
+            asDoc.put("repeatBasis", repeatBasis.toString());
+            asDoc.put("delay", delay);
+            ArrayList<Integer> daysList = new ArrayList<Integer>(days.length);
+            for (int i = 0; i < days.length; i++)
+                daysList.add(days[i]);
+            ArrayList<Integer> weeksList = new ArrayList<Integer>(weeks.length);
+            for (int i = 0; i < weeks.length; i++)
+                weeksList.add(weeks[i]);
+            ArrayList<Integer> monthsList = new ArrayList<Integer>(months.length);
+            for (int i = 0; i < months.length; i++)
+                monthsList.add(months[i]);
+            asDoc.put("days", daysList);
+            asDoc.put("weeks", weeksList);
+            asDoc.put("months", monthsList);
+            return asDoc;
+        }
+
+        public void fromBsonDocument(final Document doc) {
+            type = RepeatType.valueOf(doc.getString("type"));
+            repeatBasis = RepeatBasis.valueOf(doc.getString("repeatBasis"));
+            delay = doc.getInteger("delay");
+            ArrayList<Integer> daysLi = ((ArrayList<Integer>)doc.get("days"));
+            Integer[] daysL = daysLi.toArray(new Integer[daysLi.size()]);
+            days = ArrayUtils.toPrimitiveArray(daysL);
+            ArrayList<Integer> weeksLi = ((ArrayList<Integer>)doc.get("weeks"));
+            Integer[] weeksL = weeksLi.toArray(new Integer[daysLi.size()]);
+            weeks = ArrayUtils.toPrimitiveArray(weeksL);
+            ArrayList<Integer> monthsLi = ((ArrayList<Integer>)doc.get("months"));
+            Integer[] monthsL = monthsLi.toArray(new Integer[daysLi.size()]);
+            months = ArrayUtils.toPrimitiveArray(monthsL);
         }
 
         @NonNull

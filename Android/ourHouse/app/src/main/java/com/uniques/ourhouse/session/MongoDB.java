@@ -331,7 +331,6 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             }
         });
     } //tested
-
     //All returns are in Decending order im tired rn so like if u want it opposite just change the -1 to a 1 in the .sort inside the functions
     @Override
     public void getAllEventsFromHouse(ObjectId houseId, Consumer<List<Event>> consumer) {
@@ -1089,5 +1088,51 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         return query;
     }
     //-------------------------------------------------------------
+    //CLEAR ALL DATA
+    public void deleteAllTEF(Consumer<Boolean> consumer){
+        Document filterDoc = new Document();
+        final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = taskColl.deleteMany(filterDoc);
+        deleteTask.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteDeleteResult> task) {
+                if (task.isSuccessful()) {
+                    long numDeleted = task.getResult().getDeletedCount();
+                    Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                    consumer.accept(true);
+                } else {
+                    Log.e("app", "failed to delete document with: ", task.getException());
+                    consumer.accept(false);
+                }
+            }
+        });
+        final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteFee = feeColl.deleteMany(filterDoc);
+        deleteFee.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteDeleteResult> task) {
+                if (task.isSuccessful()) {
+                    long numDeleted = task.getResult().getDeletedCount();
+                    Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                    consumer.accept(true);
+                } else {
+                    Log.e("app", "failed to delete document with: ", task.getException());
+                    consumer.accept(false);
+                }
+            }
+        });
+        final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteEvent = eventColl.deleteMany(filterDoc);
+        deleteEvent.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteDeleteResult> task) {
+                if (task.isSuccessful()) {
+                    long numDeleted = task.getResult().getDeletedCount();
+                    Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                    consumer.accept(true);
+                } else {
+                    Log.e("app", "failed to delete document with: ", task.getException());
+                    consumer.accept(false);
+                }
+            }
+        });
+    } //tested
 
 }

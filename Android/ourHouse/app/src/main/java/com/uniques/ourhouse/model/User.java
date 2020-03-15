@@ -1,7 +1,10 @@
 package com.uniques.ourhouse.model;
 
+import android.util.Log;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
@@ -29,12 +32,13 @@ public class User implements Observable, Indexable {
     private String lastName;
     private String emailAddress;
     private List<ObjectId> myHouses;
+    private List<String> myHousesNames;
 
     //testing
     private int performance;
 
     //testing int num
-    public User(ObjectId userID, String firstName, String lastName, String emailAddress, ArrayList<ObjectId> myHouses, int num) {
+    public User(ObjectId userID, String firstName, String lastName, String emailAddress, ArrayList<ObjectId> myHouses, ArrayList<String> myHousesNames, int num) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -43,6 +47,7 @@ public class User implements Observable, Indexable {
         //testing
         this.myHouses = myHouses;
         this.performance = num;
+        this.myHousesNames = myHousesNames;
     }
 
     //testing int num
@@ -51,7 +56,8 @@ public class User implements Observable, Indexable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.myHouses = new ArrayList<>();
+        myHouses = new ArrayList<>();
+        myHousesNames = new ArrayList<>();
         //testing
         this.performance = num;
     }
@@ -62,6 +68,7 @@ public class User implements Observable, Indexable {
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.myHouses = new ArrayList<>();
+        myHousesNames = new ArrayList<>();
         //testing
         this.performance = 0;
     }
@@ -128,6 +135,14 @@ public class User implements Observable, Indexable {
     public List<ObjectId> getMyHouses() {
         return myHouses;
     }
+    public void deleteHouse(House house) {
+        myHouses.remove(house.getId());
+        myHousesNames.remove(house.getKeyId());
+    }
+    public void addHouse(House house) {
+        myHouses.add(house.getId());
+        myHousesNames.add(house.getKeyId());
+    }
 
     public void setMyHouses(List<ObjectId> myHouses) {
         this.myHouses = myHouses;
@@ -157,8 +172,8 @@ public class User implements Observable, Indexable {
     public Document toBsonDocument() {
         final Document asDoc = new Document();
         Document housesDoc = new Document();
-        for (ObjectId houseId : myHouses) {
-            housesDoc.append("house_id", houseId);
+        for(int i = 0; i < myHouses.size(); i++){
+            housesDoc.append(myHousesNames.get(i), myHouses.get(i));//cant have multiple identities of the same name
         }
         asDoc.put("_id", userID);
         asDoc.put("firstName", firstName);
@@ -172,8 +187,10 @@ public class User implements Observable, Indexable {
     public static User fromBsonDocument(final Document doc) {
         Document housesDoc = (Document) doc.get("houses");
         ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
-        if (housesDoc != null) {
+        ArrayList<String> housesNames = new ArrayList<String>();
+        if(housesDoc != null) {
             housesDoc.forEach((key, value) -> {
+                housesNames.add(key);
                 houses.add((ObjectId) value);
             });
         }
@@ -183,6 +200,7 @@ public class User implements Observable, Indexable {
                 doc.getString("lastName"),
                 doc.getString("email"),
                 houses,
+                housesNames,
                 doc.getInteger("performance")
         );
     }
@@ -194,10 +212,13 @@ public class User implements Observable, Indexable {
         json.putPrimitive("fname", firstName);
         json.putPrimitive("lname", lastName);
         json.putPrimitive("email", emailAddress);
-        json.putArray("houses");
-        for (ObjectId houseId : myHouses) {
-            json.search("houses").putPrimitive(houseId.toString());
+        json.putStructure("houses");
+        for(int i = 0; i < myHouses.size(); i++){
+            json.putPrimitive(myHousesNames.get(i), myHouses.get(i));
         }
+        // for (ObjectId houseId : myHouses) {
+        //     json.search("houses").putPrimitive(houseId.toString());
+        // }
         json.putPrimitive("performance", performance);
         return json.getRootNode();
     }
@@ -227,22 +248,23 @@ public class User implements Observable, Indexable {
         String myEmail = obj.get("email").getAsString();
         JsonObject myHouses;
         ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
-        if (obj.get("houses") != null) {
+        ArrayList<String> housesNames = new ArrayList<String>();
+        if(obj.get("houses") != null) {
             myHouses = obj.get("houses").getAsJsonObject();
             Set<String> keys = myHouses.keySet();
             Iterator<String> keyIt = keys.iterator();
-            houses = new ArrayList<ObjectId>();
             while (keyIt.hasNext()) {
                 String key = keyIt.next();
                 if (myHouses.get(key) != null) {
-                    if (Session.getIdFromString(myHouses.get(key).toString()).length() > 5)
+                    if(Session.getIdFromString(myHouses.get(key).toString()).length() > 5) {
+                        housesNames.add(key);
                         houses.add(new ObjectId(Session.getIdFromString(myHouses.get(key).toString())));
+                    }
                 }
             }
         }
-        Integer prefNum = obj.get("performance").getAsInt();
-        User i = new User(new ObjectId(myID), firstName, lastName, myEmail, houses, prefNum);
-        return new User(new ObjectId(myID), firstName, lastName, myEmail, houses, prefNum);
+        int prefNum = obj.get("performance").getAsInt();
+        return new User(new ObjectId(myID), firstName, lastName, myEmail, houses, housesNames, prefNum);
     }
 
     @Override
@@ -268,5 +290,21 @@ public class User implements Observable, Indexable {
                 ", myHouses=" + myHouses +
                 ", performance=" + performance +
                 '}';
+    }
+
+    public void changeHouse(String keyId, House newHouse) {
+        int i;
+        for(i = 0; i < myHousesNames.size(); i++){
+            if(myHousesNames.get(i).equals(keyId)){
+                break;
+            }
+        }
+        myHousesNames.set(i, newHouse.getKeyId());
+        for(i = 0; i < myHouses.size(); i++){
+            if(myHouses.get(i).equals(newHouse.getId())){
+                break;
+            }
+        }
+        myHouses.set(i, newHouse.getId());
     }
 }

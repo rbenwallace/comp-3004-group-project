@@ -19,6 +19,8 @@ import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.TextChangeListener;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -37,7 +39,6 @@ public class CreateHouseCtrl implements FragmentCtrl {
     public CreateHouseCtrl(FragmentActivity activity) {
         this.activity = activity;
     }
-
     @Override
     public void init(View view) {
         key = "";

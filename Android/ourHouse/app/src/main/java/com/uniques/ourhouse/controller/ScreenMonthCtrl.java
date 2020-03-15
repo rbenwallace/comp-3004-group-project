@@ -13,6 +13,7 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     private FragmentActivity activity;
     private String month;
     private String year;
+    private TextView calculateTitle;
 
     public ScreenMonthCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -28,14 +29,15 @@ public class ScreenMonthCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        TextView calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
+        calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(month + " : " + year);
         Log.d(ScreenMonthFragment.TAG, "Screen Month Clicked");
     }
 
     @Override
     public void acceptArguments(Object... args) {
-
+        month = (String) args[0];
+        year = (String) args[1];
     }
 
     @Override

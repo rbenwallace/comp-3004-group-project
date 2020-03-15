@@ -41,6 +41,8 @@ public class Fee extends ManageItem implements Indexable, Observable {
         this.type = "Fee";
     }
 
+    public float getAmount(){ return amount; }
+
     @Override
     public String consoleFormat(String prefix) {
         return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), " + manageItemOwner.toString() + "), " + "id: (" + manageItemHouse.toString() + "name: [" + name + "]   " + ", Amount: " + amount + ", Date Created: " + schedule.getStart().toString();
@@ -60,21 +62,21 @@ public class Fee extends ManageItem implements Indexable, Observable {
     }
 
     public Document toBsonDocument() {
-        Document scheduelDoc = new Document();
-        scheduelDoc.append("scheduel", schedule.toBsonDocument());
+        Document scheduleDoc = new Document();
+        scheduleDoc.append("schedule", schedule.toBsonDocument());
         final Document asDoc = new Document();
         asDoc.put("_id", manageItemId);
         asDoc.put("userId", manageItemOwner);
         asDoc.put("houseId", manageItemHouse);
         asDoc.put("name", name);
         asDoc.put("amount", Float.toString(amount));
-        asDoc.put("scheduel", scheduelDoc);
+        asDoc.put("schedule", scheduleDoc);
         return asDoc;
     }
 
     public static Fee fromBsonDocument(final Document doc){
         Schedule schedule = new Schedule();
-        schedule = schedule.fromBsonDocument((Document) Objects.requireNonNull(doc.get("scheduel")));
+        schedule = schedule.fromBsonDocument((Document) Objects.requireNonNull(doc.get("schedule")));
         return new Fee(
                 doc.getObjectId("_id"),
                 doc.getObjectId("userId"),

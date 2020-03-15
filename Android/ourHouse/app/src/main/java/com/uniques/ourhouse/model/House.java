@@ -59,6 +59,18 @@ public class House implements Indexable, Observable {
         return houseKey;
     }
 
+    public boolean getShowTaskDifficulty() {
+        return showTaskDifficulty;
+    }
+
+    public void setShowTaskDifficulty(boolean showTaskDifficulty) { this.showTaskDifficulty =  showTaskDifficulty; }
+
+    public boolean getPenalizeLateTasks() {
+        return penalizeLateTasks;
+    }
+
+    public void setPenalizeLateTasks(boolean penalizeLateTasks) { this.penalizeLateTasks =  penalizeLateTasks; }
+
     public House(ObjectId id, String housekey, User owner, String name, ArrayList<User> occupants, House.Rotation rotation, String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
         this.houseId = id;
         this.houseKey = housekey;

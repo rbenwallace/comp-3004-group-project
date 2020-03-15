@@ -1,11 +1,14 @@
 package com.uniques.ourhouse.controller;
 
+import android.app.UiAutomation;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,7 +18,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
@@ -32,28 +41,36 @@ import java.util.List;
 import java.util.Timer;
 import java.util.function.Consumer;
 
+import androidx.annotation.RequiresApi;
+
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class JoinHouseCtrl implements FragmentCtrl {
+public class JoinHouseCtrl implements FragmentCtrl{
     private FragmentActivity activity;
     private List<House> searchedHouses;
     private DatabaseLink database = Session.getSession().getDatabase();
     private List<String> houses;
     private ArrayAdapter adapter;
-    private Timer timer;
-
+    private ListView housesList;
+    private SearchView simpleSearchView;
+    private RelativeLayout relList;
+    private User myUser;
 
     public JoinHouseCtrl(FragmentActivity activity) {
         this.activity = activity;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void init(View view) {
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
         EditText houseJoinText = view.findViewById(R.id.houseName_join);
-        ListView housesList = view.findViewById(R.id.housesListJoin);
+        housesList = (ListView) view.findViewById(R.id.housesListJoin);
+        relList = (RelativeLayout) view.findViewById(R.id.housesList);
+        housesList.setClickable(true);
         searchedHouses = new ArrayList<>();
         houses = new ArrayList<>();
+        housesList = view.findViewById(R.id.housesListJoin);
         adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, houses);
         housesList.setAdapter(adapter);
 
@@ -62,25 +79,63 @@ public class JoinHouseCtrl implements FragmentCtrl {
             searchedHouses = myList;
             updateInfo();
         };
+        
+        myUser = myDatabase.getCurrentLocalUser(activity);
+        simpleSearchView = (SearchView) view.findViewById(R.id.houseName_join);
 
-        houseJoinText.addTextChangedListener(new TextWatcher() {
+//        houseJoinText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                Log.d("CheckingHouses", "UPDATE_ONTEXT");
+//                myDatabase.findHousesByName(houseJoinText.getText().toString().trim(), myList ->{
+//                    Log.d("CheckingHouses", Integer.toString(myList.size()));
+//                    searchedHouses = myList;
+//                    updateInfo();
+//                });
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//            }
+//        });
+        simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public boolean onQueryTextSubmit(String s) {
+                return false;
             }
-
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.d("CheckingHouses", "UPDATE_ONTEXT");
-                database.findHousesByName(houseJoinText.getText().toString().trim(), housesConsumer);
-                adapter.notifyDataSetChanged();
+            public boolean onQueryTextChange(String s) {
+                // Log.d("CheckingHouses", "UPDATE_ONTEXT");
+                // database.findHousesByName(houseJoinText.getText().toString().trim(), housesConsumer);
+                // adapter.notifyDataSetChanged();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+                myDatabase.findHousesByName(simpleSearchView.getQuery().toString().trim(), myList ->{
+                    Log.d("CheckingHouses", Integer.toString(myList.size()));
+                    searchedHouses = myList;
+                    houses.clear();
+                    for(int i = 0; i < searchedHouses.size(); i= i+1){
+                        Log.d("CheckingHousesInside", i + " total: " + searchedHouses.size());
+                        houses.add(searchedHouses.get(i).getKeyId());
+                    }
+                    Log.d("CheckingAdapterList", Integer.toString(adapter.getCount()));
+                    Log.d("CheckingHousesStringList", Integer.toString(houses.size()));
+                    Log.d("CheckingHousesList", Integer.toString(housesList.getChildCount()));
+                    adapter.notifyDataSetChanged();
+                    updateInfo();
+                });
             }
         });
-
-
+        for(House h : searchedHouses){
+            Log.d("checkingHouses " + h.getName(), h.toString());
+            houses.add(h.getName());
+        }
         housesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -121,18 +176,6 @@ public class JoinHouseCtrl implements FragmentCtrl {
                 });
             }
         });
-
-
-        for (House h : searchedHouses) {
-            Log.d("checkingHouses " + h.getName(), h.toString());
-            houses.add(h.getName());
-        }
-        joinHouse.setOnClickListener(view1 -> {
-            Toast.makeText(activity, "Going to Feed", Toast.LENGTH_LONG).show();
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//            ((LS_Main) activity).setViewPager(3);
-            activity.startActivity(new Intent(activity, MainActivity.class));
-        });
     }
 
     @Override
@@ -142,14 +185,6 @@ public class JoinHouseCtrl implements FragmentCtrl {
 
     @Override
     public void updateInfo() {
-        houses.clear();
-        Log.d("CheckingHouses1", Integer.toString(searchedHouses.size()));
-        for (int i = 0; i < searchedHouses.size(); i = i + 1) {
-            Log.d("CheckingHousesInside", Integer.toString(i));
-            Log.d("CheckingHouses", "ADD");
-            houses.add(searchedHouses.get(i).getKeyId());
-        }
-        adapter.notifyDataSetChanged();
     }
 
 

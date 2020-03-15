@@ -9,6 +9,8 @@ import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.AmountPaidFragment;
 import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
+import com.uniques.ourhouse.fragment.EditFeeFragment;
+import com.uniques.ourhouse.fragment.EditTaskFragment;
 import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.Fragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
@@ -26,7 +28,7 @@ public class MainActivity extends FragmentActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    private BottomNavigationView navView;
+    public BottomNavigationView navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class MainActivity extends FragmentActivity {
         CalculateAmountToPayFragment.setupId(getActivityId());
         PerformanceFragment.setupId(getActivityId());
         ScreenMonthFragment.setupId(getActivityId());
+        EditTaskFragment.setupId(getActivityId());
+        EditFeeFragment.setupId(getActivityId());
 
         BottomNavigationView navigation = findViewById(R.id.main_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -54,7 +58,7 @@ public class MainActivity extends FragmentActivity {
         pushFragment(FragmentId.GET(FeedFragment.TAG));
     }
 
-    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    public final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         switch (item.getItemId()) {
             case R.id.navigation_feed:
