@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
@@ -45,53 +46,54 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     private RemoteMongoCollection<Document> feeColl = mongoClient.getDatabase(DATABASE).getCollection(Fee.FEE_COLLECTION);
     private Long count;
 
-    private final SecureAuthenticator secureAuthenticator = new SecureAuthenticator() {
-        @Override
-        public void registerUser(String email, String password, Consumer<Exception> callback) {
-            CLIENT.getAuth().getProviderClient(UserPasswordAuthProviderClient.factory)
-                    .registerWithEmail(email, password)
-                    .addOnCompleteListener(task -> callback.accept(task.getException()));
-        }
+    private final SecureAuthenticator secureAuthenticator;
 
-        @Override
-        public void authenticateUser(String username, String password, BiConsumer<Exception, ObjectId> callback) {
-            try {
-                CLIENT.getAuth()
-                        .loginWithCredential(new UserPasswordCredential(username, password))
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                callback.accept(null, new ObjectId(task.getResult().getId()));
-                            } else {
-                                callback.accept(task.getException(), null);
-                            }
-                        });
-            } catch (Exception e) {
-                callback.accept(e, null);
+    MongoDB() {
+        secureAuthenticator = new SecureAuthenticator() {
+            @Override
+            public void registerUser(String email, String password, Consumer<Exception> callback) {
+                CLIENT.getAuth().getProviderClient(UserPasswordAuthProviderClient.factory)
+                        .registerWithEmail(email, password)
+                        .addOnCompleteListener(task -> callback.accept(task.getException()));
             }
-        }
 
-        @Override
-        public void logout(FragmentActivity activity, Consumer<Boolean> consumer) {
-            CLIENT.getAuth().logout().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Log.i(TAG, "Successfully logged out!");
-                    consumer.accept(true);
-                } else {
-                    Log.e(TAG, "Logout failed!", task.getException());
-                    consumer.accept(false);
+            @Override
+            public void authenticateUser(String username, String password, BiConsumer<Exception, ObjectId> callback) {
+                try {
+                    CLIENT.getAuth()
+                            .loginWithCredential(new UserPasswordCredential(username, password))
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    callback.accept(null, new ObjectId(task.getResult().getId()));
+                                } else {
+                                    callback.accept(task.getException(), null);
+                                }
+                            });
+                } catch (Exception e) {
+                    callback.accept(e, null);
                 }
-            });
-        }
-    };
+            }
+
+            @Override
+            public void logout(FragmentActivity activity, Consumer<Boolean> consumer) {
+                CLIENT.getAuth().logout().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.i(TAG, "Successfully logged out!");
+                        consumer.accept(true);
+                    } else {
+                        Log.e(TAG, "Logout failed!", task.getException());
+                        consumer.accept(false);
+                    }
+                });
+            }
+        };
+    }
 
     //Stitch functions
 //    @Override
-//    public StitchAuth getAuth() {
-//        if (client != null) {
-//            return client.getAuth();
-//        }
-//        return null;
-//    }
+    public StitchAuth getAuth() {
+        return CLIENT.getAuth();
+    }
     //-------------------------------------------------------------
 
     @Override
@@ -331,6 +333,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             }
         });
     } //tested
+
     //All returns are in Decending order im tired rn so like if u want it opposite just change the -1 to a 1 in the .sort inside the functions
     @Override
     public void getAllEventsFromHouse(ObjectId houseId, Consumer<List<Event>> consumer) {
@@ -1087,12 +1090,13 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         Document query = new Document().append("_id", user.getId());
         return query;
     }
+
     //-------------------------------------------------------------
     //CLEAR ALL DATA
-    public void deleteAllTEF(Consumer<Boolean> consumer){
+    public void deleteAllTEF(Consumer<Boolean> consumer) {
         Document filterDoc = new Document();
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = taskColl.deleteMany(filterDoc);
-        deleteTask.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+        deleteTask.addOnCompleteListener(new OnCompleteListener<RemoteDeleteResult>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteDeleteResult> task) {
                 if (task.isSuccessful()) {
@@ -1106,7 +1110,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             }
         });
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteFee = feeColl.deleteMany(filterDoc);
-        deleteFee.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+        deleteFee.addOnCompleteListener(new OnCompleteListener<RemoteDeleteResult>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteDeleteResult> task) {
                 if (task.isSuccessful()) {
@@ -1120,7 +1124,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             }
         });
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteEvent = eventColl.deleteMany(filterDoc);
-        deleteEvent.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+        deleteEvent.addOnCompleteListener(new OnCompleteListener<RemoteDeleteResult>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteDeleteResult> task) {
                 if (task.isSuccessful()) {

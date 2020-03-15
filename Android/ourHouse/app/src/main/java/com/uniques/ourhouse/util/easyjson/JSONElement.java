@@ -12,12 +12,14 @@ import androidx.annotation.NonNull;
 public class JSONElement implements Iterable<JSONElement> {
     private EasyJSON easyJSONStructure;
     private JSONElement parent;
+    @NonNull
     private JSONElementType type;
+    @NonNull
     private ArrayList<JSONElement> children = new ArrayList<>();
     private String key;
     private Object value;
 
-    JSONElement(EasyJSON easyJSONStructure, JSONElement parent, JSONElementType type, String key, Object value) {
+    JSONElement(EasyJSON easyJSONStructure, JSONElement parent, @NonNull JSONElementType type, String key, Object value) {
         this.easyJSONStructure = easyJSONStructure;
         this.parent = parent;
         this.type = type;
@@ -33,6 +35,7 @@ public class JSONElement implements Iterable<JSONElement> {
         return parent;
     }
 
+    @NonNull
     public JSONElementType getType() {
         return type;
     }
@@ -41,6 +44,7 @@ public class JSONElement implements Iterable<JSONElement> {
         this.type = type.getRealType();
     }
 
+    @NonNull
     public ArrayList<JSONElement> getChildren() {
         return children;
     }
@@ -197,6 +201,8 @@ public class JSONElement implements Iterable<JSONElement> {
 
     public boolean removeElement(String... location) {
         JSONElement element = search(location);
+        System.out.println("elmPar " + element.getParent());
+        System.out.println(" childrn " + element.getParent().children);
         return element == null || element.getParent().children.remove(element);
     }
 
@@ -274,10 +280,6 @@ public class JSONElement implements Iterable<JSONElement> {
      * Attempts to retrieve and cast the value of the element at the specific location. If the value
      * cannot be found, null is returned. <b>This method does not check types, a Runtime
      * exception my occur</b>
-     *
-     * @param location
-     * @param <T>
-     * @return
      */
     public <T> T valueOf(String... location) {
         JSONElement result = search(location);

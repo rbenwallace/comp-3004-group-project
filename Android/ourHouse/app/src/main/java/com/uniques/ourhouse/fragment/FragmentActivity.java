@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public abstract class FragmentActivity extends AppCompatActivity {
     private static HashMap<ActivityId, FragmentActivity> savedInstances;
+    protected final Stack<Fragment> fragmentStack = new Stack<>();
     protected boolean allowPopAllFragments;
 
     private static void checkMapNotNull() {
@@ -45,8 +46,6 @@ public abstract class FragmentActivity extends AppCompatActivity {
 //    protected static Session getSession() {
 //        return Session.getSession();
 //    }
-
-    protected final Stack<Fragment> fragmentStack = new Stack<>();
 
     protected Fragment currentFragment() {
         if (fragmentStack.isEmpty()) return null;

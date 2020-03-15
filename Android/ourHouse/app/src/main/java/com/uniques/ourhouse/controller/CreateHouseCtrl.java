@@ -16,11 +16,10 @@ import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.TextChangeListener;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -120,6 +119,7 @@ public class CreateHouseCtrl implements FragmentCtrl {
                 if (successful) {
                     database.updateUser(myUser, successful2 -> {
                         if (successful2) {
+                            Settings.OPEN_HOUSE.set(newHouse.getId());
                             Intent intent = new Intent(activity, MainActivity.class);
                             activity.startActivity(intent);
                             activity.finish();

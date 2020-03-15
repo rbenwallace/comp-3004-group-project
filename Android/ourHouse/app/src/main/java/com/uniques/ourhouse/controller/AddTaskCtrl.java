@@ -9,7 +9,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.FeedFragment;
@@ -17,7 +16,9 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.model.Task;
-import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.session.DatabaseLink;
+import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Schedule;
 
 import org.bson.types.ObjectId;
@@ -27,7 +28,7 @@ import java.util.Date;
 
 public class AddTaskCtrl implements FragmentCtrl {
     private FragmentActivity activity;
-    private MongoDB myDatabase = new MongoDB();
+    private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private ObjectId userId;
     private ObjectId houseId;
 
@@ -46,8 +47,8 @@ public class AddTaskCtrl implements FragmentCtrl {
         DatePicker datePicker = (DatePicker) view.findViewById(R.id.addTask_datePicked);
         TextView taskViewTitle = (TextView) view.findViewById(R.id.addTask_title);
 
-        userId = myDatabase.getCurrentLocalUser(this.activity).getId();
-        houseId = myDatabase.getCurrentLocalHouse(this.activity).getId();
+        userId = Session.getSession().getLoggedInUserId();
+        houseId = Settings.OPEN_HOUSE.get();
 
         taskViewTitle.setText("Add Task");
         addTaskAddButton.setText("ADD");

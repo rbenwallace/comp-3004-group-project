@@ -1,5 +1,6 @@
 package com.uniques.ourhouse.util;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.exception.InvalidArgumentException;
@@ -9,7 +10,6 @@ import com.uniques.ourhouse.util.exception.UnsupportedFunctionCallException;
 
 import org.bson.Document;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;

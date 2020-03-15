@@ -1,10 +1,7 @@
 package com.uniques.ourhouse.model;
 
-import android.util.Log;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
@@ -31,14 +28,14 @@ public class User implements Observable, Indexable {
     private String firstName;
     private String lastName;
     private String emailAddress;
-    private List<ObjectId> myHouses;
-    private List<String> myHousesNames;
+    private List<ObjectId> myHouses = new ArrayList<>();
+    private List<String> myHousesNames = new ArrayList<>();
 
     //testing
     private int performance;
 
     //testing int num
-    public User(ObjectId userID, String firstName, String lastName, String emailAddress, ArrayList<ObjectId> myHouses, ArrayList<String> myHousesNames, int num) {
+    public User(ObjectId userID, String firstName, String lastName, String emailAddress, List<ObjectId> myHouses, List<String> myHousesNames, int num) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -56,8 +53,6 @@ public class User implements Observable, Indexable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        myHouses = new ArrayList<>();
-        myHousesNames = new ArrayList<>();
         //testing
         this.performance = num;
     }
@@ -67,8 +62,6 @@ public class User implements Observable, Indexable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.myHouses = new ArrayList<>();
-        myHousesNames = new ArrayList<>();
         //testing
         this.performance = 0;
     }
@@ -172,7 +165,7 @@ public class User implements Observable, Indexable {
     public Document toBsonDocument() {
         final Document asDoc = new Document();
         Document housesDoc = new Document();
-        for(int i = 0; i < myHouses.size(); i++){
+        for(int i = 0; i < myHouses.size() && i < myHousesNames.size(); i++){
             housesDoc.append(myHousesNames.get(i), myHouses.get(i));//cant have multiple identities of the same name
         }
         asDoc.put("_id", userID);

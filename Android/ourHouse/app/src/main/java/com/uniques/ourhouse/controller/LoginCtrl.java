@@ -226,7 +226,7 @@ public class LoginCtrl implements FragmentCtrl {
         void onPostExecute(Pair<Exception, ObjectId> result, String email, String passwd) {
             //If accepted
             if (statusCode == 1) {
-                User newUser = new User(result.second, firstNameCurUser, lastNameCurUser, email, new ArrayList<>(), 0);
+                User newUser = new User(result.second, firstNameCurUser, lastNameCurUser, email, new ArrayList<>(), new ArrayList<>(), 0);
                 database.getUser(newUser.getId(), user -> {
                     //If there is a user change local user, and set the local login data
                     if (user != null) {

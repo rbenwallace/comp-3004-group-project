@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,8 +27,13 @@ public class Splash extends AppCompatActivity {
                     Toast.makeText(this, "Failed to get loggedInUser object", Toast.LENGTH_LONG).show();
                 } else {
                     Session.getSession().setLoggedInUser(user);
-                    Log.d("Splash", "launching MainActivity");
-                    delayStart(this, MainActivity.class);
+                    if (Settings.OPEN_HOUSE.get() == null) {
+                        Log.d("Splash", "launching LS_Main");
+                        delayStart(this, LS_Main.class);
+                    } else {
+                        Log.d("Splash", "launching MainActivity");
+                        delayStart(this, MainActivity.class);
+                    }
                 }
             });
         } else {

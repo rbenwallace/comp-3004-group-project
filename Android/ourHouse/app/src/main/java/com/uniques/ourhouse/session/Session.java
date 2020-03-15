@@ -34,7 +34,7 @@ public final class Session {
     }
 
     public static String keyGen() {
-        String [] selectFrom ={"1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
+        String[] selectFrom = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
         Random rn = new Random();
         String key = "#" + selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)] +
                 selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)];
@@ -42,10 +42,10 @@ public final class Session {
     }
 
     public static String getIdFromString(String id) {
-        if(id == null) return null;
-        String [] temp = id.split(":");
-        if(temp.length == 1) return null;
-        String [] temp2 = temp[1].split("[^A-Za-z0-9]+");
+        if (id == null) return null;
+        String[] temp = id.split(":");
+        if (temp.length == 1) return null;
+        String[] temp2 = temp[1].split("[^A-Za-z0-9]+");
         Log.d("houseid", temp2[1]);
         return temp2[1];
     }
@@ -55,7 +55,8 @@ public final class Session {
     private DatabaseLink database;
     private SecurityLink security;
 
-    private Session() {}
+    private Session() {
+    }
 
     public boolean isLoggedIn() {
         return user != null || security.getLoggedInUserId() != null;
@@ -75,6 +76,10 @@ public final class Session {
 
     public DatabaseLink getDatabase() {
         return database;
+    }
+
+    public DatabaseLink getRemoteDatabase() {
+        return database instanceof DatabaseCoordinator ? ((DatabaseCoordinator) database).getRemoteDatabase() : null;
     }
 
     public void setDatabase(DatabaseLink database) {

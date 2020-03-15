@@ -9,18 +9,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uniques.ourhouse.LS_Main;
-import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
-import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
-import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.ManageFragment;
-import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
-import com.uniques.ourhouse.model.House;
-import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.session.DatabaseLink;
+import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.ReadOnlyNameable;
 import com.uniques.ourhouse.util.RecyclerCtrl;
@@ -38,7 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard> {
     private FragmentActivity activity;
     private RecyclerView personRecycler;
-    private MongoDB myDatabase = new MongoDB();
+    private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private ObjectId houseId;
 
     public List<TaskRotationCard> observableCards;
@@ -70,7 +67,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
         Button btnSwitchHouse = view.findViewById(R.id.settings_btnSwitchHouse);
 
-        houseId = myDatabase.getCurrentLocalHouse(this.activity).getId();
+        houseId = Settings.OPEN_HOUSE.get();
 
         //todo implement buttons
 
@@ -86,64 +83,60 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
         CheckBox showTaskDifficultyButton = (CheckBox) view.findViewById(R.id.settings_chkShowDifficulty);
         CheckBox showLateTasksButton = (CheckBox) view.findViewById(R.id.settings_chkShowLateTasks);
 
-        House house = myDatabase.getCurrentLocalHouse(activity);
-        houseName.setText(house.getName());
-        if(house.getPenalizeLateTasks()){ showLateTasksButton.performClick(); }
-        if(house.getShowTaskDifficulty()){ showTaskDifficultyButton.performClick(); }
+        myDatabase.getHouse(houseId, house -> {
+            if (house == null) throw new RuntimeException("OPEN_HOUSE failed to load object");
+            houseName.setText(house.getName());
+            if (house.getPenalizeLateTasks()) {
+                showLateTasksButton.performClick();
+            }
+            if (house.getShowTaskDifficulty()) {
+                showTaskDifficultyButton.performClick();
+            }
 
-        btnSwitchHouse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            btnSwitchHouse.setOnClickListener(view13 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);=
-                myDatabase.clearLocalCurHouse(activity);
-                Intent intent = new Intent(activity, LS_Main.class);
-                activity.startActivity(intent);
-            }
-        });
+                if (Settings.OPEN_HOUSE.set(null)) {
+                    Intent intent = new Intent(activity, LS_Main.class);
+                    activity.startActivity(intent);
+                } else {
+                    throw new RuntimeException("Failed to set OPEN_HOUSE to null");
+                }
+            });
 
-        settingsBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            settingsBackButton.setOnClickListener(view12 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 activity.pushFragment(FragmentId.GET(ManageFragment.TAG));
-            }
-        });
-        settingsSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            });
+            settingsSaveButton.setOnClickListener(view1 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 ///observableCards.add(new TaskRotationCard(new ObservableString("Test")));
                 //updateInfo();
-                if(showLateTasksButton.isChecked()){
+                if (showLateTasksButton.isChecked()) {
                     house.setPenalizeLateTasks(true);
-                }
-                else{
+                } else {
                     house.setPenalizeLateTasks(false);
                 }
-                if(showTaskDifficultyButton.isChecked()){
+                if (showTaskDifficultyButton.isChecked()) {
                     house.setShowTaskDifficulty(true);
-                }
-                else{
+                } else {
                     house.setShowTaskDifficulty(false);
                 }
                 String name = houseName.getText().toString();
                 house.setName(name);
                 myDatabase.updateHouse(house, aBoolean -> {
-                    if(aBoolean){
+                    if (aBoolean) {
                         Log.d(AddTaskFragment.TAG, "House saved in database");
                         Toast.makeText(activity, "House Saved", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                        activity.popFragment(FragmentId.GET(SettingsFragment.TAG));
+                    } else {
                         Log.d(AddTaskFragment.TAG, "House not saved in database");
                         Toast.makeText(activity, "House Not Saved", Toast.LENGTH_SHORT).show();
                     }
                 });
-                myDatabase.setLocalHouse(house, activity);
-                activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
-            }
+            });
         });
     }
 
@@ -170,9 +163,11 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
     private class ObservableString implements Observable, ReadOnlyNameable {
         private String string;
+
         private ObservableString(String string) {
             this.string = string;
         }
+
         @Override
         public String getName() {
             return string;
