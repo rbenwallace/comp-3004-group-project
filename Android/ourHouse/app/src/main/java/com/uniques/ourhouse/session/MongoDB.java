@@ -1013,6 +1013,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                     long numDeleted = task.getResult().getDeletedCount();
                     Log.d("app", String.format("successfully deleted %d documents", numDeleted));
                 } else {
+                    consumer.accept(false);
                     Log.e("app", "failed to delete document with: ", task.getException());
                 }
             }

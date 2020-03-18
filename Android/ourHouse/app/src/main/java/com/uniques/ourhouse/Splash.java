@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Splash extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 3000;
     public static StitchAppClient client = Stitch.initializeAppClient("ourhouse-notdj");
-
     private StitchUser currentUser;
 
     @Override
@@ -24,7 +23,6 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         client = Stitch.getAppClient("ourhouse-notdj");
-        currentUser = Splash.client.getAuth().getUser();
         Log.d("Splash", "launching LS");
         delayStart(this, LS_Main.class, true);
     }
