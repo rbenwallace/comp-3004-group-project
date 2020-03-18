@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.uniques.ourhouse.ActivityId;
 
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public abstract class FragmentActivity extends AppCompatActivity {
     private static HashMap<ActivityId, FragmentActivity> savedInstances;
+    protected final Stack<Fragment> fragmentStack = new Stack<>();
     protected boolean allowPopAllFragments;
 
     private static void checkMapNotNull() {
@@ -21,12 +23,10 @@ public abstract class FragmentActivity extends AppCompatActivity {
             savedInstances = new HashMap<>();
     }
 
-    @NonNull
-    protected static FragmentActivity saveInstance(ActivityId activityId, @NonNull FragmentActivity activity) {
+    protected static void saveInstance(ActivityId activityId, @NonNull FragmentActivity activity) {
         checkMapNotNull();
-        System.out.println("==== SAVED ====");
+        Log.d(activityId.getName(), "Activity instance saved");
         savedInstances.put(activityId, activity);
-        return activity;
     }
 
     //    @NonNull
@@ -46,8 +46,6 @@ public abstract class FragmentActivity extends AppCompatActivity {
 //    protected static Session getSession() {
 //        return Session.getSession();
 //    }
-
-    protected final Stack<Fragment> fragmentStack = new Stack<>();
 
     protected Fragment currentFragment() {
         if (fragmentStack.isEmpty()) return null;
@@ -78,7 +76,7 @@ public abstract class FragmentActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Fragment fragment = currentFragment();
-        System.out.println("=== back press");
+        Log.d(getActivityId().getName(), "=== back press");
         if (fragment == null || !fragment.onBackPressed()) {
             if (fragmentStack.size() > 1) super.onBackPressed();
             else if (allowPopAllFragments) super.onBackPressed();

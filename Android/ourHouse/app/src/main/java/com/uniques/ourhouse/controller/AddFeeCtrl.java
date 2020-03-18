@@ -12,14 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uniques.ourhouse.R;
-import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.model.Fee;
-import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.session.DatabaseLink;
+import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Schedule;
 
 import org.bson.types.ObjectId;
@@ -28,7 +29,7 @@ import java.util.Calendar;
 
 public class AddFeeCtrl implements FragmentCtrl {
     private FragmentActivity activity;
-    private MongoDB myDatabase = new MongoDB();
+    private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private boolean isTaxable = true;
     private ObjectId userId;
     private ObjectId houseId;
@@ -48,8 +49,8 @@ public class AddFeeCtrl implements FragmentCtrl {
         RadioGroup feeFrequencies = view.findViewById(R.id.addFee_radioFrequency);
         TextView otherFeeFrequency = view.findViewById(R.id.addFee_editNumberOfDays);
 
-        userId = myDatabase.getCurrentLocalUser(this.activity).getId();
-        houseId = myDatabase.getCurrentLocalHouse(this.activity).getId();
+        userId = Session.getSession().getLoggedInUserId();
+        houseId = Settings.OPEN_HOUSE.get();
 
         taxRate.addTextChangedListener(new TextWatcher() {
             @Override

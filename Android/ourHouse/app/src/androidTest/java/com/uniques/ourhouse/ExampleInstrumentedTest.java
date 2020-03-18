@@ -2,13 +2,15 @@ package com.uniques.ourhouse;
 
 import android.content.Context;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import com.uniques.ourhouse.session.Session;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -23,5 +25,13 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         assertEquals("com.uniques.ourhouse", appContext.getPackageName());
+
+        Session.newSession(appContext);
+        Session session = Session.getSession();
+        session.setDatabase(new EventServiceTest.FakeDatabase());
+
+        EventService service = new EventService();
+
+        service.onStartJob(null);
     }
 }

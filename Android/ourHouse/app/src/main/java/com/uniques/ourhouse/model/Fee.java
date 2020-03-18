@@ -16,7 +16,7 @@ import org.bson.types.ObjectId;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class Fee extends ManageItem implements Model, Indexable, Observable {
+public class Fee extends ManageItem implements Indexable, Observable {
     public static final String FEE_COLLECTION = "Fees";
     private float amount;
     private String type;

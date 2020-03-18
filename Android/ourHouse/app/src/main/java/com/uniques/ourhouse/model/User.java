@@ -1,42 +1,41 @@
 package com.uniques.ourhouse.model;
 
-import android.util.Log;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.uniques.ourhouse.session.MongoDB;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
-import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
+import com.uniques.ourhouse.util.simple.JSONArray;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class User implements Model, Observable, Indexable {
+public class User implements Observable, Indexable {
     public static final String USER_COLLECTION = "Users";
     private ObjectId userID;
     private String firstName;
     private String lastName;
     private String emailAddress;
-    private ArrayList<ObjectId> myHouses;
-    private ArrayList<String> myHousesNames;
+    private List<ObjectId> myHouses = new ArrayList<>();
+    private List<String> myHousesNames = new ArrayList<>();
 
     //testing
     private int performance;
 
     //testing int num
-    public User(ObjectId userID, String firstName, String lastName, String emailAddress, ArrayList<ObjectId> myHouses, ArrayList<String> myHousesNames, int num) {
+    public User(ObjectId userID, String firstName, String lastName, String emailAddress, List<ObjectId> myHouses, List<String> myHousesNames, int num) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -54,8 +53,6 @@ public class User implements Model, Observable, Indexable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        myHouses = new ArrayList<>();
-        myHousesNames = new ArrayList<>();
         //testing
         this.performance = num;
     }
@@ -65,8 +62,6 @@ public class User implements Model, Observable, Indexable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.myHouses = new ArrayList<>();
-        myHousesNames = new ArrayList<>();
         //testing
         this.performance = 0;
     }
@@ -112,47 +107,25 @@ public class User implements Model, Observable, Indexable {
     public void setName(String name) {
     }
 
-    public void addHouseId(ObjectId id){
-        if(id != null) {
-            if(myHouses == null){
-                myHouses = new ArrayList<ObjectId>();
-                myHouses.add(id);
-                return;
-            }
-            if (!myHouses.contains(id)) {
-                for(ObjectId newID : myHouses)
-                myHouses.add(id);
+    public void addHouseId(ObjectId id) {
+        Objects.requireNonNull(id);
+        if (myHouses == null) {
+            myHouses = new ArrayList<>();
+            myHouses.add(id);
+        } else if (!myHouses.contains(id)) {
+            myHouses.add(id);
+        }
+    }
 
-            }
-        }
-    }
-    public void addHouseName(String name){
-        if(name != null) {
-            if(myHousesNames == null){
-                myHousesNames = new ArrayList<String>();
-                myHousesNames.add(name);
-                return;
-            }
-            if (!myHousesNames.contains(name)) {
-                for(String nameTemp : myHousesNames)
-                myHousesNames.add(name);
-            }
-        }
-    }
-    public void removeHouseName(String name){
-        if(name != null) {
-            myHouses.remove(name);
-        }
-    }
-    public void removeHouseId(ObjectId id){
-        if(id != null) {
+    public void removeHouseId(ObjectId id) {
+        if (id != null) {
             if (myHouses.contains(id)) {
                 myHouses.remove(id);
             }
         }
     }
 
-    public ArrayList<ObjectId> getMyHouses() {
+    public List<ObjectId> getMyHouses() {
         return myHouses;
     }
     public void deleteHouse(House house) {
@@ -164,7 +137,7 @@ public class User implements Model, Observable, Indexable {
         myHousesNames.add(house.getKeyId());
     }
 
-    public void setMyHouses(ArrayList<ObjectId> myHouses) {
+    public void setMyHouses(List<ObjectId> myHouses) {
         this.myHouses = myHouses;
     }
 
@@ -186,13 +159,13 @@ public class User implements Model, Observable, Indexable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + "name: (" + firstName + " " + lastName + "), num: (";
+        return prefix + "name: (" + firstName + " " + lastName + ")";
     }
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
         Document housesDoc = new Document();
-        for(int i = 0; i < myHouses.size(); i++){
+        for(int i = 0; i < myHouses.size() && i < myHousesNames.size(); i++){
             housesDoc.append(myHousesNames.get(i), myHouses.get(i));//cant have multiple identities of the same name
         }
         asDoc.put("_id", userID);
@@ -204,8 +177,8 @@ public class User implements Model, Observable, Indexable {
         return asDoc;
     }
 
-    public static User fromBsonDocument(final Document doc){
-        Document housesDoc = (Document)doc.get("houses");
+    public static User fromBsonDocument(final Document doc) {
+        Document housesDoc = (Document) doc.get("houses");
         ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
         ArrayList<String> housesNames = new ArrayList<String>();
         if(housesDoc != null) {
@@ -232,7 +205,13 @@ public class User implements Model, Observable, Indexable {
         json.putPrimitive("fname", firstName);
         json.putPrimitive("lname", lastName);
         json.putPrimitive("email", emailAddress);
-        json.putArray("houses", myHouses);
+        json.putStructure("houses");
+        for(int i = 0; i < myHouses.size(); i++){
+            json.putPrimitive(myHousesNames.get(i), myHouses.get(i));
+        }
+        // for (ObjectId houseId : myHouses) {
+        //     json.search("houses").putPrimitive(houseId.toString());
+        // }
         json.putPrimitive("performance", performance);
         return json.getRootNode();
     }
@@ -243,8 +222,14 @@ public class User implements Model, Observable, Indexable {
         firstName = json.valueOf("fname");
         lastName = json.valueOf("lname");
         emailAddress = json.valueOf("email");
-        myHouses = json.valueOf("houses");
-        performance = json.valueOf("performance");
+        myHouses = new ArrayList<>();
+        for (JSONElement houseId : json.search("houses")) {
+            if (houseId.getValue() instanceof JSONArray) {
+                continue;
+            }
+            myHouses.add(new ObjectId(houseId.<String>getValue()));
+        }
+        performance = json.<Long>valueOf("performance").intValue();
         consumer.accept(this);
     }
 
@@ -283,7 +268,7 @@ public class User implements Model, Observable, Indexable {
         return false;
     }
 
-    public static ObjectId objectIdFromJSON(JsonElement obj){
+    public static ObjectId objectIdFromJSON(JsonElement obj) {
         return new ObjectId(obj.getAsString());
     }
 

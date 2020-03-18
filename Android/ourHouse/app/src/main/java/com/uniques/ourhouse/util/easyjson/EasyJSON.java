@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 
 import androidx.annotation.NonNull;
 
@@ -55,7 +56,7 @@ import androidx.annotation.NonNull;
  * Initial commit by Victor Olaitan on 09/03/2017.
  */
 @SuppressWarnings("unused")
-public class EasyJSON {
+public class EasyJSON implements Iterable<JSONElement> {
     /**
      * @return an empty EasyJSON instance
      */
@@ -135,6 +136,7 @@ public class EasyJSON {
     private JSONElement rootNode;
     private String filePath;
 
+    @NonNull
     public JSONElement getRootNode() {
         return rootNode;
     }
@@ -233,6 +235,10 @@ public class EasyJSON {
 
     public JSONElement putArray(String key, Object... items) {
         return rootNode.putArray(key, items);
+    }
+
+    public boolean removeElement(String... location) {
+        return rootNode.removeElement(location);
     }
 
     public boolean elementExists(String... location) {
@@ -343,5 +349,11 @@ public class EasyJSON {
             }
         }
         return currentJSONRef;
+    }
+
+    @NonNull
+    @Override
+    public Iterator<JSONElement> iterator() {
+        return getRootNode().iterator();
     }
 }

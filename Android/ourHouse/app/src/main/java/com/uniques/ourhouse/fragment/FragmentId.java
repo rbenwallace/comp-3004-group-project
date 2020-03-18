@@ -54,7 +54,7 @@ public final class FragmentId {
         return fragmentClass.newInstance();
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 

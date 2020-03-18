@@ -3,6 +3,7 @@ package com.uniques.ourhouse.model;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
+import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Model;
@@ -24,7 +25,7 @@ import java.util.function.Consumer;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class House implements Model, Indexable, Observable {
+public class House implements Indexable, Observable {
     public static final String HOUSE_COLLECTION = "Houses";
 
     private ObjectId houseId;
@@ -45,7 +46,6 @@ public class House implements Model, Indexable, Observable {
         rotation.addUserToRotation(new User("User", "C", "email3"));
         House house = new House("Test House", Session.getSession().getLoggedInUser(),
                 new ArrayList<>(), rotation, "password", true, true);
-        house.setName("Test House");
         return house;
     }
 
@@ -122,9 +122,10 @@ public class House implements Model, Indexable, Observable {
     public void removeOccupant(User occupant) {
         if (occupants.contains(occupant)) {
             occupants.remove(occupant);
-            return;
+            rotation.rotation.remove(occupant);
+        } else {
+            Log.d("House", "No user in this House");
         }
-        Log.d("House", "No user in this House");
     }
 
     public String getPassword() {
@@ -325,26 +326,45 @@ public class House implements Model, Indexable, Observable {
         return json.getRootNode();
     }
 
+    private Consumer<User> c;
+
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
+        if (c != null) {
+            throw new RuntimeException("Previous fromJSON operation not complete");
+        }
         House that = this;
+        DatabaseLink database = Session.getSession().getDatabase();
         houseId = new ObjectId(json.<String>valueOf("houseId"));
-        Consumer<User> c = user -> {
-            this.occupants.add(user);
-        };
         name = json.valueOf("name");
         List<JSONElement> occupants = json.search("occupants").getChildren();
         this.occupants = new ArrayList<>();
-        for (int i = 0; i < occupants.size(); ++i) {
-            Session.getSession().getDatabase().getUser(occupants.get(i).getValue(), c);
+        Consumer<Void> onOccupantsComplete = v -> {
+            password = json.valueOf("password");
+            showTaskDifficulty = json.valueOf("showTaskDifficulty");
+            penalizeLateTasks = json.valueOf("penalizeLateTasks");
+            new Rotation().fromJSON(json.search("rotation"), rotation -> {
+                that.rotation = (Rotation) rotation;
+                consumer.accept(that);
+            });
+        };
+        c = user -> {
+            if (user != null) {
+                this.occupants.add(user);
+                if (!occupants.isEmpty()) {
+                    database.getUser(new ObjectId(occupants.remove(0).<String>getValue()), c);
+                } else {
+                    onOccupantsComplete.accept(null);
+                }
+            } else {
+                throw new RuntimeException("Failed to get occupant User model");
+            }
+        };
+        if (occupants.isEmpty()) {
+            onOccupantsComplete.accept(null);
+        } else {
+            database.getUser(new ObjectId(occupants.remove(0).<String>getValue()), c);
         }
-        password = json.valueOf("password");
-        showTaskDifficulty = json.valueOf("showTaskDifficulty");
-        penalizeLateTasks = json.valueOf("penalizeLateTasks");
-        new Rotation().fromJSON(json.search("rotation"), rotation -> {
-            that.rotation = (Rotation) rotation;
-            consumer.accept(that);
-        });
     }
 
     @Override

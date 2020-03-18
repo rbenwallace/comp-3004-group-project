@@ -8,8 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
@@ -20,19 +18,24 @@ import com.uniques.ourhouse.fragment.ForgotPasswordFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.session.MongoDB;
+import com.uniques.ourhouse.session.Session;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class ForgotPasswordCtrl implements FragmentCtrl {
     private FragmentActivity activity;
     private EditText email;
-    private MongoDB myDatabase = new MongoDB();
+    private MongoDB remoteDatabase;
 
     public ForgotPasswordCtrl(FragmentActivity activity) {
         this.activity = activity;
+        remoteDatabase = ((MongoDB) Objects.requireNonNull(Session.getSession().getRemoteDatabase()));
     }
 
     @Override
@@ -46,11 +49,10 @@ public class ForgotPasswordCtrl implements FragmentCtrl {
         Type type = new TypeToken<ArrayList<String>>() {
         }.getType();
         ArrayList<String> transferedArrayFromSignUp = gson.fromJson(json, type);
-        if(transferedArrayFromSignUp != null){
-            try{
+        if (transferedArrayFromSignUp != null) {
+            try {
                 email.setText(transferedArrayFromSignUp.get(2));
-            }
-            catch (Error e){
+            } catch (Error e) {
                 Log.d("ForgotPasswordCtrl", e.toString());
             }
         }
@@ -79,11 +81,12 @@ public class ForgotPasswordCtrl implements FragmentCtrl {
 
     private void recoverPassword() {
         String em = email.getText().toString().trim();
-        UserPasswordAuthProviderClient emailPassClient = myDatabase.getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
+        UserPasswordAuthProviderClient emailPassClient =
+                remoteDatabase.getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
+
         if (TextUtils.isEmpty(em)) {
             email.setError(activity.getString(R.string.error_invalid_email));
-        }
-        else {
+        } else {
             //send a reset password request to stitch
             emailPassClient.sendResetPasswordEmail(em).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

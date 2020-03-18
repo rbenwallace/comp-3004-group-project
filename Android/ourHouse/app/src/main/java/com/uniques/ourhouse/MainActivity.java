@@ -104,6 +104,7 @@ public class MainActivity extends FragmentActivity {
             e.printStackTrace();
             return;
         }
+        Log.d(TAG, "Pushing fragment " + fragmentId.getName());
         fragmentStack.push(fragment);
         fragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, currentFragment())
@@ -123,6 +124,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void popFragment(FragmentId fragmentId) {
         try {
+            Log.d(TAG, "Popping till fragment " + fragmentId.getName() + "(inclusive)");
             fragmentManager.popBackStack(
                     String.valueOf(fragmentId), FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentStack.pop().destroy();
@@ -138,6 +140,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        System.out.println("=== destroyed");
+        Log.d(TAG, "Destroyed");
     }
 }

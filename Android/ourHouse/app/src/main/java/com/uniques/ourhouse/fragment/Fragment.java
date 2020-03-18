@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,10 +83,14 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
     }
 
     public void setController(T controller) {
-        if (this.controller != null)
+        if (this.controller != null) {
+            Log.d(getFragmentId().getName(), "Destroying old controller");
             this.controller.onDestroy();
+        }
         this.controller = controller;
+        Log.d(getFragmentId().getName(), "Controller set");
         if (arguments != null) {
+            Log.d(getFragmentId().getName(), "Forwarding arguments");
             this.controller.acceptArguments(arguments);
             arguments = null;
         }
@@ -182,11 +187,14 @@ public abstract class Fragment<T extends FragmentCtrl> extends androidx.fragment
     }
 
     public void destroy() {
+        Log.d(getFragmentId().getName(), "Destroying self");
         if (!allowDestruction) {
             pendingDestruction = true;
         } else {
+            Log.d(getFragmentId().getName(), "Removing self from savedObjects");
             clearSavedObjects(getFragmentId());
             if (controller != null) {
+                Log.d(getFragmentId().getName(), "Destroying controller");
                 controller.onDestroy();
                 controller = null;
             }

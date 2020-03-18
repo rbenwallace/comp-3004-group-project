@@ -14,27 +14,18 @@ public final class Session {
     private static Session baseSession;
 
     public static boolean newSession(Context context) {
-        baseSession = new Session();
-        baseSession.user = new User("Test user", "email@test.com", "1234567890");
-        baseSession.database = new LocalStore(context);
+        Session session = new Session();
 
-        baseSession.database.postUser(baseSession.user, v -> {});
-//        baseSession.security = new LocalSecurity(context) {
-//            @Override
-//            DatabaseLink getDatabaseLink() {
-//                return baseSession.getDatabase();
-//            }
-//
-//            @Override
-//            protected boolean onAuthenticate(ObjectId id, ObjectId loginKey) {
-//                Settings.STUDENT_LOGIN_KEY.set(loginKey);
-//                //todo login
-////                baseSession.student = baseSession.database.getStudent(id);
-//                return false;
-//            }
-//        };
+//        session.user = new User("Test user", "email@test.com", "1234567890");
+        MongoDB mongoDB = new MongoDB();
+        DatabaseCoordinator coordinator = new DatabaseCoordinator(new LocalStore(context), mongoDB);
+        session.database = coordinator;
+        session.security = mongoDB;
 
         Settings.init(context);
+
+        coordinator.beginCoordinating(context);
+        baseSession = session;
         return true;
     }
 
@@ -43,7 +34,7 @@ public final class Session {
     }
 
     public static String keyGen() {
-        String [] selectFrom ={"1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
+        String[] selectFrom = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
         Random rn = new Random();
         String key = "#" + selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)] +
                 selectFrom[rn.nextInt(selectFrom.length)] + selectFrom[rn.nextInt(selectFrom.length)];
@@ -51,10 +42,10 @@ public final class Session {
     }
 
     public static String getIdFromString(String id) {
-        if(id == null) return null;
-        String [] temp = id.split(":");
-        if(temp.length == 1) return null;
-        String [] temp2 = temp[1].split("[^A-Za-z0-9]+");
+        if (id == null) return null;
+        String[] temp = id.split(":");
+        if (temp.length == 1) return null;
+        String[] temp2 = temp[1].split("[^A-Za-z0-9]+");
         Log.d("houseid", temp2[1]);
         return temp2[1];
     }
@@ -64,15 +55,42 @@ public final class Session {
     private DatabaseLink database;
     private SecurityLink security;
 
+    private Session() {
+    }
+
+    public boolean isLoggedIn() {
+        return user != null || security.getLoggedInUserId() != null;
+    }
+
+    public ObjectId getLoggedInUserId() {
+        return security.getLoggedInUserId();
+    }
+
     public User getLoggedInUser() {
         return user;
+    }
+
+    public void setLoggedInUser(User user) {
+        this.user = user;
     }
 
     public DatabaseLink getDatabase() {
         return database;
     }
 
+    public DatabaseLink getRemoteDatabase() {
+        return database instanceof DatabaseCoordinator ? ((DatabaseCoordinator) database).getRemoteDatabase() : null;
+    }
+
+    public void setDatabase(DatabaseLink database) {
+        this.database = database;
+    }
+
     public SecurityLink.SecureAuthenticator getSecureAuthenticator() {
         return security.getSecureAuthenticator();
+    }
+
+    public boolean isNetworkConnected() {
+        return database instanceof DatabaseCoordinator && ((DatabaseCoordinator) database).networkAvailable();
     }
 }

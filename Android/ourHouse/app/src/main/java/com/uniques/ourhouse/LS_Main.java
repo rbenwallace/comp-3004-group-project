@@ -70,6 +70,6 @@ public class LS_Main extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        System.out.println("=== destroyed");
+        Log.d(TAG, "Destroyed");
     }
 }
