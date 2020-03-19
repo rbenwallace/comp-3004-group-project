@@ -84,6 +84,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             public void logout(FragmentActivity activity, Consumer<Boolean> consumer) {
                 CLIENT.getAuth().logout().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Session.getSession().setLoggedInUser(null);
                         Log.i(TAG, "Successfully logged out!");
                         consumer.accept(true);
                     } else {
