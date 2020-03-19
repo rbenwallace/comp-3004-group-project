@@ -167,7 +167,9 @@ public class MyHousesCtrl implements FragmentCtrl {
             });
             logoutBtn.setOnClickListener(view14 -> {
                 Session.getSession().getSecureAuthenticator().logout(activity, b1 -> {
+                    Log.d("checking", "inside");
                     database.clearLocalState(b2 -> {
+                        Log.d("checking", "inside inside");
                         FragmentId loginFragmentId = FragmentId.GET(LoginFragment.TAG);
                         activity.popFragment(loginFragmentId);
                         activity.pushFragment(loginFragmentId);

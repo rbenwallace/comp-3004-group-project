@@ -28,7 +28,6 @@ public class User implements Observable, Indexable {
     private String lastName;
     private String emailAddress;
     private List<ObjectId> myHouses = new ArrayList<>();
-    private List<String> myHousesNames = new ArrayList<>();
 
     //testing
     private int performance;
@@ -40,10 +39,7 @@ public class User implements Observable, Indexable {
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.myHouses = myHouses;
-        //testing
-        this.myHouses = myHouses;
         this.performance = num;
-        this.myHousesNames = myHousesNames;
     }
 
     //testing int num
@@ -130,12 +126,10 @@ public class User implements Observable, Indexable {
 
     public void deleteHouse(House house) {
         myHouses.remove(house.getId());
-        myHousesNames.remove(house.getKeyId());
     }
 
     public void addHouse(House house) {
         myHouses.add(house.getId());
-        myHousesNames.add(house.getKeyId());
     }
 
     public void setMyHouses(List<ObjectId> myHouses) {
@@ -166,9 +160,6 @@ public class User implements Observable, Indexable {
     public Document toBsonDocument() {
         final Document asDoc = new Document();
         Document housesDoc = new Document();
-        for (int i = 0; i < myHouses.size() && i < myHousesNames.size(); i++) {
-            housesDoc.append(myHousesNames.get(i), myHouses.get(i));//cant have multiple identities of the same name
-        }
         asDoc.put("_id", userID);
         asDoc.put("firstName", firstName);
         asDoc.put("lastName", lastName);
@@ -207,13 +198,6 @@ public class User implements Observable, Indexable {
         json.putPrimitive("lname", lastName);
         json.putPrimitive("email", emailAddress);
         json.putStructure("houses");
-        for (int i = 0; i < myHouses.size(); i++) {
-            json.search("houses")
-                    .putPrimitive(myHousesNames.get(i), myHouses.get(i).toString());
-        }
-        // for (ObjectId houseId : myHouses) {
-        //     json.search("houses").putPrimitive(houseId.toString());
-        // }
         json.putPrimitive("performance", performance);
         // idk why this is necessary but hopefully this fixes the serialization issue
         if (json.elementExists("house_id")) {
@@ -234,7 +218,6 @@ public class User implements Observable, Indexable {
                 continue;
             }
             myHouses.add(new ObjectId(houseId.<String>getValue()));
-            myHousesNames.add(houseId.getKey());
         }
         performance = json.<Long>valueOf("performance").intValue();
         consumer.accept(this);
@@ -294,12 +277,6 @@ public class User implements Observable, Indexable {
 
     public void changeHouse(String keyId, House newHouse) {
         int i;
-        for (i = 0; i < myHousesNames.size(); i++) {
-            if (myHousesNames.get(i).equals(keyId)) {
-                break;
-            }
-        }
-        myHousesNames.set(i, newHouse.getKeyId());
         for (i = 0; i < myHouses.size(); i++) {
             if (myHouses.get(i).equals(newHouse.getId())) {
                 break;
