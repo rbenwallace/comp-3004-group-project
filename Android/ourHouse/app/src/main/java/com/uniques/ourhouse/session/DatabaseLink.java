@@ -112,6 +112,8 @@ public interface DatabaseLink {
 //    void deleteOwnerFromHouse(House house, User user, Consumer<Boolean> consumer);
 
     void deleteUserFromHouse(House house, User user, Consumer<Boolean> consumer);
+
+    void deleteAllTEF(Consumer<Boolean> consumer);
     //-------------------------------------------------------------
 
     //Update

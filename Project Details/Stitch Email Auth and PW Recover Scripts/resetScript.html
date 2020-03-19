@@ -1,0 +1,42 @@
+<html>
+<head>
+  <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.0.0/stitch.js"></script>
+<script>
+  // Parse the URL query parameters
+function resetPwd(){
+	
+const {
+    Stitch,
+    UserPasswordAuthProviderClient
+  } = stitch;
+  const APP_ID = "ourhouse-notdj";
+  const stitchClient = Stitch.initializeDefaultAppClient(APP_ID);
+//Get Authentication for password recoveral Stitch
+  const emailPasswordClient = stitchClient.auth
+    .getProviderClient(UserPasswordAuthProviderClient.factory, "userpass");
+
+//Grab Tokens
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  const tokenId = params.get('tokenId');
+  const newPassword = document.getElementById("newpwd").value;
+
+//Reset password
+emailPasswordClient.resetPassword(token, tokenId, newPassword).then(() => {
+  console.log("Successfully reset password!");
+  document.getElementById("message").innerText = "Successfully reset password!\nYou may close this page. Thank you.";
+}).catch(err => {
+  console.log("Error resetting password:", err);
+  document.getElementById("message").innerText = "Error in resetting password.\nPlease try again.";
+}); 
+}
+//Basic HTML containing new password setup
+</script>
+<title>OurHouse: Reset password</title>
+</head>
+<body>
+	<input type="text" placeholder="New password" id="newpwd">
+	<button onclick="resetPwd()">Submit</button>
+	<div id="message"></div>
+</body>
+</html>
