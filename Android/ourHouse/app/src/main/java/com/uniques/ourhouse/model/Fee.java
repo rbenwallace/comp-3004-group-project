@@ -1,13 +1,9 @@
 package com.uniques.ourhouse.model;
 
-import android.renderscript.ScriptC;
-
 import com.uniques.ourhouse.util.Indexable;
-import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
-import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import org.bson.Document;
@@ -17,7 +13,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public class Fee extends ManageItem implements Indexable, Observable {
-    public static final String FEE_COLLECTION = "Fees";
     private float amount;
     private String type;
 

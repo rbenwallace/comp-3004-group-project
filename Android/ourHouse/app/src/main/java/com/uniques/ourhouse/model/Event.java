@@ -18,8 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class Event implements Observable, Indexable {
-
-    public static final String EVENT_COLLECTION = "Events";
     private ObjectId eventId;
     private ObjectId assignedHouse;
     private String title;

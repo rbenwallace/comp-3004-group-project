@@ -26,8 +26,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class House implements Indexable, Observable {
-    public static final String HOUSE_COLLECTION = "Houses";
-
     private ObjectId houseId;
     private String houseKey;
     private User owner;

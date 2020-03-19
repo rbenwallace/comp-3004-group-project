@@ -38,12 +38,18 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     private static final String DATABASE = "ourHouseD";
     public static final String TAG = "MongoDB";
 
+    private static final String USER_COLLECTION = "Users";
+    private static final String EVENT_COLLECTION = "Events";
+    private static final String FEE_COLLECTION = "Fees";
+    private static final String HOUSE_COLLECTION = "Houses";
+    private static final String TASK_COLLECTION = "Tasks";
+
     private RemoteMongoClient mongoClient = CLIENT.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
-    private RemoteMongoCollection<Document> userColl = mongoClient.getDatabase(DATABASE).getCollection(User.USER_COLLECTION);
-    private RemoteMongoCollection<Document> housesColl = mongoClient.getDatabase(DATABASE).getCollection(House.HOUSE_COLLECTION);
-    private RemoteMongoCollection<Document> eventColl = mongoClient.getDatabase(DATABASE).getCollection(Event.EVENT_COLLECTION);
-    private RemoteMongoCollection<Document> taskColl = mongoClient.getDatabase(DATABASE).getCollection(Task.TASK_COLLECTION);
-    private RemoteMongoCollection<Document> feeColl = mongoClient.getDatabase(DATABASE).getCollection(Fee.FEE_COLLECTION);
+    private RemoteMongoCollection<Document> userColl = mongoClient.getDatabase(DATABASE).getCollection(USER_COLLECTION);
+    private RemoteMongoCollection<Document> housesColl = mongoClient.getDatabase(DATABASE).getCollection(HOUSE_COLLECTION);
+    private RemoteMongoCollection<Document> eventColl = mongoClient.getDatabase(DATABASE).getCollection(EVENT_COLLECTION);
+    private RemoteMongoCollection<Document> taskColl = mongoClient.getDatabase(DATABASE).getCollection(TASK_COLLECTION);
+    private RemoteMongoCollection<Document> feeColl = mongoClient.getDatabase(DATABASE).getCollection(FEE_COLLECTION);
     private Long count;
 
     private final SecureAuthenticator secureAuthenticator;

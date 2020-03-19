@@ -3,7 +3,6 @@ package com.uniques.ourhouse.model;
 import android.util.Log;
 
 import com.uniques.ourhouse.util.Indexable;
-import com.uniques.ourhouse.util.Model;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
@@ -12,12 +11,11 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.Objects;
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class Task extends ManageItem implements Indexable, Observable {
-    public static final String TASK_COLLECTION = "Tasks";
     private static final int DIFFICULTY_EASY = 1;
     private static final int DIFFICULTY_MEDIUM = 2;
     private static final int DIFFICULTY_HARD = 3;
