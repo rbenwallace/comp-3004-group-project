@@ -62,6 +62,15 @@ public class MyHousesCtrl implements FragmentCtrl {
             myHouses = new ArrayList<>();
         }
         fetchMyHouses(view, myUser.getMyHouses(), myHouses);
+        logoutBtn.setOnClickListener(view14 -> {
+            Session.getSession().getSecureAuthenticator().logout(activity, b1 -> {
+                database.clearLocalState(b2 -> {
+                    FragmentId loginFragmentId = FragmentId.GET(LoginFragment.TAG);
+                    activity.popFragment(loginFragmentId);
+                    activity.pushFragment(loginFragmentId);
+                });
+            });
+        });
     }
 
     private void fetchMyHouses(View view, List<ObjectId> houseIds, List<House> fetchedHouses) {
@@ -158,15 +167,6 @@ public class MyHousesCtrl implements FragmentCtrl {
                         adapter.notifyDataSetChanged();
                         popupWindow.dismiss();
                     }
-                });
-            });
-            logoutBtn.setOnClickListener(view14 -> {
-                Session.getSession().getSecureAuthenticator().logout(activity, b1 -> {
-                    database.clearLocalState(b2 -> {
-                        FragmentId loginFragmentId = FragmentId.GET(LoginFragment.TAG);
-                        activity.popFragment(loginFragmentId);
-                        activity.pushFragment(loginFragmentId);
-                    });
                 });
             });
             return true;
