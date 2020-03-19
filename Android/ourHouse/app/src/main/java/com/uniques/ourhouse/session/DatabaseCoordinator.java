@@ -215,6 +215,7 @@ class DatabaseCoordinator implements DatabaseLink {
         }
     }
 
+
     @Override
     public void getHouse(ObjectId id, Consumer<House> consumer) {
         Consumer<House> networkConsumer = house -> {
@@ -471,6 +472,18 @@ class DatabaseCoordinator implements DatabaseLink {
                     return;
                 }
                 localDatabase.deleteUserFromHouse(house, user, consumer);
+            });
+        } else consumer.accept(false);
+    }
+    @Override
+    public void deleteAllTEF(Consumer<Boolean> consumer) {
+        if (networkAvailable()) {
+            remoteDatabase.deleteAllTEF(remoteSuccess -> {
+                if (!remoteSuccess) {
+                    consumer.accept(false);
+                    return;
+                }
+                localDatabase.deleteAllTEF(bool->{});;
             });
         } else consumer.accept(false);
     }

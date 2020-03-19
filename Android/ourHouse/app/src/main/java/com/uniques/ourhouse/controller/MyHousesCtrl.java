@@ -97,14 +97,19 @@ public class MyHousesCtrl implements FragmentCtrl {
     }
 
     private void onPostFetchMyHouses(View view) {
+
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
+        database.clearLocalState(bool->{
+
+        });
 
         User myUser = Session.getSession().getLoggedInUser();
 
         List<String> houses = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, houses);
         housesList.setAdapter(adapter);
+
         for (House h : myHouses) {
             houses.add(h.getName());
         }

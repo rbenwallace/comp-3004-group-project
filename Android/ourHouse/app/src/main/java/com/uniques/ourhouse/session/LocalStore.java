@@ -1,6 +1,7 @@
 package com.uniques.ourhouse.session;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
@@ -609,6 +610,11 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
+    public void deleteAllTEF(Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
     public void updateUser(User user, Consumer<Boolean> consumer) {
         postUser(user, consumer);
     }
@@ -674,6 +680,7 @@ final class LocalStore implements DatabaseLink {
 
     private EasyJSON retrieveLocal(String fileName) {
         File file = getLocalFile(fileName);
+        Log.d("myNewUser", fileName);
         if (!file.exists()) {
             EasyJSON json = EasyJSON.create(file);
             try {
@@ -687,6 +694,9 @@ final class LocalStore implements DatabaseLink {
 //            return retrieveLocal(fileName);
         } else {
             try {
+//                Log.d("myNewUser", "before");
+//                Log.d("myNewUser", "hello" + EasyJSON.open(file).toString());
+//                Log.d("myNewUser", "after");
                 return EasyJSON.open(file);
             } catch (EasyJSONException e) {
                 e.printStackTrace();

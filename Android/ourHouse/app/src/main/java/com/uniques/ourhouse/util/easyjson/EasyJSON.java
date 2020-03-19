@@ -1,5 +1,7 @@
 package com.uniques.ourhouse.util.easyjson;
 
+import android.util.Log;
+
 import com.uniques.ourhouse.util.simple.JSONArray;
 import com.uniques.ourhouse.util.simple.JSONObject;
 import com.uniques.ourhouse.util.simple.parser.JSONParser;
