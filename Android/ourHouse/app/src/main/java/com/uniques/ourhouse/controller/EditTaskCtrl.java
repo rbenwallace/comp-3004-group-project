@@ -36,6 +36,23 @@ public class EditTaskCtrl implements FragmentCtrl {
     private ObjectId houseId;
     private ObjectId taskId;
     private Calendar oldCalendar;
+    private Button editTaskBackButton;
+    private TextView taskName;
+    private RadioGroup taskFrequencies;
+    private RadioButton onceButton;
+    private RadioButton dailyButton;
+    private RadioButton weeklyButton;
+    private RadioButton monthlyButton;
+    private RadioButton yearlyButton;
+    private RadioButton otherButton;
+    private EditText editNumberOfDays;
+    private RadioGroup taskDifficulty;
+    private RadioButton easyButton;
+    private RadioButton mediumButton;
+    private RadioButton hardButton;
+    private DatePicker datePicker;
+    private TextView taskViewTitle;
+    private Button saveTask;
 
     public EditTaskCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -45,23 +62,23 @@ public class EditTaskCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         Log.d(EditTaskFragment.TAG, "Edit Task Clicked");
-        Button editTaskBackButton = (Button) view.findViewById(R.id.addTask_btnBack);
-        TextView taskName = (TextView) view.findViewById(R.id.addTask_editDescription);
-        RadioGroup taskFrequencies = (RadioGroup) view.findViewById(R.id.addTask_radioFrequency);
-        RadioButton onceButton = (RadioButton) view.findViewById(R.id.addTask_once);
-        RadioButton dailyButton = (RadioButton) view.findViewById(R.id.addTask_daily);
-        RadioButton weeklyButton = (RadioButton) view.findViewById(R.id.addTask_weekly);
-        RadioButton monthlyButton = (RadioButton) view.findViewById(R.id.addTask_monthly);
-        RadioButton yearlyButton = (RadioButton) view.findViewById(R.id.addTask_yearly);
-        RadioButton otherButton = (RadioButton) view.findViewById(R.id.addTask_other);
-        EditText editNumberOfDays = (EditText) view.findViewById(R.id.addTask_editNumberOfDays);
-        RadioGroup taskDifficulty = (RadioGroup) view.findViewById(R.id.addTask_radioDifficulty);
-        RadioButton easyButton = (RadioButton) view.findViewById(R.id.addTask_easy);
-        RadioButton mediumButton = (RadioButton) view.findViewById(R.id.addTask_medium);
-        RadioButton hardButton = (RadioButton) view.findViewById(R.id.addTask_hard);
-        DatePicker datePicker = (DatePicker) view.findViewById(R.id.addTask_datePicked);
-        TextView taskViewTitle = (TextView) view.findViewById(R.id.addTask_title);
-        Button saveTask = (Button) view.findViewById(R.id.addTask_btnAdd);
+        editTaskBackButton = (Button) view.findViewById(R.id.addTask_btnBack);
+        taskName = (TextView) view.findViewById(R.id.addTask_editDescription);
+        taskFrequencies = (RadioGroup) view.findViewById(R.id.addTask_radioFrequency);
+        onceButton = (RadioButton) view.findViewById(R.id.addTask_once);
+        dailyButton = (RadioButton) view.findViewById(R.id.addTask_daily);
+        weeklyButton = (RadioButton) view.findViewById(R.id.addTask_weekly);
+        monthlyButton = (RadioButton) view.findViewById(R.id.addTask_monthly);
+        yearlyButton = (RadioButton) view.findViewById(R.id.addTask_yearly);
+        otherButton = (RadioButton) view.findViewById(R.id.addTask_other);
+        editNumberOfDays = (EditText) view.findViewById(R.id.addTask_editNumberOfDays);
+        taskDifficulty = (RadioGroup) view.findViewById(R.id.addTask_radioDifficulty);
+        easyButton = (RadioButton) view.findViewById(R.id.addTask_easy);
+        mediumButton = (RadioButton) view.findViewById(R.id.addTask_medium);
+        hardButton = (RadioButton) view.findViewById(R.id.addTask_hard);
+        datePicker = (DatePicker) view.findViewById(R.id.addTask_datePicked);
+        taskViewTitle = (TextView) view.findViewById(R.id.addTask_title);
+        saveTask = (Button) view.findViewById(R.id.addTask_btnAdd);
 
         taskViewTitle.setText("Edit Task");
         saveTask.setText("SAVE");

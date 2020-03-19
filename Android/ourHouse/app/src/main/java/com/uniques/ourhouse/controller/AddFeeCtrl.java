@@ -33,6 +33,14 @@ public class AddFeeCtrl implements FragmentCtrl {
     private boolean isTaxable = true;
     private ObjectId userId;
     private ObjectId houseId;
+    private Button addFeeBackButton;
+    private Button addFeeAddButton;
+    private Button addTaxButton;
+    private EditText taxRate;
+    private TextView feeName;
+    private EditText feeAmount;
+    private RadioGroup feeFrequencies;
+    private TextView otherFeeFrequency;
 
     public AddFeeCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -40,14 +48,14 @@ public class AddFeeCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        Button addFeeBackButton = view.findViewById(R.id.addFee_btnBack);
-        Button addFeeAddButton = view.findViewById(R.id.addFee_btnAdd);
-        Button addTaxButton = view.findViewById(R.id.addFee_addTax);
-        EditText taxRate = view.findViewById(R.id.addFee_editTaxRate);
-        TextView feeName = view.findViewById(R.id.addFee_editName);
-        EditText feeAmount = view.findViewById(R.id.addFee_editAmount);
-        RadioGroup feeFrequencies = view.findViewById(R.id.addFee_radioFrequency);
-        TextView otherFeeFrequency = view.findViewById(R.id.addFee_editNumberOfDays);
+        addFeeBackButton = view.findViewById(R.id.addFee_btnBack);
+        addFeeAddButton = view.findViewById(R.id.addFee_btnAdd);
+        addTaxButton = view.findViewById(R.id.addFee_addTax);
+        taxRate = view.findViewById(R.id.addFee_editTaxRate);
+        feeName = view.findViewById(R.id.addFee_editName);
+        feeAmount = view.findViewById(R.id.addFee_editAmount);
+        feeFrequencies = view.findViewById(R.id.addFee_radioFrequency);
+        otherFeeFrequency = view.findViewById(R.id.addFee_editNumberOfDays);
 
         userId = Session.getSession().getLoggedInUserId();
         houseId = Settings.OPEN_HOUSE.get();

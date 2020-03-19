@@ -34,6 +34,20 @@ public class EditFeeCtrl implements FragmentCtrl {
     private ObjectId houseId;
     private ObjectId feeId;
     private Schedule schedule;
+    private Button editFeeBackButton;
+    private TextView feeName;
+    private RadioGroup feeFrequencies;
+    private RadioButton onceButton;
+    private RadioButton dailyButton;
+    private RadioButton weeklyButton;
+    private RadioButton monthlyButton;
+    private RadioButton yearlyButton;
+    private RadioButton otherButton;
+    private EditText editNumberOfDays;
+    private TextView feeViewTitle;
+    private Button saveFee;
+    private EditText feeAmount;
+    private EditText feeTaxRate;
 
     public EditFeeCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -43,20 +57,20 @@ public class EditFeeCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         Log.d(AddTaskFragment.TAG, "Edit Task Clicked");
-        Button editFeeBackButton = (Button) view.findViewById(R.id.addFee_btnBack);
-        TextView feeName = (TextView) view.findViewById(R.id.addFee_editName);
-        RadioGroup feeFrequencies = (RadioGroup) view.findViewById(R.id.addFee_radioFrequency);
-        RadioButton onceButton = (RadioButton) view.findViewById(R.id.addFee_once);
-        RadioButton dailyButton = (RadioButton) view.findViewById(R.id.addFee_daily);
-        RadioButton weeklyButton = (RadioButton) view.findViewById(R.id.addFee_weekly);
-        RadioButton monthlyButton = (RadioButton) view.findViewById(R.id.addFee_monthly);
-        RadioButton yearlyButton = (RadioButton) view.findViewById(R.id.addFee_yearly);
-        RadioButton otherButton = (RadioButton) view.findViewById(R.id.addFee_other);
-        EditText editNumberOfDays = (EditText) view.findViewById(R.id.addFee_editNumberOfDays);
-        TextView feeViewTitle = (TextView) view.findViewById(R.id.addFee_title);
-        Button saveFee = (Button) view.findViewById(R.id.addFee_btnAdd);
-        EditText feeAmount = (EditText) view.findViewById(R.id.addFee_editAmount);
-        EditText feeTaxRate = (EditText) view.findViewById(R.id.addFee_editTaxRate);
+        editFeeBackButton = (Button) view.findViewById(R.id.addFee_btnBack);
+        feeName = (TextView) view.findViewById(R.id.addFee_editName);
+        feeFrequencies = (RadioGroup) view.findViewById(R.id.addFee_radioFrequency);
+        onceButton = (RadioButton) view.findViewById(R.id.addFee_once);
+        dailyButton = (RadioButton) view.findViewById(R.id.addFee_daily);
+        weeklyButton = (RadioButton) view.findViewById(R.id.addFee_weekly);
+        monthlyButton = (RadioButton) view.findViewById(R.id.addFee_monthly);
+        yearlyButton = (RadioButton) view.findViewById(R.id.addFee_yearly);
+        otherButton = (RadioButton) view.findViewById(R.id.addFee_other);
+        editNumberOfDays = (EditText) view.findViewById(R.id.addFee_editNumberOfDays);
+        feeViewTitle = (TextView) view.findViewById(R.id.addFee_title);
+        saveFee = (Button) view.findViewById(R.id.addFee_btnAdd);
+        feeAmount = (EditText) view.findViewById(R.id.addFee_editAmount);
+        feeTaxRate = (EditText) view.findViewById(R.id.addFee_editTaxRate);
 
         feeViewTitle.setText("Edit Task");
         saveFee.setText("SAVE");

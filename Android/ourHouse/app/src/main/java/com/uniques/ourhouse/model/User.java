@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class User implements Observable, Indexable {
-    public static final String USER_COLLECTION = "Users";
     private ObjectId userID;
     private String firstName;
     private String lastName;
@@ -128,10 +127,12 @@ public class User implements Observable, Indexable {
     public List<ObjectId> getMyHouses() {
         return myHouses;
     }
+
     public void deleteHouse(House house) {
         myHouses.remove(house.getId());
         myHousesNames.remove(house.getKeyId());
     }
+
     public void addHouse(House house) {
         myHouses.add(house.getId());
         myHousesNames.add(house.getKeyId());
@@ -165,7 +166,7 @@ public class User implements Observable, Indexable {
     public Document toBsonDocument() {
         final Document asDoc = new Document();
         Document housesDoc = new Document();
-        for(int i = 0; i < myHouses.size() && i < myHousesNames.size(); i++){
+        for (int i = 0; i < myHouses.size() && i < myHousesNames.size(); i++) {
             housesDoc.append(myHousesNames.get(i), myHouses.get(i));//cant have multiple identities of the same name
         }
         asDoc.put("_id", userID);
@@ -181,7 +182,7 @@ public class User implements Observable, Indexable {
         Document housesDoc = (Document) doc.get("houses");
         ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
         ArrayList<String> housesNames = new ArrayList<String>();
-        if(housesDoc != null) {
+        if (housesDoc != null) {
             housesDoc.forEach((key, value) -> {
                 housesNames.add(key);
                 houses.add((ObjectId) value);
@@ -206,13 +207,18 @@ public class User implements Observable, Indexable {
         json.putPrimitive("lname", lastName);
         json.putPrimitive("email", emailAddress);
         json.putStructure("houses");
-        for(int i = 0; i < myHouses.size(); i++){
-            json.putPrimitive(myHousesNames.get(i), myHouses.get(i));
+        for (int i = 0; i < myHouses.size(); i++) {
+            json.search("houses")
+                    .putPrimitive(myHousesNames.get(i), myHouses.get(i).toString());
         }
         // for (ObjectId houseId : myHouses) {
         //     json.search("houses").putPrimitive(houseId.toString());
         // }
         json.putPrimitive("performance", performance);
+        // idk why this is necessary but hopefully this fixes the serialization issue
+        if (json.elementExists("house_id")) {
+            json.putPrimitive("house_id", json.valueOf("house_id").toString());
+        }
         return json.getRootNode();
     }
 
@@ -228,6 +234,7 @@ public class User implements Observable, Indexable {
                 continue;
             }
             myHouses.add(new ObjectId(houseId.<String>getValue()));
+            myHousesNames.add(houseId.getKey());
         }
         performance = json.<Long>valueOf("performance").intValue();
         consumer.accept(this);
@@ -242,14 +249,14 @@ public class User implements Observable, Indexable {
         JsonObject myHouses;
         ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
         ArrayList<String> housesNames = new ArrayList<String>();
-        if(obj.get("houses") != null) {
+        if (obj.get("houses") != null) {
             myHouses = obj.get("houses").getAsJsonObject();
             Set<String> keys = myHouses.keySet();
             Iterator<String> keyIt = keys.iterator();
             while (keyIt.hasNext()) {
                 String key = keyIt.next();
                 if (myHouses.get(key) != null) {
-                    if(Session.getIdFromString(myHouses.get(key).toString()).length() > 5) {
+                    if (Session.getIdFromString(myHouses.get(key).toString()).length() > 5) {
                         housesNames.add(key);
                         houses.add(new ObjectId(Session.getIdFromString(myHouses.get(key).toString())));
                     }
@@ -287,14 +294,14 @@ public class User implements Observable, Indexable {
 
     public void changeHouse(String keyId, House newHouse) {
         int i;
-        for(i = 0; i < myHousesNames.size(); i++){
-            if(myHousesNames.get(i).equals(keyId)){
+        for (i = 0; i < myHousesNames.size(); i++) {
+            if (myHousesNames.get(i).equals(keyId)) {
                 break;
             }
         }
         myHousesNames.set(i, newHouse.getKeyId());
-        for(i = 0; i < myHouses.size(); i++){
-            if(myHouses.get(i).equals(newHouse.getId())){
+        for (i = 0; i < myHouses.size(); i++) {
+            if (myHouses.get(i).equals(newHouse.getId())) {
                 break;
             }
         }

@@ -115,8 +115,9 @@ class DatabaseCoordinator implements DatabaseLink {
                     if (success) notifyModelCached(user.getId());
                     consumer.accept(user);
                 });
+            } else {
+                consumer.accept(null);
             }
-            consumer.accept(null);
         };
         if (modelIsCached(id)) {
             localDatabase.getUser(id, user -> {
@@ -141,8 +142,9 @@ class DatabaseCoordinator implements DatabaseLink {
                     if (success) notifyModelCached(event.getId());
                     consumer.accept(event);
                 });
+            } else {
+                consumer.accept(null);
             }
-            consumer.accept(null);
         };
         if (modelIsCached(id)) {
             localDatabase.getEvent(id, event -> {
@@ -167,8 +169,9 @@ class DatabaseCoordinator implements DatabaseLink {
                     if (success) notifyModelCached(task.getId());
                     consumer.accept(task);
                 });
+            } else {
+                consumer.accept(null);
             }
-            consumer.accept(null);
         };
         if (modelIsCached(id)) {
             localDatabase.getTask(id, task -> {
@@ -193,8 +196,9 @@ class DatabaseCoordinator implements DatabaseLink {
                     if (success) notifyModelCached(fee.getId());
                     consumer.accept(fee);
                 });
+            } else {
+                consumer.accept(null);
             }
-            consumer.accept(null);
         };
         if (modelIsCached(id)) {
             localDatabase.getFee(id, user -> {
@@ -220,8 +224,9 @@ class DatabaseCoordinator implements DatabaseLink {
                     if (success) notifyModelCached(house.getId());
                     consumer.accept(house);
                 });
+            } else {
+                consumer.accept(null);
             }
-            consumer.accept(null);
         };
         if (modelIsCached(id)) {
             localDatabase.getHouse(id, user -> {

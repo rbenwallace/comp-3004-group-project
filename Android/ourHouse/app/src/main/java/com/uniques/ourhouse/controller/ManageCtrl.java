@@ -15,6 +15,9 @@ import com.uniques.ourhouse.fragment.SettingsFragment;
 
 public class ManageCtrl implements FragmentCtrl {
     private FragmentActivity activity;
+    private Button addFeeButton;
+    private Button addTaskButton;
+    private Button settingsButton;
 
     public ManageCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -22,9 +25,9 @@ public class ManageCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        Button addFeeButton = (Button) view.findViewById(R.id.manage_btnAddFee);
-        Button addTaskButton = (Button) view.findViewById(R.id.manage_btnAddTask);
-        Button settingsButton = (Button) view.findViewById(R.id.manage_btnSettings);
+        addFeeButton = (Button) view.findViewById(R.id.manage_btnAddFee);
+        addTaskButton = (Button) view.findViewById(R.id.manage_btnAddTask);
+        settingsButton = (Button) view.findViewById(R.id.manage_btnSettings);
 
         Log.d(ManageFragment.TAG, "Controller init()");
         addFeeButton.setOnClickListener(view1 -> {

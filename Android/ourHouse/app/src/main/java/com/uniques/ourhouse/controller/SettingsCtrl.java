@@ -37,6 +37,12 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     private RecyclerView personRecycler;
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private ObjectId houseId;
+    private Button btnSwitchHouse;
+    private Button settingsBackButton;
+    private Button settingsSaveButton;
+    private TextView houseName;
+    private CheckBox showTaskDifficultyButton;
+    private CheckBox showLateTasksButton;
 
     public List<TaskRotationCard> observableCards;
     private RecyclerAdapter<TaskRotationCard> recyclerAdapter;
@@ -65,7 +71,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     public void init(View view) {
         RecyclerView personRecycler = view.findViewById(R.id.settings_recycler);
 
-        Button btnSwitchHouse = view.findViewById(R.id.settings_btnSwitchHouse);
+        btnSwitchHouse = view.findViewById(R.id.settings_btnSwitchHouse);
 
         houseId = Settings.OPEN_HOUSE.get();
 
@@ -77,11 +83,11 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
         observableCards.add(new TaskRotationCard(new ObservableString("Vic")));
         observableCards.add(new TaskRotationCard(new ObservableString("Jon")));
 
-        Button settingsBackButton = (Button) view.findViewById(R.id.settings_btnBackHouse);
-        Button settingsSaveButton = (Button) view.findViewById(R.id.settings_btnSaveHouse);
-        TextView houseName = (TextView) view.findViewById(R.id.settings_editHouseName);
-        CheckBox showTaskDifficultyButton = (CheckBox) view.findViewById(R.id.settings_chkShowDifficulty);
-        CheckBox showLateTasksButton = (CheckBox) view.findViewById(R.id.settings_chkShowLateTasks);
+        settingsBackButton = (Button) view.findViewById(R.id.settings_btnBackHouse);
+        settingsSaveButton = (Button) view.findViewById(R.id.settings_btnSaveHouse);
+        houseName = (TextView) view.findViewById(R.id.settings_editHouseName);
+        showTaskDifficultyButton = (CheckBox) view.findViewById(R.id.settings_chkShowDifficulty);
+        showLateTasksButton = (CheckBox) view.findViewById(R.id.settings_chkShowLateTasks);
 
         myDatabase.getHouse(houseId, house -> {
             if (house == null) throw new RuntimeException("OPEN_HOUSE failed to load object");
