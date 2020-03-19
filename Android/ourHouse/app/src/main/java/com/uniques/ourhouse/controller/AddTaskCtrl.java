@@ -31,6 +31,14 @@ public class AddTaskCtrl implements FragmentCtrl {
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private ObjectId userId;
     private ObjectId houseId;
+    private Button addTaskBackButton;
+    private Button addTaskAddButton;
+    private TextView taskName;
+    private RadioGroup taskFrequencies;
+    private RadioGroup taskDifficulty;
+    private TextView otherTaskFrequency;
+    private DatePicker datePicker;
+    private TextView taskViewTitle;
 
     public AddTaskCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -38,14 +46,14 @@ public class AddTaskCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        Button addTaskBackButton = (Button) view.findViewById(R.id.addTask_btnBack);
-        Button addTaskAddButton = (Button) view.findViewById(R.id.addTask_btnAdd);
-        TextView taskName = (TextView) view.findViewById(R.id.addTask_editDescription);
-        RadioGroup taskFrequencies = (RadioGroup) view.findViewById(R.id.addTask_radioFrequency);
-        RadioGroup taskDifficulty = (RadioGroup) view.findViewById(R.id.addTask_radioDifficulty);
-        TextView otherTaskFrequency = (TextView) view.findViewById(R.id.addTask_editNumberOfDays);
-        DatePicker datePicker = (DatePicker) view.findViewById(R.id.addTask_datePicked);
-        TextView taskViewTitle = (TextView) view.findViewById(R.id.addTask_title);
+        addTaskBackButton = (Button) view.findViewById(R.id.addTask_btnBack);
+        addTaskAddButton = (Button) view.findViewById(R.id.addTask_btnAdd);
+        taskName = (TextView) view.findViewById(R.id.addTask_editDescription);
+        taskFrequencies = (RadioGroup) view.findViewById(R.id.addTask_radioFrequency);
+        taskDifficulty = (RadioGroup) view.findViewById(R.id.addTask_radioDifficulty);
+        otherTaskFrequency = (TextView) view.findViewById(R.id.addTask_editNumberOfDays);
+        datePicker = (DatePicker) view.findViewById(R.id.addTask_datePicked);
+        taskViewTitle = (TextView) view.findViewById(R.id.addTask_title);
 
         userId = Session.getSession().getLoggedInUserId();
         houseId = Settings.OPEN_HOUSE.get();
