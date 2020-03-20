@@ -15,6 +15,7 @@ import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import org.bson.types.ObjectId;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -34,10 +35,6 @@ class DatabaseCoordinator implements DatabaseLink {
 
     DatabaseLink getRemoteDatabase() {
         return remoteDatabase;
-    }
-
-    boolean isCoordinating() {
-        return internetChecker != null && internetChecker.checkForNetworkAvailability;
     }
 
     void beginCoordinating(Context context) {
@@ -66,11 +63,6 @@ class DatabaseCoordinator implements DatabaseLink {
             internetChecker = new InternetChecker(context);
 //            new Thread(internetChecker).start();
         }
-    }
-
-    void stopCoordinating() {
-        if (internetChecker != null && !internetChecker.working)
-            internetChecker.checkForNetworkAvailability = false;
     }
 
     boolean networkAvailable() {
@@ -159,6 +151,11 @@ class DatabaseCoordinator implements DatabaseLink {
         } else {
             consumer.accept(null);
         }
+    }
+
+    @Override
+    public void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer) {
+        remoteDatabase.getHouseEventOnDay(houseId, day, consumer);
     }
 
     @Override
@@ -476,14 +473,14 @@ class DatabaseCoordinator implements DatabaseLink {
         } else consumer.accept(false);
     }
     @Override
-    public void deleteAllTEF(Consumer<Boolean> consumer) {
+    public void deleteAllCollectionData(Consumer<Boolean> consumer) {
         if (networkAvailable()) {
-            remoteDatabase.deleteAllTEF(remoteSuccess -> {
+            remoteDatabase.deleteAllCollectionData(remoteSuccess -> {
                 if (!remoteSuccess) {
                     consumer.accept(false);
                     return;
                 }
-                localDatabase.deleteAllTEF(bool->{});;
+                localDatabase.deleteAllCollectionData(bool->{});
             });
         } else consumer.accept(false);
     }
@@ -573,14 +570,17 @@ class DatabaseCoordinator implements DatabaseLink {
 
     @Override
     public void clearLocalState(Consumer<Boolean> consumer) {
-        localDatabase.clearLocalState(consumer);
+        remoteDatabase.clearLocalState(remoteSuccess -> {
+            if (remoteSuccess) {
+                localDatabase.clearLocalState(consumer);
+            } else consumer.accept(false);
+        });
     }
 
     private static class InternetChecker implements Runnable {
         private final Context context;
         private boolean networkAvailable;
         private boolean checkForNetworkAvailability;
-        private boolean working;
         private long lastChecked = -1;
 
         private InternetChecker(Context context) {
@@ -602,12 +602,10 @@ class DatabaseCoordinator implements DatabaseLink {
         @Override
         public void run() {
             while (checkForNetworkAvailability) {
-                working = true;
 
                 networkAvailable = check();
                 lastChecked = System.currentTimeMillis();
 
-                working = false;
                 try {
                     Thread.sleep(INTERNET_CHECK_FREQUENCY);
                 } catch (InterruptedException ignored) {

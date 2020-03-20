@@ -3,39 +3,55 @@ package com.uniques.ourhouse;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Schedule;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 
 public class EventService extends JobService {
+    private static final String TAG = "EventService";
+    // job should run once a day
+    static final long JOB_INTERVAL_MILLIS = 24 * 60 * 60 * 1000;
+    // job should run within the last 6 hours of the day
+    static final long JOB_INTERVAL_FLEX_MILLIS = (long) (0.4 * JOB_INTERVAL_MILLIS);
+
     private Logic runningLogic;
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        System.out.println("EVENT-SERVICE: starting Logic");
+        Log.i(TAG, "Starting Logic");
         if (Session.getSession() == null) {
             Session.newSession(this);
         }
-        runningLogic = new Logic(failedEvents -> {
+        runningLogic = new Logic((exception, failedEvents) -> {
             runningLogic = null;
-            System.out.println("EVENT-SERVICE: failedEvents= " + failedEvents);
+            if (exception != null) {
+                Log.e(TAG, "Failed Logic with error", exception);
+            } else if (failedEvents.isEmpty()) {
+                Log.i(TAG, "Finished Logic Successfully");
+            } else {
+                Log.i(TAG, "Finished Logic with " + failedEvents.size()
+                        + " failedEvents= " + failedEvents);
+            }
         });
         runningLogic.doInBackground(Session.getSession());
         return true;
@@ -44,110 +60,146 @@ public class EventService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         if (runningLogic == null) return false;
+        Log.i(TAG, "Cancelling Logic");
         runningLogic.cancel(true);
         runningLogic = null;
         return true;
     }
 
     private static class Logic extends AsyncTask<Session, Void, Void> {
-        private Consumer<List<Event>> onCompleteCallback;
+        private final BiConsumer<Exception, List<Event>> onCompleteCallback;
         private BiConsumer<Event, Event> getterConsumer;
 
-        private Logic(Consumer<List<Event>> onCompleteCallback) {
+        private Logic(BiConsumer<Exception, List<Event>> onCompleteCallback) {
             this.onCompleteCallback = onCompleteCallback;
         }
 
         @Override
         protected Void doInBackground(Session... sessions) {
             Session session = sessions[0];
+            if (session == null) {
+                onCompleteCallback.accept(new NullPointerException("session is null"), null);
+                return null;
+            }
 
-            HashMap<Date, List<Task>> occurrences = new HashMap<>();
+            ObjectId loggedInUser = session.getLoggedInUserId();
+            // a user must be logged in
+            if (loggedInUser == null) {
+                onCompleteCallback.accept(new NullPointerException("User is not logged in"), null);
+                return null;
+            }
+
+            ObjectId openHouse = Settings.OPEN_HOUSE.get();
+            // the user must have opened a house
+            if (openHouse == null) {
+                onCompleteCallback.accept(new NullPointerException("No OPEN_HOUSE setting"), null);
+                return null;
+            }
 
             // get tasks from database
-            ArrayList<Task> tasks = new ArrayList<>(Arrays.asList(Task.testTasks()));
-            if (isCancelled()) return null;
-
-            Calendar cal = initializeMonth();
-            Date lowerBound = cal.getTime();
-            Date upperBound = upperBoundOfMonth(cal.getTime());
-
-            for (Task t : tasks) {
-                Schedule schedule = t.getSchedule();
-
-                for (Date occurrence : schedule.finiteIterable(lowerBound, upperBound)) {
-                    Date dayOfOccurrence = initializeDay(occurrence);
-
-                    if (occurrences.containsKey(dayOfOccurrence)) {
-                        //noinspection ConstantConditions
-                        occurrences.get(dayOfOccurrence).add(t);
-                    } else {
-                        ArrayList<Task> l = new ArrayList<>();
-                        l.add(t);
-                        occurrences.put(dayOfOccurrence, l);
+            session.getDatabase().getHouse(openHouse, house -> {
+                if (isCancelled()) return;
+                Objects.requireNonNull(house);
+                session.getDatabase().getAllTasksFromHouse(openHouse, tasks -> {
+                    if (isCancelled()) return;
+                    if (tasks.isEmpty()) {
+                        onCompleteCallback.accept(new NullPointerException("No Tasks created in house"), null);
+                        return;
                     }
-                }
-            }
 
-            if (isCancelled()) return null;
+                    HashMap<Date, List<Task>> occurrences = new HashMap<>();
 
-            House.Rotation rotation = House.testHouse().getRotation();
+                    Calendar cal = initializeMonth();
+                    Date lowerBound = cal.getTime();
+                    Date upperBound = upperBoundOfMonth(cal.getTime());
 
-            PriorityQueue<UsersTasks> results = new PriorityQueue<>();
-            for (User user : rotation) {
-                results.add(new UsersTasks(user));
-            }
+                    for (Task t : tasks) {
+                        Schedule schedule = t.getSchedule();
 
-            if (results.isEmpty()) return null;
+                        for (Date occurrence : schedule.finiteIterable(lowerBound, upperBound)) {
+                            Date dayOfOccurrence = initializeDay(occurrence);
 
-            Iterator<Date> days = occurrences.keySet().iterator();
-            Date curDay;
-            while (days.hasNext()) {
-                curDay = days.next();
+                            if (occurrences.containsKey(dayOfOccurrence)) {
+                                //noinspection ConstantConditions
+                                occurrences.get(dayOfOccurrence).add(t);
+                            } else {
+                                ArrayList<Task> l = new ArrayList<>();
+                                l.add(t);
+                                occurrences.put(dayOfOccurrence, l);
+                            }
+                        }
+                    }
 
-                PriorityQueue<Task> daysTasks = new PriorityQueue<>((o1, o2) -> o2.getDifficulty() - o1.getDifficulty());
-                daysTasks.addAll(occurrences.get(curDay));
+                    if (isCancelled()) return;
 
-                while (!daysTasks.isEmpty()) {
-                    //noinspection ConstantConditions
-                    results.peek().assignTask(curDay, daysTasks.poll());
-                    results.offer(results.poll());
-                }
-            }
+                    House.Rotation rotation = house.getRotation();
+                    if (rotation.getRotation().isEmpty()) {
+                        onCompleteCallback.accept(new Exception("OPEN_HOUSE rotation list is empty"), null);
+                    }
 
-            List<Event> events = new ArrayList<>();
-            for (UsersTasks result : results) {
-                events.addAll(result.createEvents());
-            }
+                    PriorityQueue<UsersTasks> results = new PriorityQueue<>();
+                    for (User user : rotation) {
+                        results.add(new UsersTasks(user));
+                    }
 
-            if (events.size() == 0) return null;
-            if (isCancelled()) return null;
+                    Iterator<Date> days = occurrences.keySet().iterator();
+                    Date curDay;
+                    while (days.hasNext()) {
+                        curDay = days.next();
 
-            List<Event> failedEvents = new ArrayList<>();
+                        PriorityQueue<Task> daysTasks = new PriorityQueue<>(
+                                (o1, o2) -> o2.getDifficulty() - o1.getDifficulty());
+                        daysTasks.addAll(occurrences.get(curDay));
 
-            BiConsumer<Boolean, Event> putterConsumer = (success, failedEvent) -> {
-                if (isCancelled()) return;
-                if (!success) {
-                    failedEvents.add(failedEvent);
-                }
-                if (events.isEmpty()) {
-                    // COMPLETE
-                    onCompleteCallback.accept(failedEvents);
-                } else {
-                    Event nextEvent = events.remove(0);
-                    session.getDatabase().getEvent(nextEvent.getId(), e -> getterConsumer.accept(nextEvent, e));
-                }
-            };
-            getterConsumer = (orgEvent, fetchedEvent) -> {
-                if (isCancelled()) return;
-                if (fetchedEvent == null) {
-                    session.getDatabase().postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
-                } else {
-                    putterConsumer.accept(true, null);
-                }
-            };
+                        while (!daysTasks.isEmpty()) {
+                            //noinspection ConstantConditions
+                            results.peek().assignTask(curDay, daysTasks.poll());
+                            results.offer(results.poll());
+                        }
+                    }
 
-            Event firstEvent = events.remove(0);
-            session.getDatabase().getEvent(firstEvent.getId(), event -> getterConsumer.accept(firstEvent, event));
+                    List<Event> events = new ArrayList<>();
+                    for (UsersTasks result : results) {
+                        events.addAll(result.createEvents());
+                    }
+
+                    if (events.size() == 0) return;
+                    if (isCancelled()) return;
+
+                    List<Event> failedEvents = new ArrayList<>();
+
+                    BiConsumer<Boolean, Event> putterConsumer = (success, event) -> {
+                        if (isCancelled()) return;
+                        if (!success) {
+                            failedEvents.add(event);
+                        }
+                        if (events.isEmpty()) {
+                            // COMPLETE
+                            onCompleteCallback.accept(null, failedEvents);
+                        } else {
+                            Event nextEvent = events.remove(0);
+                            session.getDatabase().getEvent(nextEvent.getId(), e -> getterConsumer.accept(nextEvent, e));
+                        }
+                    };
+
+                    if (getterConsumer != null) {
+                        onCompleteCallback.accept(new Exception("Attempt to rerun logic using the same instance"), null);
+                        return;
+                    }
+
+                    getterConsumer = (orgEvent, fetchedEvent) -> {
+                        if (isCancelled()) return;
+                        if (fetchedEvent == null) {
+                            session.getDatabase().postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
+                        } else {
+                            putterConsumer.accept(true, null);
+                        }
+                    };
+
+                    Event firstEvent = events.remove(0);
+                    session.getDatabase().getEvent(firstEvent.getId(), event -> getterConsumer.accept(firstEvent, event));
+                });
+            });
             return null;
         }
 

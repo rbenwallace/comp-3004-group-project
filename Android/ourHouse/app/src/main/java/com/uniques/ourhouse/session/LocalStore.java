@@ -18,6 +18,8 @@ import org.bson.types.ObjectId;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -91,6 +93,35 @@ final class LocalStore implements DatabaseLink {
         } else {
             new Event().fromJSON(json, consumer);
         }
+    }
+
+    @Override
+    public void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long fromDate = cal.getTimeInMillis();
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        long toDate = cal.getTimeInMillis();
+        for (JSONElement eventJSON : EVENTS_JSON) {
+            try {
+                if (eventJSON.valueOf("assignedHouse").equals(houseId.toString())) {
+                    long dueDate = eventJSON.valueOf("dueDate");
+                    if (dueDate >= fromDate && dueDate <= toDate) {
+                        new Event().fromJSON(eventJSON, consumer);
+                        return;
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        consumer.accept(null);
     }
 
     @Override
@@ -610,8 +641,8 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
-    public void deleteAllTEF(Consumer<Boolean> consumer) {
-
+    public void deleteAllCollectionData(Consumer<Boolean> consumer) {
+        clearLocalState(consumer);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.uniques.ourhouse.model;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
@@ -13,10 +12,9 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
@@ -33,7 +31,7 @@ public class User implements Observable, Indexable {
     private int performance;
 
     //testing int num
-    public User(ObjectId userID, String firstName, String lastName, String emailAddress, List<ObjectId> myHouses, List<String> myHousesNames, int num) {
+    public User(ObjectId userID, String firstName, String lastName, String emailAddress, List<ObjectId> myHouses, int num) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -159,33 +157,22 @@ public class User implements Observable, Indexable {
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
-        Document housesDoc = new Document();
         asDoc.put("_id", userID);
         asDoc.put("firstName", firstName);
         asDoc.put("lastName", lastName);
         asDoc.put("email", emailAddress);
-        asDoc.put("houses", housesDoc);
+        asDoc.put("houses", myHouses);
         asDoc.put("performance", performance);
         return asDoc;
     }
 
     public static User fromBsonDocument(final Document doc) {
-        Document housesDoc = (Document) doc.get("houses");
-        ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
-        ArrayList<String> housesNames = new ArrayList<String>();
-        if (housesDoc != null) {
-            housesDoc.forEach((key, value) -> {
-                housesNames.add(key);
-                houses.add((ObjectId) value);
-            });
-        }
         return new User(
                 (ObjectId) doc.get("_id"),
                 doc.getString("firstName"),
                 doc.getString("lastName"),
                 doc.getString("email"),
-                houses,
-                housesNames,
+                doc.getList("houses", ObjectId.class),
                 doc.getInteger("performance")
         );
     }
@@ -230,24 +217,15 @@ public class User implements Observable, Indexable {
         String lastName = obj.get("lastName").getAsString();
         String myEmail = obj.get("email").getAsString();
         JsonObject myHouses;
-        ArrayList<ObjectId> houses = new ArrayList<ObjectId>();
-        ArrayList<String> housesNames = new ArrayList<String>();
+        List<ObjectId> houses = new ArrayList<ObjectId>();
         if (obj.get("houses") != null) {
             myHouses = obj.get("houses").getAsJsonObject();
-            Set<String> keys = myHouses.keySet();
-            Iterator<String> keyIt = keys.iterator();
-            while (keyIt.hasNext()) {
-                String key = keyIt.next();
-                if (myHouses.get(key) != null) {
-                    if (Session.getIdFromString(myHouses.get(key).toString()).length() > 5) {
-                        housesNames.add(key);
-                        houses.add(new ObjectId(Session.getIdFromString(myHouses.get(key).toString())));
-                    }
-                }
+            for (Map.Entry<String, JsonElement> entry : myHouses.entrySet()) {
+                houses.add(new ObjectId(entry.getValue().getAsString()));
             }
         }
         int prefNum = obj.get("performance").getAsInt();
-        return new User(new ObjectId(myID), firstName, lastName, myEmail, houses, housesNames, prefNum);
+        return new User(new ObjectId(myID), firstName, lastName, myEmail, houses, prefNum);
     }
 
     @Override

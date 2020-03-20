@@ -8,6 +8,7 @@ import com.uniques.ourhouse.model.User;
 
 import org.bson.types.ObjectId;
 
+import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -46,6 +47,8 @@ public interface DatabaseLink {
     void getUser(ObjectId id, Consumer<User> consumer);
 
     void getEvent(ObjectId id, Consumer<Event> consumer);
+
+    void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer);
 
     void getTask(ObjectId id, Consumer<Task> consumer);
 
@@ -113,7 +116,7 @@ public interface DatabaseLink {
 
     void deleteUserFromHouse(House house, User user, Consumer<Boolean> consumer);
 
-    void deleteAllTEF(Consumer<Boolean> consumer);
+    void deleteAllCollectionData(Consumer<Boolean> consumer);
     //-------------------------------------------------------------
 
     //Update

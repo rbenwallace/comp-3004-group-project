@@ -218,10 +218,9 @@ public class House implements Indexable, Observable {
     }
 
     public static class Rotation implements Model, Iterable<User> {
+        private List<User> rotation;
 
-        private ArrayList<User> rotation;
-
-        public Rotation(ArrayList<User> rotation) {
+        public Rotation(List<User> rotation) {
             this.rotation = rotation;
         }
 
@@ -229,7 +228,7 @@ public class House implements Indexable, Observable {
             rotation = new ArrayList<>();
         }
 
-        public ArrayList<User> getRotation() {
+        public List<User> getRotation() {
             return rotation;
         }
 

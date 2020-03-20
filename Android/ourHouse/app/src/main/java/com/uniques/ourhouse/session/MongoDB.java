@@ -3,6 +3,7 @@ package com.uniques.ourhouse.session;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
@@ -27,6 +28,8 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -220,7 +223,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Document> task) {
                 if (task.getResult() == null) {
-                    Log.d("app", String.format("No document matches the provided query"));
+                    Log.d("app", "No document matches the provided query");
                     Log.d("stitch-auth", "Authentication Successful.");
                     consumer.accept(null);
                 } else if (task.isSuccessful()) {
@@ -246,22 +249,53 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Document> task) {
                 if (task.getResult() == null) {
-                    Log.d("app", String.format("No document matches the provided query"));
-                    Log.d("stitch-auth", "Authentication Successful.");
+                    Log.d("app", "No document matches the provided query");
                     consumer.accept(null);
                 } else if (task.isSuccessful()) {
                     Log.d("app", String.format("Successfully found document: %s",
                             task.getResult()));
                     Event.FromBsonDocument(task.getResult(), consumer);
-                    Log.d("stitch-auth", "Authentication Successful.");
                 } else {
                     consumer.accept(null);
                     Log.e("app", "Failed to findOne: ", task.getException());
-                    Log.d("stitch-auth", "Authentication Successful.");
                 }
             }
         });
     } //tested
+
+    @Override
+    public void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date fromDate = cal.getTime();
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        Date toDate = cal.getTime();
+        Document query = new Document()
+                .append("assignedHouse", houseId)
+                .append("dueDate", BasicDBObjectBuilder.start("$gte", fromDate).add("$lte", toDate).get());
+        Log.d("MongoDB", query.toString());
+        final com.google.android.gms.tasks.Task<Document> findOne = eventColl.findOne(query);
+        findOne.addOnCompleteListener(task -> {
+            if (task.getResult() == null) {
+                Log.d("app", "No document matches the provided query");
+                consumer.accept(null);
+            } else if (task.isSuccessful()) {
+                Log.d("app", String.format("Successfully found document: %s",
+                        task.getResult()));
+                Event.FromBsonDocument(task.getResult(), consumer);
+            } else {
+                consumer.accept(null);
+                Log.e("app", "Failed to findOne: ", task.getException());
+            }
+        });
+    }
 
     @Override
     public void getTask(ObjectId id, Consumer<Task> consumer) {
@@ -272,18 +306,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Document> task) {
                 if (task.getResult() == null) {
-                    Log.d("app", String.format("No document matches the provided query"));
-                    Log.d("stitch-auth", "Authentication Successful.");
+                    Log.d("app", "No document matches the provided query");
                     consumer.accept(null);
                 } else if (task.isSuccessful()) {
                     Log.d("app", String.format("Successfully found document: %s",
                             task.getResult()));
                     consumer.accept(Task.fromBsonDocument(task.getResult()));
-                    Log.d("stitch-auth", "Authentication Successful.");
                 } else {
                     consumer.accept(null);
                     Log.e("app", "Failed to findOne: ", task.getException());
-                    Log.d("stitch-auth", "Authentication Successful.");
                 }
             }
         });
@@ -298,18 +329,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Document> task) {
                 if (task.getResult() == null) {
-                    Log.d("app", String.format("No document matches the provided query"));
-                    Log.d("stitch-auth", "Authentication Successful.");
+                    Log.d("app", "No document matches the provided query");
                     consumer.accept(null);
                 } else if (task.isSuccessful()) {
                     Log.d("app", String.format("Successfully found document: %s",
                             task.getResult()));
                     consumer.accept(Fee.fromBsonDocument(task.getResult()));
-                    Log.d("stitch-auth", "Authentication Successful.");
                 } else {
                     consumer.accept(null);
                     Log.e("app", "Failed to findOne: ", task.getException());
-                    Log.d("stitch-auth", "Authentication Successful.");
                 }
             }
         });
@@ -324,18 +352,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Document> task) {
                 if (task.getResult() == null) {
-                    Log.d("app", String.format("No document matches the provided query"));
-                    Log.d("stitch-auth", "Authentication Successful.");
+                    Log.d("app", "No document matches the provided query");
                     consumer.accept(null);
                 } else if (task.isSuccessful()) {
                     Log.d("app", String.format("Successfully found document: %s",
                             task.getResult()));
                     consumer.accept(House.fromBsonDocument(task.getResult()));
-                    Log.d("stitch-auth", "Authentication Successful.");
                 } else {
                     consumer.accept(null);
                     Log.e("app", "Failed to findOne: ", task.getException());
-                    Log.d("stitch-auth", "Authentication Successful.");
                 }
             }
         });
@@ -1074,17 +1099,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Document> task) {
                 if (task.getResult() == null) {
                     Log.d("app", String.format("No document matches the provided query"));
-                    Log.d("stitch-auth", "Authentication Successful.");
                     consumer.accept(true);
                 } else if (task.isSuccessful()) {
                     Log.d("app", String.format("Successfully found document: %s",
                             task.getResult()));
                     consumer.accept(false);
-                    Log.d("stitch-auth", "Authentication Successful.");
                 } else {
                     consumer.accept(false);
                     Log.e("app", "Failed to findOne: ", task.getException());
-                    Log.d("stitch-auth", "Authentication Successful.");
                 }
             }
         });
@@ -1101,7 +1123,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     //-------------------------------------------------------------
     //CLEAR ALL DATA
-    public void deleteAllTEF(Consumer<Boolean> consumer) {
+    public void deleteAllCollectionData(Consumer<Boolean> consumer) {
         Document filterDoc = new Document();
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = taskColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(new OnCompleteListener<RemoteDeleteResult>() {

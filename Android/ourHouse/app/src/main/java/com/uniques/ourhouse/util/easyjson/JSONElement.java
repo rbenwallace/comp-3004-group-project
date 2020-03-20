@@ -3,6 +3,7 @@ package com.uniques.ourhouse.util.easyjson;
 import com.uniques.ourhouse.util.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -200,9 +201,17 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public boolean removeElement(String... location) {
+        System.out.println(Arrays.toString(location.clone()));
+        System.out.println(toString());
+        System.out.println(children.get(0).getKey());
         JSONElement element = search(location);
-        System.out.println("elmPar " + element.getParent());
-        System.out.println(" childrn " + element.getParent().children);
+        if (element != null) {
+            System.out.println(element);
+            if (element.getParent() != null) {
+                System.out.println("par: " + element.getParent());
+                System.out.println("parchld: " + element.getParent().children);
+            }
+        }
         return element == null || element.getParent().children.remove(element);
     }
 
