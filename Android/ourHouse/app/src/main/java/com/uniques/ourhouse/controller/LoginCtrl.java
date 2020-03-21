@@ -242,14 +242,20 @@ public class LoginCtrl implements FragmentCtrl {
                         String json = gson.toJson(transferInfoArray);
                         editor.putString("loginData", json);
                         editor.apply();
-
-                        //users house ids need to be gathered and put inside the houses
                         Toast.makeText(activity, "Logged in successfully", Toast.LENGTH_SHORT).show();
-
+                        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        pd.setVisibility(View.GONE);
                         activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
                     }
-                    activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    pd.setVisibility(View.GONE);
+                    else {
+                        Session.getSession().getDatabase().postUser(newUser, bool->{
+                            Log.d("postUser", bool.toString());
+                            Session.getSession().setLoggedInUser(newUser);
+                            Toast.makeText(activity, "New User Logged in successfully", Toast.LENGTH_SHORT).show();activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            pd.setVisibility(View.GONE);
+                            activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+                        });
+                    }
                 });
             } else {
                 Log.e("stitch-auth", "Authentication Failed.");

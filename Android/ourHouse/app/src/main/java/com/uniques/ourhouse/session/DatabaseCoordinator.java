@@ -564,6 +564,11 @@ class DatabaseCoordinator implements DatabaseLink {
     }
 
     @Override
+    public void deleteAllHouses(Consumer<Boolean> consumer) {
+        remoteDatabase.deleteAllHouses(consumer);
+    }
+
+    @Override
     public void checkIfHouseKeyExists(String id, Consumer<Boolean> consumer) {
         remoteDatabase.checkIfHouseKeyExists(id, consumer);
     }

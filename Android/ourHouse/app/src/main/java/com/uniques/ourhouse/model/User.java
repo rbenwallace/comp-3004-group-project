@@ -105,7 +105,9 @@ public class User implements Observable, Indexable {
         if (myHouses == null) {
             myHouses = new ArrayList<>();
             myHouses.add(id);
-        } else if (!myHouses.contains(id)) {
+            return;
+        }
+        if (!myHouses.contains(id)) {
             myHouses.add(id);
         }
     }

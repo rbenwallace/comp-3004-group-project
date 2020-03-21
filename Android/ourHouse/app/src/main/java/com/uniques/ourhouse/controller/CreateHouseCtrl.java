@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import org.bson.types.ObjectId;
+
 public class CreateHouseCtrl implements FragmentCtrl {
     private FragmentActivity activity;
     private EditText houseName, password, confirmPassword;
@@ -43,6 +45,7 @@ public class CreateHouseCtrl implements FragmentCtrl {
         key = "";
 
         myUser = Session.getSession().getLoggedInUser();
+        Log.d("myHouses", myUser.getMyHouses().toString());
 
         keyNumber = view.findViewById(R.id.houseKey);
         houseName = view.findViewById(R.id.houseName_create);
@@ -115,10 +118,16 @@ public class CreateHouseCtrl implements FragmentCtrl {
             // add the new house to the user's houses
             User myUser = Session.getSession().getLoggedInUser();
             myUser.addHouseId(newHouse.getId());
+            myUser.addHouseId(new ObjectId());
+            myUser.addHouseId(new ObjectId());
+            Log.d("myHouses", myUser.getMyHouses().toString());
             database.postHouse(newHouse, successful -> {
                 if (successful) {
                     database.updateUser(myUser, successful2 -> {
                         if (successful2) {
+                            Log.d("myHouses", myUser.getMyHouses().toString());
+                            //Need to save the user in the session but this breaks the code:
+                                //Session.getSession().setLoggedInUser(myUser);
                             Settings.OPEN_HOUSE.set(newHouse.getId());
                             Intent intent = new Intent(activity, MainActivity.class);
                             activity.startActivity(intent);

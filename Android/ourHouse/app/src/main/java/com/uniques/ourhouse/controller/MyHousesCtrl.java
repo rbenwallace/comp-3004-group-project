@@ -105,6 +105,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         });
 
         User myUser = Session.getSession().getLoggedInUser();
+        Log.d("myHouses", myUser.getMyHouses().toString());
 
         List<String> houses = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, houses);

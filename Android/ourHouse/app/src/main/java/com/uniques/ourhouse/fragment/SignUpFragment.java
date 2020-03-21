@@ -42,7 +42,6 @@ public class SignUpFragment extends Fragment<SignUpCtrl> {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         controller.init(view);
         controller.updateInfo();
     }

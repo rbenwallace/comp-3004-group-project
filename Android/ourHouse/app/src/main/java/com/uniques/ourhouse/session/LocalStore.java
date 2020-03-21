@@ -660,6 +660,11 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
+    public void deleteAllHouses(Consumer<Boolean> consumer) {
+
+    }
+
+    @Override
     public void updateEvent(Event event, Consumer<Boolean> consumer) {
         postEvent(event, consumer);
     }

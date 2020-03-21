@@ -839,6 +839,25 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     }
 
     @Override
+    public void deleteAllHouses(Consumer<Boolean> consumer) {
+        Document filterDoc = new Document();
+        final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = userColl.deleteMany(filterDoc);
+        deleteTask.addOnCompleteListener(new OnCompleteListener<RemoteDeleteResult>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteDeleteResult> task) {
+                if (task.isSuccessful()) {
+                    long numDeleted = task.getResult().getDeletedCount();
+                    Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                    consumer.accept(true);
+                } else {
+                    Log.e("app", "failed to delete document with: ", task.getException());
+                    consumer.accept(false);
+                }
+            }
+        });
+    } //tested
+
+    @Override
     public void deleteEvent(Event event, Consumer<Boolean> consumer) {
         Document filterDoc = new Document().append("_id", event.getId());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = eventColl.deleteOne(filterDoc);
