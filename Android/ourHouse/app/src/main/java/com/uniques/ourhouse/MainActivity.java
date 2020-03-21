@@ -21,6 +21,7 @@ import com.uniques.ourhouse.fragment.ScreenMonthFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends FragmentActivity {
     public static final String TAG = "MainActivity";
@@ -28,7 +29,8 @@ public class MainActivity extends FragmentActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    public BottomNavigationView navView;
+    private BottomNavigationView navView;
+    private boolean navViewUpdatedByCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +56,18 @@ public class MainActivity extends FragmentActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navView = navigation;
 
-
         pushFragment(FragmentId.GET(FeedFragment.TAG));
+
+        Log.d(TAG, "Checking jobs...");
+        BootReceiver.scheduleJobs(this);
     }
 
     public final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
+        if (navViewUpdatedByCode) {
+            navViewUpdatedByCode = false;
+            return true;
+        }
         switch (item.getItemId()) {
             case R.id.navigation_feed:
                 if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(FeedFragment.TAG))
@@ -106,10 +114,12 @@ public class MainActivity extends FragmentActivity {
         }
         Log.d(TAG, "Pushing fragment " + fragmentId.getName());
         fragmentStack.push(fragment);
-        fragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, currentFragment())
-                .addToBackStack(String.valueOf(fragmentId))
-                .commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, currentFragment());
+        if (fragmentStack.size() > 1) {
+            fragmentTransaction = fragmentTransaction.addToBackStack(String.valueOf(fragmentId));
+        }
+        fragmentTransaction.commit();
     }
 
     /**
@@ -125,12 +135,43 @@ public class MainActivity extends FragmentActivity {
     public void popFragment(FragmentId fragmentId) {
         try {
             Log.d(TAG, "Popping till fragment " + fragmentId.getName() + "(inclusive)");
+
+            // pop in Android fragment manager
             fragmentManager.popBackStack(
                     String.valueOf(fragmentId), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentStack.pop().destroy();
+
+            // pop in ourHouse fragment stack
+            boolean poppedDesiredFragment = false;
+            while (!poppedDesiredFragment && !fragmentStack.isEmpty()) {
+                if (fragmentStack.peek().getFragmentId().getName().equals(fragmentId.getName())) {
+                    poppedDesiredFragment = true;
+                }
+                fragmentStack.pop().destroy();
+            }
 
             if (currentFragment() != null && currentFragment().getFragmentId().isBaseFragment()) {
                 navView.setVisibility(View.VISIBLE);
+            }
+
+            for (int i = fragmentStack.size() - 1; i >= 0; --i) {
+                String name = fragmentStack.get(i).getFragmentId().getName();
+                Log.d(TAG, i + " " + name);
+                if (name.equals(FeedFragment.TAG)) {
+                    Log.d(TAG, "last nav item in stack is feed");
+                    navViewUpdatedByCode = true;
+                    navView.setSelectedItemId(R.id.navigation_feed);
+                    break;
+                } else if (name.equals(ManageFragment.TAG)) {
+                    Log.d(TAG, "last nav item in stack is manage");
+                    navViewUpdatedByCode = true;
+                    navView.setSelectedItemId(R.id.navigation_manage);
+                    break;
+                } else if (name.equals(AmountPaidFragment.TAG)) {
+                    Log.d(TAG, "last nav item in stack is stats");
+                    navViewUpdatedByCode = true;
+                    navView.setSelectedItemId(R.id.navigation_stats);
+                    break;
+                }
             }
         } catch (Exception ignored) {
 //            FragmentActivity.getSavedInstance(ActivityId.MAIN_ACTIVITY).popFragment(fragmentId);

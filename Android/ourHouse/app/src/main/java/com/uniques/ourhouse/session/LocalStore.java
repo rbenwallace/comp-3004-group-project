@@ -1,7 +1,6 @@
 package com.uniques.ourhouse.session;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
@@ -711,7 +710,6 @@ final class LocalStore implements DatabaseLink {
 
     private EasyJSON retrieveLocal(String fileName) {
         File file = getLocalFile(fileName);
-        Log.d("myNewUser", fileName);
         if (!file.exists()) {
             EasyJSON json = EasyJSON.create(file);
             try {

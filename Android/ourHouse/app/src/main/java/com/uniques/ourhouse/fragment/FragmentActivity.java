@@ -78,8 +78,11 @@ public abstract class FragmentActivity extends AppCompatActivity {
         Fragment fragment = currentFragment();
         Log.d(getActivityId().getName(), "=== back press");
         if (fragment == null || !fragment.onBackPressed()) {
-            if (fragmentStack.size() > 1) super.onBackPressed();
-            else if (allowPopAllFragments) super.onBackPressed();
+            if (fragmentStack.size() > 1 || (allowPopAllFragments && !fragmentStack.isEmpty())) {
+                popFragment(fragmentStack.peek().getFragmentId());
+            } else {
+                super.onBackPressed();
+            }
             //TODO press again to exit
         }
     }

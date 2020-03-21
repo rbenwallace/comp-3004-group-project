@@ -52,6 +52,7 @@ public class EventService extends JobService {
                 Log.i(TAG, "Finished Logic with " + failedEvents.size()
                         + " failedEvents= " + failedEvents);
             }
+            jobFinished(params, exception != null);
         });
         runningLogic.doInBackground(Session.getSession());
         return true;
