@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import androidx.annotation.NonNull;
+
 public class Task extends ManageItem implements Indexable, Observable {
     private static final int DIFFICULTY_EASY = 1;
     private static final int DIFFICULTY_MEDIUM = 2;
@@ -132,5 +134,11 @@ public class Task extends ManageItem implements Indexable, Observable {
             this.schedule = (Schedule) schedule;
             consumer.accept(this);
         });
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return consoleFormat("Task");
     }
 }

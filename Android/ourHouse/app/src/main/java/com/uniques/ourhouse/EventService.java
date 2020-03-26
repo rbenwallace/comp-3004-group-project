@@ -24,13 +24,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 
 public class EventService extends JobService {
     private static final String TAG = "EventService";
     // job should run once a day
-    static final long JOB_INTERVAL_MILLIS = 24 * 60 * 60 * 1000;
+    public static final long JOB_INTERVAL_MILLIS = 24 * 60 * 60 * 1000;
     // job should run within the last 6 hours of the day
     static final long JOB_INTERVAL_FLEX_MILLIS = (long) (0.4 * JOB_INTERVAL_MILLIS);
 
@@ -42,20 +43,29 @@ public class EventService extends JobService {
         if (Session.getSession() == null) {
             Session.newSession(this);
         }
-        runningLogic = new Logic((exception, failedEvents) -> {
+        runningLogic = manualInvoke(wantsReschedule -> {
             runningLogic = null;
-            if (exception != null) {
-                Log.e(TAG, "Failed Logic with error", exception);
-            } else if (failedEvents.isEmpty()) {
-                Log.i(TAG, "Finished Logic Successfully");
-            } else {
-                Log.i(TAG, "Finished Logic with " + failedEvents.size()
-                        + " failedEvents= " + failedEvents);
-            }
-            jobFinished(params, exception != null);
+            jobFinished(params, wantsReschedule);
         });
         runningLogic.doInBackground(Session.getSession());
         return true;
+    }
+
+    public static Logic manualInvoke(Consumer<Boolean> onEndConsumer) {
+        return new Logic((exception, failedEvents) -> {
+            if (exception != null) {
+                Log.e(TAG, "Failed Logic with error", exception);
+            } else {
+                if (failedEvents.isEmpty()) {
+                    Log.i(TAG, "Finished Logic Successfully");
+                } else {
+                    Log.i(TAG, "Finished Logic with " + failedEvents.size()
+                            + " failedEvents= " + failedEvents);
+                }
+                Settings.EVENT_SERVICE_LAST_UPDATE.set(System.currentTimeMillis());
+            }
+            onEndConsumer.accept(exception != null);
+        });
     }
 
     @Override
@@ -67,7 +77,8 @@ public class EventService extends JobService {
         return true;
     }
 
-    private static class Logic extends AsyncTask<Session, Void, Void> {
+    public static class Logic extends AsyncTask<Session, Void, Void> {
+        private static final String TAG = EventService.TAG + ".Logic";
         private final BiConsumer<Exception, List<Event>> onCompleteCallback;
         private BiConsumer<Event, Event> getterConsumer;
 
@@ -76,7 +87,7 @@ public class EventService extends JobService {
         }
 
         @Override
-        protected Void doInBackground(Session... sessions) {
+        public Void doInBackground(Session... sessions) {
             Session session = sessions[0];
             if (session == null) {
                 onCompleteCallback.accept(new NullPointerException("session is null"), null);
@@ -101,12 +112,16 @@ public class EventService extends JobService {
             session.getDatabase().getHouse(openHouse, house -> {
                 if (isCancelled()) return;
                 Objects.requireNonNull(house);
+                Log.d(TAG, "Got open house object");
+                Log.d(TAG, "Fetching house tasks.. (might take a while)");
                 session.getDatabase().getAllTasksFromHouse(openHouse, tasks -> {
                     if (isCancelled()) return;
                     if (tasks.isEmpty()) {
                         onCompleteCallback.accept(new NullPointerException("No Tasks created in house"), null);
                         return;
                     }
+
+                    Log.d(TAG, "Got house tasks");
 
                     HashMap<Date, List<Task>> occurrences = new HashMap<>();
 
@@ -116,6 +131,8 @@ public class EventService extends JobService {
 
                     for (Task t : tasks) {
                         Schedule schedule = t.getSchedule();
+
+                        Log.d(TAG, "Iterating over occurrences in {" + t + "}..");
 
                         for (Date occurrence : schedule.finiteIterable(lowerBound, upperBound)) {
                             Date dayOfOccurrence = initializeDay(occurrence);
@@ -133,9 +150,12 @@ public class EventService extends JobService {
 
                     if (isCancelled()) return;
 
+                    Log.d(TAG, "Done iterating over tasks");
+
                     House.Rotation rotation = house.getRotation();
                     if (rotation.getRotation().isEmpty()) {
                         onCompleteCallback.accept(new Exception("OPEN_HOUSE rotation list is empty"), null);
+                        return;
                     }
 
                     PriorityQueue<UsersTasks> results = new PriorityQueue<>();
@@ -143,10 +163,14 @@ public class EventService extends JobService {
                         results.add(new UsersTasks(user));
                     }
 
+                    Log.d(TAG, "Assigning each gathered occurrence..");
+
                     Iterator<Date> days = occurrences.keySet().iterator();
                     Date curDay;
                     while (days.hasNext()) {
                         curDay = days.next();
+
+                        Log.d(TAG, "Assigning for day " + curDay + "...");
 
                         PriorityQueue<Task> daysTasks = new PriorityQueue<>(
                                 (o1, o2) -> o2.getDifficulty() - o1.getDifficulty());
@@ -159,13 +183,21 @@ public class EventService extends JobService {
                         }
                     }
 
+                    Log.d(TAG, "Done assigning");
+                    Log.d(TAG, "Generating event objects..");
+
                     List<Event> events = new ArrayList<>();
                     for (UsersTasks result : results) {
                         events.addAll(result.createEvents());
                     }
 
-                    if (events.size() == 0) return;
+                    Log.d(TAG, "Done generating event objects");
+
                     if (isCancelled()) return;
+                    if (events.size() == 0) {
+                        onCompleteCallback.accept(new Exception("generated event list was empty"), null);
+                        return;
+                    }
 
                     List<Event> failedEvents = new ArrayList<>();
 
@@ -196,6 +228,8 @@ public class EventService extends JobService {
                             putterConsumer.accept(true, null);
                         }
                     };
+
+                    Log.d(TAG, "Posting (non-existent) events to database.. (might take a while)");
 
                     Event firstEvent = events.remove(0);
                     session.getDatabase().getEvent(firstEvent.getId(), event -> getterConsumer.accept(firstEvent, event));

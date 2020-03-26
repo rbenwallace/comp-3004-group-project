@@ -3,8 +3,10 @@ package com.uniques.ourhouse.controller;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.uniques.ourhouse.EventService;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.Event;
@@ -25,6 +27,7 @@ import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     private static final String TAG = "FeedCtrl";
@@ -32,11 +35,15 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     FragmentActivity activity;
     private TextView txtPastEvents;
     private TextView txtUpcomingEvents;
+    private TextView loadingText;
+    private LinearLayout loadingPanel;
+    private RecyclerView recyclerView;
     private boolean showingPastEvents;
     private boolean pendingReopenFilter;
 
     public List<FeedCard> observableCards;
     private RecyclerAdapter<FeedCard> cardsAdapter;
+    private EventService.Logic eventServiceLogic;
 
     public FeedCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -48,6 +55,9 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     public void init(View view) {
         txtPastEvents = view.findViewById(R.id.feed_txtPastEvents);
         txtUpcomingEvents = view.findViewById(R.id.feed_txtUpcomingEvents);
+        loadingText = view.findViewById(R.id.feed_loading_txtMsg);
+        loadingPanel = view.findViewById(R.id.feed_loadingPanel);
+        recyclerView = view.findViewById(R.id.feed_recycler);
 
         txtPastEvents.setOnClickListener(v -> {
             if (!showingPastEvents) {
@@ -61,11 +71,17 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 updateInfo();
             }
         });
+
+        Long eventServiceLastUpdate = Settings.EVENT_SERVICE_LAST_UPDATE.get();
+        if (eventServiceLastUpdate == null
+                || (System.currentTimeMillis() - eventServiceLastUpdate) > EventService.JOB_INTERVAL_MILLIS) {
+            Log.d(TAG, "Event_SERVICE_LAST_UPDATE is out of date");
+            invokeEventServiceLogic();
+        }
     }
 
     @Override
     public void acceptArguments(Object... args) {
-
     }
 
     void updateInfoAndReopenFilter() {
@@ -75,6 +91,12 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 
     @Override
     public void updateInfo() {
+        if (eventServiceLogic != null)
+            return;
+
+        loadingPanel.setVisibility(View.VISIBLE);
+        loadingText.setText("Fetching events...");
+
         txtPastEvents.setTextColor(activity.getColor(showingPastEvents ? R.color.colorTextPrimary : R.color.colorTextSecondary));
         txtUpcomingEvents.setTextColor(activity.getColor(!showingPastEvents ? R.color.colorTextPrimary : R.color.colorTextSecondary));
         if (showingPastEvents) {
@@ -131,7 +153,6 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 //        cardsAdapter.notifyDataSetChanged();
         });
     }
-
 
     @Override
     public void setRecyclerAdapter(RecyclerAdapter<FeedCard> recyclerAdapter) {
@@ -397,6 +418,20 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
             return "next week";
         }
         return cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + yearString;
+    }
+
+    private void invokeEventServiceLogic() {
+        Log.d(TAG, "Manually invoking EventService's Logic");
+        eventServiceLogic = EventService.manualInvoke(producedException -> {
+            loadingPanel.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            eventServiceLogic = null;
+            updateInfo();
+        });
+        loadingPanel.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        loadingText.setText("Searching for events to generate...\nThis might take a minute");
+        eventServiceLogic.doInBackground(Session.getSession());
     }
 
     private interface FeedCardDateObject extends FeedCard.FeedCardObject {

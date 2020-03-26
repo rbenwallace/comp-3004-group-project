@@ -104,7 +104,12 @@ class DatabaseCoordinator implements DatabaseLink {
         Consumer<User> networkConsumer = user -> {
             if (user != null) {
                 localDatabase.postUser(user, success -> {
-                    if (success) notifyModelCached(user.getId());
+                    if (success) {
+                        notifyModelCached(user.getId());
+                        if (user.getId().equals(Session.getSession().getLoggedInUserId())) {
+                            Session.getSession().setLoggedInUser(user);
+                        }
+                    }
                     consumer.accept(user);
                 });
             } else {

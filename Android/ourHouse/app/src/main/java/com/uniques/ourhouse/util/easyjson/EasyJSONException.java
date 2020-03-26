@@ -50,7 +50,7 @@ public class EasyJSONException extends Exception {
     private static String formatErrorSource(JSONElement source) {
         String format = " : fail @ [" + source.getType() + "]'" + source.getKey() + "'";
         if (source.getParent() != null) {
-            format += " : parent is [" + source.getParent().getType() + "]'" + source.getParent().getKey() + "'";
+            format += " : where parent is [" + source.getParent().getType() + "]'" + source.getParent().getKey() + "'";
         }
         return format;
     }

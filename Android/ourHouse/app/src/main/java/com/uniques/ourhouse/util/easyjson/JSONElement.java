@@ -3,7 +3,6 @@ package com.uniques.ourhouse.util.easyjson;
 import com.uniques.ourhouse.util.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -86,7 +85,7 @@ public class JSONElement implements Iterable<JSONElement> {
         JSONElement element;
         if (value instanceof JSONElement) {
             element = (JSONElement) value;
-            element.parent = this;
+            claimElement(element);
         } else {
             element = new JSONElement(
                     easyJSONStructure,
@@ -94,8 +93,8 @@ public class JSONElement implements Iterable<JSONElement> {
                     JSONElementType.PRIMITIVE,
                     null,
                     value == null ? null : value.toString());
+            children.add(element);
         }
-        children.add(element);
         return element;
     }
 
@@ -201,16 +200,20 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     public boolean removeElement(String... location) {
-        System.out.println(Arrays.toString(location.clone()));
-        System.out.println(toString());
-        System.out.println(children.get(0).getKey());
+//        System.out.println(Arrays.toString(location.clone()));
+//        System.out.println(toString());
+//        System.out.println(children.get(0).getKey());
         JSONElement element = search(location);
         if (element != null) {
-            System.out.println(element);
-            if (element.getParent() != null) {
-                System.out.println("par: " + element.getParent());
-                System.out.println("parchld: " + element.getParent().children);
+//            System.out.println(element);
+            //TODO figure out why this is needed
+            if (element.getParent() == null && element.getType() != JSONElementType.ROOT) {
+                element.parent = easyJSONStructure.getRootNode();
             }
+//            if (element.getParent() != null) {
+//                System.out.println("par: " + element.getParent());
+//                System.out.println("parchld: " + element.getParent().children);
+//            }
         }
         return element == null || element.getParent().children.remove(element);
     }
@@ -352,7 +355,7 @@ public class JSONElement implements Iterable<JSONElement> {
 
     /**
      * Overwrites this element with data in newElement. Specifically, it will adopt newElement's
-     * key, children, and value.
+     * type, children, and value.
      *
      * @param newElement element whose data you want to adopt
      * @return this element

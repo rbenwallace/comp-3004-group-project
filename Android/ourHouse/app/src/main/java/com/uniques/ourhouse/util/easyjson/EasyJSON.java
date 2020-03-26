@@ -1,7 +1,5 @@
 package com.uniques.ourhouse.util.easyjson;
 
-import android.util.Log;
-
 import com.uniques.ourhouse.util.simple.JSONArray;
 import com.uniques.ourhouse.util.simple.JSONObject;
 import com.uniques.ourhouse.util.simple.parser.JSONParser;
@@ -57,7 +55,7 @@ import androidx.annotation.NonNull;
  * <p>
  * Initial commit by Victor Olaitan on 09/03/2017.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess", "UnusedReturnValue"})
 public class EasyJSON implements Iterable<JSONElement> {
     /**
      * @return an empty EasyJSON instance
@@ -317,6 +315,7 @@ public class EasyJSON implements Iterable<JSONElement> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     <T> T deepSave(T currentJSONRef, JSONElement currentElement) throws EasyJSONException {
         for (int i = 0; i < currentElement.getChildren().size(); i++) {
             JSONElement child = currentElement.getChildren().get(i);
@@ -326,8 +325,6 @@ public class EasyJSON implements Iterable<JSONElement> {
                     objectToAdd = deepSave(new JSONArray(), child);
                     break;
                 case STRUCTURE:
-                    objectToAdd = deepSave(new JSONObject(), child);
-                    break;
                 case ROOT:
                     objectToAdd = deepSave(new JSONObject(), child);
                     break;
