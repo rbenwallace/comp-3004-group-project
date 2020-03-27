@@ -62,23 +62,23 @@ public class EditTaskCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         Log.d(EditTaskFragment.TAG, "Edit Task Clicked");
-        editTaskBackButton = (Button) view.findViewById(R.id.addTask_btnBack);
-        taskName = (TextView) view.findViewById(R.id.addTask_editDescription);
-        taskFrequencies = (RadioGroup) view.findViewById(R.id.addTask_radioFrequency);
-        onceButton = (RadioButton) view.findViewById(R.id.addTask_once);
-        dailyButton = (RadioButton) view.findViewById(R.id.addTask_daily);
-        weeklyButton = (RadioButton) view.findViewById(R.id.addTask_weekly);
-        monthlyButton = (RadioButton) view.findViewById(R.id.addTask_monthly);
-        yearlyButton = (RadioButton) view.findViewById(R.id.addTask_yearly);
-        otherButton = (RadioButton) view.findViewById(R.id.addTask_other);
-        editNumberOfDays = (EditText) view.findViewById(R.id.addTask_editNumberOfDays);
-        taskDifficulty = (RadioGroup) view.findViewById(R.id.addTask_radioDifficulty);
-        easyButton = (RadioButton) view.findViewById(R.id.addTask_easy);
-        mediumButton = (RadioButton) view.findViewById(R.id.addTask_medium);
-        hardButton = (RadioButton) view.findViewById(R.id.addTask_hard);
-        datePicker = (DatePicker) view.findViewById(R.id.addTask_datePicked);
-        taskViewTitle = (TextView) view.findViewById(R.id.addTask_title);
-        saveTask = (Button) view.findViewById(R.id.addTask_btnAdd);
+        editTaskBackButton = view.findViewById(R.id.addTask_btnBack);
+        taskName = view.findViewById(R.id.addTask_editDescription);
+        taskFrequencies = view.findViewById(R.id.addTask_radioFrequency);
+        onceButton = view.findViewById(R.id.addTask_once);
+        dailyButton = view.findViewById(R.id.addTask_daily);
+        weeklyButton = view.findViewById(R.id.addTask_weekly);
+        monthlyButton = view.findViewById(R.id.addTask_monthly);
+        yearlyButton = view.findViewById(R.id.addTask_yearly);
+        otherButton = view.findViewById(R.id.addTask_other);
+        editNumberOfDays = view.findViewById(R.id.addTask_editNumberOfDays);
+        taskDifficulty = view.findViewById(R.id.addTask_radioDifficulty);
+        easyButton = view.findViewById(R.id.addTask_easy);
+        mediumButton = view.findViewById(R.id.addTask_medium);
+        hardButton = view.findViewById(R.id.addTask_hard);
+        datePicker = view.findViewById(R.id.addTask_datePicked);
+        taskViewTitle = view.findViewById(R.id.addTask_title);
+        saveTask = view.findViewById(R.id.addTask_btnAdd);
 
         taskViewTitle.setText("Edit Task");
         saveTask.setText("SAVE");
@@ -89,25 +89,22 @@ public class EditTaskCtrl implements FragmentCtrl {
         //taskId = new ObjectId("5e60ad4613d8ee3d69f5004c");
         //taskIdStr = "5e60ad4613d8ee3d69f5004c";
 
-        if(taskIdStr.equals("")){
+        if (taskIdStr.equals("")) {
             Log.d(EditTaskFragment.TAG, "Task Id not received");
             Toast.makeText(activity, "Task Currently Not Editable", Toast.LENGTH_SHORT).show();
             activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
-        }
-        else{
+        } else {
             Log.d(EditTaskFragment.TAG, "Task: " + taskId + " received");
         }
 
         myDatabase.getTask(taskId, task -> {
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
-            if(difficulty == 1){
+            if (difficulty == 1) {
                 easyButton.performClick();
-            }
-            else if(difficulty == 2){
+            } else if (difficulty == 2) {
                 mediumButton.performClick();
-            }
-            else{
+            } else {
                 hardButton.performClick();
             }
             Calendar currentCalendar = Calendar.getInstance();
@@ -126,56 +123,51 @@ public class EditTaskCtrl implements FragmentCtrl {
             oldCalendar.set(Calendar.MILLISECOND, 0);
 
             Schedule schedule = task.getSchedule();
-            if(schedule.getEndType().equals(Schedule.EndType.ON_DATE) || (currentCalendar.getTimeInMillis() < oldCalendar.getTimeInMillis())){
+            if (schedule.getEndType().equals(Schedule.EndType.ON_DATE) || (currentCalendar.getTimeInMillis() < oldCalendar.getTimeInMillis())) {
                 onceButton.performClick();
                 datePicker.updateDate(Integer.parseInt(oldYear), Integer.parseInt(oldMonth), Integer.parseInt(oldDay));
-            }
-            else{
-                if(schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.YEARLY)){
+            } else {
+                if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.YEARLY)) {
                     yearlyButton.performClick();
-                    while(oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()){
+                    while (oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()) {
                         oldCalendar.add(Calendar.YEAR, 1);
                     }
                     String newDay = (String) DateFormat.format("dd", oldCalendar.getTime());
                     String newMonth = (String) DateFormat.format("MM", oldCalendar.getTime());
                     String newYear = (String) DateFormat.format("yyyy", oldCalendar.getTime());
                     datePicker.updateDate(Integer.parseInt(newYear), Integer.parseInt(newMonth), Integer.parseInt(newDay));
-                }
-                else if(schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.MONTHLY)){
+                } else if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.MONTHLY)) {
                     monthlyButton.performClick();
-                    while(oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()){
+                    while (oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()) {
                         oldCalendar.add(Calendar.MONTH, 1);
                     }
                     String newDay = (String) DateFormat.format("dd", oldCalendar.getTime());
                     String newMonth = (String) DateFormat.format("MM", oldCalendar.getTime());
                     String newYear = (String) DateFormat.format("yyyy", oldCalendar.getTime());
                     datePicker.updateDate(Integer.parseInt(newYear), Integer.parseInt(newMonth), Integer.parseInt(newDay));
-                }
-                else if(schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.WEEKLY)){
+                } else if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.WEEKLY)) {
                     weeklyButton.performClick();
-                    while(oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()){
+                    while (oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()) {
                         oldCalendar.add(Calendar.DAY_OF_YEAR, 7);
                     }
                     String newDay = (String) DateFormat.format("dd", oldCalendar.getTime());
                     String newMonth = (String) DateFormat.format("MM", oldCalendar.getTime());
                     String newYear = (String) DateFormat.format("yyyy", oldCalendar.getTime());
                     datePicker.updateDate(Integer.parseInt(newYear), Integer.parseInt(newMonth), Integer.parseInt(newDay));
-                }
-                else{
-                    if(schedule.getRepeatSchedule().getDelay() == 1){
+                } else {
+                    if (schedule.getRepeatSchedule().getDelay() == 1) {
                         dailyButton.performClick();
-                        while(oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()){
+                        while (oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()) {
                             oldCalendar.add(Calendar.DAY_OF_YEAR, 1);
                         }
                         String newDay = (String) DateFormat.format("dd", oldCalendar.getTime());
                         String newMonth = (String) DateFormat.format("MM", oldCalendar.getTime());
                         String newYear = (String) DateFormat.format("yyyy", oldCalendar.getTime());
                         datePicker.updateDate(Integer.parseInt(newYear), Integer.parseInt(newMonth), Integer.parseInt(newDay));
-                    }
-                    else{
+                    } else {
                         otherButton.performClick();
                         editNumberOfDays.setText(schedule.getRepeatSchedule().getDelay());
-                        while(oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()){
+                        while (oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()) {
                             oldCalendar.add(Calendar.DAY_OF_YEAR, schedule.getRepeatSchedule().getDelay());
                         }
                         String newDay = (String) DateFormat.format("dd", oldCalendar.getTime());
@@ -187,90 +179,78 @@ public class EditTaskCtrl implements FragmentCtrl {
             }
 
         });
-        editTaskBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
+        editTaskBackButton.setOnClickListener(view12 -> {
+            //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
-            }
+            activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
         });
-        saveTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view1) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
+        saveTask.setOnClickListener(view1 -> {
+            //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                String selectedFrequencyText = ((RadioButton) view.findViewById(taskFrequencies.getCheckedRadioButtonId())).getText().toString();
-                int day = datePicker.getDayOfMonth();
-                int month = datePicker.getMonth();
-                int year = datePicker.getYear();
-                oldCalendar.set(year, month, day, 23, 59, 59);
-                oldCalendar.set(Calendar.MILLISECOND, 0);
-                Date date = oldCalendar.getTime();
-                if(String.valueOf(taskName.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(editNumberOfDays.getText()).equals(""))){
-                    Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String name = String.valueOf(taskName.getText());
-                String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
-                int selectedDifficultyNum = 1;
-                if(selectedDifficulty.equals("Medium")){
-                    selectedDifficultyNum = 2;
-                }
-                else if(selectedDifficulty.equals("Hard")){
-                    selectedDifficultyNum = 3;
-                }
-                Schedule schedule = new Schedule();
-                if(selectedFrequencyText.equals("Once")){
-                    Schedule.pauseStartEndBoundsChecking();
-                    schedule.setStart(date);
-                    schedule.setEnd(date);
-                    Schedule.resumeStartEndBoundsChecking();
-                    schedule.setEndType(Schedule.EndType.ON_DATE);
-                }
-                else{
-                    Schedule.pauseStartEndBoundsChecking();
-                    schedule.setStart(date);
-                    schedule.setEndPseudoIndefinite();
-                    Schedule.resumeStartEndBoundsChecking();
-                    if(selectedFrequencyText.equals("Other")){
-                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                        schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(editNumberOfDays.getText())));
-                    }
-                    else if(selectedFrequencyText.equals("Yearly")){
-                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
-                    }
-                    else if(selectedFrequencyText.equals("Monthly")){
-                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
-                    }
-                    else if(selectedFrequencyText.equals("Weekly")){
-                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
-                    }
-                    else if(selectedFrequencyText.equals("Daily")){
-                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                    }
-                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
-                }
-                System.out.println("");
-                Task task = new Task(taskId, userId, houseId, name, schedule, selectedDifficultyNum);
-                myDatabase.updateTask(task, bool->{
-                    if(bool){
-                        Log.d(EditTaskFragment.TAG, "Task updated in the Database");
-                        Toast.makeText(activity, "Task Saved", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Log.d(EditTaskFragment.TAG, "Task not updated in the  Database");
-                        Toast.makeText(activity, "Task Not Saved", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
+            String selectedFrequencyText = ((RadioButton) view.findViewById(taskFrequencies.getCheckedRadioButtonId())).getText().toString();
+            int day = datePicker.getDayOfMonth();
+            int month = datePicker.getMonth();
+            int year = datePicker.getYear();
+            oldCalendar.set(year, month, day, 23, 59, 59);
+            oldCalendar.set(Calendar.MILLISECOND, 0);
+            Date date = oldCalendar.getTime();
+            if (String.valueOf(taskName.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(editNumberOfDays.getText()).equals(""))) {
+                Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
+                return;
             }
+            String name = String.valueOf(taskName.getText());
+            String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
+            int selectedDifficultyNum = 1;
+            if (selectedDifficulty.equals("Medium")) {
+                selectedDifficultyNum = 2;
+            } else if (selectedDifficulty.equals("Hard")) {
+                selectedDifficultyNum = 3;
+            }
+            Schedule schedule = new Schedule();
+            if (selectedFrequencyText.equals("Once")) {
+                Schedule.pauseStartEndBoundsChecking();
+                schedule.setStart(date);
+                schedule.setEnd(date);
+                Schedule.resumeStartEndBoundsChecking();
+                schedule.setEndType(Schedule.EndType.ON_DATE);
+            } else {
+                Schedule.pauseStartEndBoundsChecking();
+                schedule.setStart(date);
+                schedule.setEndPseudoIndefinite();
+                Schedule.resumeStartEndBoundsChecking();
+                if (selectedFrequencyText.equals("Other")) {
+                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                    schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(editNumberOfDays.getText())));
+                } else if (selectedFrequencyText.equals("Yearly")) {
+                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                } else if (selectedFrequencyText.equals("Monthly")) {
+                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                } else if (selectedFrequencyText.equals("Weekly")) {
+                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+                } else if (selectedFrequencyText.equals("Daily")) {
+                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                }
+                schedule.setEndType(Schedule.EndType.AFTER_TIMES);
+            }
+            System.out.println();
+            Task task = new Task(taskId, userId, houseId, name, schedule, selectedDifficultyNum);
+            myDatabase.updateTask(task, bool -> {
+                if (bool) {
+                    Log.d(EditTaskFragment.TAG, "Task updated in the Database");
+                    Toast.makeText(activity, "Task Saved", Toast.LENGTH_SHORT).show();
+                    Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
+                    activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
+                } else {
+                    Log.d(EditTaskFragment.TAG, "Task not updated in the  Database");
+                    Toast.makeText(activity, "Task Not Saved", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 
     @Override
     public void acceptArguments(Object... args) {
-        if(!(args[1] == null)){
+        if (!(args[1] == null)) {
             taskIdStr = args[1].toString();
             taskId = new ObjectId(taskIdStr);
         }

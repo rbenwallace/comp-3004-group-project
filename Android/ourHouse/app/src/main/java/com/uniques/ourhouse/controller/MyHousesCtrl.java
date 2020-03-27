@@ -52,24 +52,24 @@ public class MyHousesCtrl implements FragmentCtrl {
         housesList = view.findViewById(R.id.myHousesList);
         logoutBtn = view.findViewById(R.id.logoutBtnMH);
         // Gather houses if there are any from the shared pref Houses
-        User myUser = Session.getSession().getLoggedInUser();
-        if (myUser.getMyHouses() == null) {
-            myUser.setMyHouses(new ArrayList<>());
-            database.updateUser(myUser, success -> {
-
-            });
-        }
-        if (myHouses == null) {
-            myHouses = new ArrayList<>();
-        }
-        Log.d("myHouses", "myUser myHouses B4 Fetch"+ myUser.getMyHouses().toString());
-        fetchMyHouses(view, myUser.getMyHouses(), myHouses);
-        logoutBtn.setOnClickListener(view14 -> {
-            Session.getSession().getSecureAuthenticator().logout(activity, b1 -> {
-                database.clearLocalState(b2 -> {
-                    FragmentId loginFragmentId = FragmentId.GET(LoginFragment.TAG);
-                    activity.popFragment(loginFragmentId);
-                    activity.pushFragment(loginFragmentId);
+//        User myUser = Session.getSession().getLoggedInUser();
+        database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
+            if (myUser.getMyHouses() == null) {
+                myUser.setMyHouses(new ArrayList<>());
+                database.updateUser(myUser, success -> {
+                });
+            }
+            if (myHouses == null) {
+                myHouses = new ArrayList<>();
+            }
+            fetchMyHouses(view, myUser.getMyHouses(), myHouses);
+            logoutBtn.setOnClickListener(view14 -> {
+                Session.getSession().getSecureAuthenticator().logout(activity, b1 -> {
+                    database.clearLocalState(b2 -> {
+                        FragmentId loginFragmentId = FragmentId.GET(LoginFragment.TAG);
+                        activity.popFragment(loginFragmentId);
+                        activity.pushFragment(loginFragmentId);
+                    });
                 });
             });
         });

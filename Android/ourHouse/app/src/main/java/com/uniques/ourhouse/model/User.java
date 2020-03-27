@@ -1,7 +1,6 @@
 package com.uniques.ourhouse.model;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
@@ -13,7 +12,6 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -22,7 +20,9 @@ import androidx.annotation.Nullable;
 
 public class User implements Observable, Indexable {
     private ObjectId userID;
+    @NonNull
     private String firstName;
+    @NonNull
     private String lastName;
     private String emailAddress;
     private List<ObjectId> myHouses = new ArrayList<>();
@@ -31,7 +31,7 @@ public class User implements Observable, Indexable {
     private int performance;
 
     //testing int num
-    public User(ObjectId userID, String firstName, String lastName, String emailAddress, List<ObjectId> myHouses, int num) {
+    public User(ObjectId userID, @NonNull String firstName, @NonNull String lastName, String emailAddress, List<ObjectId> myHouses, int num) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -41,7 +41,7 @@ public class User implements Observable, Indexable {
     }
 
     //testing int num
-    public User(String firstName, String lastName, String emailAddress, int num) {
+    public User(@NonNull String firstName, @NonNull String lastName, String emailAddress, int num) {
         this.userID = new ObjectId();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,7 +50,7 @@ public class User implements Observable, Indexable {
         this.performance = num;
     }
 
-    public User(String firstName, String lastName, String emailAddress) {
+    public User(@NonNull String firstName, @NonNull String lastName, String emailAddress) {
         this.userID = new ObjectId();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -60,6 +60,8 @@ public class User implements Observable, Indexable {
     }
 
     public User() {
+        firstName = "";
+        lastName = "";
     }
 
     @NonNull
@@ -114,9 +116,7 @@ public class User implements Observable, Indexable {
 
     public void removeHouseId(ObjectId id) {
         if (id != null) {
-            if (myHouses.contains(id)) {
-                myHouses.remove(id);
-            }
+            myHouses.remove(id);
         }
     }
 
@@ -136,19 +136,21 @@ public class User implements Observable, Indexable {
         this.myHouses = myHouses;
     }
 
+    @NonNull
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(@NonNull String firstName) {
         this.firstName = firstName;
     }
 
+    @NonNull
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(@NonNull String lastName) {
         this.lastName = lastName;
     }
 
@@ -169,10 +171,12 @@ public class User implements Observable, Indexable {
     }
 
     public static User fromBsonDocument(final Document doc) {
+        String firstName = doc.getString("firstName");
+        String lastName = doc.getString("lastName");
         return new User(
                 (ObjectId) doc.get("_id"),
-                doc.getString("firstName"),
-                doc.getString("lastName"),
+                firstName == null ? "" : firstName,
+                lastName == null ? "" : lastName,
                 doc.getString("email"),
                 doc.getList("houses", ObjectId.class),
                 doc.getInteger("performance")
@@ -182,22 +186,25 @@ public class User implements Observable, Indexable {
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
-        json.putPrimitive("userId", userID.toString());
+        json.putPrimitive("userID", userID.toString());
         json.putPrimitive("fname", firstName);
         json.putPrimitive("lname", lastName);
         json.putPrimitive("email", emailAddress);
-        json.putStructure("houses");
         json.putPrimitive("performance", performance);
-        // idk why this is necessary but hopefully this fixes the serialization issue
-        if (json.elementExists("house_id")) {
-            json.putPrimitive("house_id", json.valueOf("house_id").toString());
+        json.putArray("houses");
+        for (ObjectId houseId : myHouses) {
+            json.search("houses").putPrimitive(houseId.toString());
         }
+        // idk why this is necessary but hopefully this fixes the serialization issue
+//        if (json.elementExists("house_id")) {
+//            json.putPrimitive("house_id", json.valueOf("house_id").toString());
+//        }
         return json.getRootNode();
     }
 
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
-        userID = new ObjectId(json.<String>valueOf("userId"));
+        userID = new ObjectId(json.<String>valueOf("userID"));
         firstName = json.valueOf("fname");
         lastName = json.valueOf("lname");
         emailAddress = json.valueOf("email");
@@ -212,23 +219,23 @@ public class User implements Observable, Indexable {
         consumer.accept(this);
     }
 
-    public static User fromJSON(JsonObject obj) {
-        JsonObject id = obj.get("_id").getAsJsonObject();
-        String myID = id.get("$oid").getAsString();
-        String firstName = obj.get("firstName").getAsString();
-        String lastName = obj.get("lastName").getAsString();
-        String myEmail = obj.get("email").getAsString();
-        JsonObject myHouses;
-        List<ObjectId> houses = new ArrayList<ObjectId>();
-        if (obj.get("houses") != null) {
-            myHouses = obj.get("houses").getAsJsonObject();
-            for (Map.Entry<String, JsonElement> entry : myHouses.entrySet()) {
-                houses.add(new ObjectId(entry.getValue().getAsString()));
-            }
-        }
-        int prefNum = obj.get("performance").getAsInt();
-        return new User(new ObjectId(myID), firstName, lastName, myEmail, houses, prefNum);
-    }
+//    public static User fromJSON(JsonObject obj) {
+//        JsonObject id = obj.get("_id").getAsJsonObject();
+//        String myID = id.get("$oid").getAsString();
+//        String firstName = obj.get("firstName").getAsString();
+//        String lastName = obj.get("lastName").getAsString();
+//        String myEmail = obj.get("email").getAsString();
+//        JsonObject myHouses;
+//        List<ObjectId> houses = new ArrayList<ObjectId>();
+//        if (obj.get("houses") != null) {
+//            myHouses = obj.get("houses").getAsJsonObject();
+//            for (Map.Entry<String, JsonElement> entry : myHouses.entrySet()) {
+//                houses.add(new ObjectId(entry.getValue().getAsString()));
+//            }
+//        }
+//        int prefNum = obj.get("performance").getAsInt();
+//        return new User(new ObjectId(myID), firstName, lastName, myEmail, houses, prefNum);
+//    }
 
     @Override
     public boolean equals(@Nullable Object obj) {

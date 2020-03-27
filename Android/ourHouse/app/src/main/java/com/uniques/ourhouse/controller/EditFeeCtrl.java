@@ -57,20 +57,20 @@ public class EditFeeCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         Log.d(AddTaskFragment.TAG, "Edit Task Clicked");
-        editFeeBackButton = (Button) view.findViewById(R.id.addFee_btnBack);
-        feeName = (TextView) view.findViewById(R.id.addFee_editName);
-        feeFrequencies = (RadioGroup) view.findViewById(R.id.addFee_radioFrequency);
-        onceButton = (RadioButton) view.findViewById(R.id.addFee_once);
-        dailyButton = (RadioButton) view.findViewById(R.id.addFee_daily);
-        weeklyButton = (RadioButton) view.findViewById(R.id.addFee_weekly);
-        monthlyButton = (RadioButton) view.findViewById(R.id.addFee_monthly);
-        yearlyButton = (RadioButton) view.findViewById(R.id.addFee_yearly);
-        otherButton = (RadioButton) view.findViewById(R.id.addFee_other);
-        editNumberOfDays = (EditText) view.findViewById(R.id.addFee_editNumberOfDays);
-        feeViewTitle = (TextView) view.findViewById(R.id.addFee_title);
-        saveFee = (Button) view.findViewById(R.id.addFee_btnAdd);
-        feeAmount = (EditText) view.findViewById(R.id.addFee_editAmount);
-        feeTaxRate = (EditText) view.findViewById(R.id.addFee_editTaxRate);
+        editFeeBackButton = view.findViewById(R.id.addFee_btnBack);
+        feeName = view.findViewById(R.id.addFee_editName);
+        feeFrequencies = view.findViewById(R.id.addFee_radioFrequency);
+        onceButton = view.findViewById(R.id.addFee_once);
+        dailyButton = view.findViewById(R.id.addFee_daily);
+        weeklyButton = view.findViewById(R.id.addFee_weekly);
+        monthlyButton = view.findViewById(R.id.addFee_monthly);
+        yearlyButton = view.findViewById(R.id.addFee_yearly);
+        otherButton = view.findViewById(R.id.addFee_other);
+        editNumberOfDays = view.findViewById(R.id.addFee_editNumberOfDays);
+        feeViewTitle = view.findViewById(R.id.addFee_title);
+        saveFee = view.findViewById(R.id.addFee_btnAdd);
+        feeAmount = view.findViewById(R.id.addFee_editAmount);
+        feeTaxRate = view.findViewById(R.id.addFee_editTaxRate);
 
         feeViewTitle.setText("Edit Task");
         saveFee.setText("SAVE");
@@ -80,12 +80,11 @@ public class EditFeeCtrl implements FragmentCtrl {
         userId = Session.getSession().getLoggedInUserId();
         houseId = Settings.OPEN_HOUSE.get();
 
-        if(feeIdStr.equals("")){
+        if (feeIdStr.equals("")) {
             Log.d(EditFeeFragment.TAG, "Fee Id not received");
             Toast.makeText(activity, "Fee Currently Not Editable", Toast.LENGTH_SHORT).show();
             activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
-        }
-        else{
+        } else {
             Log.d(EditFeeFragment.TAG, "Fee: " + feeId + " received");
         }
 
@@ -93,25 +92,20 @@ public class EditFeeCtrl implements FragmentCtrl {
             feeName.setText(fee.getName());
             feeAmount.setText(String.valueOf(fee.getAmount()));
             schedule = fee.getSchedule();
-            if(schedule.getEndType().equals(Schedule.EndType.ON_DATE)){
+            if (schedule.getEndType().equals(Schedule.EndType.ON_DATE)) {
                 Toast.makeText(activity, "Task not Editable", Toast.LENGTH_SHORT).show();
                 activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
-            }
-            else{
-                if(schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.YEARLY)){
+            } else {
+                if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.YEARLY)) {
                     yearlyButton.performClick();
-                }
-                else if(schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.MONTHLY)){
+                } else if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.MONTHLY)) {
                     monthlyButton.performClick();
-                }
-                else if(schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.WEEKLY)){
+                } else if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.WEEKLY)) {
                     weeklyButton.performClick();
-                }
-                else{
-                    if(schedule.getRepeatSchedule().getDelay() == 1){
+                } else {
+                    if (schedule.getRepeatSchedule().getDelay() == 1) {
                         dailyButton.performClick();
-                    }
-                    else{
+                    } else {
                         otherButton.performClick();
                         editNumberOfDays.setText(schedule.getRepeatSchedule().getDelay());
                     }
@@ -119,81 +113,74 @@ public class EditFeeCtrl implements FragmentCtrl {
             }
 
         });
-        editFeeBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
+        editFeeBackButton.setOnClickListener(view12 -> {
+            //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
-            }
+            activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
         });
-        saveFee.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view1) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
+        saveFee.setOnClickListener(view1 -> {
+            //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
-                if(String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(editNumberOfDays.getText()).equals(""))){
-                    Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(Float.parseFloat(feeAmount.getText().toString()) < 0.0){
-                    Toast.makeText(activity, "Please only enter positive values", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String name = String.valueOf(feeName.getText());
-                float amount = Float.parseFloat(String.valueOf(feeAmount.getText()));
-                if(selectedFrequencyText.equals("Once")){
-                    schedule.setEndType(Schedule.EndType.ON_DATE);
-                    Schedule.pauseStartEndBoundsChecking();
-                    schedule.setStart(Calendar.getInstance().getTime());
-                    schedule.setEnd(Calendar.getInstance().getTime());
-                    Schedule.resumeStartEndBoundsChecking();
-                }
-                else{
-                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
-                    Schedule.pauseStartEndBoundsChecking();
-                    schedule.setStart(Calendar.getInstance().getTime());
-                    schedule.setEndPseudoIndefinite();
-                    Schedule.resumeStartEndBoundsChecking();
-                    switch (selectedFrequencyText) {
-                        case "Other":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                            schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(editNumberOfDays.getText())));
-                            break;
-                        case "Yearly":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
-                            break;
-                        case "Monthly":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
-                            break;
-                        case "Weekly":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
-                            break;
-                        case "Daily":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                            break;
-                    }
-                }
-                Fee fee = new Fee(userId, houseId, name, amount, schedule);
-                myDatabase.updateFee(fee, bool->{
-                    if(bool){
-                        Log.d(AddTaskFragment.TAG, "Fee Saved to Database");
-                        Toast.makeText(activity, "Fee Saved", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Log.d(AddTaskFragment.TAG, "Fee not saved in Database");
-                        Toast.makeText(activity, "Fee Not Saved", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
+            String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
+            if (String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(editNumberOfDays.getText()).equals(""))) {
+                Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
+                return;
             }
+            if (Float.parseFloat(feeAmount.getText().toString()) < 0.0) {
+                Toast.makeText(activity, "Please only enter positive values", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String name = String.valueOf(feeName.getText());
+            float amount = Float.parseFloat(String.valueOf(feeAmount.getText()));
+            if (selectedFrequencyText.equals("Once")) {
+                schedule.setEndType(Schedule.EndType.ON_DATE);
+                Schedule.pauseStartEndBoundsChecking();
+                schedule.setStart(Calendar.getInstance().getTime());
+                schedule.setEnd(Calendar.getInstance().getTime());
+                Schedule.resumeStartEndBoundsChecking();
+            } else {
+                schedule.setEndType(Schedule.EndType.AFTER_TIMES);
+                Schedule.pauseStartEndBoundsChecking();
+                schedule.setStart(Calendar.getInstance().getTime());
+                schedule.setEndPseudoIndefinite();
+                Schedule.resumeStartEndBoundsChecking();
+                switch (selectedFrequencyText) {
+                    case "Other":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                        schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(editNumberOfDays.getText())));
+                        break;
+                    case "Yearly":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                        break;
+                    case "Monthly":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                        break;
+                    case "Weekly":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+                        break;
+                    case "Daily":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                        break;
+                }
+            }
+            Fee fee = new Fee(userId, houseId, name, amount, schedule);
+            myDatabase.updateFee(fee, bool -> {
+                if (bool) {
+                    Log.d(AddTaskFragment.TAG, "Fee Saved to Database");
+                    Toast.makeText(activity, "Fee Saved", Toast.LENGTH_SHORT).show();
+                    Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
+                    activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
+                } else {
+                    Log.d(AddTaskFragment.TAG, "Fee not saved in Database");
+                    Toast.makeText(activity, "Fee Not Saved", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 
     @Override
     public void acceptArguments(Object... args) {
-        if(!(args[1] == null)){
+        if (!(args[1] == null)) {
             feeIdStr = args[1].toString();
             feeId = new ObjectId(feeIdStr);
         }

@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.uniques.ourhouse.R;
-import com.uniques.ourhouse.fragment.AddTaskFragment;
 import com.uniques.ourhouse.fragment.EditTaskFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
@@ -27,8 +26,6 @@ import java.util.function.Consumer;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-
-import org.bson.types.ObjectId;
 
 @SuppressLint("SetTextI18n")
 public final class FeedCard implements RecyclerCard, Comparable {
@@ -154,9 +151,8 @@ public final class FeedCard implements RecyclerCard, Comparable {
             largeTxtComplete = layout.findViewById(R.id.feed_card_large_txtComplete);
 
             layout.setOnClickListener(v -> handleClick());
-            String taskIdStr = "5e6810c3bd4f6f554e13dc06";
             layout.findViewById(R.id.feed_card_pnlEdit).setOnClickListener(v ->
-                    activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getId(), taskIdStr));
+                    activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getId(), object.getEvent().getAssociatedTask()));
             layout.findViewById(R.id.feed_card_pnlComplete).setOnClickListener(v -> {
                 object.getEvent().setDateCompleted(isComplete ? null : new Date());
                 isComplete = !isComplete;
@@ -215,7 +211,6 @@ public final class FeedCard implements RecyclerCard, Comparable {
     }
 
     private class FilterCard implements FeedCardSpecialization {
-        private View smallView;
         private View closePanel;
         private View optionsPanel;
         private TextView txtTitle;
@@ -226,7 +221,6 @@ public final class FeedCard implements RecyclerCard, Comparable {
 
         public void attachLayoutViews(View layout, CardView cv) {
             layout.setOnClickListener(v -> handleClick());
-            smallView = layout.findViewById(R.id.feed_filter_parent);
             closePanel = layout.findViewById(R.id.feed_filter_close);
             optionsPanel = layout.findViewById(R.id.feed_filter_options);
             txtTitle = layout.findViewById(R.id.feed_filter_txtTitle);

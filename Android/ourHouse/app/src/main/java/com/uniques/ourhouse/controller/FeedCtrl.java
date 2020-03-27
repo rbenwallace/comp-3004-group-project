@@ -1,10 +1,13 @@
 package com.uniques.ourhouse.controller;
 
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.uniques.ourhouse.EventService;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.model.Event;
@@ -25,6 +28,7 @@ import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     private static final String TAG = "FeedCtrl";
@@ -32,11 +36,15 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     FragmentActivity activity;
     private TextView txtPastEvents;
     private TextView txtUpcomingEvents;
+    private TextView loadingText;
+    private LinearLayout loadingPanel;
+    private RecyclerView recyclerView;
     private boolean showingPastEvents;
     private boolean pendingReopenFilter;
 
     public List<FeedCard> observableCards;
     private RecyclerAdapter<FeedCard> cardsAdapter;
+    private EventService.Logic eventServiceLogic;
 
     public FeedCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -48,6 +56,9 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
     public void init(View view) {
         txtPastEvents = view.findViewById(R.id.feed_txtPastEvents);
         txtUpcomingEvents = view.findViewById(R.id.feed_txtUpcomingEvents);
+        loadingText = view.findViewById(R.id.feed_loading_txtMsg);
+        loadingPanel = view.findViewById(R.id.feed_loadingPanel);
+        recyclerView = view.findViewById(R.id.feed_recycler);
 
         txtPastEvents.setOnClickListener(v -> {
             if (!showingPastEvents) {
@@ -61,11 +72,19 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 updateInfo();
             }
         });
+
+        Long eventServiceLastUpdate = Settings.EVENT_SERVICE_LAST_UPDATE.get();
+
+        if (eventServiceLastUpdate == null
+                || (System.currentTimeMillis() - eventServiceLastUpdate) > EventService.JOB_INTERVAL_MILLIS) {
+
+            Log.d(TAG, "Last run of EventService.Logic may be out of date");
+            invokeEventServiceLogic();
+        }
     }
 
     @Override
     public void acceptArguments(Object... args) {
-
     }
 
     void updateInfoAndReopenFilter() {
@@ -75,6 +94,19 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 
     @Override
     public void updateInfo() {
+        loadingPanel.setVisibility(View.VISIBLE);
+
+        if (eventServiceLogic != null)
+            return;
+
+        if (!Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.<Boolean>get()) {
+            Log.d(TAG, "Last run of EventService.Logic may be out of date");
+            invokeEventServiceLogic();
+            return;
+        }
+
+        loadingText.setText("Fetching events...");
+
         txtPastEvents.setTextColor(activity.getColor(showingPastEvents ? R.color.colorTextPrimary : R.color.colorTextSecondary));
         txtUpcomingEvents.setTextColor(activity.getColor(!showingPastEvents ? R.color.colorTextPrimary : R.color.colorTextSecondary));
         if (showingPastEvents) {
@@ -87,8 +119,12 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 
         List<FeedCard> feedCardList = new ArrayList<>();
 
-        populateFeedCardList(feedCardList, v -> {
-//        Util.sortList(feedCardList, false);
+        if (RefreshTask.refreshing) {
+            return;
+        }
+
+        RefreshTask refreshTask = new RefreshTask(this, v -> {
+//               Util.sortList(feedCardList, false);
 
             Log.d(TAG, "observableCardsSize " + observableCards.size() + " | feedCardsSize " + feedCardList.size());
 
@@ -99,17 +135,17 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 }
             }
 
-//        outer:
+//               outer:
             for (int i = 0; i < feedCardList.size(); ++i) {
                 FeedCard feedCard = feedCardList.get(i);
                 if (!observableCards.contains(feedCard)) {
-//                for (int j = 0; j < observableCards.size(); ++j) {
-//                    if (observableCards.get(j).compareTo(feedCard) > 0) {
-//                        observableCards.add(j, feedCard);
-//                        cardsAdapter.notifyItemInserted(j);
-//                        continue outer;
-//                    }
-//                }
+//                       for (int j = 0; j < observableCards.size(); ++j) {
+//                            if (observableCards.get(j).compareTo(feedCard) > 0) {
+//                                observableCards.add(j, feedCard);
+//                              cardsAdapter.notifyItemInserted(j);
+//                              continue outer;
+//                         }
+//                        }
                     observableCards.add(i, feedCard);
                     cardsAdapter.notifyItemInserted(observableCards.size() - 1);
                 } else {
@@ -128,10 +164,12 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 }
             }
 
-//        cardsAdapter.notifyDataSetChanged();
-        });
-    }
+            loadingPanel.setVisibility(View.GONE);
 
+//             cardsAdapter.notifyDataSetChanged();
+        });
+        refreshTask.doInBackground(feedCardList);
+    }
 
     @Override
     public void setRecyclerAdapter(RecyclerAdapter<FeedCard> recyclerAdapter) {
@@ -163,208 +201,234 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         });
     }
 
-    private void populateFeedCardList(List<FeedCard> feedCardList, Consumer<Void> consumer) {
-        FeedCard filterCard = new FeedCard(FeedCard.FeedCardType.FILTER, new FeedCard.FeedCardObject() {
-            @Override
-            public Date getDueDate() {
-                return null;
-            }
+    private static class RefreshTask extends AsyncTask<List<FeedCard>, Void, Void> {
+        private static boolean refreshing;
 
-            @Override
-            public Date getDateCompleted() {
-                return null;
-            }
+        private final FeedCtrl controller;
+        private final Consumer<Void> consumer;
 
-            @Override
-            public User getPerson() {
-                return null;
-            }
+        private RefreshTask(FeedCtrl controller, Consumer<Void> consumer) {
+            this.controller = controller;
+            this.consumer = consumer;
+        }
 
-            @Override
-            public int getCompareType() {
-                return -1;
-            }
+        @Override
+        protected void onPreExecute() {
+            if (refreshing)
+                throw new RuntimeException("Attempt to perform multiple RefreshTasks at a time");
+            refreshing = true;
+        }
 
-            @Override
-            public java.lang.Comparable getCompareObject() {
-                return null;
-            }
+        @SafeVarargs
+        @Override
+        protected final Void doInBackground(List<FeedCard>... lists) {
+            List<FeedCard> feedCardList = lists[0];
 
-            @Override
-            public String getName() {
-                return null;
-            }
-
-            @Override
-            public void setName(String name) {
-            }
-
-            @Override
-            public int compareTo(@NonNull Object o) {
-                return -1;
-            }
-
-            @Override
-            public Event getEvent() {
-                return null;
-            }
-
-            @Override
-            public boolean equals(@Nullable Object obj) {
-                return obj instanceof FeedCard.FeedCardObject && ((FeedCard.FeedCardObject) obj).getCompareType() == getCompareType();
-            }
-        }, this);
-        filterCard.setExpanded(pendingReopenFilter);
-        pendingReopenFilter = false;
-        feedCardList.add(filterCard);
-
-        ObjectId filterUser = Settings.FEED_FILTER_USER.get();
-
-        retrieveEvents(retrievedEvents -> {
-
-            boolean doneToday = false;
-            boolean doneDayDiff = false;
-            boolean doneWeek = false;
-            boolean doneWeekDiff = false;
-            List<String> doneMonths = new ArrayList<>();
-            Calendar cal = Calendar.getInstance();
-            Date now = new Date();
-
-            for (Event event : retrievedEvents) {
-                if (filterUser != null && !filterUser.equals(event.getAssignedTo().getId())) {
-                    continue;
+            FeedCard filterCard = new FeedCard(FeedCard.FeedCardType.FILTER, new FeedCard.FeedCardObject() {
+                @Override
+                public Date getDueDate() {
+                    return null;
                 }
-                if (event.isLate()) {
-                    if (!Settings.FEED_SHOW_LATE.<Boolean>get())
-                        continue;
-                } else {
-                    if (!Settings.FEED_SHOW_ON_TIME.<Boolean>get())
-                        continue;
+
+                @Override
+                public Date getDateCompleted() {
+                    return null;
                 }
-                if (event.getCompareObject() instanceof Date) {
-                    cal.setTime((Date) event.getCompareObject());
-                    if (showingPastEvents) {
-                        cal.set(Calendar.HOUR_OF_DAY, 23);
-                        cal.set(Calendar.MINUTE, 59);
-                        cal.set(Calendar.SECOND, 59);
-                        cal.set(Calendar.MILLISECOND, 999);
-                    } else {
-                        cal.set(Calendar.HOUR_OF_DAY, 0);
-                        cal.set(Calendar.MINUTE, 0);
-                        cal.set(Calendar.SECOND, 0);
-                        cal.set(Calendar.MILLISECOND, 0);
+
+                @Override
+                public User getPerson() {
+                    return null;
+                }
+
+                @Override
+                public int getCompareType() {
+                    return -1;
+                }
+
+                @Override
+                public java.lang.Comparable getCompareObject() {
+                    return null;
+                }
+
+                @Override
+                public String getName() {
+                    return null;
+                }
+
+                @Override
+                public void setName(String name) {
+                }
+
+                @Override
+                public int compareTo(@NonNull Object o) {
+                    return -1;
+                }
+
+                @Override
+                public Event getEvent() {
+                    return null;
+                }
+
+                @Override
+                public boolean equals(@Nullable Object obj) {
+                    return obj instanceof FeedCard.FeedCardObject && ((FeedCard.FeedCardObject) obj).getCompareType() == getCompareType();
+                }
+            }, controller);
+            filterCard.setExpanded(controller.pendingReopenFilter);
+            controller.pendingReopenFilter = false;
+            feedCardList.add(filterCard);
+
+            ObjectId filterUser = Settings.FEED_FILTER_USER.get();
+
+            retrieveEvents(retrievedEvents -> {
+
+                boolean doneToday = false;
+                boolean doneDayDiff = false;
+                boolean doneWeek = false;
+                boolean doneWeekDiff = false;
+                List<String> doneMonths = new ArrayList<>();
+                Calendar cal = Calendar.getInstance();
+                Date now = new Date();
+
+                for (Event event : retrievedEvents) {
+                    if (filterUser != null && !filterUser.equals(event.getAssignedTo().getId())) {
+                        continue;
                     }
-                    Date date = cal.getTime();
-                    // if date occurs today
-                    if (occursInSameCalendarField(date, now, Calendar.DAY_OF_YEAR, 0)) {
-                        if (!doneToday) {
-                            feedCardList.add(
-                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
-                            doneToday = true;
-                        }
-                    } else if (occursInSameCalendarField(date, now, Calendar.WEEK_OF_YEAR, 0)) {
-                        // if date occurs yesterday/tomorrow (within this week)
-                        if (occursInSameCalendarField(date, now, Calendar.DAY_OF_YEAR, 1)) {
-                            if (!doneDayDiff) {
-                                feedCardList.add(
-                                        new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
-                                doneDayDiff = true;
-                            }
-                            // if date just occurs this week
+                    if (event.isLate()) {
+                        if (!Settings.FEED_SHOW_LATE.<Boolean>get())
+                            continue;
+                    } else {
+                        if (!Settings.FEED_SHOW_ON_TIME.<Boolean>get())
+                            continue;
+                    }
+                    if (event.getCompareObject() instanceof Date) {
+                        cal.setTime((Date) event.getCompareObject());
+                        if (controller.showingPastEvents) {
+                            cal.set(Calendar.HOUR_OF_DAY, 23);
+                            cal.set(Calendar.MINUTE, 59);
+                            cal.set(Calendar.SECOND, 59);
+                            cal.set(Calendar.MILLISECOND, 999);
                         } else {
-                            if (!doneWeek) {
+                            cal.set(Calendar.HOUR_OF_DAY, 0);
+                            cal.set(Calendar.MINUTE, 0);
+                            cal.set(Calendar.SECOND, 0);
+                            cal.set(Calendar.MILLISECOND, 0);
+                        }
+                        Date date = cal.getTime();
+                        // if date occurs today
+                        if (occursInSameCalendarField(date, now, Calendar.DAY_OF_YEAR, 0)) {
+                            if (!doneToday) {
                                 feedCardList.add(
-                                        new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
-                                doneWeek = true;
+                                        new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
+                                doneToday = true;
+                            }
+                        } else if (occursInSameCalendarField(date, now, Calendar.WEEK_OF_YEAR, 0)) {
+                            // if date occurs yesterday/tomorrow (within this week)
+                            if (occursInSameCalendarField(date, now, Calendar.DAY_OF_YEAR, 1)) {
+                                if (!doneDayDiff) {
+                                    feedCardList.add(
+                                            new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
+                                    doneDayDiff = true;
+                                }
+                                // if date just occurs this week
+                            } else {
+                                if (!doneWeek) {
+                                    feedCardList.add(
+                                            new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
+                                    doneWeek = true;
+                                }
+                            }
+                        } else if (occursInSameCalendarField(date, now, Calendar.WEEK_OF_YEAR, 1)) {
+                            if (!doneWeekDiff) {
+                                feedCardList.add(
+                                        new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
+                                doneWeekDiff = true;
+                            }
+                        } else {
+                            cal.setTime(date);
+                            int month = cal.get(Calendar.MONTH);
+                            int year = cal.get(Calendar.YEAR);
+                            if (!doneMonths.contains(month + ":" + year)) {
+                                feedCardList.add(
+                                        new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
+                                doneMonths.add(month + ":" + year);
                             }
                         }
-                    } else if (occursInSameCalendarField(date, now, Calendar.WEEK_OF_YEAR, 1)) {
-                        if (!doneWeekDiff) {
-                            feedCardList.add(
-                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
-                            doneWeekDiff = true;
-                        }
-                    } else {
-                        cal.setTime(date);
-                        int month = cal.get(Calendar.MONTH);
-                        int year = cal.get(Calendar.YEAR);
-                        if (!doneMonths.contains(month + ":" + year)) {
-                            feedCardList.add(
-                                    new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, this));
-                            doneMonths.add(month + ":" + year);
-                        }
                     }
+                    feedCardList.add(new FeedCard(FeedCard.FeedCardType.BUBBLE, new FeedCard.FeedCardObject() {
+                        @Override
+                        public Date getDueDate() {
+                            return event.getDueDate();
+                        }
+
+                        @Override
+                        public Date getDateCompleted() {
+                            return event.getDateCompleted();
+                        }
+
+                        @Override
+                        public User getPerson() {
+                            return event.getAssignedTo();
+                        }
+
+                        @Override
+                        public Event getEvent() {
+                            return event;
+                        }
+
+                        @Override
+                        public int getCompareType() {
+                            return event.getCompareType();
+                        }
+
+                        @Override
+                        public java.lang.Comparable getCompareObject() {
+                            return event.getCompareObject();
+                        }
+
+                        @Override
+                        public String getName() {
+                            return event.getName();
+                        }
+
+                        @Override
+                        public void setName(String name) {
+                            event.setName(name);
+                        }
+
+                        @Override
+                        public boolean equals(@Nullable Object obj) {
+                            return obj instanceof Event && obj.equals(event);
+                        }
+                    }, controller));
                 }
-                feedCardList.add(new FeedCard(FeedCard.FeedCardType.BUBBLE, new FeedCard.FeedCardObject() {
-                    @Override
-                    public Date getDueDate() {
-                        return event.getDueDate();
-                    }
+                if (controller.showingPastEvents) {
+                    feedCardList.sort((o1, o2) -> -o1.compareTo(o2));
+                } else {
+                    feedCardList.sort(Comparable::compareTo);
+                }
 
-                    @Override
-                    public Date getDateCompleted() {
-                        return event.getDateCompleted();
-                    }
+                refreshing = false;
+                consumer.accept(null);
+            });
+            return null;
+        }
 
-                    @Override
-                    public User getPerson() {
-                        return event.getAssignedTo();
-                    }
-
-                    @Override
-                    public Event getEvent() {
-                        return event;
-                    }
-
-                    @Override
-                    public int getCompareType() {
-                        return event.getCompareType();
-                    }
-
-                    @Override
-                    public java.lang.Comparable getCompareObject() {
-                        return event.getCompareObject();
-                    }
-
-                    @Override
-                    public String getName() {
-                        return event.getName();
-                    }
-
-                    @Override
-                    public void setName(String name) {
-                        event.setName(name);
-                    }
-
-                    @Override
-                    public boolean equals(@Nullable Object obj) {
-                        return obj instanceof Event && obj.equals(event);
-                    }
-                }, this));
-            }
-            if (showingPastEvents) {
-                feedCardList.sort((o1, o2) -> -o1.compareTo(o2));
-            } else {
-                feedCardList.sort(Comparable::compareTo);
-            }
-            consumer.accept(null);
-        });
-    }
-
-    private void retrieveEvents(Consumer<List<Event>> consumer) {
+        private void retrieveEvents(Consumer<List<Event>> consumer) {
 //        consumer.accept(Arrays.asList(showingPastEvents ? Event.testEvents() : new Event[0]));
-        Session.getSession().getDatabase().getAllEventsFromHouse(Settings.OPEN_HOUSE.get(), consumer);
-    }
+            Session.getSession().getDatabase().getAllEventsFromHouse(Settings.OPEN_HOUSE.get(), consumer);
+        }
 
-    private boolean occursInSameCalendarField(Date a, Date b, int field, int fieldTolerance) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(a);
-        int fieldVal = cal.get(field);
-        int year = cal.get(Calendar.YEAR);
-        cal.setTime(b);
-        int otherFieldVal = cal.get(field);
-        return year == cal.get(Calendar.YEAR)
-                && fieldVal >= otherFieldVal - fieldTolerance && fieldVal <= otherFieldVal + fieldTolerance;
+        private boolean occursInSameCalendarField(Date a, Date b, int field, int fieldTolerance) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(a);
+            int fieldVal = cal.get(field);
+            int year = cal.get(Calendar.YEAR);
+            cal.setTime(b);
+            int otherFieldVal = cal.get(field);
+            return year == cal.get(Calendar.YEAR)
+                    && fieldVal >= otherFieldVal - fieldTolerance && fieldVal <= otherFieldVal + fieldTolerance;
+        }
     }
 
     private static String getDateName(Date date) {
@@ -397,6 +461,20 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
             return "next week";
         }
         return cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + yearString;
+    }
+
+    private void invokeEventServiceLogic() {
+        Log.d(TAG, "Manually invoking EventService's Logic");
+        eventServiceLogic = EventService.manualInvoke(producedException -> {
+            recyclerView.setVisibility(View.VISIBLE);
+            Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(true);
+            eventServiceLogic = null;
+            updateInfo();
+        });
+        loadingPanel.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        loadingText.setText("Searching for events to generate...\nThis might take a minute");
+        eventServiceLogic.doInBackground(Session.getSession());
     }
 
     private interface FeedCardDateObject extends FeedCard.FeedCardObject {

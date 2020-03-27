@@ -58,6 +58,30 @@ public enum Settings {
         Boolean getDefault() {
             return true;
         }
+    }),
+
+    EVENT_SERVICE_LAST_UPDATE(new DefaultHandler<Long>() {
+        @Override
+        String getKey() {
+            return "eventService.lastUpdate";
+        }
+
+        @Override
+        Long getDefault() {
+            return null;
+        }
+    }),
+
+    EVENT_SERVICE_DUTIES_ARE_PRISTINE(new DefaultHandler<Boolean>() {
+        @Override
+        String getKey() {
+            return "eventService.dutiesArePristine";
+        }
+
+        @Override
+        Boolean getDefault() {
+            return true;
+        }
     });
 
     private Handler handler;

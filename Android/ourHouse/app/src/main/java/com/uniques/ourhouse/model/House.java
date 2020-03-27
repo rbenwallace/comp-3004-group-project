@@ -2,7 +2,6 @@ package com.uniques.ourhouse.model;
 
 import android.util.Log;
 
-import com.google.gson.JsonObject;
 import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
@@ -274,39 +272,39 @@ public class House implements Indexable, Observable {
         }
     }
 
-    public static House fromJSON(JsonObject obj) {
-        JsonObject id = obj.get("_id").getAsJsonObject();
-        String myID = id.get("$oid").getAsString();
-        String myKey = obj.get("key").getAsString();
-        User owner = User.fromJSON(obj.get("owner").getAsJsonObject());
-        String name = obj.get("name").getAsString();
-        JsonObject occupants = obj.get("occupants").getAsJsonObject();
-        Set<String> keys = occupants.keySet();
-        Iterator<String> keyIt = keys.iterator();
-        ArrayList<User> occs = new ArrayList<User>();
-        while (keyIt.hasNext()) {
-            String key = keyIt.next();
-            if (occupants.get(key) != null) {
-                occs.add(User.fromJSON(occupants.get(key).getAsJsonObject()));
-            }
-        }
-        JsonObject rotation = obj.get("rotation").getAsJsonObject();
-        keys = rotation.keySet();
-        keyIt = keys.iterator();
-        ArrayList<User> rot = new ArrayList<User>();
-        Rotation actualRotation = new Rotation();
-        actualRotation.setRotation(rot);
-        while (keyIt.hasNext()) {
-            String key = keyIt.next();
-            if (rotation.get(key) != null) {
-                rot.add(User.fromJSON(rotation.get(key).getAsJsonObject()));
-            }
-        }
-        String password = obj.get("password").getAsString();
-        Boolean showTaskDifficulty = obj.get("showTaskDifficulty").getAsBoolean();
-        Boolean penalizeLateTasks = obj.get("penalizeLateTasks").getAsBoolean();
-        return new House(new ObjectId(myID), myKey, owner, name, occs, actualRotation, password, showTaskDifficulty, penalizeLateTasks);
-    }
+//    public static House fromJSON(JsonObject obj) {
+//        JsonObject id = obj.get("_id").getAsJsonObject();
+//        String myID = id.get("$oid").getAsString();
+//        String myKey = obj.get("key").getAsString();
+//        User owner = User.fromJSON(obj.get("owner").getAsJsonObject());
+//        String name = obj.get("name").getAsString();
+//        JsonObject occupants = obj.get("occupants").getAsJsonObject();
+//        Set<String> keys = occupants.keySet();
+//        Iterator<String> keyIt = keys.iterator();
+//        ArrayList<User> occs = new ArrayList<User>();
+//        while (keyIt.hasNext()) {
+//            String key = keyIt.next();
+//            if (occupants.get(key) != null) {
+//                occs.add(User.fromJSON(occupants.get(key).getAsJsonObject()));
+//            }
+//        }
+//        JsonObject rotation = obj.get("rotation").getAsJsonObject();
+//        keys = rotation.keySet();
+//        keyIt = keys.iterator();
+//        ArrayList<User> rot = new ArrayList<User>();
+//        Rotation actualRotation = new Rotation();
+//        actualRotation.setRotation(rot);
+//        while (keyIt.hasNext()) {
+//            String key = keyIt.next();
+//            if (rotation.get(key) != null) {
+//                rot.add(User.fromJSON(rotation.get(key).getAsJsonObject()));
+//            }
+//        }
+//        String password = obj.get("password").getAsString();
+//        Boolean showTaskDifficulty = obj.get("showTaskDifficulty").getAsBoolean();
+//        Boolean penalizeLateTasks = obj.get("penalizeLateTasks").getAsBoolean();
+//        return new House(new ObjectId(myID), myKey, owner, name, occs, actualRotation, password, showTaskDifficulty, penalizeLateTasks);
+//    }
 
     @Override
     public JSONElement toJSON() {
