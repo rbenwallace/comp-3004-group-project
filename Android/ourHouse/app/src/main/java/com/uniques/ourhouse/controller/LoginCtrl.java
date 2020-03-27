@@ -107,9 +107,8 @@ public class LoginCtrl implements FragmentCtrl {
         } catch (Error e) {
             Log.d("SharedPref", "SharedPref loginData not set up");
         }
-        //Output any login data if any
+        //Output any login data if an
         if (transferedArrayFromSignUp != null) {
-//            Toast.makeText(activity, "Login " + transferedArrayFromSignUp.get(0), Toast.LENGTH_LONG).show();
             firstNameCurUser = transferedArrayFromSignUp.get(0);
             lastNameCurUser = transferedArrayFromSignUp.get(1);
             if (transferedArrayFromSignUp.size() > 2)
@@ -186,8 +185,6 @@ public class LoginCtrl implements FragmentCtrl {
     //Creates a login simmulation
     private class GetLoginTask extends AsyncTask<String, Void, Void> {
         private byte statusCode;
-        private String firstNameCurUser;
-        private String lastNameCurUser;
         private int numberOfPwClicks;
         private ProgressBar pd;
         private View view;
@@ -226,6 +223,7 @@ public class LoginCtrl implements FragmentCtrl {
         void onPostExecute(Pair<Exception, ObjectId> result, String email, String passwd) {
             //If accepted
             if (statusCode == 1) {
+                Log.d("LoginCtrl", transferedArrayFromSignUp.toString());
                 User newUser = new User(result.second, firstNameCurUser, lastNameCurUser, email, new ArrayList<>(), 0);
                 database.getUser(newUser.getId(), user -> {
                     //If there is a user change local user, and set the local login data

@@ -2,6 +2,8 @@ package com.uniques.ourhouse.controller;
 
 import android.graphics.Color;
 import android.os.Build;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.FragmentActivity;
@@ -30,6 +33,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -40,6 +45,8 @@ public class JoinHouseCtrl implements FragmentCtrl{
     private List<String> houses;
     private ArrayAdapter adapter;
     private ListView housesList;
+    private EditText houseJoinPW;
+    private boolean userPwError;
 
     public JoinHouseCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -59,6 +66,7 @@ public class JoinHouseCtrl implements FragmentCtrl{
         adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, houses);
         housesList.setAdapter(adapter);
 
+
         Consumer<List<House>> housesConsumer = myList -> {
             Log.d("CheckingHouses", Integer.toString(myList.size()));
             searchedHouses = myList;
@@ -68,25 +76,6 @@ public class JoinHouseCtrl implements FragmentCtrl{
         User myUser = Session.getSession().getLoggedInUser();
         SearchView simpleSearchView = view.findViewById(R.id.houseName_join);
 
-//        houseJoinText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                Log.d("CheckingHouses", "UPDATE_ONTEXT");
-//                myDatabase.findHousesByName(houseJoinText.getText().toString().trim(), myList ->{
-//                    Log.d("CheckingHouses", Integer.toString(myList.size()));
-//                    searchedHouses = myList;
-//                    updateInfo();
-//                });
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//            }
-//        });
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -94,9 +83,6 @@ public class JoinHouseCtrl implements FragmentCtrl{
             }
             @Override
             public boolean onQueryTextChange(String s) {
-                // Log.d("CheckingHouses", "UPDATE_ONTEXT");
-                // database.findHousesByName(houseJoinText.getText().toString().trim(), housesConsumer);
-                // adapter.notifyDataSetChanged();
 
                 database.findHousesByName(s.trim(), myList ->{
                     Log.d("CheckingHouses", Integer.toString(myList.size()));
@@ -116,7 +102,7 @@ public class JoinHouseCtrl implements FragmentCtrl{
             }
         });
         for(House h : searchedHouses){
-            Log.d("checkingHouses " + h.getName(), h.toString());
+            Log.d("CheckingHouses" + h.getName(), h.toString());
             houses.add(h.getName());
         }
         housesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -134,27 +120,57 @@ public class JoinHouseCtrl implements FragmentCtrl{
                 // which view you pass in doesn't matter, it is only used for the window tolken
                 popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
                 // dismiss the popup window when touched
-                EditText houseJoinPW = popupView.findViewById(R.id.passwordG);
-                Button btnDismiss = popupView.findViewById(R.id.enterPw);
-                btnDismiss.setOnClickListener(v -> {
-                    Log.d("passwordBOYS", "Users PW: " + houseJoinPW.getText().toString().trim() + " HousePW: " + searchedHouses.get(i).getPassword());
+                houseJoinPW = popupView.findViewById(R.id.passwordG);
+                DrawableCompat.setTint(houseJoinPW.getBackground(), ContextCompat.getColor(activity, R.color.colorPrimaryLight));
+                userPwError = false;
+                houseJoinPW.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        if(userPwError)
+                            DrawableCompat.setTint(houseJoinPW.getBackground(), ContextCompat.getColor(activity, R.color.colorPrimaryLight));
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+                Button enter_pw = popupView.findViewById(R.id.enterPw);
+                enter_pw.setOnClickListener(v -> {
+                    Log.d("Password Check", "Users PW: " + houseJoinPW.getText().toString().trim() + " HousePW: " + searchedHouses.get(i).getPassword());
                     if (houseJoinPW.getText().toString().trim().equals(searchedHouses.get(i).getPassword())) {
-                        User myUser = Session.getSession().getLoggedInUser();
-                        if (myUser.getMyHouses().contains(searchedHouses.get(i).getId())) {
-                            houseJoinPW.setBackgroundColor(activity.getColor(R.color.red));
-                            houseJoinPW.setBackgroundColor(Color.RED);
-                            Log.d("JoinHouseCtrl", "Already joined house");
-                        } else {
-                            myUser.addHouseId(searchedHouses.get(i).getId());
-                            database.updateUser(myUser, success -> {
-                                if (success) {
-                                    popupWindow.dismiss();
-                                    activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
-                                } else {
-                                    Log.d("JoinHouseCtrl", "Failed to add house to user's houses");
-                                }
-                            });
-                        }
+                        database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
+                            if(myUser == null){
+                                Toast.makeText(activity, "Check Internet Connection", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            if (myUser.getMyHouses().contains(searchedHouses.get(i).getId())) {
+                                Log.d("JoinHouseCtrl", "Already joined house");
+                                Toast.makeText(activity, "Already In House", Toast.LENGTH_LONG).show();
+                                popupWindow.dismiss();
+                                return;
+                            } else {
+                                myUser.addHouseId(searchedHouses.get(i).getId());
+                                database.updateUser(myUser, success -> {
+                                    if (success) {
+                                        popupWindow.dismiss();
+                                        activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+                                    } else {
+                                        Log.d("JoinHouseCtrl", "Failed to add house to user's houses");
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    else{
+                        userPwError = true;
+                        DrawableCompat.setTint(houseJoinPW.getBackground(), ContextCompat.getColor(activity, R.color.design_default_color_error));
                     }
                 });
             }

@@ -59,10 +59,13 @@ public class MyHousesCtrl implements FragmentCtrl {
                 database.updateUser(myUser, success -> {
                 });
             }
-            if (myHouses == null) {
+            if(myHouses == null){
                 myHouses = new ArrayList<>();
+                fetchMyHouses(view, myUser.getMyHouses(), myHouses);
             }
-            fetchMyHouses(view, myUser.getMyHouses(), myHouses);
+            else 
+                onPostFetchMyHouses(view);
+
             logoutBtn.setOnClickListener(view14 -> {
                 Session.getSession().getSecureAuthenticator().logout(activity, b1 -> {
                     database.clearLocalState(b2 -> {
@@ -73,6 +76,7 @@ public class MyHousesCtrl implements FragmentCtrl {
                 });
             });
         });
+        Session.getSession().getDatabase().deleteAllCollectionData(bool->{});
     }
 
     private void fetchMyHouses(View view, List<ObjectId> houseIds, List<House> fetchedHouses) {
