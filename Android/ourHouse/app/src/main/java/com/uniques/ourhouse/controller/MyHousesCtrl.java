@@ -56,11 +56,13 @@ public class MyHousesCtrl implements FragmentCtrl {
         if (myUser.getMyHouses() == null) {
             myUser.setMyHouses(new ArrayList<>());
             database.updateUser(myUser, success -> {
+
             });
         }
         if (myHouses == null) {
             myHouses = new ArrayList<>();
         }
+        Log.d("myHouses", "myUser myHouses B4 Fetch"+ myUser.getMyHouses().toString());
         fetchMyHouses(view, myUser.getMyHouses(), myHouses);
         logoutBtn.setOnClickListener(view14 -> {
             Session.getSession().getSecureAuthenticator().logout(activity, b1 -> {
@@ -100,19 +102,19 @@ public class MyHousesCtrl implements FragmentCtrl {
 
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
-        database.clearLocalState(bool->{
-
-        });
 
         User myUser = Session.getSession().getLoggedInUser();
-        Log.d("myHouses", myUser.getMyHouses().toString());
+        Log.d("myHouses", "myUser myHouses "+ myUser.getMyHouses().toString());
+        Log.d("myHouses", "arrayList myhouses " + myHouses.toString());
+        Log.d("myHouses", "size myhouses " + myHouses.size());
 
         List<String> houses = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, houses);
+
         housesList.setAdapter(adapter);
 
-        for (House h : myHouses) {
-            houses.add(h.getName());
+        for (int i = 0; i < myHouses.size(); i++) {
+            houses.add(myHouses.get(i).getName());
         }
         adapter.notifyDataSetChanged();
         //Selected a house, change the current house to that house and enter main activity

@@ -118,8 +118,6 @@ public class CreateHouseCtrl implements FragmentCtrl {
             // add the new house to the user's houses
             User myUser = Session.getSession().getLoggedInUser();
             myUser.addHouseId(newHouse.getId());
-            myUser.addHouseId(new ObjectId());
-            myUser.addHouseId(new ObjectId());
             Log.d("myHouses", myUser.getMyHouses().toString());
             database.postHouse(newHouse, successful -> {
                 if (successful) {
