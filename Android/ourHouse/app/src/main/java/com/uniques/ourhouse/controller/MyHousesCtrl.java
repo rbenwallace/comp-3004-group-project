@@ -63,7 +63,7 @@ public class MyHousesCtrl implements FragmentCtrl {
                 myHouses = new ArrayList<>();
                 fetchMyHouses(view, myUser.getMyHouses(), myHouses);
             }
-            else 
+            else
                 onPostFetchMyHouses(view);
 
             logoutBtn.setOnClickListener(view14 -> {
