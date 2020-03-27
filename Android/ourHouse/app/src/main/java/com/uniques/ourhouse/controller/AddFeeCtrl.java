@@ -12,8 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uniques.ourhouse.R;
+import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
-import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
@@ -105,93 +105,82 @@ public class AddFeeCtrl implements FragmentCtrl {
             }
         });
 
-        addTaxButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(feeAmount.getText().toString().equals("")){
-                    Toast.makeText(activity, "Enter a Fee Amount", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(Float.parseFloat(feeAmount.getText().toString()) < 0.0 || Float.parseFloat(taxRate.getText().toString()) < 0.0){
-                    Toast.makeText(activity, "Enter a positive percentage and amount", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(!isTaxable){ return; }
-                double originalAmount = Double.parseDouble(feeAmount.getText().toString());
-                double inputtedTax = Float.parseFloat(taxRate.getText().toString())/100;
-                double newAmount = Math.round(originalAmount + (originalAmount * inputtedTax));
-                feeAmount.setText(String.valueOf(newAmount));
-                isTaxable = false;
+        addTaxButton.setOnClickListener(view13 -> {
+            if(feeAmount.getText().toString().equals("")){
+                Toast.makeText(activity, "Enter a Fee Amount", Toast.LENGTH_SHORT).show();
+                return;
             }
+            if(Float.parseFloat(feeAmount.getText().toString()) < 0.0 || Float.parseFloat(taxRate.getText().toString()) < 0.0){
+                Toast.makeText(activity, "Enter a positive percentage and amount", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(!isTaxable){ return; }
+            double originalAmount = Double.parseDouble(feeAmount.getText().toString());
+            double inputtedTax = Float.parseFloat(taxRate.getText().toString())/100;
+            double newAmount = Math.round(originalAmount + (originalAmount * inputtedTax));
+            feeAmount.setText(String.valueOf(newAmount));
+            isTaxable = false;
         });
 
-        addFeeBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activity.pushFragment(FragmentId.GET(ManageFragment.TAG));
+        addFeeBackButton.setOnClickListener(view12 -> activity.popFragment(FragmentId.GET(AddFeeFragment.TAG)));
+        addFeeAddButton.setOnClickListener(view1 -> {
+            String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
+            if(String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherFeeFrequency.getText()).equals(""))){
+                Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
-        addFeeAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view1) {
-                String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
-                if(String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherFeeFrequency.getText()).equals(""))){
-                    Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
-                    return;
+            if(Float.parseFloat(feeAmount.getText().toString()) < 0.0){
+                Toast.makeText(activity, "Please only enter positive values", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String name = String.valueOf(feeName.getText());
+            float amount = Float.parseFloat(String.valueOf(feeAmount.getText()));
+            Schedule schedule = new Schedule();
+            if(selectedFrequencyText.equals("Once")){
+                schedule.setEndType(Schedule.EndType.ON_DATE);
+                Schedule.pauseStartEndBoundsChecking();
+                schedule.setStart(Calendar.getInstance().getTime());
+                schedule.setEnd(Calendar.getInstance().getTime());
+                Schedule.resumeStartEndBoundsChecking();
+            }
+            else{
+                schedule.setEndType(Schedule.EndType.AFTER_TIMES);
+                Schedule.pauseStartEndBoundsChecking();
+                schedule.setStart(Calendar.getInstance().getTime());
+                schedule.setEndPseudoIndefinite();
+                Schedule.resumeStartEndBoundsChecking();
+                switch (selectedFrequencyText) {
+                    case "Other":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                        schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherFeeFrequency.getText())));
+                        break;
+                    case "Yearly":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                        break;
+                    case "Monthly":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                        break;
+                    case "Weekly":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+                        break;
+                    case "Daily":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                        break;
                 }
-                if(Float.parseFloat(feeAmount.getText().toString()) < 0.0){
-                    Toast.makeText(activity, "Please only enter positive values", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String name = String.valueOf(feeName.getText());
-                float amount = Float.parseFloat(String.valueOf(feeAmount.getText()));
-                Schedule schedule = new Schedule();
-                if(selectedFrequencyText.equals("Once")){
-                    schedule.setEndType(Schedule.EndType.ON_DATE);
-                    Schedule.pauseStartEndBoundsChecking();
-                    schedule.setStart(Calendar.getInstance().getTime());
-                    schedule.setEnd(Calendar.getInstance().getTime());
-                    Schedule.resumeStartEndBoundsChecking();
+            }
+            Fee fee = new Fee(userId, houseId, name, amount, schedule);
+            myDatabase.postFee(fee, bool->{
+                if(bool){
+                    Log.d(AddTaskFragment.TAG, "Fee Added to Database");
+                    Toast.makeText(activity, "Fee Added", Toast.LENGTH_SHORT).show();
+                    Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
+                    activity.popFragment(FragmentId.GET(ManageFragment.TAG));
                 }
                 else{
-                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
-                    Schedule.pauseStartEndBoundsChecking();
-                    schedule.setStart(Calendar.getInstance().getTime());
-                    schedule.setEndPseudoIndefinite();
-                    Schedule.resumeStartEndBoundsChecking();
-                    switch (selectedFrequencyText) {
-                        case "Other":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                            schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherFeeFrequency.getText())));
-                            break;
-                        case "Yearly":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
-                            break;
-                        case "Monthly":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
-                            break;
-                        case "Weekly":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
-                            break;
-                        case "Daily":
-                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                            break;
-                    }
+                    Log.d(AddTaskFragment.TAG, "Fee not received by Database");
+                    Toast.makeText(activity, "Fee Not Added", Toast.LENGTH_SHORT).show();
                 }
-                Fee fee = new Fee(userId, houseId, name, amount, schedule);
-                myDatabase.postFee(fee, bool->{
-                    if(bool){
-                        Log.d(AddTaskFragment.TAG, "Fee Added to Database");
-                        Toast.makeText(activity, "Fee Added", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Log.d(AddTaskFragment.TAG, "Fee not received by Database");
-                        Toast.makeText(activity, "Fee Not Added", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
-            }
+            });
         });
     }
 

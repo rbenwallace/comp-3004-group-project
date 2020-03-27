@@ -4,9 +4,11 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
 
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.House;
+import com.uniques.ourhouse.model.ManageItem;
 import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.Session;
@@ -21,7 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -80,7 +81,6 @@ public class EventService extends JobService {
     public static class Logic extends AsyncTask<Session, Void, Void> {
         private static final String TAG = EventService.TAG + ".Logic";
         private final BiConsumer<Exception, List<Event>> onCompleteCallback;
-        private BiConsumer<Event, Event> getterConsumer;
 
         private Logic(BiConsumer<Exception, List<Event>> onCompleteCallback) {
             this.onCompleteCallback = onCompleteCallback;
@@ -97,142 +97,171 @@ public class EventService extends JobService {
             ObjectId loggedInUser = session.getLoggedInUserId();
             // a user must be logged in
             if (loggedInUser == null) {
-                onCompleteCallback.accept(new NullPointerException("User is not logged in"), null);
+                onCompleteCallback.accept(new Exception("User is not logged in"), null);
                 return null;
             }
 
             ObjectId openHouse = Settings.OPEN_HOUSE.get();
             // the user must have opened a house
             if (openHouse == null) {
-                onCompleteCallback.accept(new NullPointerException("No OPEN_HOUSE setting"), null);
+                onCompleteCallback.accept(new NullPointerException("OPEN_HOUSE setting is unset"), null);
                 return null;
             }
 
             // get tasks from database
             session.getDatabase().getHouse(openHouse, house -> {
                 if (isCancelled()) return;
-                Objects.requireNonNull(house);
+                if (house == null) {
+                    onCompleteCallback.accept(new NullPointerException("Failed to get open house object"), null);
+                    return;
+                }
                 Log.d(TAG, "Got open house object");
                 Log.d(TAG, "Fetching house tasks.. (might take a while)");
                 session.getDatabase().getAllTasksFromHouse(openHouse, tasks -> {
                     if (isCancelled()) return;
-                    if (tasks.isEmpty()) {
-                        onCompleteCallback.accept(new NullPointerException("No Tasks created in house"), null);
+                    if (tasks == null) {
+                        onCompleteCallback.accept(new NullPointerException("getAllTasksFromHouse() failed"), null);
                         return;
                     }
-
                     Log.d(TAG, "Got house tasks");
 
-                    HashMap<Date, List<Task>> occurrences = new HashMap<>();
+                    List<ManageItem> items = new ArrayList<>(tasks);
+                    //noinspection UnusedAssignment
+                    tasks = null;
 
-                    Calendar cal = initializeMonth();
-                    Date lowerBound = cal.getTime();
-                    Date upperBound = upperBoundOfMonth(cal.getTime());
+                    session.getDatabase().getAllFeesFromHouse(openHouse, fees -> {
+                        if (isCancelled()) return;
+                        if (fees == null) {
+                            onCompleteCallback.accept(new NullPointerException("getAllFeesFromHouse() failed"), null);
+                            return;
+                        }
 
-                    for (Task t : tasks) {
-                        Schedule schedule = t.getSchedule();
+                        while (!fees.isEmpty()) {
+                            items.add(fees.remove(0));
+                        }
+                        //noinspection UnusedAssignment
+                        fees = null;
 
-                        Log.d(TAG, "Iterating over occurrences in {" + t + "}..");
+                        if (items.isEmpty()) {
+                            onCompleteCallback.accept(new Exception("No Tasks or Fees created in house"), null);
+                            return;
+                        }
+                        Log.d(TAG, "Got house fees");
 
-                        for (Date occurrence : schedule.finiteIterable(lowerBound, upperBound)) {
-                            Date dayOfOccurrence = initializeDay(occurrence);
+                        HashMap<Date, List<ManageItem>> occurrences = new HashMap<>();
 
-                            if (occurrences.containsKey(dayOfOccurrence)) {
-                                //noinspection ConstantConditions
-                                occurrences.get(dayOfOccurrence).add(t);
-                            } else {
-                                ArrayList<Task> l = new ArrayList<>();
-                                l.add(t);
-                                occurrences.put(dayOfOccurrence, l);
+                        Calendar cal = initializeMonth();
+                        Date lowerBound = cal.getTime();
+                        Date upperBound = upperBoundOfMonth(cal.getTime());
+
+                        for (ManageItem item : items) {
+                            Schedule schedule = item.getSchedule();
+
+                            Log.d(TAG, "Iterating over occurrences in {" + item + "}..");
+
+                            for (Date occurrence : schedule.finiteIterable(lowerBound, upperBound)) {
+                                Date dayOfOccurrence = initializeDueDay(occurrence);
+
+                                if (occurrences.containsKey(dayOfOccurrence)) {
+                                    //noinspection ConstantConditions
+                                    occurrences.get(dayOfOccurrence).add(item);
+                                } else {
+                                    ArrayList<ManageItem> l = new ArrayList<>();
+                                    l.add(item);
+                                    occurrences.put(dayOfOccurrence, l);
+                                }
                             }
                         }
-                    }
 
-                    if (isCancelled()) return;
-
-                    Log.d(TAG, "Done iterating over tasks");
-
-                    House.Rotation rotation = house.getRotation();
-                    if (rotation.getRotation().isEmpty()) {
-                        onCompleteCallback.accept(new Exception("OPEN_HOUSE rotation list is empty"), null);
-                        return;
-                    }
-
-                    PriorityQueue<UsersTasks> results = new PriorityQueue<>();
-                    for (User user : rotation) {
-                        results.add(new UsersTasks(user));
-                    }
-
-                    Log.d(TAG, "Assigning each gathered occurrence..");
-
-                    Iterator<Date> days = occurrences.keySet().iterator();
-                    Date curDay;
-                    while (days.hasNext()) {
-                        curDay = days.next();
-
-                        Log.d(TAG, "Assigning for day " + curDay + "...");
-
-                        PriorityQueue<Task> daysTasks = new PriorityQueue<>(
-                                (o1, o2) -> o2.getDifficulty() - o1.getDifficulty());
-                        daysTasks.addAll(occurrences.get(curDay));
-
-                        while (!daysTasks.isEmpty()) {
-                            //noinspection ConstantConditions
-                            results.peek().assignTask(curDay, daysTasks.poll());
-                            results.offer(results.poll());
-                        }
-                    }
-
-                    Log.d(TAG, "Done assigning");
-                    Log.d(TAG, "Generating event objects..");
-
-                    List<Event> events = new ArrayList<>();
-                    for (UsersTasks result : results) {
-                        events.addAll(result.createEvents());
-                    }
-
-                    Log.d(TAG, "Done generating event objects");
-
-                    if (isCancelled()) return;
-                    if (events.size() == 0) {
-                        onCompleteCallback.accept(new Exception("generated event list was empty"), null);
-                        return;
-                    }
-
-                    List<Event> failedEvents = new ArrayList<>();
-
-                    BiConsumer<Boolean, Event> putterConsumer = (success, event) -> {
                         if (isCancelled()) return;
-                        if (!success) {
-                            failedEvents.add(event);
+
+                        Log.d(TAG, "Done iterating over items");
+
+                        House.Rotation rotation = house.getRotation();
+                        if (rotation.getRotation().isEmpty()) {
+                            onCompleteCallback.accept(new Exception("OPEN_HOUSE rotation list is empty"), null);
+                            return;
                         }
+
+                        PriorityQueue<UsersDuties> results = new PriorityQueue<>();
+                        for (User user : rotation) {
+                            results.add(new UsersDuties(user, openHouse));
+                        }
+
+                        Log.d(TAG, "Assigning each gathered occurrence..");
+
+                        Iterator<Date> days = occurrences.keySet().iterator();
+                        Date curDay;
+                        while (days.hasNext()) {
+                            curDay = days.next();
+
+                            Log.d(TAG, "Assigning for day " + curDay + "...");
+
+                            PriorityQueue<ManageItem> daysDuties = new PriorityQueue<>(
+                                    (o1, o2) -> o2.getDifficulty() - o1.getDifficulty());
+                            daysDuties.addAll(occurrences.get(curDay));
+
+                            while (!daysDuties.isEmpty()) {
+                                //noinspection ConstantConditions
+                                results.peek().assignDuty(curDay, daysDuties.poll());
+                                results.offer(results.poll());
+                            }
+                        }
+
+                        Log.d(TAG, "Done assigning");
+                        Log.d(TAG, "Generating event objects..");
+
+                        List<Event> events = new ArrayList<>();
+                        for (UsersDuties result : results) {
+                            events.addAll(result.createEvents());
+                        }
+
+                        Log.d(TAG, "Done generating event objects");
+
+                        if (isCancelled()) return;
                         if (events.isEmpty()) {
-                            // COMPLETE
-                            onCompleteCallback.accept(null, failedEvents);
-                        } else {
-                            Event nextEvent = events.remove(0);
-                            session.getDatabase().getEvent(nextEvent.getId(), e -> getterConsumer.accept(nextEvent, e));
+                            onCompleteCallback.accept(new Exception("generated event list was empty"), null);
+                            return;
                         }
-                    };
 
-                    if (getterConsumer != null) {
-                        onCompleteCallback.accept(new Exception("Attempt to rerun logic using the same instance"), null);
-                        return;
-                    }
+                        List<Event> failedEvents = new ArrayList<>();
 
-                    getterConsumer = (orgEvent, fetchedEvent) -> {
-                        if (isCancelled()) return;
-                        if (fetchedEvent == null) {
-                            session.getDatabase().postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
-                        } else {
-                            putterConsumer.accept(true, null);
-                        }
-                    };
+                        // eventPair = { fetchedEvent, orgEvent }
+                        BiConsumer<Pair<Event, Event>, BiConsumer> batchConsumer = (eventPair, next) -> {
+                            if (isCancelled()) return;
 
-                    Log.d(TAG, "Posting (non-existent) events to database.. (might take a while)");
+                            Event fetchedEvent = eventPair.first;
+                            Event orgEvent = eventPair.second;
 
-                    Event firstEvent = events.remove(0);
-                    session.getDatabase().getEvent(firstEvent.getId(), event -> getterConsumer.accept(firstEvent, event));
+                            BiConsumer<Boolean, Event> putterConsumer = (success, event) -> {
+                                if (isCancelled()) return;
+                                if (!success) {
+                                    failedEvents.add(event);
+                                }
+                                if (events.isEmpty()) {
+                                    // COMPLETE
+                                    onCompleteCallback.accept(null, failedEvents);
+                                } else {
+                                    Event nextEvent = events.remove(0);
+                                    //noinspection unchecked
+                                    session.getDatabase().getHouseEventOnDay(openHouse, nextEvent.getDueDate(),
+                                            e -> next.accept(new Pair<>(event, nextEvent), next));
+                                }
+                            };
+
+                            if (fetchedEvent == null) {
+                                session.getDatabase().postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
+                            } else {
+                                putterConsumer.accept(true, null);
+                            }
+                        };
+
+                        Log.d(TAG, "Posting (non-existent) events to database.. (might take a while)");
+
+                        Event firstEvent = events.remove(0);
+                        session.getDatabase().getHouseEventOnDay(openHouse, firstEvent.getDueDate(),
+                                event -> batchConsumer.accept(new Pair<>(event, firstEvent), batchConsumer));
+                    });
                 });
             });
             return null;
@@ -249,7 +278,7 @@ public class EventService extends JobService {
             return cal;
         }
 
-        private Date initializeDay(Date day) {
+        private Date initializeDueDay(Date day) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(day);
             cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -271,40 +300,44 @@ public class EventService extends JobService {
             return cal.getTime();
         }
 
-        private static class UsersTasks implements Comparable {
+        private static class UsersDuties implements Comparable {
             private final User user;
+            private final ObjectId houseId;
             private int totalDifficulty;
-            private HashMap<Date, List<Task>> tasks;
+            private HashMap<Date, List<ManageItem>> duties;
 
-            private UsersTasks(User user) {
+            private UsersDuties(User user, ObjectId houseId) {
                 this.user = user;
-                tasks = new HashMap<>();
+                this.houseId = houseId;
+                duties = new HashMap<>();
             }
 
-            private void assignTask(Date day, Task task) {
-                if (tasks.containsKey(day)) {
+            private void assignDuty(Date day, ManageItem duty) {
+                if (duties.containsKey(day)) {
                     //noinspection ConstantConditions
-                    tasks.get(day).add(task);
+                    duties.get(day).add(duty);
                 } else {
-                    List<Task> l = new ArrayList<>();
-                    l.add(task);
-                    tasks.put(day, l);
+                    List<ManageItem> l = new ArrayList<>();
+                    l.add(duty);
+                    duties.put(day, l);
                 }
-                totalDifficulty += task.getDifficulty();
+                totalDifficulty += duty.getDifficulty();
             }
 
             private List<Event> createEvents() {
                 List<Event> events = new ArrayList<>();
-                tasks.forEach(((day, tasks) ->
-                        tasks.forEach(task ->
-                                events.add(new Event(task.getName(), day, user, null)))));
+                duties.forEach((day, duty) ->
+                        duty.forEach(dutyItem -> {
+                            int type = dutyItem instanceof Task ? Event.TYPE_TASK : Event.TYPE_FEE;
+                            events.add(new Event(type, dutyItem.getName(), day, user, houseId, dutyItem.getId()));
+                        }));
                 return events;
             }
 
             @Override
             public int compareTo(@NonNull Object o) {
-                if (o instanceof UsersTasks) {
-                    return totalDifficulty - ((UsersTasks) o).totalDifficulty;
+                if (o instanceof UsersDuties) {
+                    return totalDifficulty - ((UsersDuties) o).totalDifficulty;
                 } else return 0;
             }
         }

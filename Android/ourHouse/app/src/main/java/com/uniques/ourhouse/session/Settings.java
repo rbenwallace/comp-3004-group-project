@@ -70,6 +70,18 @@ public enum Settings {
         Long getDefault() {
             return null;
         }
+    }),
+
+    EVENT_SERVICE_DUTIES_ARE_PRISTINE(new DefaultHandler<Boolean>() {
+        @Override
+        String getKey() {
+            return "eventService.dutiesArePristine";
+        }
+
+        @Override
+        Boolean getDefault() {
+            return true;
+        }
     });
 
     private Handler handler;

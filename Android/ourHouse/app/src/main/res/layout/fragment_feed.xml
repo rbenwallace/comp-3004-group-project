@@ -50,6 +50,12 @@
 
     </LinearLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/feed_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/feed_topPanel" />
+
     <LinearLayout
         android:id="@+id/feed_loadingPanel"
         android:layout_width="match_parent"
@@ -75,11 +81,5 @@
             tools:text="Fetching events..." />
 
     </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/feed_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/feed_topPanel" />
 
 </RelativeLayout>

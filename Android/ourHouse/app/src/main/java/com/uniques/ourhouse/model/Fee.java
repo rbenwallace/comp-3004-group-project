@@ -12,6 +12,8 @@ import org.bson.types.ObjectId;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import androidx.annotation.NonNull;
+
 public class Fee extends ManageItem implements Indexable, Observable {
     private float amount;
     private String type;
@@ -39,8 +41,24 @@ public class Fee extends ManageItem implements Indexable, Observable {
     public float getAmount(){ return amount; }
 
     @Override
+    public int getDifficulty() {
+        if (amount > 500) {
+            return ManageItem.DIFFICULTY_HARD;
+        } else if (amount >= 100) {
+            return ManageItem.DIFFICULTY_MEDIUM;
+        }
+        return ManageItem.DIFFICULTY_EASY;
+    }
+
+    @Override
     public String consoleFormat(String prefix) {
         return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), " + manageItemOwner.toString() + "), " + "id: (" + manageItemHouse.toString() + "name: [" + name + "]   " + ", Amount: " + amount + ", Date Created: " + schedule.getStart().toString();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return consoleFormat("Fee");
     }
 
     @Override

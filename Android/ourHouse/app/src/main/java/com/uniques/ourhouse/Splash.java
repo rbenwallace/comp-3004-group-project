@@ -45,7 +45,7 @@ public class Splash extends AppCompatActivity {
 
 
     private static void delayStart(AppCompatActivity activity, Class destinationClass) {
-        int SPLASH_TIME_OUT = 3000;
+        int SPLASH_TIME_OUT = 1500;
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(activity, destinationClass)
                     .putExtra("network_connected", Session.getSession().isNetworkConnected());
