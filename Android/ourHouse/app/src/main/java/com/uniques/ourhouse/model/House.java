@@ -123,7 +123,7 @@ public class House implements Indexable, Observable {
         }
     }
 
-    public void updateHouseEvents(int year, int month){
+    public void populateStats(int year, int month){
         initHouseEvents();
         myDatabase.getAllEventsFromHouse(houseId, events -> {
             for(Event event : events){
