@@ -59,10 +59,13 @@ public class MyHousesCtrl implements FragmentCtrl {
                 database.updateUser(myUser, success -> {
                 });
             }
-            if (myHouses == null) {
+            if(myHouses == null){
                 myHouses = new ArrayList<>();
+                fetchMyHouses(view, myUser.getMyHouses(), myHouses);
             }
-            fetchMyHouses(view, myUser.getMyHouses(), myHouses);
+            else
+                onPostFetchMyHouses(view);
+
             logoutBtn.setOnClickListener(view14 -> {
                 Session.getSession().getSecureAuthenticator().logout(activity, b1 -> {
                     database.clearLocalState(b2 -> {
@@ -73,6 +76,7 @@ public class MyHousesCtrl implements FragmentCtrl {
                 });
             });
         });
+        Session.getSession().getDatabase().deleteAllCollectionData(bool->{});
     }
 
     private void fetchMyHouses(View view, List<ObjectId> houseIds, List<House> fetchedHouses) {
@@ -102,19 +106,19 @@ public class MyHousesCtrl implements FragmentCtrl {
 
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
-        database.clearLocalState(bool->{
-
-        });
 
         User myUser = Session.getSession().getLoggedInUser();
-        Log.d("myHouses", myUser.getMyHouses().toString());
+        Log.d("myHouses", "myUser myHouses "+ myUser.getMyHouses().toString());
+        Log.d("myHouses", "arrayList myhouses " + myHouses.toString());
+        Log.d("myHouses", "size myhouses " + myHouses.size());
 
         List<String> houses = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, houses);
+
         housesList.setAdapter(adapter);
 
-        for (House h : myHouses) {
-            houses.add(h.getName());
+        for (int i = 0; i < myHouses.size(); i++) {
+            houses.add(myHouses.get(i).getName());
         }
         adapter.notifyDataSetChanged();
         //Selected a house, change the current house to that house and enter main activity

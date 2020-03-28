@@ -55,9 +55,6 @@ public class CreateHouseCtrl implements FragmentCtrl {
         taskDiff = view.findViewById(R.id.showDifficulty);
         penLateTasks = view.findViewById(R.id.penalizeLateTasks);
 
-        ArrayList<String> users = new ArrayList<>();
-        ArrayAdapter adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, users);
-
         House.Rotation rotation = new House.Rotation();
         ArrayList<User> occupants = new ArrayList<>();
         occupants.add(myUser);
@@ -81,64 +78,32 @@ public class CreateHouseCtrl implements FragmentCtrl {
 
 
         createHouse.setOnClickListener(view1 -> {
-            if (!passwordCorrect()) {
-                DrawableCompat.setTint(password.getBackground(), ContextCompat.getColor(activity, R.color.red));
-                DrawableCompat.setTint(confirmPassword.getBackground(), ContextCompat.getColor(activity, R.color.red));
-//                    password.setBackgroundColor(Color.RED);
-//                    confirmPassword.setBackgroundColor(Color.RED);
-                return;
-            }
-            House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
-            //add the house to the array (DatabaseCoordinator handles all this)
-//            ArrayList<House> myHouses = myDatabase.getLocalHouseArray(activity);
-//            if(myHouses == null) {
-//                myHouses = new ArrayList<>();
-//                myHouses.add(newHouse);
-//            }
-//            else {
-//                myHouses.add(newHouse);
-//            }
-//            final ArrayList<House> HousesFinal = myHouses;
-//            myDatabase.addMyHouse(newHouse, activity, bool ->{
-//                if(bool){
-//                    // add the new house to the user's houses
-//                    User myUser = Session.getSession().getLoggedInUser();
-//                    myUser.addHouseId(newHouse.getId());
-//                    Session.ge
-//
-//                    Intent intent = new Intent(activity, MainActivity.class);
-//                    activity.startActivity(intent);
-//                    activity.finish();
-//                }
-//                else {
-//                    Log.d("CreateHouseCrtl", "adding houses error");
-//                }
-//            });
-
-            // add the new house to the user's houses
-            User myUser = Session.getSession().getLoggedInUser();
-            myUser.addHouseId(newHouse.getId());
-            myUser.addHouseId(new ObjectId());
-            myUser.addHouseId(new ObjectId());
-            Log.d("myHouses", myUser.getMyHouses().toString());
-            database.postHouse(newHouse, successful -> {
-                if (successful) {
-                    database.updateUser(myUser, successful2 -> {
-                        if (successful2) {
-                            Log.d("myHouses", myUser.getMyHouses().toString());
-                            //Need to save the user in the session but this breaks the code:
-                                //Session.getSession().setLoggedInUser(myUser);
-                            Settings.OPEN_HOUSE.set(newHouse.getId());
-                            Intent intent = new Intent(activity, MainActivity.class);
-                            activity.startActivity(intent);
-                            activity.finish();
-                        } else {
-                            Log.d("CreateHouseCtrl", "adding new house to user's houses error");
-                        }
-                    });
-                } else {
-                    Log.d("CreateHouseCtrl", "adding houses error");
+            database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
+                if (!passwordCorrect()) {
+                    DrawableCompat.setTint(password.getBackground(), ContextCompat.getColor(activity, R.color.red));
+                    DrawableCompat.setTint(confirmPassword.getBackground(), ContextCompat.getColor(activity, R.color.red));
+                    return;
                 }
+                House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
+
+                // add the new house to the user's houses
+                myUser.addHouseId(newHouse.getId());
+                database.postHouse(newHouse, successful -> {
+                    if (successful) {
+                        database.updateUser(myUser, successful2 -> {
+                            if (successful2) {
+                                Settings.OPEN_HOUSE.set(newHouse.getId());
+                                Intent intent = new Intent(activity, MainActivity.class);
+                                activity.startActivity(intent);
+                                activity.finish();
+                            } else {
+                                Log.d("CreateHouseCtrl", "adding new house to user's houses error");
+                            }
+                        });
+                    } else {
+                        Log.d("CreateHouseCtrl", "adding houses error");
+                    }
+                });
             });
         });
     }
