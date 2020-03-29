@@ -262,6 +262,7 @@ public class House implements Indexable, Observable {
         ObjectId houseId = (ObjectId) doc.get("_id");
         String houseKey = doc.getString("key");
         User owner = User.fromBsonDocument((Document) doc.get("owner"));
+        Log.d("whatpoppin", owner.toString());
         String name = doc.getString("name");
         Document occDoc = (Document) (doc.get("occupants"));
         ArrayList<User> occupants = new ArrayList<>();
