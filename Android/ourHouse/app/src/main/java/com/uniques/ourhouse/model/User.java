@@ -215,7 +215,7 @@ public class User implements Observable, Indexable {
             }
             myHouses.add(new ObjectId(houseId.<String>getValue()));
         }
-        performance = json.<Long>valueOf("performance").intValue();
+        performance = Math.toIntExact(json.<Long>valueOf("performance"));
         consumer.accept(this);
     }
 
