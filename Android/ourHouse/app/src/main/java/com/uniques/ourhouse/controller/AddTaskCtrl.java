@@ -75,13 +75,7 @@ public class AddTaskCtrl implements FragmentCtrl {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, day, 19, 59, 59);
             calendar.set(Calendar.MILLISECOND, 0);
-            Log.d("woppop", calendar.toString());
             Date date = calendar.getTime();
-<<<<<<< HEAD
-            System.out.println("wallace: " + day + "  " + month + " " + year + " " +  date.toString());
-=======
-            Log.d("woppop", date.toString());
->>>>>>> f2baffda8b1ead3e9154d8562ed69174f45ee7c7
             if (String.valueOf(taskName.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherTaskFrequency.getText()).equals(""))) {
                 Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
                 return;
