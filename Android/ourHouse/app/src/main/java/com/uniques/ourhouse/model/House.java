@@ -15,6 +15,10 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -31,8 +35,12 @@ public class House implements Indexable, Observable {
     private ArrayList<User> occupants;
     private Rotation rotation;
     private String password;
+    private boolean houseUpdated;
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
+    private HashMap<ObjectId, Float> userPoints;
+    private HashMap<ObjectId, Float> userAmountPaid;
+    private DatabaseLink myDatabase = Session.getSession().getDatabase();
 
     public static House testHouse() {
         Rotation rotation = new Rotation();
@@ -54,6 +62,14 @@ public class House implements Indexable, Observable {
     public String getKeyId() {
         return houseKey;
     }
+
+    public HashMap<ObjectId, Float> getUserPoints(){ return userPoints; }
+
+    public HashMap<ObjectId, Float> getUserAmountPaid(){ return userAmountPaid; }
+
+    public boolean getHouseUpdated(){ return houseUpdated; }
+
+    public void setHouseUpdated(boolean houseUpdated){ this.houseUpdated = houseUpdated; }
 
     public boolean getShowTaskDifficulty() {
         return showTaskDifficulty;
@@ -95,6 +111,63 @@ public class House implements Indexable, Observable {
         houseId = new ObjectId();
         occupants = new ArrayList<>();
         rotation = new Rotation();
+    }
+
+    public void initHouseEvents(){
+        userPoints = new HashMap<>();
+        userAmountPaid = new HashMap<>();
+        for(User user : occupants){
+            userPoints.put(user.getId(), Float.valueOf("0.0"));
+            userAmountPaid.put(user.getId(), Float.valueOf("0.0"));
+
+        }
+    }
+
+    public void populateStats(int year, int month){
+        initHouseEvents();
+        myDatabase.getAllEventsFromHouse(houseId, events -> {
+            for(Event event : events){
+                if(event.getDateCompleted() != null){
+                    ObjectId eventUser = event.getAssignedTo().getId();
+                    int tempYear = event.getDateCompleted().getYear();
+                    int tempMonth = event.getDateCompleted().getMonth();
+                    if((event.getType() == 0) && (tempMonth == month) && (tempYear == year)){
+                        myDatabase.getTask(event.getAssociatedTask(), task -> {
+                            if(showTaskDifficulty && penalizeLateTasks){
+                                if(event.getDueDate().after(event.getDateCompleted())){
+                                    float num = (float) (userPoints.get(eventUser) + task.getDifficulty());
+                                    userPoints.put(eventUser, num);
+                                }
+                                else {
+                                    float num = (float) (userPoints.get(eventUser) + task.getDifficulty() * 0.5);
+                                    userPoints.put(eventUser, num);
+                                }
+                            }
+                            else if(!showTaskDifficulty && penalizeLateTasks){
+                                if(event.getDueDate().after(event.getDateCompleted())){
+                                    float num = (float) (userPoints.get(eventUser) + 1.0);
+                                    userPoints.put(eventUser, num);
+                                }
+                                else {
+                                    float num = (float) (userPoints.get(eventUser) + 0.5);
+                                    userPoints.put(eventUser, num);
+                                }
+                            }
+                            else{
+                                float num = (float) (userPoints.get(eventUser) + 1.0);
+                                userPoints.put(eventUser, num);
+                            }
+                        });
+                    }
+                    else if(event.getType() == 1 && (tempMonth == month) && (tempYear == year)){
+                        myDatabase.getFee(event.getAssociatedTask(), fee -> {
+                            float num = (float) (userAmountPaid.get(eventUser) + fee.getAmount());
+                            userAmountPaid.put(eventUser, num);
+                        });
+                    }
+                }
+            }
+        });
     }
 
     @Override

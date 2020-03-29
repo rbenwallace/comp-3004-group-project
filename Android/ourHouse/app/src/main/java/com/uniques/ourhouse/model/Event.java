@@ -90,6 +90,10 @@ public class Event implements Observable, Indexable {
         dueDate = new Date();
     }
 
+    public Integer getType(){
+        return type;
+    }
+
     @NonNull
     @Override
     public ObjectId getId() {
