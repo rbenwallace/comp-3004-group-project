@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -30,6 +31,7 @@ public class SignUpCtrl implements FragmentCtrl {
     private static Button login;
     private static CheckBox terms_conditions;
     public static StitchAppClient client;
+    TextView informError;
     public static final String phone_regEx = "^\\+?[0-9\\/.()-]{9,}$";
 
     public SignUpCtrl(FragmentActivity activity) {
@@ -43,6 +45,7 @@ public class SignUpCtrl implements FragmentCtrl {
         EditText editLastName = view.findViewById(R.id.lastName);
         EditText editEmail = view.findViewById(R.id.userEmailId);
         EditText editPassword = view.findViewById(R.id.password);
+        informError = view.findViewById(R.id.info_user);
         EditText editConfirmPassword = view.findViewById(R.id.confirmPassword);
         CheckBox agreement = view.findViewById(R.id.terms_conditions);
 
@@ -111,13 +114,13 @@ public class SignUpCtrl implements FragmentCtrl {
         // Check for both field is empty or not
         if (email.equals("") || email.length() == 0
                 || password.equals("") || password.length() == 0) {
-            Toast.makeText(activity, "Error with Credentials!", Toast.LENGTH_LONG);
+            informError.setText("Error with Credentials!");
             return false;
 
         }
         // Check if email id is valid or not
         else if (!m.find()) {
-            Toast.makeText(activity, "Emails Trash", Toast.LENGTH_LONG);
+            informError.setText("Error with Credentials!");
             return false;
         }
 
