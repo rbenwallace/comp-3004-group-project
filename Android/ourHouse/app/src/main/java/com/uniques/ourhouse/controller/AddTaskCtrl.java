@@ -73,7 +73,7 @@ public class AddTaskCtrl implements FragmentCtrl {
             int month = datePicker.getMonth();
             int year = datePicker.getYear();
             Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month, day, 23, 59, 59);
+            calendar.set(year, month, day, 19, 59, 59);
             calendar.set(Calendar.MILLISECOND, 0);
             Date date = calendar.getTime();
             System.out.println("wallace: " + day + "  " + month + " " + year + " " +  date.toString());

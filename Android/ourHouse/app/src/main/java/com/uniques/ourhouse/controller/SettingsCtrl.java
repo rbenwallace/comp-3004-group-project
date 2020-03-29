@@ -94,6 +94,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             if (house.getShowTaskDifficulty()) {
                 showTaskDifficultyButton.performClick();
             }
+            System.out.println("wallace occupants: " + house.getOccupants().size());
             observableCards = new ArrayList<>();
             /*for(User user:house.getRotation().getRotation()){
                 observableCards.add(new TaskRotationCard(user));
