@@ -35,7 +35,7 @@ public class House implements Indexable, Observable {
     private ArrayList<User> occupants;
     private Rotation rotation;
     private String password;
-    private boolean houseUpdated;
+    private boolean houseUpdated = false;
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
     private HashMap<ObjectId, Float> userPoints;
@@ -289,9 +289,9 @@ public class House implements Indexable, Observable {
     }
 
     public static class Rotation implements Model, Iterable<User> {
-        private List<User> rotation;
+        private ArrayList<User> rotation;
 
-        public Rotation(List<User> rotation) {
+        public Rotation(ArrayList<User> rotation) {
             this.rotation = rotation;
         }
 
@@ -299,7 +299,7 @@ public class House implements Indexable, Observable {
             rotation = new ArrayList<>();
         }
 
-        public List<User> getRotation() {
+        public ArrayList<User> getRotation() {
             return rotation;
         }
 

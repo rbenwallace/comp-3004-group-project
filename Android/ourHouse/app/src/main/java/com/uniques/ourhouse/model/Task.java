@@ -129,7 +129,7 @@ public class Task extends ManageItem implements Indexable, Observable {
         manageItemHouse = new ObjectId(json.<String>valueOf("houseId"));
         name = json.valueOf("name");
         type = json.valueOf("type");
-        difficulty = json.valueOf("difficulty");
+        difficulty = Integer.parseInt(json.valueOf("difficulty"));
         new Schedule().fromJSON(json.search("schedule"), schedule -> {
             this.schedule = (Schedule) schedule;
             consumer.accept(this);

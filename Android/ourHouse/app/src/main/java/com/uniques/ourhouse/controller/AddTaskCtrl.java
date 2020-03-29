@@ -76,6 +76,7 @@ public class AddTaskCtrl implements FragmentCtrl {
             calendar.set(year, month, day, 23, 59, 59);
             calendar.set(Calendar.MILLISECOND, 0);
             Date date = calendar.getTime();
+            System.out.println("wallace: " + day + "  " + month + " " + year + " " +  date.toString());
             if (String.valueOf(taskName.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherTaskFrequency.getText()).equals(""))) {
                 Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
                 return;
@@ -120,6 +121,7 @@ public class AddTaskCtrl implements FragmentCtrl {
             }
             Task task = new Task(userId, houseId, name, schedule, selectedDifficultyNum);
             myDatabase.postTask(task, bool -> {
+                System.out.println("wallace: " + schedule.getStart().toString());
                 if (bool) {
                     Log.d(AddTaskFragment.TAG, "Task Added to Database");
                     Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();
