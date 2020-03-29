@@ -15,6 +15,8 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
+import com.uniques.ourhouse.model.House;
+import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.session.Settings;
@@ -77,12 +79,6 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
         //todo implement buttons
 
-        observableCards = new ArrayList<>();
-        observableCards.add(new TaskRotationCard(new ObservableString("Ben")));
-        observableCards.add(new TaskRotationCard(new ObservableString("Seb")));
-        observableCards.add(new TaskRotationCard(new ObservableString("Vic")));
-        observableCards.add(new TaskRotationCard(new ObservableString("Jon")));
-
         settingsBackButton = (Button) view.findViewById(R.id.settings_btnBackHouse);
         settingsSaveButton = (Button) view.findViewById(R.id.settings_btnSaveHouse);
         houseName = (TextView) view.findViewById(R.id.settings_editHouseName);
@@ -98,6 +94,15 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             if (house.getShowTaskDifficulty()) {
                 showTaskDifficultyButton.performClick();
             }
+            System.out.println("wallace occupants: " + house.getOccupants().size());
+            observableCards = new ArrayList<>();
+            /*for(User user:house.getRotation().getRotation()){
+                observableCards.add(new TaskRotationCard(user));
+            }*/
+            observableCards.add(new TaskRotationCard(new User("Ben", "Wallace", "ben@gmail.com")));
+            observableCards.add(new TaskRotationCard(new User("Seb", "Gadzinski", "seb@gmail.com")));
+            observableCards.add(new TaskRotationCard(new User("Jon", "Lim", "jon@gmail.com")));
+            observableCards.add(new TaskRotationCard(new User("Victor", "Olaitin", "vic@gmail.com")));
 
             btnSwitchHouse.setOnClickListener(view13 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT
@@ -120,19 +125,25 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 //                ((LS_Main) activity).setViewPager(4);
                 ///observableCards.add(new TaskRotationCard(new ObservableString("Test")));
                 //updateInfo();
+                House newHouse = new House(house.getId(), house.getKeyId(), house.getOwner(), house.getName(), house.getOccupants(), house.getRotation(), house.getPassword(), house.getShowTaskDifficulty(), house.getPenalizeLateTasks());
                 if (showLateTasksButton.isChecked()) {
-                    house.setPenalizeLateTasks(true);
+                    newHouse.setPenalizeLateTasks(true);
                 } else {
-                    house.setPenalizeLateTasks(false);
+                    newHouse.setPenalizeLateTasks(false);
                 }
                 if (showTaskDifficultyButton.isChecked()) {
-                    house.setShowTaskDifficulty(true);
+                    newHouse.setShowTaskDifficulty(true);
                 } else {
-                    house.setShowTaskDifficulty(false);
+                    newHouse.setShowTaskDifficulty(false);
                 }
+                /*ArrayList<User> userRotation = new ArrayList<>();
+                for(TaskRotationCard user:observableCards){
+                    userRotation.add(user.getObject());
+                }
+                newHouse.getRotation().setRotation(userRotation);*/
                 String name = houseName.getText().toString();
-                house.setName(name);
-                myDatabase.updateHouse(house, aBoolean -> {
+                newHouse.setName(name);
+                myDatabase.updateHouse(newHouse, aBoolean -> {
                     if (aBoolean) {
                         Log.d(AddTaskFragment.TAG, "House saved in database");
                         Toast.makeText(activity, "House Saved", Toast.LENGTH_SHORT).show();

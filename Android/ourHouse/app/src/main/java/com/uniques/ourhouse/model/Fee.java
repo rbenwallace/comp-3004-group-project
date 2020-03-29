@@ -107,7 +107,7 @@ public class Fee extends ManageItem implements Indexable, Observable {
         manageItemId = new ObjectId(json.<String>valueOf("houseId"));
         name = json.valueOf("name");
         type = json.valueOf("type");
-        amount = json.valueOf("amount");
+        amount = Float.parseFloat(json.valueOf("amount"));
         new Schedule().fromJSON(json.search("schedule"), schedule -> {
             this.schedule = (Schedule) schedule;
             consumer.accept(this);

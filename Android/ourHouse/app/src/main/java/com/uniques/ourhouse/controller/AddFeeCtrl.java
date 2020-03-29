@@ -116,8 +116,8 @@ public class AddFeeCtrl implements FragmentCtrl {
             }
             if(!isTaxable){ return; }
             double originalAmount = Double.parseDouble(feeAmount.getText().toString());
-            double inputtedTax = Float.parseFloat(taxRate.getText().toString())/100;
-            double newAmount = Math.round(originalAmount + (originalAmount * inputtedTax));
+            double inputtedTax = Float.parseFloat(taxRate.getText().toString())/100.0;
+            double newAmount = Math.round((originalAmount + (originalAmount * inputtedTax))*100.0)/100.0;
             feeAmount.setText(String.valueOf(newAmount));
             isTaxable = false;
         });
