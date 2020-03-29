@@ -250,8 +250,8 @@ public class EditTaskCtrl implements FragmentCtrl {
 
     @Override
     public void acceptArguments(Object... args) {
-        if (!(args[1] == null)) {
-            taskIdStr = args[1].toString();
+        if (args[0] != null) {
+            taskIdStr = args[0].toString();
             taskId = new ObjectId(taskIdStr);
         }
     }

@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.uniques.ourhouse.LS_Main;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
+import com.uniques.ourhouse.fragment.EditFeeFragment;
+import com.uniques.ourhouse.fragment.EditTaskFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
@@ -118,7 +120,8 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             settingsBackButton.setOnClickListener(view12 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(ManageFragment.TAG));
+                ObjectId ob = new ObjectId("5e80f4f0e47ea851f0a4922d");
+                activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), ob);
             });
             settingsSaveButton.setOnClickListener(view1 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT
