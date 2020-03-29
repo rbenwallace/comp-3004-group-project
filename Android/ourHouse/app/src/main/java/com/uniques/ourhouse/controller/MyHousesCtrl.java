@@ -49,6 +49,9 @@ public class MyHousesCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
+        Session.getSession().getDatabase().deleteAllCollectionData(wow->{
+            Log.d("gotitpussy", "WOWOWOWOW");
+        });
         housesList = view.findViewById(R.id.myHousesList);
         logoutBtn = view.findViewById(R.id.logoutBtnMH);
         // Gather houses if there are any from the shared pref Houses
@@ -118,6 +121,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         housesList.setAdapter(adapter);
 
         for (int i = 0; i < myHouses.size(); i++) {
+            if(myHouses.get(i) == null) continue;
             houses.add(myHouses.get(i).getName());
         }
         adapter.notifyDataSetChanged();
@@ -130,6 +134,7 @@ public class MyHousesCtrl implements FragmentCtrl {
             activity.finish();
         });
         housesList.setOnItemLongClickListener((adapterView, view13, i, l) -> {
+            Log.d("myHouses", "size myhouses In Long CLick" + myHouses.size());
             LayoutInflater inflater = (LayoutInflater)
                     activity.getSystemService(LAYOUT_INFLATER_SERVICE);
             View popupView = inflater.inflate(R.layout.delete_house, null);
@@ -155,6 +160,8 @@ public class MyHousesCtrl implements FragmentCtrl {
                     if (!success) {
                         Log.d("deleteUserFromHouse: ", "Failed");
                     } else {
+                        Log.d("myHouses", "SO THIS IS IT " + myHouses.size());
+                        Log.d("deleteUserFromHouse: ", "Passed");
                         House temp = myHouses.get(i);
                         houses.remove(i);
                         //If its the current House change it and delete, else just delete
@@ -168,13 +175,9 @@ public class MyHousesCtrl implements FragmentCtrl {
                             myHouses.remove(i);
                         }
                         //Remove from lists and notify Listview
-                        User myUser1 = Session.getSession().getLoggedInUser();
                         //Strip user from house
-                        temp.removeOccupant(myUser1);
-                        myUser1.removeHouseId(temp.getId());
-                        database.updateHouse(temp, successful -> {
-                            if (successful) Log.d("MyHousesCtrl", "House removed user");
-                        });
+                        temp.removeOccupant(myUser);
+                        myUser.removeHouseId(temp.getId());
                         //TODO Remove the user from the House from the house
                         adapter.notifyDataSetChanged();
                         popupWindow.dismiss();

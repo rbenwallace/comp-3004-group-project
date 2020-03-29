@@ -193,11 +193,12 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                         .limit(20);
                 count = 0L;
                 findResults.forEach(house -> {
-                    House searchHouse = House.fromBsonDocument(house);
-                    houses.add(searchHouse);
-                    count++;
-                    if (Objects.equals(count, numDocs))
-                        consumer.accept(houses);
+                    House.fromBsonDocument(house, newHouse->{
+                        houses.add(newHouse);
+                        count++;
+                        if (Objects.equals(count, numDocs))
+                            consumer.accept(houses);
+                    });
                 });
             } else {
                 consumer.accept(houses);
@@ -228,6 +229,47 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 consumer.accept(null);
                 Log.e("app", "Failed to findOne: ", task.getException());
                 Log.d("stitch-auth", "Authentication Successful.");
+            }
+        });
+    } //tested
+
+    @Override
+    public void getUsers(List<ObjectId> user_ids, Consumer<ArrayList<User>> consumer) {
+        ArrayList<User> users = new ArrayList<>();
+        int i = 1;
+        if(user_ids.isEmpty()){
+            consumer.accept(null);
+            return;
+        }
+        String pattern = "\\b(" + user_ids.get(0).toString();
+        if(user_ids.size() == 1){
+            pattern += ")\\b";
+        }
+        else {
+            for(; i < user_ids.size() - 1; i++){
+                pattern += '|' + user_ids.get(i).toString();
+            }
+            pattern += '|' + user_ids.get(i).toString() + ")\\b";
+        }
+        BsonRegularExpression nameRE = new BsonRegularExpression(pattern);
+        Document filterDoc = new Document()
+                .append("_id", new Document().append("$regex", nameRE));
+        userColl.count(filterDoc).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                final Long numDocs = task.getResult();
+                RemoteFindIterable<Document> findResults = userColl
+                        .find(filterDoc)
+                        .limit(20);
+                count = 0L;
+                findResults.forEach(user -> {
+                    User searchedUser = User.fromBsonDocument(user);
+                    users.add(searchedUser);
+                    count++;
+                    if (Objects.equals(count, numDocs))
+                        consumer.accept(users);
+                });
+            } else {
+                consumer.accept(users);
             }
         });
     } //tested
@@ -338,7 +380,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             } else if (task.isSuccessful()) {
                 Log.d("app", String.format("Successfully found document: %s",
                         task.getResult()));
-                consumer.accept(House.fromBsonDocument(task.getResult()));
+                House.fromBsonDocument(task.getResult(), consumer);
             } else {
                 consumer.accept(null);
                 Log.e("app", "Failed to findOne: ", task.getException());
@@ -1048,6 +1090,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                         deleteHouse(house, successful4 -> {
                             if (!successful4) {
                                 failConsumer.accept("deleteHouse");
+                                return;
+                            }
+                            consumer.accept(true);
+                        });
+                        user.removeHouseId(house.getId());
+                        updateUser(user, successful5 -> {
+                            if (!successful5) {
+                                failConsumer.accept("updateUser");
                                 return;
                             }
                             consumer.accept(true);

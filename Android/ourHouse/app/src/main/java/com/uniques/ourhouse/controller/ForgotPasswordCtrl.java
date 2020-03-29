@@ -60,7 +60,7 @@ public class ForgotPasswordCtrl implements FragmentCtrl {
         backToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
+                activity.popFragment(FragmentId.GET(ForgotPasswordFragment.TAG));
             }
         });
         sumbitPwRequest.setOnClickListener(view1 -> {
