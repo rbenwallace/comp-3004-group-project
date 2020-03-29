@@ -19,6 +19,7 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.JoinHouseFragment;
 import com.uniques.ourhouse.fragment.LoginFragment;
+import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.DatabaseLink;
@@ -29,6 +30,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -39,8 +41,9 @@ public class MyHousesCtrl implements FragmentCtrl {
     private House selectedHouse;
     private ArrayList<House> myHouses;
     private Button logoutBtn;
+    ArrayAdapter adapter;
     private DatabaseLink database = Session.getSession().getDatabase();
-
+    private List<String> houses = new ArrayList<>();
     private Consumer<House> filler;
 
     public MyHousesCtrl(FragmentActivity activity) {
@@ -49,9 +52,6 @@ public class MyHousesCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        Session.getSession().getDatabase().deleteAllCollectionData(wow->{
-            Log.d("gotitpussy", "WOWOWOWOW");
-        });
         housesList = view.findViewById(R.id.myHousesList);
         logoutBtn = view.findViewById(R.id.logoutBtnMH);
         // Gather houses if there are any from the shared pref Houses
@@ -110,20 +110,32 @@ public class MyHousesCtrl implements FragmentCtrl {
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
 
+        //check for duplicates idk why this is happening
+        for(int i=0;i< myHouses.size(); i++){
+            int check = 0;
+            for (int j=0;j<myHouses.size();j++){
+                if (myHouses.get(i).getId() == myHouses.get(j).getId()){
+                    check++;
+                    if(check > 1){
+                        myHouses.remove(j);
+                    }
+                }
+            }
+        }
+
         User myUser = Session.getSession().getLoggedInUser();
         Log.d("myHouses", "myUser myHouses "+ myUser.getMyHouses().toString());
         Log.d("myHouses", "arrayList myhouses " + myHouses.toString());
         Log.d("myHouses", "size myhouses " + myHouses.size());
 
-        List<String> houses = new ArrayList<>();
-        ArrayAdapter adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, houses);
 
-        housesList.setAdapter(adapter);
-
+        adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, houses);
+        houses.clear();
         for (int i = 0; i < myHouses.size(); i++) {
             if(myHouses.get(i) == null) continue;
             houses.add(myHouses.get(i).getName());
         }
+        housesList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         //Selected a house, change the current house to that house and enter main activity
         housesList.setOnItemClickListener((adapterView, view12, i, l) -> {
@@ -134,7 +146,6 @@ public class MyHousesCtrl implements FragmentCtrl {
             activity.finish();
         });
         housesList.setOnItemLongClickListener((adapterView, view13, i, l) -> {
-            Log.d("myHouses", "size myhouses In Long CLick" + myHouses.size());
             LayoutInflater inflater = (LayoutInflater)
                     activity.getSystemService(LAYOUT_INFLATER_SERVICE);
             View popupView = inflater.inflate(R.layout.delete_house, null);
@@ -160,27 +171,9 @@ public class MyHousesCtrl implements FragmentCtrl {
                     if (!success) {
                         Log.d("deleteUserFromHouse: ", "Failed");
                     } else {
-                        Log.d("myHouses", "SO THIS IS IT " + myHouses.size());
-                        Log.d("deleteUserFromHouse: ", "Passed");
-                        House temp = myHouses.get(i);
-                        houses.remove(i);
-                        //If its the current House change it and delete, else just delete
-                        if (myHouses.get(i).getId().equals(Settings.OPEN_HOUSE.get())) {
-                            //TODO set to something right
-                            myHouses.remove(i);
-                            if (myHouses.size() > 0) {
-                                Settings.OPEN_HOUSE.set(myHouses.get(0).getId());
-                            }
-                        } else {
-                            myHouses.remove(i);
-                        }
-                        //Remove from lists and notify Listview
-                        //Strip user from house
-                        temp.removeOccupant(myUser);
-                        myUser.removeHouseId(temp.getId());
                         //TODO Remove the user from the House from the house
-                        adapter.notifyDataSetChanged();
                         popupWindow.dismiss();
+                        activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
                     }
                 });
             });
@@ -198,6 +191,7 @@ public class MyHousesCtrl implements FragmentCtrl {
             activity.pushFragment(FragmentId.GET(JoinHouseFragment.TAG));
         });
     }
+
 
     @Override
     public void acceptArguments(Object... args) {

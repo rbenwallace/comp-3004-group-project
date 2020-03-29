@@ -1130,6 +1130,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                             }
                             return;
                         }
+
                         house.removeOccupant(user);
                         updateHouse(house, afterUpdateOwner);
                     }
