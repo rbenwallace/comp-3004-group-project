@@ -3,6 +3,7 @@ package com.uniques.ourhouse.session;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
@@ -183,6 +184,7 @@ class DatabaseCoordinator implements DatabaseLink {
     public void getTask(ObjectId id, Consumer<Task> consumer) {
         Consumer<Task> networkConsumer = task -> {
             if (task != null) {
+                Log.d("checkingTask", task.toString());
                 localDatabase.postTask(task, success -> {
                     if (success) notifyModelCached(task.getId());
                     consumer.accept(task);

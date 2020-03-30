@@ -98,6 +98,7 @@ public class EditTaskCtrl implements FragmentCtrl {
         }
 
         myDatabase.getTask(taskId, task -> {
+            Log.d(EditTaskFragment.TAG, "Trying to get Task");
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
             if (difficulty == 1) {
@@ -253,6 +254,7 @@ public class EditTaskCtrl implements FragmentCtrl {
         if (args[0] != null) {
             taskIdStr = args[0].toString();
             taskId = new ObjectId(taskIdStr);
+            Log.d("CheckingTask", taskId.toString());
         }
     }
 
