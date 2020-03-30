@@ -22,6 +22,8 @@ import java.util.HashMap;
 
 public class ScreenMonthCtrl implements FragmentCtrl {
     private FragmentActivity activity;
+    private int thisMonth;
+    private int thisYear;
     private int month;
     private int year;
     private String strMonth;
@@ -49,12 +51,12 @@ public class ScreenMonthCtrl implements FragmentCtrl {
 
         Button viewAmountPaid = (Button) view.findViewById(R.id.viewAmountPaid);
         Button viewPerformance = (Button) view.findViewById(R.id.viewPerformance);
+        Button statsBack = (Button) view.findViewById(R.id.statsBack);
 
         viewAmountPaid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
                 activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year);
             }
         });
@@ -62,16 +64,24 @@ public class ScreenMonthCtrl implements FragmentCtrl {
             @Override
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(5);
                 activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year);
+            }
+        });
+        statsBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), thisMonth, thisYear);
             }
         });
     }
 
     @Override
     public void acceptArguments(Object... args) {
-        month = Integer.parseInt(String.valueOf(args[0]));
-        year = Integer.parseInt(String.valueOf(args[1]));;
+        thisMonth = Integer.parseInt(String.valueOf(args[0]));
+        thisYear = Integer.parseInt(String.valueOf(args[1]));
+        month = Integer.parseInt(String.valueOf(args[2]));
+        year = Integer.parseInt(String.valueOf(args[3]));;
     }
 
     @Override

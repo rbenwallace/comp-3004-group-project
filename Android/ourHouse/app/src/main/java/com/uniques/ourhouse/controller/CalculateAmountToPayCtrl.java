@@ -36,6 +36,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     private int month;
     private int chosenYearInt;
     private int year;
+    private int thisMonth;
+    private int thisYear;
     private int newMonth;
     private int newYear;
     private Button selectedMonth;
@@ -126,7 +128,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //String month = selectedMonth.getText().toString();
                 //String year = selectedYear.getText().toString();
-                activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), newMonth, newYear);
+                activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), thisMonth, thisYear, newMonth, newYear);
             }
         });
 
