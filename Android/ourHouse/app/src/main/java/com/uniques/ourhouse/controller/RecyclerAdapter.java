@@ -86,6 +86,8 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
 
     @Override
     public int getItemCount() {
+        if(cards == null)
+            return 0;
         return cards.size();
     }
 

@@ -15,6 +15,7 @@ import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import org.bson.types.ObjectId;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -27,6 +28,7 @@ class DatabaseCoordinator implements DatabaseLink {
     private final DatabaseLink remoteDatabase;
     private InternetChecker internetChecker;
     private EasyJSON cache;
+
 
     DatabaseCoordinator(DatabaseLink localDatabase, DatabaseLink remoteDatabase) {
         this.localDatabase = localDatabase;
@@ -129,6 +131,20 @@ class DatabaseCoordinator implements DatabaseLink {
         } else {
             consumer.accept(null);
         }
+    }
+
+    @Override
+    public void getUsers(List<ObjectId> user_ids, Consumer<ArrayList<User>> consumer) {
+        if (networkAvailable()) {
+            remoteDatabase.getUsers(user_ids, userArray -> {
+                if (userArray != null) {
+                    consumer.accept(userArray);
+                } else
+                    consumer.accept(null);
+            });
+        }
+        //TODO Victor how can i make this work w local?
+        consumer.accept(null);
     }
 
     @Override

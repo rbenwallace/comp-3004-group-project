@@ -84,8 +84,13 @@ public class Task extends ManageItem implements Indexable, Observable {
         return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), " + "id: (" + manageItemOwner.toString() + "), " + "id: (" + manageItemHouse.toString() + "), name: [" + name + "] , Difficulty:" + difficulty + ", First Time Task is Due: " + schedule.getStart().toString();
     }
 
+
+
+
+
     public Document toBsonDocument() {
         final Document asDoc = new Document();
+        Log.d("taskchecking : Uploading", this.toString());
         asDoc.put("_id", manageItemId);
         asDoc.put("userId", manageItemOwner);
         asDoc.put("houseId", manageItemHouse);
@@ -96,10 +101,10 @@ public class Task extends ManageItem implements Indexable, Observable {
     }
 
     public static Task fromBsonDocument(final Document doc) {
+        Log.d("taskchecking : DownLoading", doc.toString());
         Schedule schedule = new Schedule();
-        Log.d("checking", doc.get("schedule").toString());
         schedule = schedule.fromBsonDocument((Document) Objects.requireNonNull(doc.get("schedule")));
-        return new Task(
+        Task checking = new Task(
                 doc.getObjectId("_id"),
                 doc.getObjectId("userId"),
                 doc.getObjectId("houseId"),
@@ -107,6 +112,8 @@ public class Task extends ManageItem implements Indexable, Observable {
                 schedule,
                 doc.getInteger("difficulty")
         );
+        Log.d("taskchecking : DownLoading", checking.toString());
+        return checking;
     }
 
     @Override

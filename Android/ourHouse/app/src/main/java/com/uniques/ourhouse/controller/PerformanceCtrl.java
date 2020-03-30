@@ -143,6 +143,8 @@ public class PerformanceCtrl implements FragmentCtrl {
         barChart.setFitBars(true); //make x-axis fit exactly all bars
         barChart.setHighlightFullBarEnabled(true);
         barChart.invalidate(); //refresh
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(false);
     }
 
     @Override

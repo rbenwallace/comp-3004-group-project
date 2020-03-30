@@ -238,47 +238,64 @@ public class House implements Indexable, Observable {
 
     public Document toBsonDocument() {
         final Document asDoc = new Document();
+        ArrayList<ObjectId> userArray = new ArrayList<>();
+        ArrayList<ObjectId> rotationArray = new ArrayList<>();
         asDoc.put("_id", houseId);
         asDoc.put("key", houseKey);
-        Document occupantsDoc = new Document();
-        for (User user : occupants) {
-            occupantsDoc.put(user.getEmailAddress(), user.toBsonDocument());
+        for(int i = 0; i < occupants.size();i++){
+            userArray.add(occupants.get(i).getId());
         }
-        Document rotationDoc = new Document();
         for (User user : rotation.rotation) {
-            rotationDoc.put(user.getEmailAddress(), user.toBsonDocument());
+            rotationArray.add(user.getId());
         }
-        asDoc.put("owner", owner.toBsonDocument());
+        asDoc.put("owner", owner.getId());
         asDoc.put("name", name);
-        asDoc.put("occupants", occupantsDoc);
-        asDoc.put("rotation", rotationDoc);
+        asDoc.put("occupants", userArray);
+        asDoc.put("rotation", rotationArray);
         asDoc.put("password", password);
         asDoc.put("showTaskDifficulty", showTaskDifficulty);
         asDoc.put("penalizeLateTasks", penalizeLateTasks);
         return asDoc;
     }
 
-    public static House fromBsonDocument(final Document doc) {
-        ObjectId houseId = (ObjectId) doc.get("_id");
-        String houseKey = doc.getString("key");
-        User owner = User.fromBsonDocument((Document) doc.get("owner"));
-        Log.d("whatpoppin", owner.toString());
-        String name = doc.getString("name");
-        Document occDoc = (Document) (doc.get("occupants"));
-        ArrayList<User> occupants = new ArrayList<>();
-        occDoc.forEach((key, value) -> {
-            occupants.add(User.fromBsonDocument((Document) value));
+    public static void fromBsonDocument(final Document doc, Consumer<House> houseConsumer) {
+        Log.d("woopingtime", "Inside");
+        List<ObjectId> occupants_ids = doc.getList("occupants", ObjectId.class);
+        Session.getSession().getDatabase().getUser(doc.getObjectId("owner"), owner->{
+            Log.d("woopingtime", "working");
+            if (owner != null){
+                Log.d("woopingtime", "Owner Not null");
+                Session.getSession().getDatabase().getUsers(occupants_ids, userArray->{
+                    Rotation rotation;
+                    if(userArray == null){
+                        userArray = new ArrayList<User>();
+                        rotation = new Rotation();
+                    }
+                    else {
+                        List<ObjectId> rotation_ids = doc.getList("rotation", ObjectId.class);
+                        rotation = new Rotation();
+                        rotation.rotation.clear();
+                        for(int i = 0; i < rotation_ids.size(); i++){
+                            User occ = null;
+                            for (int y = 0; y < rotation_ids.size(); y++){
+                                if(userArray.get(y).getId() == rotation_ids.get(i))
+                                    occ = userArray.get(y);
+                            }
+                            rotation.rotation.add(occ);
+                        }
+                    }
+                    Log.d("woopingtime", "Inside function");
+                    ObjectId houseId = (ObjectId) doc.get("_id");
+                    String houseKey = doc.getString("key");
+                    String name = doc.getString("name");
+                    String password = doc.getString("password");
+                    Boolean showTaskDifficulty = doc.getBoolean("showTaskDifficulty");
+                    Boolean penalizeLateTasks = doc.getBoolean("penalizeLateTasks");
+                    Log.d("woopingtime", new House(houseId, houseKey, owner, name, userArray, rotation, password, showTaskDifficulty, penalizeLateTasks).toString());
+                    houseConsumer.accept(new House(houseId, houseKey, owner, name, userArray, rotation, password, showTaskDifficulty, penalizeLateTasks));
+                });
+            }
         });
-        Rotation rotation = new Rotation();
-        rotation.rotation.clear();
-        Document rotDoc = (Document) (doc.get("rotation"));
-        rotDoc.forEach((key, value) -> {
-            rotation.rotation.add(User.fromBsonDocument((Document) value));
-        });
-        String password = doc.getString("password");
-        Boolean showTaskDifficulty = doc.getBoolean("showTaskDifficulty");
-        Boolean penalizeLateTasks = doc.getBoolean("penalizeLateTasks");
-        return new House(houseId, houseKey, owner, name, occupants, rotation, password, showTaskDifficulty, penalizeLateTasks);
     }
 
     @Override

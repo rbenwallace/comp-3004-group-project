@@ -77,6 +77,11 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
+    public void getUsers(List<ObjectId> user_ids, Consumer<ArrayList<User>> consumer) {
+
+    }
+
+    @Override
     public void getUser(ObjectId id, Consumer<User> consumer) {
         JSONElement json = searchLocal(USERS_JSON, id);
         if (json == null) {
