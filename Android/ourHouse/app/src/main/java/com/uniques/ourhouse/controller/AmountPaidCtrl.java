@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class AmountPaidCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -70,23 +72,41 @@ public class AmountPaidCtrl implements FragmentCtrl {
             }
         });
 
-        //Number under graph
-        //replace with database money
-        //loop through database and grab all database#
         String amount = "";
         TextView amountview = (TextView) view.findViewById(R.id.amount);
-        amountview.setText(amount);
 
 
         barChart = (BarChart) view.findViewById(R.id.idBarChart);
 
+        //this is for creating a testing hashmap
+        User jon = new User();
+        User seb = new User();
+        User victor = new User();
+        User ben = new User();
+        jon.setFirstName("jon");
+        seb.setFirstName("seb");
+        victor.setFirstName("victor");
+        ben.setFirstName("ben");
+        amounts.put(jon, (float)2251.23);
+        amounts.put(victor, (float)3315.23);
+        amounts.put(ben, (float)200);
+        amounts.put(seb, (float)1242.32);
+
+
         ArrayList<BarEntry> entries = new ArrayList<>();
-        //for (int i=0; i<database size; i++)
-        //don't forget to floor/ceiling number in database#
-        //entries.add(new BarEntry(i, database#[i], databasename[i]));
-        entries.add(new BarEntry(0, 2352, "Name 1"));
-        entries.add(new BarEntry(1, 3341, "Name 2"));
-        entries.add(new BarEntry(2, 2734, "Name 3"));
+
+        if (!amounts.isEmpty()) {
+            int count = 0;
+            Iterator<Map.Entry<User, Float>> it = amounts.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                amount += pair.getKey().getFirstName() + ": " + pair.getValue() + "\n";
+                entries.add(new BarEntry(count, pair.getValue(), pair.getKey()));
+                count += 1;
+            }
+            amountview.setText(amount);
+        }
 
         BarDataSet bardataset = new BarDataSet(entries, "label");
         bardataset.setDrawValues(false);

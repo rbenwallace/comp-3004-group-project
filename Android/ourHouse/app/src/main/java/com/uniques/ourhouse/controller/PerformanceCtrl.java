@@ -26,7 +26,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import static android.graphics.Color.BLACK;
 
 public class PerformanceCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -77,11 +81,15 @@ public class PerformanceCtrl implements FragmentCtrl {
         });
 
         //testing
-        int test = 0;
-
         User ben = new User("ben", "a", "1");
         User seb = new User("seb", "b", "2");
         User jon = new User("jon", "c", "3");
+        User victor = new User("victor", "d", "4");
+        points.put(jon, (float)32);
+        points.put(victor, (float)23);
+        points.put(ben, (float)11);
+        points.put(seb, (float)34);
+
 
 
         pieChart = (PieChart) view.findViewById(R.id.idPieChart);
@@ -90,12 +98,32 @@ public class PerformanceCtrl implements FragmentCtrl {
         pieChart.setHoleRadius(0f);
         pieChart.setTransparentCircleRadius(0f);
 
-        List<PieEntry> value = new ArrayList<>();
-        //would need to loop through get data, make it percentage
-        value.add(new PieEntry(40f, "Ben"));
-        value.add(new PieEntry(60f, "Seb"));
+        int total = 0;
+        if (!points.isEmpty()) {
+            Iterator<Map.Entry<User, Float>> it = points.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                total += pair.getValue();
+            }
+        }
 
-        PieDataSet pieDataSet = new PieDataSet(value, "performance");
+        List<PieEntry> value = new ArrayList<>();
+        if (!points.isEmpty()) {
+            int count = 0;
+            Iterator<Map.Entry<User, Float>> it = points.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                value.add(new PieEntry((pair.getValue()/total), pair.getKey().getFirstName()));
+                count += 1;
+            }
+        }
+
+        PieDataSet pieDataSet = new PieDataSet(value, "");
+        pieDataSet.setDrawValues(false);
+        pieChart.setEntryLabelColor(BLACK);
+        pieChart.setDrawEntryLabels(true);
         pieChart.getDescription().setEnabled(false);
         PieData pieData = new PieData(pieDataSet);
 
@@ -112,22 +140,22 @@ public class PerformanceCtrl implements FragmentCtrl {
         barChart = (BarChart) view.findViewById(R.id.idBarChart);
 
         ArrayList<BarEntry> entries = new ArrayList<>();
-        //for (int i=0; i<database size; i++)
-        //don't forget to floor/ceiling number in database#
-        //entries.add(new BarEntry(i, database#[i], databasename[i]));
-        test += seb.getPerformance();
-        test += seb.getPerformance();
 
+        final ArrayList<String> xLabel = new ArrayList<>();
 
-        entries.add(new BarEntry(0, 50, "Name 1"));
-        entries.add(new BarEntry(1, 20, "Name 2"));
-        entries.add(new BarEntry(2, 100, "Name 3"));
-        entries.add(new BarEntry(3, 44, "Name 4"));
-        entries.add(new BarEntry(4, 56, "Name 5"));
-        entries.add(new BarEntry(5, 20, ben.getFirstName()));
+        if (!points.isEmpty()) {
+            int count = 0;
+            Iterator<Map.Entry<User, Float>> it = points.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                entries.add(new BarEntry(count, pair.getValue(), pair.getKey().getFirstName()));
+                count += 1;
+            }
+        }
 
-        BarDataSet bardataset = new BarDataSet(entries, "label");
-        bardataset.setDrawValues(false);
+        BarDataSet bardataset = new BarDataSet(entries, "");
+        bardataset.setDrawValues(true);
 
         BarData data = new BarData(bardataset);
         barChart.setData(data);
