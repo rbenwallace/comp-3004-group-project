@@ -67,6 +67,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     public void init(View view) {
         points = new HashMap<>();
         amounts = new HashMap<>();
+        thisMonth = month;
+        thisYear = year;
         newMonth = month;
         newYear = year;
         Button leftButton = (Button) view.findViewById(R.id.left_button);
