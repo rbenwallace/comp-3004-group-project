@@ -19,6 +19,8 @@ import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.fragment.ScreenMonthFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
+import com.uniques.ourhouse.session.DatabaseLink;
+import com.uniques.ourhouse.session.Session;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -31,13 +33,14 @@ public class MainActivity extends FragmentActivity {
     static final int LAYOUT_ID = R.layout.activity_main;
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-
+    private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private BottomNavigationView navView;
     private boolean navViewUpdatedByCode;
 
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
     private String currentMonth;
     private String currentYear;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,7 @@ public class MainActivity extends FragmentActivity {
                 return true;
             case R.id.navigation_stats:
                 if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(AmountPaidFragment.TAG)) {
+
                     pushFragment(FragmentId.GET(AmountPaidFragment.TAG), currentMonth, currentYear);
                 }
                 return true;
