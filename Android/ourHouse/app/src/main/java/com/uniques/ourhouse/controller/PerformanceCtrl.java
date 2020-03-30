@@ -79,9 +79,9 @@ public class PerformanceCtrl implements FragmentCtrl {
         //testing
         int test = 0;
 
-        User ben = new User("ben", "a", "1", 5);
-        User seb = new User("seb", "b", "2", 6);
-        User jon = new User("jon", "c", "3", 2);
+        User ben = new User("ben", "a", "1");
+        User seb = new User("seb", "b", "2");
+        User jon = new User("jon", "c", "3");
 
 
         pieChart = (PieChart) view.findViewById(R.id.idPieChart);

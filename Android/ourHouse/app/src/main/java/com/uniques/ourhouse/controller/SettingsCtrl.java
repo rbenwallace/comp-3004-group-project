@@ -120,8 +120,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             settingsBackButton.setOnClickListener(view12 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                ObjectId ob = new ObjectId("5e8153e6b1d69b3f345d1e1d");
-                activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), ob);
+                activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG));
             });
             settingsSaveButton.setOnClickListener(view1 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT

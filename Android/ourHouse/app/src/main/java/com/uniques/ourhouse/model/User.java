@@ -31,23 +31,12 @@ public class User implements Observable, Indexable {
     private int performance;
 
     //testing int num
-    public User(ObjectId userID, @NonNull String firstName, @NonNull String lastName, String emailAddress, List<ObjectId> myHouses, int num) {
+    public User(ObjectId userID, @NonNull String firstName, @NonNull String lastName, String emailAddress, List<ObjectId> myHouses) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.myHouses = myHouses;
-        this.performance = num;
-    }
-
-    //testing int num
-    public User(@NonNull String firstName, @NonNull String lastName, String emailAddress, int num) {
-        this.userID = new ObjectId();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.emailAddress = emailAddress;
-        //testing
-        this.performance = num;
     }
 
     public User(@NonNull String firstName, @NonNull String lastName, String emailAddress) {
@@ -166,7 +155,6 @@ public class User implements Observable, Indexable {
         asDoc.put("lastName", lastName);
         asDoc.put("email", emailAddress);
         asDoc.put("houses", myHouses);
-        asDoc.put("performance", performance);
         return asDoc;
     }
 
@@ -178,8 +166,7 @@ public class User implements Observable, Indexable {
                 firstName == null ? "" : firstName,
                 lastName == null ? "" : lastName,
                 doc.getString("email"),
-                doc.getList("houses", ObjectId.class),
-                doc.getInteger("performance")
+                doc.getList("houses", ObjectId.class)
         );
     }
 
@@ -190,7 +177,6 @@ public class User implements Observable, Indexable {
         json.putPrimitive("fname", firstName);
         json.putPrimitive("lname", lastName);
         json.putPrimitive("email", emailAddress);
-        json.putPrimitive("performance", performance);
         json.putArray("houses");
         for (ObjectId houseId : myHouses) {
             json.search("houses").putPrimitive(houseId.toString());
@@ -215,7 +201,6 @@ public class User implements Observable, Indexable {
             }
             myHouses.add(new ObjectId(houseId.<String>getValue()));
         }
-        performance = Math.toIntExact(json.<Long>valueOf("performance"));
         consumer.accept(this);
     }
 

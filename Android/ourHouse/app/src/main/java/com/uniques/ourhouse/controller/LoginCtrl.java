@@ -224,7 +224,7 @@ public class LoginCtrl implements FragmentCtrl {
             //If accepted
             if (statusCode == 1) {
                 //Log.d("LoginCtrl", transferedArrayFromSignUp.toString());
-                User newUser = new User(result.second, firstNameCurUser, lastNameCurUser, email, new ArrayList<>(), 0);
+                User newUser = new User(result.second, firstNameCurUser, lastNameCurUser, email, new ArrayList<>());
                 database.getUser(newUser.getId(), user -> {
                     //If there is a user change local user, and set the local login data
                     if (user != null) {
