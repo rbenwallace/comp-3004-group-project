@@ -73,7 +73,7 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
     private EndType endType;
     private Repeat repeatSchedule;
     private List<ChangeListener> listeners = new ArrayList<>();
-    private static boolean pauseStartEndChecking, pendingStartEndChange;
+    private boolean pauseStartEndChecking, pendingStartEndChange;
 
     public Schedule() {
         this.start = new Date();
@@ -81,6 +81,12 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         endType = EndType.ON_DATE;
     }
 
+    /**
+     * Initializes a new Schedule to the start and end dates with the supplied repeat-schedule.
+     * The schedule's {@link #endType} will be set to {@link EndType#ON_DATE}.
+     * This method doesn't preform any further processing, it simply assigns the schedule's
+     * properties to the parameters of this method.
+     */
     public Schedule(@NonNull Date start, @NonNull Date end, Repeat repeatSchedule) {
         this.start = start;
         this.end = end;
@@ -88,6 +94,12 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         endType = EndType.ON_DATE;
     }
 
+    /**
+     * @return true if start-end bounds checking is not paused on this schedule
+     */
+    public boolean startEndBoundsCheckingIsEnabled() {
+        return !pauseStartEndChecking;
+    }
 
     /**
      * will pause bounds checking on start and end Dates
@@ -97,7 +109,7 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
      * <br/>
      * Don't forget to call {@link #resumeStartEndBoundsChecking()} when you're done.
      */
-    public static void pauseStartEndBoundsChecking() {
+    public void pauseStartEndBoundsChecking() {
         pauseStartEndChecking = true;
         pendingStartEndChange = false;
     }
@@ -106,7 +118,7 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
      * Resumes bounds checking on start and end Dates. <b>This method MUST be called after calling</b>
      * {@link #pauseStartEndBoundsChecking()}
      */
-    public static void resumeStartEndBoundsChecking() {
+    public void resumeStartEndBoundsChecking() {
         pauseStartEndChecking = false;
         pendingStartEndChange = false;
     }
@@ -189,6 +201,7 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
             initRepeatSchedule();
 
         this.endType = endType;
+        mainListener.onEndTypeChange(this.endType);
     }
 
     /**
@@ -204,7 +217,7 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         if (repeatSchedule == null) {
             initRepeatSchedule();
         }
-        repeatSchedule.endAfterXTimes(1000);
+        repeatSchedule.setEndAfterXTimes(1000);
     }
 
     public Repeat getRepeatSchedule() {
@@ -285,11 +298,11 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
      */
     public boolean occursInXDays(int range) {
         Date today = new Date();
-        if (today.before(start) || today.after(end)) {
+        if (today.after(end)) {
             return false;
         }
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(start);
+        calendar.setTime(today);
         for (int i = 1; i <= range; i++) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
             if (occursOn(calendar.getTime()))
@@ -299,13 +312,11 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
     }
 
     /**
-     * @return number of days (ceiling) till the initial date of this schedule (0 if the initial date has passed)
+     * @return number of days (ceiling) till the initial date of this schedule
+     * (negative if the initial date has passed, zero if the initial date is today)
      */
-    public int getDaysDueIn() {
-        Date today = new Date();
-        if (!today.before(start))
-            return 0;
-        return (int) Math.ceil((start.getTime() - today.getTime()) / DAY_IN_MILLS);
+    public int getDaysTillStart() {
+        return (int) Math.ceil((double) ((start.getTime() - System.currentTimeMillis()) / DAY_IN_MILLS));
     }
 
     /**
@@ -389,21 +400,18 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
     }
 
     public Schedule fromBsonDocument(final Document doc) {
+        Repeat repeat = null;
         if (doc.containsKey("repeatSchedule")) {
-            Repeat temp = new Repeat();
-            temp.fromBsonDocument((Document) Objects.requireNonNull(doc.get("repeatSchedule")));
-            return new Schedule(
-                    doc.getDate("start"),
-                    doc.getDate("end"),
-                    temp
-            );
-        } else {
-            return new Schedule(
-                    doc.getDate("start"),
-                    doc.getDate("end"),
-                    null
-            );
+            repeat = new Repeat();
+            repeat.fromBsonDocument((Document) Objects.requireNonNull(doc.get("repeatSchedule")));
         }
+        Schedule schedule = new Schedule(
+                doc.getDate("start"),
+                doc.getDate("end"),
+                repeat
+        );
+        schedule.setEndType(EndType.valueOf(doc.getString("endType")));
+        return schedule;
     }
 
 
@@ -626,7 +634,7 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         /**
          * @return weeks of recurrence
          */
-        int[] getWeeks() {
+        public int[] getWeeks() {
             return weeks;
         }
 
@@ -659,7 +667,7 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         /**
          * @return months of recurrence
          */
-        int[] getMonths() {
+        public int[] getMonths() {
             return months;
         }
 
@@ -721,16 +729,16 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
             if (type == RepeatType.ITERATIVE && !(repeatBasis == RepeatBasis.WEEKLY && hasDays())) {
                 switch (repeatBasis) {
                     case DAILY:
-                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                        calendar.add(Calendar.DAY_OF_MONTH, delay);
                         break;
                     case WEEKLY:
-                        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                        calendar.add(Calendar.WEEK_OF_YEAR, delay);
                         break;
                     case MONTHLY:
-                        calendar.add(Calendar.MONTH, 1);
+                        calendar.add(Calendar.MONTH, delay);
                         break;
                     case YEARLY:
-                        calendar.add(Calendar.YEAR, 1);
+                        calendar.add(Calendar.YEAR, delay);
                         break;
                 }
             } else {
@@ -809,26 +817,34 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
 
         /**
          * Will force the repeat-schedule to end after x number of occurrences (where x === times).
+         * This includes the schedules {@link #start} date.
          * <br/>
          * <b>Note:</b>
          * <br/>
-         * This will also update the repeat-schedule's end type to {@link EndType#AFTER_TIMES}
+         * This will also update the backing schedule's end type to {@link EndType#AFTER_TIMES}
          */
-        public void endAfterXTimes(int times) {
+        public void setEndAfterXTimes(int times) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(start);
-            for (int i = 1; i <= times; i++) {
+            for (int i = 1; i < times; i++) {
 //                System.out.println("INTERVAL=" + getIntervalInMillis(calendar));
                 calendar.add(Calendar.MILLISECOND, (int) getIntervalInMillis(calendar));
             }
-            setEndType(EndType.AFTER_TIMES);
             setEnd(calendar.getTime());
+            setEndType(EndType.AFTER_TIMES);
+        }
+
+        /**
+         * Method delegation to {@link Schedule#setEndPseudoIndefinite()}
+         */
+        public void setEndPseudoIndefinite() {
+            Schedule.this.setEndPseudoIndefinite();
         }
 
         /**
          * @return the maximum number of times an event can occur within this repeat-schedule
          */
-        public int getMaxOccurrences() {
+        public int countMaxOccurrences() {
             if (start.equals(end))
                 return 1;
 
@@ -865,7 +881,8 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
         public Repeat fromJSON(JSONElement json) {
             type = RepeatType.valueOf(json.valueOf("type"));
             repeatBasis = RepeatBasis.valueOf(json.valueOf("repeatBasis"));
-            delay = json.<Long>valueOf("delay").intValue();
+            Object delayNum = json.valueOf("delay");
+            delay = delayNum instanceof Long ? ((Long) delayNum).intValue() : (int) delayNum;
             days = new int[json.search("days").getChildren().size()];
             for (int i = 0; i < days.length; i++) {
                 days[i] = json.search("days").getChildren().get(i).<Long>getValue().intValue();
@@ -886,15 +903,12 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
             asDoc.put("type", type.toString());
             asDoc.put("repeatBasis", repeatBasis.toString());
             asDoc.put("delay", delay);
-            ArrayList<Integer> daysList = new ArrayList<Integer>(days.length);
-            for (int i = 0; i < days.length; i++)
-                daysList.add(days[i]);
-            ArrayList<Integer> weeksList = new ArrayList<Integer>(weeks.length);
-            for (int i = 0; i < weeks.length; i++)
-                weeksList.add(weeks[i]);
-            ArrayList<Integer> monthsList = new ArrayList<Integer>(months.length);
-            for (int i = 0; i < months.length; i++)
-                monthsList.add(months[i]);
+            ArrayList<Integer> daysList = new ArrayList<>(days.length);
+            for (int day : days) daysList.add(day);
+            ArrayList<Integer> weeksList = new ArrayList<>(weeks.length);
+            for (int week : weeks) weeksList.add(week);
+            ArrayList<Integer> monthsList = new ArrayList<>(months.length);
+            for (int month : months) monthsList.add(month);
             asDoc.put("days", daysList);
             asDoc.put("weeks", weeksList);
             asDoc.put("months", monthsList);
@@ -905,13 +919,13 @@ public class Schedule implements Comparable, Model, Iterable<Date> {
             type = RepeatType.valueOf(doc.getString("type"));
             repeatBasis = RepeatBasis.valueOf(doc.getString("repeatBasis"));
             delay = doc.getInteger("delay");
-            ArrayList<Integer> daysLi = ((ArrayList<Integer>)doc.get("days"));
+            ArrayList<Integer> daysLi = ((ArrayList<Integer>) doc.get("days"));
             Integer[] daysL = daysLi.toArray(new Integer[daysLi.size()]);
             days = ArrayUtils.toPrimitiveArray(daysL);
-            ArrayList<Integer> weeksLi = ((ArrayList<Integer>)doc.get("weeks"));
+            ArrayList<Integer> weeksLi = ((ArrayList<Integer>) doc.get("weeks"));
             Integer[] weeksL = weeksLi.toArray(new Integer[daysLi.size()]);
             weeks = ArrayUtils.toPrimitiveArray(weeksL);
-            ArrayList<Integer> monthsLi = ((ArrayList<Integer>)doc.get("months"));
+            ArrayList<Integer> monthsLi = ((ArrayList<Integer>) doc.get("months"));
             Integer[] monthsL = monthsLi.toArray(new Integer[daysLi.size()]);
             months = ArrayUtils.toPrimitiveArray(monthsL);
         }

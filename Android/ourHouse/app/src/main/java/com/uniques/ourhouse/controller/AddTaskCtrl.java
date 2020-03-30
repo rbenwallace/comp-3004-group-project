@@ -94,16 +94,16 @@ public class AddTaskCtrl implements FragmentCtrl {
             }
             Schedule schedule = new Schedule();
             if (selectedFrequencyText.equals("Once")) {
-                Schedule.pauseStartEndBoundsChecking();
+                schedule.pauseStartEndBoundsChecking();
                 schedule.setStart(date);
                 schedule.setEnd(date);
-                Schedule.resumeStartEndBoundsChecking();
+                schedule.resumeStartEndBoundsChecking();
                 schedule.setEndType(Schedule.EndType.ON_DATE);
             } else {
-                Schedule.pauseStartEndBoundsChecking();
+                schedule.pauseStartEndBoundsChecking();
                 schedule.setStart(date);
                 schedule.setEndPseudoIndefinite();
-                Schedule.resumeStartEndBoundsChecking();
+                schedule.resumeStartEndBoundsChecking();
                 if (selectedFrequencyText.equals("Other")) {
                     schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                     schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherTaskFrequency.getText())));
