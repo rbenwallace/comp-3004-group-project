@@ -1,5 +1,6 @@
 package com.uniques.ourhouse.controller;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,30 +22,35 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.model.User;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class PerformanceCtrl implements FragmentCtrl {
     private FragmentActivity activity;
-    private String month;
-    private String year;
+    private int month;
+    private int year;
+    private String strMonth;
     private TextView calculateTitle;
+    private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+    //for jon
+    HashMap<User, Float> points;
+    HashMap<User, Float> amounts;
 
     public PerformanceCtrl(FragmentActivity activity) {
         this.activity = activity;
     }
 
-    public PerformanceCtrl(FragmentActivity activity, String month, String year) {
-        this.activity = activity;
-        this.month = month;
-        this.year = year;
-        //Log.d("wallace: ", month);
-        //Log.d("wallace: ", year);
-    }
-
+    @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
+        points = new HashMap<>();
+        amounts = new HashMap<>();
+        strMonth = months[month];
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
-        calculateTitle.setText(month + " : " + year);
+        calculateTitle.setText(strMonth + " : " + year);
 
         PieChart pieChart;
         BarChart barChart;
@@ -149,8 +155,8 @@ public class PerformanceCtrl implements FragmentCtrl {
 
     @Override
     public void acceptArguments(Object... args) {
-        month = (String) args[0];
-        year = (String) args[1];
+        month = Integer.parseInt(String.valueOf(args[0]));
+        year = Integer.parseInt(String.valueOf(args[1]));;
     }
 
     @Override

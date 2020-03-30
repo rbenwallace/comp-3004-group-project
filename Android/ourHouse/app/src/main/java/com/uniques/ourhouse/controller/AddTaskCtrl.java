@@ -124,7 +124,6 @@ public class AddTaskCtrl implements FragmentCtrl {
                 if (bool) {
                     Log.d(AddTaskFragment.TAG, "Task Added to Database");
                     Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();
-                    Log.d("woppop", task.toString());
                     Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
                     activity.popFragment(FragmentId.GET(ManageFragment.TAG));
                 } else {

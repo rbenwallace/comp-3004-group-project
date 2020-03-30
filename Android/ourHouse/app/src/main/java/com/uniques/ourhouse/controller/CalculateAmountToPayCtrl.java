@@ -1,5 +1,6 @@
 package com.uniques.ourhouse.controller;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,42 +19,54 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.fragment.ScreenMonthFragment;
+import com.uniques.ourhouse.model.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class CalculateAmountToPayCtrl implements FragmentCtrl {
     private FragmentActivity activity;
-    private String month;
-    private String year;
-    private TextView calculateTitle;
-
+    private int month;
+    private int chosenYearInt;
+    private int year;
+    private int newMonth;
+    private int newYear;
     private Button selectedMonth;
     private Button selectedYear;
     private boolean menuOpen = false;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
+    //For jon
+    HashMap<User, Float> points;
+    HashMap<User, Float> amounts;
+
     public CalculateAmountToPayCtrl(FragmentActivity activity) {
         this.activity = activity;
     }
 
-    public CalculateAmountToPayCtrl(FragmentActivity activity, String month, String year) {
-        this.activity = activity;
-        this.month = month;
-        this.year = year;
-        //Log.d("wallace: ", month);
-        //Log.d("wallace: ", year);
+    private int findMonth(String str){
+        for(int i = 0; i < 12; i++){
+            if(months[i].equals(str)){
+                return i;
+            }
+        }
+        Log.d(CalculateAmountToPayFragment.TAG, "Failed to get Month");
+        return 0;
     }
 
+    @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
-        calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
-        calculateTitle.setText(month + " : " + year);
-
+        points = new HashMap<>();
+        amounts = new HashMap<>();
+        newMonth = month;
+        newYear = year;
         Button leftButton = (Button) view.findViewById(R.id.left_button);
         Button rightButton = (Button) view.findViewById(R.id.right_button);
         Button currentMonth = (Button) view.findViewById(R.id.month0);
@@ -82,9 +95,14 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         Button[] yearButtons = {currentYear, pastYearButton01, pastYearButton02, pastYearButton03};
 
         Date date = Calendar.getInstance().getTime();
-        int chosenYearInt = date.getYear();
+        @SuppressLint("SimpleDateFormat") String temp = new SimpleDateFormat("yyyy").format(date);
+        chosenYearInt = Integer.parseInt(temp);
         int currentMonthInt = date.getMonth();
+        selectedMonth = currentMonth;
         for(int i = 0; i < 12; i++){
+            if(currentMonthInt == month){
+                selectedMonth = monthButtons[i];
+            }
             monthButtons[i].setText(months[currentMonthInt]);
             if(currentMonthInt == 0){
                 currentMonthInt = 11;
@@ -93,28 +111,29 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
                 currentMonthInt -= 1;
             }
         }
-        selectedMonth = currentMonth;
         for(int i = 0; i < 4; i++){
-            yearButtons[i].setText("20"+String.valueOf(chosenYearInt%100));
+            if(chosenYearInt == year){
+                selectedYear = yearButtons[i];
+            }
+            yearButtons[i].setText(String.valueOf(chosenYearInt));
             chosenYearInt -= 1;
         }
-        currentYear.setBackgroundResource(R.drawable.selected_item);
+        selectedYear.setBackgroundResource(R.drawable.selected_item);
         selectedMonth.setBackgroundResource(R.drawable.selected_item);
 
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String month = selectedMonth.getText().toString();
-                String year = selectedYear.getText().toString();
-                activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), month, year);
-                Log.d("wallace: ", month);
-                Log.d("wallace: ", year);
+                //String month = selectedMonth.getText().toString();
+                //String year = selectedYear.getText().toString();
+                activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), newMonth, newYear);
             }
         });
 
         currentMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(currentMonth.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 currentMonth.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = currentMonth;
@@ -124,6 +143,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton01.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton01.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton01;
@@ -133,6 +153,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton02.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton02.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton02.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton02;
@@ -142,6 +163,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton03.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton03.getText().toString());
+                System.out.println("wallace : " + newMonth + " " + pastMonthButton03.getText().toString() + " " + months[11]);
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton03.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton03;
@@ -151,6 +174,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton04.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton04.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton04.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton04;
@@ -160,6 +184,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton05.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton05.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton05.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton05;
@@ -169,6 +194,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton06.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton06.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton06.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton06;
@@ -178,6 +204,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton07.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton07.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton07.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton07;
@@ -187,6 +214,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton08.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton08.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton08.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton08;
@@ -196,6 +224,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton09.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton09.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton09.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton09;
@@ -205,6 +234,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton10.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton10.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton10;
@@ -214,6 +244,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastMonthButton11.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newMonth = findMonth(pastMonthButton11.getText().toString());
                 selectedMonth.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastMonthButton11.setBackgroundResource(R.drawable.selected_item);
                 selectedMonth = pastMonthButton11;
@@ -234,13 +265,14 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year);
+                //activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year);
             }
         });
 
         currentYear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newYear = Integer.parseInt(currentYear.getText().toString());
                 selectedYear.setBackgroundResource(R.drawable.loginbutton_selector);
                 currentYear.setBackgroundResource(R.drawable.selected_item);
                 selectedYear = currentYear;
@@ -257,6 +289,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastYearButton01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newYear = Integer.parseInt(pastYearButton01.getText().toString());
                 selectedYear.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastYearButton01.setBackgroundResource(R.drawable.selected_item);
                 selectedYear = pastYearButton01;
@@ -273,6 +306,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastYearButton02.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newYear = Integer.parseInt(pastYearButton02.getText().toString());
                 selectedYear.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastYearButton02.setBackgroundResource(R.drawable.selected_item);
                 selectedYear = pastYearButton02;
@@ -289,6 +323,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         pastYearButton03.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                newYear = Integer.parseInt(pastYearButton03.getText().toString());
                 selectedYear.setBackgroundResource(R.drawable.loginbutton_selector);
                 pastYearButton03.setBackgroundResource(R.drawable.selected_item);
                 selectedYear = pastYearButton03;
@@ -328,8 +363,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
 
     @Override
     public void acceptArguments(Object... args) {
-        month = (String) args[0];
-        year = (String) args[1];
+        month = Integer.parseInt(String.valueOf(args[0]));
+        year = Integer.parseInt(String.valueOf(args[1]));;
     }
 
     @Override

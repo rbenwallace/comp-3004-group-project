@@ -18,9 +18,6 @@ public class PerformanceFragment extends Fragment<PerformanceCtrl> {
     private static final String ACTIVITY_TAG = MainActivity.TAG;
     private static final int LAYOUT_ID = R.layout.fragment_performance;
 
-    private String month;
-    private String year;
-
     public static FragmentId setupId(ActivityId activityId) {
         return FragmentId.SET(PerformanceFragment.class, TAG, LAYOUT_ID, activityId);
     }
@@ -29,7 +26,7 @@ public class PerformanceFragment extends Fragment<PerformanceCtrl> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            setController(new PerformanceCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this), month, year));
+            setController(new PerformanceCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this)));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);

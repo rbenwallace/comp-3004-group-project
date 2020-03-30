@@ -1,5 +1,6 @@
 package com.uniques.ourhouse;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,10 +22,15 @@ import com.uniques.ourhouse.fragment.ScreenMonthFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
 import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
+
+import org.bson.types.ObjectId;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -34,19 +40,23 @@ public class MainActivity extends FragmentActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
+    private ObjectId houseId;
     private BottomNavigationView navView;
     private boolean navViewUpdatedByCode;
+    private int currentMonth;
+    private String strYear;
 
-    private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    private String currentMonth;
-    private String currentYear;
-
-
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getActivityId().getLayoutId());
         saveInstance(getActivityId(), this);
+
+        houseId = Settings.OPEN_HOUSE.get();
+        Calendar calendar = Calendar.getInstance();
+        strYear = new SimpleDateFormat("yyyy").format(calendar.getTime());
+        currentMonth = calendar.getTime().getMonth();
 
         Log.d(TAG, "Launching");
 
@@ -61,16 +71,6 @@ public class MainActivity extends FragmentActivity {
         ScreenMonthFragment.setupId(getActivityId());
         EditTaskFragment.setupId(getActivityId());
         EditFeeFragment.setupId(getActivityId());
-
-        Date date = Calendar.getInstance().getTime();
-        int chosenYearInt = date.getYear();
-        int currentMonthInt = date.getMonth();
-        for (int i = 0; i < 12; i++) {
-
-        }
-
-        currentMonth = months[currentMonthInt];
-        currentYear = "20"+String.valueOf(chosenYearInt%100);
 
         BottomNavigationView navigation = findViewById(R.id.main_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -100,8 +100,10 @@ public class MainActivity extends FragmentActivity {
                 return true;
             case R.id.navigation_stats:
                 if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(AmountPaidFragment.TAG)) {
-
-                    pushFragment(FragmentId.GET(AmountPaidFragment.TAG), currentMonth, currentYear);
+                    /*myDatabase.getHouse(houseId, house -> {
+                        house.populateStats(currentYear, currentMonth);
+                    });*/
+                    pushFragment(FragmentId.GET(AmountPaidFragment.TAG), currentMonth, Integer.parseInt(strYear));
                 }
                 return true;
         }
