@@ -3,6 +3,7 @@ package com.uniques.ourhouse.controller;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -25,12 +26,26 @@ import java.util.List;
 
 public class PerformanceCtrl implements FragmentCtrl {
     private FragmentActivity activity;
+    private String month;
+    private String year;
+    private TextView calculateTitle;
 
     public PerformanceCtrl(FragmentActivity activity) {
         this.activity = activity;
     }
 
+    public PerformanceCtrl(FragmentActivity activity, String month, String year) {
+        this.activity = activity;
+        this.month = month;
+        this.year = year;
+        //Log.d("wallace: ", month);
+        //Log.d("wallace: ", year);
+    }
+
     public void init(View view) {
+        calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
+        calculateTitle.setText(month + " : " + year);
+
         PieChart pieChart;
         BarChart barChart;
 
@@ -43,7 +58,7 @@ public class PerformanceCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG));
+                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year);
             }
         });
         rightButton.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +66,7 @@ public class PerformanceCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG));
+                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year);
             }
         });
 
@@ -132,7 +147,8 @@ public class PerformanceCtrl implements FragmentCtrl {
 
     @Override
     public void acceptArguments(Object... args) {
-
+        month = (String) args[0];
+        year = (String) args[1];
     }
 
     @Override

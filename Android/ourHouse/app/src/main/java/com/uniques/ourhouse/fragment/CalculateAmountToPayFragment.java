@@ -18,6 +18,9 @@ public class CalculateAmountToPayFragment extends Fragment<CalculateAmountToPayC
     private static final String ACTIVITY_TAG = MainActivity.TAG;
     private static final int LAYOUT_ID = R.layout.fragment_calculate_amount_to_pay;
 
+    private String month;
+    private String year;
+
     public static FragmentId setupId(ActivityId activityId) {
         return FragmentId.SET(CalculateAmountToPayFragment.class, TAG, LAYOUT_ID, activityId);
     }
@@ -26,7 +29,7 @@ public class CalculateAmountToPayFragment extends Fragment<CalculateAmountToPayC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (controller == null) {
-            setController(new CalculateAmountToPayCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this)));
+            setController(new CalculateAmountToPayCtrl(FragmentActivity.getSavedInstance(getFragmentId().getDefaultActivityId(), this), month, year));
         }
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(getFragmentId().getLayoutId(), container, false);

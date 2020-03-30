@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uniques.ourhouse.R;
@@ -28,6 +29,10 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class CalculateAmountToPayCtrl implements FragmentCtrl {
     private FragmentActivity activity;
+    private String month;
+    private String year;
+    private TextView calculateTitle;
+
     private Button selectedMonth;
     private Button selectedYear;
     private boolean menuOpen = false;
@@ -37,7 +42,17 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         this.activity = activity;
     }
 
+    public CalculateAmountToPayCtrl(FragmentActivity activity, String month, String year) {
+        this.activity = activity;
+        this.month = month;
+        this.year = year;
+        //Log.d("wallace: ", month);
+        //Log.d("wallace: ", year);
+    }
+
     public void init(View view) {
+        calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
+        calculateTitle.setText(month + " : " + year);
 
         Button leftButton = (Button) view.findViewById(R.id.left_button);
         Button rightButton = (Button) view.findViewById(R.id.right_button);
@@ -211,7 +226,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG));
+                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year);
             }
         });
         rightButton.setOnClickListener(new View.OnClickListener() {
@@ -219,7 +234,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG));
+                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year);
             }
         });
 
@@ -313,6 +328,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
 
     @Override
     public void acceptArguments(Object... args) {
+        month = (String) args[0];
+        year = (String) args[1];
     }
 
     @Override

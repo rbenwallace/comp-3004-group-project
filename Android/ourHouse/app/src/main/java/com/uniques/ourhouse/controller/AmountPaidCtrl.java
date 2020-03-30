@@ -20,12 +20,26 @@ import java.util.ArrayList;
 
 public class AmountPaidCtrl implements FragmentCtrl {
     private FragmentActivity activity;
+    private String month;
+    private String year;
+    private TextView calculateTitle;
 
     public AmountPaidCtrl(FragmentActivity activity) {
         this.activity = activity;
     }
 
+    public AmountPaidCtrl(FragmentActivity activity, String month, String year) {
+        this.activity = activity;
+        this.month = month;
+        this.year = year;
+        //Log.d("wallace: ", month);
+        //Log.d("wallace: ", year);
+    }
+
     public void init(View view) {
+        calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
+        calculateTitle.setText(month + " : " + year);
+
         BarChart barChart;
 
         Button leftButton = (Button) view.findViewById(R.id.left_button);
@@ -37,7 +51,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG));
+                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year);
             }
         });
         rightButton.setOnClickListener(new View.OnClickListener() {
@@ -45,7 +59,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG));
+                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year);
             }
         });
 
@@ -95,7 +109,8 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
     @Override
     public void acceptArguments(Object... args) {
-
+        month = (String) args[0];
+        year = (String) args[1];
     }
 
     @Override

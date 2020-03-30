@@ -23,6 +23,9 @@ import com.uniques.ourhouse.fragment.SettingsFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class MainActivity extends FragmentActivity {
     public static final String TAG = "MainActivity";
     static final int LAYOUT_ID = R.layout.activity_main;
@@ -31,6 +34,10 @@ public class MainActivity extends FragmentActivity {
 
     private BottomNavigationView navView;
     private boolean navViewUpdatedByCode;
+
+    private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    private String currentMonth;
+    private String currentYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,16 @@ public class MainActivity extends FragmentActivity {
         EditTaskFragment.setupId(getActivityId());
         EditFeeFragment.setupId(getActivityId());
 
+        Date date = Calendar.getInstance().getTime();
+        int chosenYearInt = date.getYear();
+        int currentMonthInt = date.getMonth();
+        for (int i = 0; i < 12; i++) {
+
+        }
+
+        currentMonth = months[currentMonthInt];
+        currentYear = "20"+String.valueOf(chosenYearInt%100);
+
         BottomNavigationView navigation = findViewById(R.id.main_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navView = navigation;
@@ -61,6 +78,7 @@ public class MainActivity extends FragmentActivity {
         Log.d(TAG, "Checking jobs...");
         BootReceiver.scheduleJobs(this);
     }
+
 
     public final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
@@ -78,8 +96,9 @@ public class MainActivity extends FragmentActivity {
                     pushFragment(FragmentId.GET(ManageFragment.TAG));
                 return true;
             case R.id.navigation_stats:
-                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(AmountPaidFragment.TAG))
-                    pushFragment(FragmentId.GET(AmountPaidFragment.TAG));
+                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(AmountPaidFragment.TAG)) {
+                    pushFragment(FragmentId.GET(AmountPaidFragment.TAG), currentMonth, currentYear);
+                }
                 return true;
         }
         return false;
