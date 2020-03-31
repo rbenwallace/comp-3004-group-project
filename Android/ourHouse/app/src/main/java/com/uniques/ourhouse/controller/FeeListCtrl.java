@@ -13,6 +13,7 @@ import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
+import com.uniques.ourhouse.fragment.ScreenMonthFragment;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.ReadOnlyNameable;
@@ -40,24 +41,15 @@ public class FeeListCtrl implements RecyclerCtrl<FeeListItemCard>, FragmentCtrl 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
 
-        Button leftButton = (Button) view.findViewById(R.id.left_button);
-        Button rightButton = (Button) view.findViewById(R.id.right_button);
+        Button calculateButton = (Button) view.findViewById(R.id.calculateBack);
 
         Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
-        leftButton.setOnClickListener(new View.OnClickListener() {
+        calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year);
-            }
-        });
-        rightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year);
+                activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), month, year);
             }
         });
     }
@@ -73,7 +65,7 @@ public class FeeListCtrl implements RecyclerCtrl<FeeListItemCard>, FragmentCtrl 
     public void updateInfo() {
 
         ArrayList<String> feeList = new ArrayList<>();
-        
+
         observableCards.clear();
 
         for(String text: feeList)

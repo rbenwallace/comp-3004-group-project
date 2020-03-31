@@ -262,7 +262,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(FeeListFragment.TAG), month, year);
+                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year);
             }
         });
         rightButton.setOnClickListener(new View.OnClickListener() {
