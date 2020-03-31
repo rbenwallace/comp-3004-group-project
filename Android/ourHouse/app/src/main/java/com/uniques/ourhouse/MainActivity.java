@@ -42,6 +42,7 @@ public class MainActivity extends FragmentActivity {
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private ObjectId houseId;
+    private ObjectId userId;
     private BottomNavigationView navView;
     private boolean navViewUpdatedByCode;
     private int currentMonth;
@@ -55,6 +56,7 @@ public class MainActivity extends FragmentActivity {
         saveInstance(getActivityId(), this);
 
         houseId = Settings.OPEN_HOUSE.get();
+        userId = Session.getSession().getLoggedInUserId();
         Calendar calendar = Calendar.getInstance();
         strYear = new SimpleDateFormat("yyyy").format(calendar.getTime());
         currentMonth = calendar.getTime().getMonth();
@@ -102,10 +104,11 @@ public class MainActivity extends FragmentActivity {
                 return true;
             case R.id.navigation_stats:
                 if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(AmountPaidFragment.TAG)) {
-                    /*myDatabase.getHouse(houseId, house -> {
-                        house.populateStats(currentYear, currentMonth);
-                    });*/
-                    pushFragment(FragmentId.GET(AmountPaidFragment.TAG), currentMonth, Integer.parseInt(strYear));
+                    myDatabase.getHouse(houseId, house -> {
+                        System.out.println("wallace occupants: " + house.getOccupants().toString());
+                        house.populateStats(Integer.parseInt(strYear), currentMonth, userId);
+                        pushFragment(FragmentId.GET(AmountPaidFragment.TAG), currentMonth, Integer.parseInt(strYear), house.getUserAmountPaid(), house.getUserPoints(), house.getTasksCompleted(), house.getUserFees());
+                    });
                 }
                 return true;
         }

@@ -125,7 +125,8 @@ public class EditTaskCtrl implements FragmentCtrl {
 
             Schedule schedule = task.getSchedule();
             System.out.println("wallace: " + schedule.getRepeatSchedule().getRepeatBasis());
-            if (schedule.getEndType().equals(Schedule.EndType.ON_DATE) || (currentCalendar.getTimeInMillis() < oldCalendar.getTimeInMillis())) {
+            if (schedule.getEndType().toString().equals(Schedule.EndType.ON_DATE.toString()) || (currentCalendar.getTime().before(oldCalendar.getTime()))) {
+                System.out.println("wallace: once");
                 onceButton.performClick();
                 datePicker.updateDate(Integer.parseInt(oldYear), Integer.parseInt(oldMonth), Integer.parseInt(oldDay));
             } else {
@@ -210,16 +211,16 @@ public class EditTaskCtrl implements FragmentCtrl {
             }
             Schedule schedule = new Schedule();
             if (selectedFrequencyText.equals("Once")) {
-                Schedule.pauseStartEndBoundsChecking();
+                schedule.pauseStartEndBoundsChecking();
                 schedule.setStart(date);
                 schedule.setEnd(date);
-                Schedule.resumeStartEndBoundsChecking();
+                schedule.resumeStartEndBoundsChecking();
                 schedule.setEndType(Schedule.EndType.ON_DATE);
             } else {
-                Schedule.pauseStartEndBoundsChecking();
+                schedule.pauseStartEndBoundsChecking();
                 schedule.setStart(date);
                 schedule.setEndPseudoIndefinite();
-                Schedule.resumeStartEndBoundsChecking();
+                schedule.resumeStartEndBoundsChecking();
                 if (selectedFrequencyText.equals("Other")) {
                     schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                     schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(editNumberOfDays.getText())));

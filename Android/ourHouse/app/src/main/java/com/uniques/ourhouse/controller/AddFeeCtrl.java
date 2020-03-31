@@ -138,17 +138,17 @@ public class AddFeeCtrl implements FragmentCtrl {
             Schedule schedule = new Schedule();
             if(selectedFrequencyText.equals("Once")){
                 schedule.setEndType(Schedule.EndType.ON_DATE);
-                Schedule.pauseStartEndBoundsChecking();
+                schedule.pauseStartEndBoundsChecking();
                 schedule.setStart(Calendar.getInstance().getTime());
                 schedule.setEnd(Calendar.getInstance().getTime());
-                Schedule.resumeStartEndBoundsChecking();
+                schedule.resumeStartEndBoundsChecking();
             }
             else{
                 schedule.setEndType(Schedule.EndType.AFTER_TIMES);
-                Schedule.pauseStartEndBoundsChecking();
+                schedule.pauseStartEndBoundsChecking();
                 schedule.setStart(Calendar.getInstance().getTime());
                 schedule.setEndPseudoIndefinite();
-                Schedule.resumeStartEndBoundsChecking();
+                schedule.resumeStartEndBoundsChecking();
                 switch (selectedFrequencyText) {
                     case "Other":
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
