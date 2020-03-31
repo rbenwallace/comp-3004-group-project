@@ -49,6 +49,8 @@ public class LS_Main extends FragmentActivity {
         MyHousesFragment.setupId(getActivityId());
         JoinHouseFragment.setupId(getActivityId());
         CreateHouseFragment.setupId(getActivityId());
+        JoiningHouseFragment.setupId(getActivityId());
+
         final String HOUSEID = houseId;
         if(action != null && action.equals("joinhouse")) {
             pushFragment(FragmentId.GET(JoiningHouseFragment.TAG));
