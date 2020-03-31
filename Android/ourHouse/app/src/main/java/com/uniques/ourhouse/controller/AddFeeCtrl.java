@@ -26,6 +26,7 @@ import com.uniques.ourhouse.util.Schedule;
 import org.bson.types.ObjectId;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddFeeCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -41,6 +42,10 @@ public class AddFeeCtrl implements FragmentCtrl {
     private EditText feeAmount;
     private RadioGroup feeFrequencies;
     private TextView otherFeeFrequency;
+    private boolean useNewDay = false;
+    private Date newDate;
+    private boolean useNewDayMonth = false;
+    private Date newDateMonth;
 
     public AddFeeCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -123,6 +128,7 @@ public class AddFeeCtrl implements FragmentCtrl {
         });
 
         addFeeBackButton.setOnClickListener(view12 -> activity.popFragment(FragmentId.GET(AddFeeFragment.TAG)));
+
         addFeeAddButton.setOnClickListener(view1 -> {
             String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
             if(String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherFeeFrequency.getText()).equals(""))){
@@ -144,27 +150,61 @@ public class AddFeeCtrl implements FragmentCtrl {
                 schedule.resumeStartEndBoundsChecking();
             }
             else{
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, 23);
+                calendar.set(Calendar.MINUTE, 59);
+                calendar.set(Calendar.SECOND, 59);
+                calendar.set(Calendar.MILLISECOND, 0);
+                Date date = calendar.getTime();
                 schedule.setEndType(Schedule.EndType.AFTER_TIMES);
                 schedule.pauseStartEndBoundsChecking();
-                schedule.setStart(Calendar.getInstance().getTime());
+                schedule.setStart(date);
                 schedule.setEndPseudoIndefinite();
                 schedule.resumeStartEndBoundsChecking();
+                if(!String.valueOf(otherFeeFrequency.getText()).equals("")){
+                    schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherFeeFrequency.getText())));
+                }
                 switch (selectedFrequencyText) {
                     case "Other":
+                    case "Daily":
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                        schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherFeeFrequency.getText())));
                         break;
                     case "Yearly":
+                        if(useNewDay){
+                            schedule.pauseStartEndBoundsChecking();
+                            schedule.setStart(newDate);
+                            schedule.resumeStartEndBoundsChecking();
+                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                            break;
+                        }
+                        if(date.getDate() > 28 && date.getMonth() == 1){
+                            newDate = date;
+                            newDate.setDate(28);
+                            useNewDay = true;
+                            Toast.makeText(activity, "Yearly recurrence day is set to Feb 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
                         break;
                     case "Monthly":
+                        if(useNewDayMonth){
+                            schedule.pauseStartEndBoundsChecking();
+                            schedule.setStart(newDateMonth);
+                            schedule.resumeStartEndBoundsChecking();
+                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                            break;
+                        }
+                        if(date.getDate() > 28){
+                            newDateMonth = date;
+                            newDateMonth.setDate(28);
+                            useNewDayMonth = true;
+                            Toast.makeText(activity, "Monthly recurrence date has been set to the 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
                         break;
                     case "Weekly":
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
-                        break;
-                    case "Daily":
-                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                         break;
                 }
             }

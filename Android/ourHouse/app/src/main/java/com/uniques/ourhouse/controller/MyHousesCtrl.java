@@ -30,7 +30,6 @@ import org.bson.types.ObjectId;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -58,16 +57,16 @@ public class MyHousesCtrl implements FragmentCtrl {
         // Gather houses if there are any from the shared pref Houses
 //        User myUser = Session.getSession().getLoggedInUser();
         database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
+            myUser = myUser != null ? myUser : Session.getSession().getLoggedInUser();
             if (myUser.getMyHouses() == null) {
                 myUser.setMyHouses(new ArrayList<>());
                 database.updateUser(myUser, success -> {
                 });
             }
-            if(myHouses == null){
+            if (myHouses == null) {
                 myHouses = new ArrayList<>();
                 fetchMyHouses(view, myUser.getMyHouses(), myHouses);
-            }
-            else
+            } else
                 onPostFetchMyHouses(view);
 
             logoutBtn.setOnClickListener(view14 -> {
@@ -80,7 +79,8 @@ public class MyHousesCtrl implements FragmentCtrl {
                 });
             });
         });
-        Session.getSession().getDatabase().deleteAllCollectionData(bool->{});
+        Session.getSession().getDatabase().deleteAllCollectionData(bool -> {
+        });
     }
 
     private void fetchMyHouses(View view, List<ObjectId> houseIds, List<House> fetchedHouses) {
@@ -92,7 +92,9 @@ public class MyHousesCtrl implements FragmentCtrl {
             return;
         }
         filler = house -> {
-            fetchedHouses.add(house);
+            if (house != null) {
+                fetchedHouses.add(house);
+            }
             if (houseIds.isEmpty()) {
                 filler = null;
                 Log.d("MyHousesCtrl", "got all houses to go");
@@ -112,12 +114,12 @@ public class MyHousesCtrl implements FragmentCtrl {
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
 
         //check for duplicates idk why this is happening
-        for(int i=0;i< myHouses.size(); i++){
+        for (int i = 0; i < myHouses.size(); i++) {
             int check = 0;
-            for (int j=0;j<myHouses.size();j++){
-                if (myHouses.get(i).getId() == myHouses.get(j).getId()){
+            for (int j = 0; j < myHouses.size(); j++) {
+                if (myHouses.get(i).getId() == myHouses.get(j).getId()) {
                     check++;
-                    if(check > 1){
+                    if (check > 1) {
                         myHouses.remove(j);
                     }
                 }
@@ -125,7 +127,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         }
 
         User myUser = Session.getSession().getLoggedInUser();
-        Log.d("myHouses", "myUser myHouses "+ myUser.getMyHouses().toString());
+        Log.d("myHouses", "myUser myHouses " + myUser.getMyHouses().toString());
         Log.d("myHouses", "arrayList myhouses " + myHouses.toString());
         Log.d("myHouses", "size myhouses " + myHouses.size());
 
@@ -133,7 +135,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, houses);
         houses.clear();
         for (int i = 0; i < myHouses.size(); i++) {
-            if(myHouses.get(i) == null) continue;
+            if (myHouses.get(i) == null) continue;
             houses.add(myHouses.get(i).getName());
         }
         housesList.setAdapter(adapter);

@@ -1,6 +1,5 @@
 package com.uniques.ourhouse.controller;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -156,7 +155,7 @@ public class JoinHouseCtrl implements FragmentCtrl{
                                 popupWindow.dismiss();
                                 return;
                             } else {
-                                myUser.addHouseId(searchedHouses.get(i).getId());
+                                myUser.addHouse(searchedHouses.get(i).getId());
                                 database.updateUser(myUser, success -> {
                                     if (success) {
                                         popupWindow.dismiss();

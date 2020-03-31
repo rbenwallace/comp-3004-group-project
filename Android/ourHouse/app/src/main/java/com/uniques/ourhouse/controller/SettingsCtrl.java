@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +49,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     private TextView houseName;
     private CheckBox showTaskDifficultyButton;
     private CheckBox showLateTasksButton;
+    private ProgressBar pd;
 
     public List<TaskRotationCard> observableCards;
     private RecyclerAdapter<TaskRotationCard> recyclerAdapter;
@@ -73,6 +76,12 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
     @Override
     public void init(View view) {
+        /*RelativeLayout layout = view.findViewById(R.id.login_root_display);
+        pd = new ProgressBar(activity, null, android.R.attr.progressBarStyleLarge);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(300, 300);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        layout.addView(pd, params);
+        pd.setVisibility(View.VISIBLE);*/
         personRecycler = view.findViewById(R.id.settings_recycler);
 
         btnSwitchHouse = view.findViewById(R.id.settings_btnSwitchHouse);
@@ -105,6 +114,14 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             observableCards.add(new TaskRotationCard(new User("Seb", "Gadzinski", "seb@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Jon", "Lim", "jon@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Victor", "Olaitin", "vic@gmail.com")));
+
+            RecyclerAdapter<TaskRotationCard> adapter = new RecyclerAdapter<>(
+                    personRecycler,
+                    observableCards,
+                    R.layout.roommate_item);
+            personRecycler.setAdapter(adapter);
+            setRecyclerAdapter(adapter);
+            //pd.setVisibility(View.GONE);
 
             btnSwitchHouse.setOnClickListener(view13 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT

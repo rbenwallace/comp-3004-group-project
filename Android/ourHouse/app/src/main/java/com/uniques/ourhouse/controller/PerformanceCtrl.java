@@ -25,7 +25,10 @@ import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
 import com.uniques.ourhouse.fragment.FeeListFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
+import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.model.User;
+
+import org.bson.types.ObjectId;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +47,10 @@ public class PerformanceCtrl implements FragmentCtrl {
     private int year;
     private String strMonth;
     private TextView calculateTitle;
+    private HashMap<ObjectId, Float> userAmountPaid;
+    private HashMap<ObjectId, Float> userPerformance;
+    private HashMap<ObjectId, Integer> userTasksCompleted;
+    private ArrayList<String> userFees;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     //for jon
@@ -74,7 +81,7 @@ public class PerformanceCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year);
+                activity.popFragment(FragmentId.GET(PerformanceFragment.TAG));
             }
         });
         rightButton.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +89,7 @@ public class PerformanceCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(FeeListFragment.TAG), month, year);
+                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
             }
         });
 
@@ -202,6 +209,10 @@ public class PerformanceCtrl implements FragmentCtrl {
     public void acceptArguments(Object... args) {
         month = Integer.parseInt(String.valueOf(args[0]));
         year = Integer.parseInt(String.valueOf(args[1]));;
+        userAmountPaid = (HashMap<ObjectId, Float>) args[2];
+        userPerformance = (HashMap<ObjectId, Float>) args[3];
+        userTasksCompleted = (HashMap<ObjectId, Integer>) args[4];
+        userFees = (ArrayList<String>) args[5];
     }
 
     @Override

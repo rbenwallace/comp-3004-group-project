@@ -11,14 +11,10 @@ import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import com.uniques.ourhouse.util.easyjson.SafeJSONElementType;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -28,71 +24,36 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class House implements Indexable, Observable {
+    @NonNull
     private ObjectId houseId;
+    @NonNull
     private String houseKey;
-    private User owner;
+    @NonNull
+    private ObjectId owner;
+    @NonNull
     private String name;
-    private ArrayList<User> occupants;
+    @NonNull
+    private List<ObjectId> occupants;
+    @NonNull
     private Rotation rotation;
+    @NonNull
     private String password;
+
     private boolean houseUpdated = false;
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
+
     private HashMap<ObjectId, Float> userPoints;
     private HashMap<ObjectId, Float> userAmountPaid;
+
     private HashMap<ObjectId, Integer> tasksCompleted;
     private ArrayList<String> userFees;
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
 
-    public static House testHouse() {
-        Rotation rotation = new Rotation();
-        rotation.addUserToRotation(Session.getSession().getLoggedInUser());
-        rotation.addUserToRotation(new User("User", "A", "email1"));
-        rotation.addUserToRotation(new User("User", "B", "email2"));
-        rotation.addUserToRotation(new User("User", "C", "email3"));
-        House house = new House("Test House", Session.getSession().getLoggedInUser(),
-                new ArrayList<>(), rotation, "password", true, true);
-        return house;
-    }
-
-    @NonNull
-    @Override
-    public ObjectId getId() {
-        return houseId;
-    }
-
-    public String getKeyId() {
-        return houseKey;
-    }
-
-    public HashMap<ObjectId, Float> getUserPoints(){ return userPoints; }
-
-    public HashMap<ObjectId, Float> getUserAmountPaid(){ return userAmountPaid; }
-
-    public HashMap<ObjectId, Integer> getTasksCompleted(){ return tasksCompleted; }
-
-    public ArrayList<String> getUserFees(){ return userFees; }
-
-    public boolean getHouseUpdated(){ return houseUpdated; }
-
-    public void setHouseUpdated(boolean houseUpdated){ this.houseUpdated = houseUpdated; }
-
-    public boolean getShowTaskDifficulty() {
-        return showTaskDifficulty;
-    }
-
-    public void setShowTaskDifficulty(boolean showTaskDifficulty) { this.showTaskDifficulty =  showTaskDifficulty; }
-
-    public boolean getPenalizeLateTasks() {
-        return penalizeLateTasks;
-    }
-
-    public void setPenalizeLateTasks(boolean penalizeLateTasks) { this.penalizeLateTasks =  penalizeLateTasks; }
-
-    public House(ObjectId id, String housekey, User owner, String name, ArrayList<User> occupants, House.Rotation rotation, String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
+    public House(@NonNull ObjectId id, @NonNull String houseKey, @NonNull ObjectId owner, @NonNull String name, @NonNull List<ObjectId> occupants, @NonNull House.Rotation rotation, @NonNull String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
         this.houseId = id;
-        this.houseKey = housekey;
+        this.houseKey = houseKey;
         this.owner = owner;
         this.name = name;
         this.occupants = occupants;
@@ -102,7 +63,7 @@ public class House implements Indexable, Observable {
         this.penalizeLateTasks = penalizeLateTasks;
     }
 
-    public House(String name, User owner, ArrayList<User> occupants, House.Rotation rotation, String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
+    public House(@NonNull String name, @NonNull ObjectId owner, @NonNull List<ObjectId> occupants, @NonNull House.Rotation rotation, @NonNull String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
         this.houseId = new ObjectId();
         this.houseKey = name + Session.keyGen();
         this.owner = owner;
@@ -116,64 +77,124 @@ public class House implements Indexable, Observable {
 
     public House() {
         houseId = new ObjectId();
+        houseKey = "";
+        owner = new ObjectId();
+        name = "<untitled>";
         occupants = new ArrayList<>();
         rotation = new Rotation();
+        password = "";
     }
 
-    public void initHouseEvents(){
+//    public static House testHouse() {
+//        Rotation rotation = new Rotation();
+//        rotation.addUserToRotation(Session.getSession().getLoggedInUser());
+//        rotation.addUserToRotation(new User("User", "A", "email1"));
+//        rotation.addUserToRotation(new User("User", "B", "email2"));
+//        rotation.addUserToRotation(new User("User", "C", "email3"));
+//        House house = new House("Test House", Session.getSession().getLoggedInUser(),
+//                new ArrayList<>(), rotation, "password", true, true);
+//        return house;
+//    }
+
+    @NonNull
+    @Override
+    public ObjectId getId() {
+        return houseId;
+    }
+
+    public String getKeyId() {
+        return houseKey;
+    }
+
+    public HashMap<ObjectId, Float> getUserPoints() {
+        return userPoints;
+    }
+
+    public HashMap<ObjectId, Float> getUserAmountPaid() {
+        return userAmountPaid;
+    }
+
+    public boolean getHouseUpdated() {
+        return houseUpdated;
+    }
+
+    public HashMap<ObjectId, Integer> getTasksCompleted() {
+        return tasksCompleted;
+    }
+
+    public ArrayList<String> getUserFees() {
+        return userFees;
+    }
+
+    public void setHouseUpdated(boolean houseUpdated) {
+        this.houseUpdated = houseUpdated;
+    }
+
+    public boolean getShowTaskDifficulty() {
+        return showTaskDifficulty;
+    }
+
+    public void setShowTaskDifficulty(boolean showTaskDifficulty) {
+        this.showTaskDifficulty = showTaskDifficulty;
+    }
+
+    public boolean getPenalizeLateTasks() {
+        return penalizeLateTasks;
+    }
+
+    public void setPenalizeLateTasks(boolean penalizeLateTasks) {
+        this.penalizeLateTasks = penalizeLateTasks;
+    }
+
+    public void initHouseEvents() {
         userPoints = new HashMap<>();
         userAmountPaid = new HashMap<>();
         tasksCompleted = new HashMap<>();
         userFees = new ArrayList<>();
-        for(User user : occupants){
-            userPoints.put(user.getId(), Float.valueOf("0.0"));
-            userAmountPaid.put(user.getId(), Float.valueOf("0.0"));
-            tasksCompleted.put(user.getId(), Integer.parseInt("0"));
+        for (ObjectId userId : occupants) {
+            userPoints.put(userId, Float.valueOf("0.0"));
+            userAmountPaid.put(userId, Float.valueOf("0.0"));
+            tasksCompleted.put(userId, Integer.parseInt("0"));
         }
     }
 
-    public void populateStats(int year, int month, ObjectId taskUser){
+    public void populateStats(int year, int month, ObjectId taskUser) {
         initHouseEvents();
         myDatabase.getAllEventsFromHouse(houseId, events -> {
-            for(Event event : events){
-                if(event.getDateCompleted() != null){
-                    ObjectId eventUser = event.getAssignedTo().getId();
+            for (Event event : events) {
+                if (event.getDateCompleted() != null) {
+                    ObjectId eventUser = event.getAssignedTo();
                     int tempYear = event.getDateCompleted().getYear();
                     int tempMonth = event.getDateCompleted().getMonth();
-                    if((event.getType() == 0) && (tempMonth == month) && (tempYear == year)){
+                    if ((event.getType() == 0) && (tempMonth == month) && (tempYear == year)) {
                         myDatabase.getTask(event.getAssociatedTask(), task -> {
-                            int completed =  tasksCompleted.get(eventUser) + 1;
+                            int completed = tasksCompleted.get(eventUser) + 1;
                             tasksCompleted.put(eventUser, completed);
-                            if(showTaskDifficulty && penalizeLateTasks){
-                                if(event.getDueDate().after(event.getDateCompleted())){
+                            if (showTaskDifficulty && penalizeLateTasks) {
+                                if (event.getDueDate().after(event.getDateCompleted())) {
                                     float num = (float) (userPoints.get(eventUser) + task.getDifficulty());
                                     userPoints.put(eventUser, num);
-                                }
-                                else {
+                                } else {
                                     float num = (float) (userPoints.get(eventUser) + task.getDifficulty() * 0.5);
                                     userPoints.put(eventUser, num);
                                 }
-                            }
-                            else if(!showTaskDifficulty && penalizeLateTasks){
-                                if(event.getDueDate().after(event.getDateCompleted())){
+                            } else if (!showTaskDifficulty && penalizeLateTasks) {
+                                if (event.getDueDate().after(event.getDateCompleted())) {
                                     float num = (float) (userPoints.get(eventUser) + 1.0);
                                     userPoints.put(eventUser, num);
-                                }
-                                else {
+                                } else {
                                     float num = (float) (userPoints.get(eventUser) + 0.5);
                                     userPoints.put(eventUser, num);
                                 }
-                            }
-                            else{
+                            } else {
                                 float num = (float) (userPoints.get(eventUser) + 1.0);
                                 userPoints.put(eventUser, num);
                             }
                         });
-                    }
-                    else if(event.getType() == 1 && (tempMonth == month) && (tempYear == year)){
+                    } else if (event.getType() == 1 && (tempMonth == month) && (tempYear == year)) {
                         myDatabase.getFee(event.getAssociatedTask(), fee -> {
                             String userFee = "Amt: " + String.valueOf(fee.getAmount()) + " - " + fee.getName();
-                            if(eventUser.equals(taskUser)){
+                            if (eventUser.equals(taskUser)) {
                                 userFees.add(userFee);
                             }
                             float num = (float) (userAmountPaid.get(eventUser) + fee.getAmount());
@@ -185,46 +206,50 @@ public class House implements Indexable, Observable {
         });
     }
 
+    @NonNull
     @Override
     public String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(@NonNull String name) {
         this.name = name;
     }
 
-    public ArrayList<User> getOccupants() {
+    @NonNull
+    public List<ObjectId> getOccupants() {
         return occupants;
     }
 
     public void addOccupant(User occupant) {
-        occupants.add(occupant);
+        occupants.add(occupant.getId());
     }
 
     public void removeOccupant(User occupant) {
-        if (occupants.contains(occupant)) {
-            occupants.remove(occupant);
-            rotation.rotation.remove(occupant);
+        if (occupants.contains(occupant.getId())) {
+            occupants.remove(occupant.getId());
+            rotation.rotation.remove(occupant.getId());
         } else {
             Log.d("House", "No user in this House");
         }
     }
 
+    @NonNull
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(@NonNull String password) {
         this.password = password;
     }
 
-    public User getOwner() {
+    @NonNull
+    public ObjectId getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(@NonNull ObjectId owner) {
         this.owner = owner;
     }
 
@@ -240,77 +265,14 @@ public class House implements Indexable, Observable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return "House (" + houseId.toString() + ") [" + name + "]";
+        return "(" + houseId.toString() + ")[" + name + "] owner=" + owner +
+                " difficultyOn=" + showTaskDifficulty + " penalize=" + penalizeLateTasks +
+                " occupants=" + occupants + " rotation " + rotation.rotation;
     }
 
+    @NonNull
     public House.Rotation getRotation() {
         return rotation;
-    }
-
-    public void setRotation(House.Rotation rotation) {
-        this.rotation = rotation;
-    }
-
-    public Document toBsonDocument() {
-        final Document asDoc = new Document();
-        ArrayList<ObjectId> userArray = new ArrayList<>();
-        ArrayList<ObjectId> rotationArray = new ArrayList<>();
-        asDoc.put("_id", houseId);
-        asDoc.put("key", houseKey);
-        for(int i = 0; i < occupants.size();i++){
-            userArray.add(occupants.get(i).getId());
-        }
-        for (User user : rotation.rotation) {
-            rotationArray.add(user.getId());
-        }
-        asDoc.put("owner", owner.getId());
-        asDoc.put("name", name);
-        asDoc.put("occupants", userArray);
-        asDoc.put("rotation", rotationArray);
-        asDoc.put("password", password);
-        asDoc.put("showTaskDifficulty", showTaskDifficulty);
-        asDoc.put("penalizeLateTasks", penalizeLateTasks);
-        return asDoc;
-    }
-
-    public static void fromBsonDocument(final Document doc, Consumer<House> houseConsumer) {
-        Log.d("woopingtime", "Inside");
-        List<ObjectId> occupants_ids = doc.getList("occupants", ObjectId.class);
-        Session.getSession().getDatabase().getUser(doc.getObjectId("owner"), owner->{
-            Log.d("woopingtime", "working");
-            if (owner != null){
-                Log.d("woopingtime", "Owner Not null");
-                Session.getSession().getDatabase().getUsers(occupants_ids, userArray->{
-                    Rotation rotation;
-                    if(userArray == null){
-                        userArray = new ArrayList<User>();
-                        rotation = new Rotation();
-                    }
-                    else {
-                        List<ObjectId> rotation_ids = doc.getList("rotation", ObjectId.class);
-                        rotation = new Rotation();
-                        rotation.rotation.clear();
-                        for(int i = 0; i < rotation_ids.size(); i++){
-                            User occ = null;
-                            for (int y = 0; y < rotation_ids.size(); y++){
-                                if(userArray.get(y).getId() == rotation_ids.get(i))
-                                    occ = userArray.get(y);
-                            }
-                            rotation.rotation.add(occ);
-                        }
-                    }
-                    Log.d("woopingtime", "Inside function");
-                    ObjectId houseId = (ObjectId) doc.get("_id");
-                    String houseKey = doc.getString("key");
-                    String name = doc.getString("name");
-                    String password = doc.getString("password");
-                    Boolean showTaskDifficulty = doc.getBoolean("showTaskDifficulty");
-                    Boolean penalizeLateTasks = doc.getBoolean("penalizeLateTasks");
-                    Log.d("woopingtime", new House(houseId, houseKey, owner, name, userArray, rotation, password, showTaskDifficulty, penalizeLateTasks).toString());
-                    houseConsumer.accept(new House(houseId, houseKey, owner, name, userArray, rotation, password, showTaskDifficulty, penalizeLateTasks));
-                });
-            }
-        });
     }
 
     @Override
@@ -321,23 +283,15 @@ public class House implements Indexable, Observable {
         return false;
     }
 
-    public static class Rotation implements Model, Iterable<User> {
-        private ArrayList<User> rotation;
-
-        public Rotation(ArrayList<User> rotation) {
-            this.rotation = rotation;
-        }
+    public static class Rotation implements Model, Iterable<ObjectId> {
+        private List<ObjectId> rotation;
 
         public Rotation() {
             rotation = new ArrayList<>();
         }
 
-        public ArrayList<User> getRotation() {
+        public List<ObjectId> getRotation() {
             return rotation;
-        }
-
-        public void setRotation(ArrayList<User> rotation) {
-            this.rotation = rotation;
         }
 
         @Override
@@ -346,139 +300,73 @@ public class House implements Indexable, Observable {
         }
 
         public void addUserToRotation(User user) {
-            rotation.add(user);
+            rotation.add(user.getId());
         }
 
         @Override
         public JSONElement toJSON() {
             EasyJSON json = EasyJSON.create();
             json.getRootNode().setType(SafeJSONElementType.ARRAY);
-            for (User user : rotation) {
-                json.putPrimitive(user.getId());
-            }
+            for (ObjectId userId : rotation) json.putPrimitive(userId.toString());
             return json.getRootNode();
         }
 
         @Override
         public void fromJSON(JSONElement json, Consumer consumer) {
-            Consumer<User> aUser = a -> rotation.add(a);
-            List<JSONElement> users = json.getChildren();
-            int usersLength = users.size();
             rotation = new ArrayList<>();
-            for (int i = 0; i < usersLength; ++i) {
-                Session.getSession().getDatabase().getUser(new ObjectId(users.get(i).<String>getValue()), aUser);
-            }
+            for (JSONElement element : json) rotation.add(new ObjectId(element.<String>getValue()));
             consumer.accept(this);
         }
 
         @NonNull
         @Override
-        public Iterator<User> iterator() {
+        public Iterator<ObjectId> iterator() {
             return new PriorityQueue<>(rotation).iterator();
         }
     }
 
-//    public static House fromJSON(JsonObject obj) {
-//        JsonObject id = obj.get("_id").getAsJsonObject();
-//        String myID = id.get("$oid").getAsString();
-//        String myKey = obj.get("key").getAsString();
-//        User owner = User.fromJSON(obj.get("owner").getAsJsonObject());
-//        String name = obj.get("name").getAsString();
-//        JsonObject occupants = obj.get("occupants").getAsJsonObject();
-//        Set<String> keys = occupants.keySet();
-//        Iterator<String> keyIt = keys.iterator();
-//        ArrayList<User> occs = new ArrayList<User>();
-//        while (keyIt.hasNext()) {
-//            String key = keyIt.next();
-//            if (occupants.get(key) != null) {
-//                occs.add(User.fromJSON(occupants.get(key).getAsJsonObject()));
-//            }
-//        }
-//        JsonObject rotation = obj.get("rotation").getAsJsonObject();
-//        keys = rotation.keySet();
-//        keyIt = keys.iterator();
-//        ArrayList<User> rot = new ArrayList<User>();
-//        Rotation actualRotation = new Rotation();
-//        actualRotation.setRotation(rot);
-//        while (keyIt.hasNext()) {
-//            String key = keyIt.next();
-//            if (rotation.get(key) != null) {
-//                rot.add(User.fromJSON(rotation.get(key).getAsJsonObject()));
-//            }
-//        }
-//        String password = obj.get("password").getAsString();
-//        Boolean showTaskDifficulty = obj.get("showTaskDifficulty").getAsBoolean();
-//        Boolean penalizeLateTasks = obj.get("penalizeLateTasks").getAsBoolean();
-//        return new House(new ObjectId(myID), myKey, owner, name, occs, actualRotation, password, showTaskDifficulty, penalizeLateTasks);
-//    }
-
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
+        json.putPrimitive("_id", houseId.toString());
         json.putPrimitive("houseId", houseId.toString());
+        json.putPrimitive("houseKey", houseKey);
+        json.putPrimitive("owner", owner.toString());
         json.putPrimitive("name", name);
         json.putArray("occupants");
-        for (User occupant : occupants) {
-            json.search("occupants").putPrimitive(occupant.getId().toString());
+        for (ObjectId occupantId : occupants) {
+            json.search("occupants").putPrimitive(occupantId.toString());
         }
         json.putElement("rotation", rotation.toJSON());
+        json.putPrimitive("password", password);
         json.putPrimitive("showTaskDifficulty", showTaskDifficulty);
         json.putPrimitive("penalizeLateTasks", penalizeLateTasks);
         return json.getRootNode();
     }
 
-    private Consumer<User> c;
-
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
-        if (c != null) {
-            throw new RuntimeException("Previous fromJSON operation not complete");
-        }
         House that = this;
-        DatabaseLink database = Session.getSession().getDatabase();
         houseId = new ObjectId(json.<String>valueOf("houseId"));
+        houseKey = json.valueOf("houseKey");
+        owner = new ObjectId(json.<String>valueOf("owner"));
         name = json.valueOf("name");
-        List<JSONElement> occupants = json.search("occupants").getChildren();
-        this.occupants = new ArrayList<>();
-        Consumer<Void> onOccupantsComplete = v -> {
-            password = json.valueOf("password");
-            showTaskDifficulty = json.valueOf("showTaskDifficulty");
-            penalizeLateTasks = json.valueOf("penalizeLateTasks");
-            new Rotation().fromJSON(json.search("rotation"), rotation -> {
-                that.rotation = (Rotation) rotation;
-                consumer.accept(that);
-            });
-        };
-        c = user -> {
-            if (user != null) {
-                this.occupants.add(user);
-                if (!occupants.isEmpty()) {
-                    database.getUser(new ObjectId(occupants.remove(0).<String>getValue()), c);
-                } else {
-                    onOccupantsComplete.accept(null);
-                }
-            } else {
-                throw new RuntimeException("Failed to get occupant User model");
-            }
-        };
-        if (occupants.isEmpty()) {
-            onOccupantsComplete.accept(null);
-        } else {
-            database.getUser(new ObjectId(occupants.remove(0).<String>getValue()), c);
+        occupants = new ArrayList<>();
+        for (JSONElement element : json.search("occupants")) {
+            occupants.add(new ObjectId(element.<String>getValue()));
         }
+        password = json.valueOf("password");
+        showTaskDifficulty = json.valueOf("showTaskDifficulty");
+        penalizeLateTasks = json.valueOf("penalizeLateTasks");
+        new Rotation().fromJSON(json.search("rotation"), rotation -> {
+            that.rotation = (Rotation) rotation;
+            consumer.accept(that);
+        });
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "House{" +
-                "houseId=" + houseId +
-                ", houseKey='" + houseKey + '\'' +
-                ", owner=" + owner +
-                ", name='" + name + '\'' +
-                ", occupants=" + occupants +
-                ", rotation=" + rotation +
-                ", showTaskDifficulty=" + showTaskDifficulty +
-                ", penalizeLateTasks=" + penalizeLateTasks +
-                '}';
+        return consoleFormat("House ");
     }
 }

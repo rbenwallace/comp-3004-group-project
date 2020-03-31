@@ -53,8 +53,26 @@ public class JSONElement implements Iterable<JSONElement> {
         return key;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T getValue() {
+//        if (value instanceof JSONObject) {
+//            JSONObject obj = (JSONObject) value;
+//            if (obj.size() == 1) {
+//                Set keys = obj.keySet();
+//                if (keys.size() == 1) {
+//                    for (Object o : keys) {
+//                        if (o instanceof String) {
+//                            return (T) obj.get(o);
+//                        }
+//                    }
+//                }
+//            }
+//        }
         return (T) value;
+    }
+
+    void setValue(Object value) {
+        this.value = value;
     }
 
     public JSONElement putElement(JSONElement jsonElement) {
@@ -74,9 +92,8 @@ public class JSONElement implements Iterable<JSONElement> {
             case ARRAY:
                 return putArray(key, jsonElement.children.toArray());
             case STRUCTURE:
-                return putStructure(key, jsonElement);
             case ROOT:
-                return putStructure(null, jsonElement);
+                return putStructure(key, jsonElement);
         }
         return null;
     }

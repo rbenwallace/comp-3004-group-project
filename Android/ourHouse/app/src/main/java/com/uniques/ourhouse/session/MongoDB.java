@@ -24,6 +24,8 @@ import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
+import com.uniques.ourhouse.util.easyjson.EasyJSON;
+import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 
 import org.bson.BsonRegularExpression;
 import org.bson.BsonValue;
@@ -38,7 +40,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class MongoDB extends SecurityLink implements DatabaseLink {
     private static final StitchAppClient CLIENT = Stitch.initializeAppClient("ourhouse-notdj");
@@ -145,12 +146,12 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 //            @Override
 //            public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteInsertOneResult> task) {
 //                if (task.isSuccessful()) {
-//                    Log.d("app", String.format("successfully inserted item with id %s",
+//                    Log.d(TAG, String.format("successfully inserted item with id %s",
 //                            task.getResult().getInsertedId()));
 //                    Log.d("newUser", user.toString());
 //                    setLocalUser(user, activity);
 //                } else {
-//                    Log.e("app", "failed to insert document with: ", task.getException());
+//                    Log.e(TAG, "failed to insert document with: ", task.getException());
 //                }
 //            }
 //        });
@@ -164,7 +165,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 //            @Override
 //            public void onComplete(@NonNull com.google.android.gms.tasks.Task<RemoteInsertOneResult> task) {
 //                if (task.isSuccessful()) {
-//                    Log.d("app", String.format("successfully inserted item with id %s",
+//                    Log.d(TAG, String.format("successfully inserted item with id %s",
 //                            task.getResult().getInsertedId()));
 //                    User myUser = getCurrentLocalUser(activity);
 //                    myUser.addHouseId(house.getId());
@@ -175,7 +176,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 //                    setLocalHouseArray(curHouseList, activity);
 //                    boolConsumer.accept(true);
 //                } else {
-//                    Log.e("app", "failed to insert document with: ", task.getException());
+//                    Log.e(TAG, "failed to insert document with: ", task.getException());
 //                    boolConsumer.accept(false);
 //                }
 //            }
@@ -197,13 +198,21 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                         .find(filterDoc)
                         .limit(20);
                 count = 0L;
-                findResults.forEach(house -> {
-                    House.fromBsonDocument(house, newHouse->{
-                        houses.add(newHouse);
+                findResults.forEach(houseDoc -> {
+                    Consumer<Void> onParse = v -> {
                         count++;
                         if (Objects.equals(count, numDocs))
                             consumer.accept(houses);
-                    });
+                    };
+                    try {
+                        new House().fromJSON(EasyJSON.parse(houseDoc).getRootNode(), house -> {
+                            houses.add((House) house);
+                            onParse.accept(null);
+                        });
+                    } catch (EasyJSONException e) {
+                        Log.e(TAG, "Failed to findOne: ", e);
+                        onParse.accept(null);
+                    }
                 });
             } else {
                 consumer.accept(houses);
@@ -217,84 +226,52 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     //Get---
     @Override
     public void getUser(ObjectId id, Consumer<User> consumer) {
-        Document query = new Document().append("_id", id);
+        Document query = new Document().append("_id", id.toString());
         Log.d("MongoDB", query.toString());
         final com.google.android.gms.tasks.Task<Document> findOne = userColl.findOne(query);
         findOne.addOnCompleteListener(task -> {
             if (task.getResult() == null) {
-                Log.d("app", "No document matches the provided query");
+                Log.d(TAG, "No document matches the provided query");
                 Log.d("stitch-auth", "Authentication Successful.");
                 consumer.accept(null);
             } else if (task.isSuccessful()) {
-                Log.d("app", String.format("Successfully found document: %s",
+                Log.d(TAG, String.format("Successfully found document: %s",
                         task.getResult()));
-                consumer.accept(User.fromBsonDocument(task.getResult()));
-                Log.d("stitch-auth", "Authentication Successful.");
+                try {
+                    Log.d("stitch-auth", "Authentication Successful.");
+                    new User().fromJSON(EasyJSON.parse(task.getResult()).getRootNode(), consumer);
+                } catch (EasyJSONException e) {
+                    Log.e(TAG, "Failed to findOne: ", e);
+                }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findOne: ", task.getException());
+                Log.e(TAG, "Failed to findOne: ", task.getException());
                 Log.d("stitch-auth", "Authentication Successful.");
-            }
-        });
-    } //tested
-
-    @Override
-    public void getUsers(List<ObjectId> user_ids, Consumer<ArrayList<User>> consumer) {
-        ArrayList<User> users = new ArrayList<>();
-        int i = 1;
-        if(user_ids.isEmpty()){
-            consumer.accept(null);
-            return;
-        }
-        String pattern = "\\b(" + user_ids.get(0).toString();
-        if(user_ids.size() == 1){
-            pattern += ")\\b";
-        }
-        else {
-            for(; i < user_ids.size() - 1; i++){
-                pattern += '|' + user_ids.get(i).toString();
-            }
-            pattern += '|' + user_ids.get(i).toString() + ")\\b";
-        }
-        BsonRegularExpression nameRE = new BsonRegularExpression(pattern);
-        Document filterDoc = new Document()
-                .append("_id", new Document().append("$regex", nameRE));
-        userColl.count(filterDoc).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                final Long numDocs = task.getResult();
-                RemoteFindIterable<Document> findResults = userColl
-                        .find(filterDoc)
-                        .limit(20);
-                count = 0L;
-                findResults.forEach(user -> {
-                    User searchedUser = User.fromBsonDocument(user);
-                    users.add(searchedUser);
-                    count++;
-                    if (Objects.equals(count, numDocs))
-                        consumer.accept(users);
-                });
-            } else {
-                consumer.accept(users);
             }
         });
     } //tested
 
     @Override
     public void getEvent(ObjectId id, Consumer<Event> consumer) {
-        Document query = new Document().append("_id", id);
+        Document query = new Document().append("_id", id.toString());
         Log.d("MongoDB", query.toString());
         final com.google.android.gms.tasks.Task<Document> findOne = eventColl.findOne(query);
         findOne.addOnCompleteListener(task -> {
             if (task.getResult() == null) {
-                Log.d("app", "No document matches the provided query");
+                Log.d(TAG, "No document matches the provided query");
                 consumer.accept(null);
             } else if (task.isSuccessful()) {
-                Log.d("app", String.format("Successfully found document: %s",
+                Log.d(TAG, String.format("Successfully found document: %s",
                         task.getResult()));
-                Event.FromBsonDocument(task.getResult(), consumer);
+                try {
+                    new Event().fromJSON(EasyJSON.parse(task.getResult()).getRootNode(), consumer);
+                } catch (EasyJSONException e) {
+                    Log.e(TAG, "Failed to findOne: ", e);
+                    consumer.accept(null);
+                }
             } else {
+                Log.e(TAG, "Failed to findOne: ", task.getException());
                 consumer.accept(null);
-                Log.e("app", "Failed to findOne: ", task.getException());
             }
         });
     } //tested
@@ -320,75 +297,95 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         final com.google.android.gms.tasks.Task<Document> findOne = eventColl.findOne(query);
         findOne.addOnCompleteListener(task -> {
             if (task.getResult() == null) {
-                Log.d("app", "No document matches the provided query");
+                Log.d(TAG, "No document matches the provided query");
                 consumer.accept(null);
             } else if (task.isSuccessful()) {
-                Log.d("app", String.format("Successfully found document: %s",
+                Log.d(TAG, String.format("Successfully found document: %s",
                         task.getResult()));
-                Event.FromBsonDocument(task.getResult(), consumer);
+                try {
+                    new Event().fromJSON(EasyJSON.parse(task.getResult()).getRootNode(), consumer);
+                } catch (EasyJSONException e) {
+                    Log.e(TAG, "Failed to findOne: ", e);
+                    consumer.accept(null);
+                }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findOne: ", task.getException());
+                Log.e(TAG, "Failed to findOne: ", task.getException());
             }
         });
     }
 
     @Override
     public void getTask(ObjectId id, Consumer<Task> consumer) {
-        Document query = new Document().append("_id", id);
+        Document query = new Document().append("_id", id.toString());
         Log.d("MongoDB", query.toString());
         final com.google.android.gms.tasks.Task<Document> findOne = taskColl.findOne(query);
         findOne.addOnCompleteListener(task -> {
             if (task.getResult() == null) {
-                Log.d("app", "No document matches the provided query");
+                Log.d(TAG, "No document matches the provided query");
                 consumer.accept(null);
             } else if (task.isSuccessful()) {
-                Log.d("app", String.format("Successfully found document: %s",
+                Log.d(TAG, String.format("Successfully found document: %s",
                         task.getResult()));
-                consumer.accept(Task.fromBsonDocument(task.getResult()));
+                try {
+                    new Task().fromJSON(EasyJSON.parse(task.getResult()).getRootNode(), consumer);
+                } catch (EasyJSONException e) {
+                    Log.e(TAG, "Failed to findOne: ", task.getException());
+                    consumer.accept(null);
+                }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findOne: ", task.getException());
+                Log.e(TAG, "Failed to findOne: ", task.getException());
             }
         });
     } //tested
 
     @Override
     public void getFee(ObjectId id, Consumer<Fee> consumer) {
-        Document query = new Document().append("_id", id);
+        Document query = new Document().append("_id", id.toString());
         Log.d("MongoDB", query.toString());
         final com.google.android.gms.tasks.Task<Document> findOne = feeColl.findOne(query);
         findOne.addOnCompleteListener(task -> {
             if (task.getResult() == null) {
-                Log.d("app", "No document matches the provided query");
+                Log.d(TAG, "No document matches the provided query");
                 consumer.accept(null);
             } else if (task.isSuccessful()) {
-                Log.d("app", String.format("Successfully found document: %s",
+                Log.d(TAG, String.format("Successfully found document: %s",
                         task.getResult()));
-                consumer.accept(Fee.fromBsonDocument(task.getResult()));
+                try {
+                    new Fee().fromJSON(EasyJSON.parse(task.getResult()).getRootNode(), consumer);
+                } catch (EasyJSONException e) {
+                    consumer.accept(null);
+                    Log.e(TAG, "Failed to findOne: ", e);
+                }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findOne: ", task.getException());
+                Log.e(TAG, "Failed to findOne: ", task.getException());
             }
         });
     } //tested
 
     @Override
     public void getHouse(ObjectId id, Consumer<House> consumer) {
-        Document query = new Document().append("_id", id);
+        Document query = new Document().append("_id", id.toString());
         Log.d("MongoDB", query.toString());
         final com.google.android.gms.tasks.Task<Document> findOne = housesColl.findOne(query);
         findOne.addOnCompleteListener(task -> {
             if (task.getResult() == null) {
-                Log.d("app", "No document matches the provided query");
+                Log.d(TAG, "No document matches the provided query");
                 consumer.accept(null);
             } else if (task.isSuccessful()) {
-                Log.d("app", String.format("Successfully found document: %s",
+                Log.d(TAG, String.format("Successfully found document: %s",
                         task.getResult()));
-                House.fromBsonDocument(task.getResult(), consumer);
+                try {
+                    new House().fromJSON(EasyJSON.parse(task.getResult()).getRootNode(), consumer);
+                } catch (EasyJSONException e) {
+                    Log.e(TAG, "Failed to findOne: ", task.getException());
+                    consumer.accept(null);
+                }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findOne: ", task.getException());
+                Log.e(TAG, "Failed to findOne: ", task.getException());
             }
         });
     } //tested
@@ -405,18 +402,22 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 List<Document> docs = task.getResult();
                 ArrayList<Event> events = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
-                    Event.FromBsonDocument(doc, event -> {
-                        //TODO this if statement won't be needed once all document conform to the new Event standard
-                        // the addition will still be needed
-                        if (event != null) {
-                            events.add(event);
-                        }
+                    Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
                             consumer.accept(events);
                         } else {
                             next.accept(docs.remove(0), next);
                         }
-                    });
+                    };
+                    try {
+                        new Event().fromJSON(EasyJSON.parse(doc).getRootNode(), event -> {
+                            events.add((Event) event);
+                            onParse.accept(null);
+                        });
+                    } catch (EasyJSONException e) {
+                        Log.e(TAG, "Failed to findOne: ", e);
+                        onParse.accept(null);
+                    }
                 };
                 if (docs.isEmpty()) {
                     consumer.accept(events);
@@ -425,66 +426,49 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findTasksFromHouse: ", task.getException());
+                Log.e(TAG, "Failed to findTasksFromHouse: ", task.getException());
             }
         });
-//        eventColl.count(filterDoc).addOnCompleteListener(new OnCompleteListener<Long>() {
-//            @Override
-//            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Long> task) {
-//                if (task.isSuccessful()) {
-//                    final Long numDocs = task.getResult();
-//                    count = 0L;
-//                    RemoteFindIterable findResults = eventColl
-//                            .find(filterDoc).sort(new Document("dueDate", -1));
-//                    findResults.forEach(item -> {
-//                        Log.d("app", String.format("successfully found Events:  %s", item.toString()));
-//                        Document event = (Document) item;
-//                        Event.FromBsonDocument(event, rEvent -> {
-//                            events.add(rEvent);
-//                            count++;
-//                            if (count == numDocs)
-//                                consumer.accept(events);
-//                        });
-//                    });
-//                } else {
-//                    consumer.accept(events);
-//                }
-//            }
-//        });
     } //tested
 
+    @SuppressWarnings("unchecked")
     @Override
     public void getAllTasksFromHouse(ObjectId houseId, Consumer<List<Task>> consumer) {
 //        ArrayList<Task> tasks = new ArrayList<>();
         Document filterDoc = new Document()
-                .append("houseId", houseId);
+                .append("houseId", houseId.toString());
         taskColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                consumer.accept(task.getResult().stream().map(Task::fromBsonDocument).collect(Collectors.toList()));
+                List<Document> docs = task.getResult();
+                ArrayList<Task> tasks = new ArrayList<>();
+                BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
+                    Consumer<Void> onParse = v -> {
+                        if (docs.isEmpty()) {
+                            consumer.accept(tasks);
+                        } else {
+                            next.accept(docs.remove(0), next);
+                        }
+                    };
+                    try {
+                        new Task().fromJSON(EasyJSON.parse(doc).getRootNode(), parsedTask -> {
+                            tasks.add((Task) parsedTask);
+                            onParse.accept(null);
+                        });
+                    } catch (EasyJSONException e) {
+                        Log.e(TAG, "Failed to findOne: ", e);
+                        onParse.accept(null);
+                    }
+                };
+                if (docs.isEmpty()) {
+                    consumer.accept(tasks);
+                } else {
+                    createNextEvent.accept(docs.remove(0), createNextEvent);
+                }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findTasksFromHouse: ", task.getException());
+                Log.e(TAG, "Failed to findTasksFromHouse: ", task.getException());
             }
         });
-//        taskColl.count(filterDoc).addOnCompleteListener(new OnCompleteListener<Long>() {
-//            @Override
-//            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Long> task) {
-//                if (task.isSuccessful()) {
-//                    final Long numDocs = task.getResult();
-//                    count = 0L;
-//                    RemoteFindIterable findResults = taskColl
-//                            .find(filterDoc).sort(new Document("dueDate", -1));
-//                    findResults.forEach(item -> {
-//                        Log.d("app", String.format("successfully found Task:  %s", item.toString()));
-//                        tasks.add(Task.fromBsonDocument((Document) item));
-//                        if (count == numDocs)
-//                            consumer.accept(tasks);
-//                    });
-//                } else {
-//                    consumer.accept(tasks);
-//                }
-//            }
-//        });
     } //tested
 
     @SuppressWarnings("unchecked")
@@ -492,19 +476,28 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     public void getAllFeesFromHouse(ObjectId houseId, Consumer<List<Fee>> consumer) {
 //        ArrayList<Fee> fees = new ArrayList<>();
         Document filterDoc = new Document()
-                .append("houseId", houseId);
+                .append("houseId", houseId.toString());
         feeColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
                 ArrayList<Fee> fees = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
-                    Event.FromBsonDocument(doc, event -> {
+                    Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
                             consumer.accept(fees);
                         } else {
                             next.accept(docs.remove(0), next);
                         }
-                    });
+                    };
+                    try {
+                        new Fee().fromJSON(EasyJSON.parse(doc).getRootNode(), fee -> {
+                            fees.add((Fee) fee);
+                            onParse.accept(null);
+                        });
+                    } catch (EasyJSONException e) {
+                        Log.e(TAG, "Failed to findOne: ", e);
+                        onParse.accept(null);
+                    }
                 };
                 if (docs.isEmpty()) {
                     consumer.accept(fees);
@@ -513,28 +506,9 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findTasksFromHouse: ", task.getException());
+                Log.e(TAG, "Failed to findTasksFromHouse: ", task.getException());
             }
         });
-//        feeColl.count(filterDoc).addOnCompleteListener(new OnCompleteListener<Long>() {
-//            @Override
-//            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Long> task) {
-//                if (task.isSuccessful()) {
-//                    final Long numDocs = task.getResult();
-//                    count = 0L;
-//                    RemoteFindIterable findResults = feeColl
-//                            .find(filterDoc).sort(new Document("dueDate", -1));
-//                    findResults.forEach(item -> {
-//                        Log.d("app", String.format("successfully found Fees:  %s", item.toString()));
-//                        fees.add(Fee.fromBsonDocument((Document) item));
-//                        if (count.equals(numDocs))
-//                            consumer.accept(fees);
-//                    });
-//                } else {
-//                    consumer.accept(fees);
-//                }
-//            }
-//        });
     } //tested
 
     @SuppressWarnings("unchecked")
@@ -549,13 +523,22 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 List<Document> docs = task.getResult();
                 ArrayList<Event> events = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
-                    Event.FromBsonDocument(doc, event -> {
+                    Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
                             consumer.accept(events);
                         } else {
                             next.accept(docs.remove(0), next);
                         }
-                    });
+                    };
+                    try {
+                        new Event().fromJSON(EasyJSON.parse(doc).getRootNode(), event -> {
+                            events.add((Event) event);
+                            onParse.accept(null);
+                        });
+                    } catch (EasyJSONException e) {
+                        Log.e(TAG, "Failed to findOne: ", e);
+                        onParse.accept(null);
+                    }
                 };
                 if (docs.isEmpty()) {
                     consumer.accept(events);
@@ -564,32 +547,9 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findTasksFromHouse: ", task.getException());
+                Log.e(TAG, "Failed to findTasksFromHouse: ", task.getException());
             }
         });
-//        eventColl.count(filterDoc).addOnCompleteListener(new OnCompleteListener<Long>() {
-//            @Override
-//            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Long> task) {
-//                if (task.isSuccessful()) {
-//                    final Long numDocs = task.getResult();
-//                    count = 0L;
-//                    RemoteFindIterable findResults = eventColl
-//                            .find(filterDoc).sort(new Document("dueDate", -1));
-//                    findResults.forEach(item -> {
-//                        Log.d("app", String.format("successfully found Events:  %s", item.toString()));
-//                        Document event = (Document) item;
-//                        Event.FromBsonDocument(event, rEvent -> {
-//                            events.add(rEvent);
-//                            count++;
-//                            if (count == numDocs)
-//                                consumer.accept(events);
-//                        });
-//                    });
-//                } else {
-//                    consumer.accept(events);
-//                }
-//            }
-//        });
     } //tested
 
     @SuppressWarnings("unchecked")
@@ -597,20 +557,29 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     public void getAllTasksFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Task>> consumer) {
 //        ArrayList<Task> tasks = new ArrayList<>();
         Document filterDoc = new Document()
-                .append("houseId", houseId);
-        filterDoc.append("userId", userId);
+                .append("houseId", houseId.toString())
+                .append("userId", userId.toString());
         taskColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
                 ArrayList<Task> parsedTasks = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
-                    Event.FromBsonDocument(doc, event -> {
+                    Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
                             consumer.accept(parsedTasks);
                         } else {
                             next.accept(docs.remove(0), next);
                         }
-                    });
+                    };
+                    try {
+                        new Task().fromJSON(EasyJSON.parse(doc).getRootNode(), taskModel -> {
+                            parsedTasks.add((Task) taskModel);
+                            onParse.accept(null);
+                        });
+                    } catch (EasyJSONException e) {
+                        Log.e(TAG, "Failed to findOne: ", e);
+                        onParse.accept(null);
+                    }
                 };
                 if (docs.isEmpty()) {
                     consumer.accept(parsedTasks);
@@ -619,28 +588,9 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findTasksFromHouse: ", task.getException());
+                Log.e(TAG, "Failed to findTasksFromHouse: ", task.getException());
             }
         });
-//        taskColl.count(filterDoc).addOnCompleteListener(new OnCompleteListener<Long>() {
-//            @Override
-//            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Long> task) {
-//                if (task.isSuccessful()) {
-//                    final Long numDocs = task.getResult();
-//                    count = 0L;
-//                    RemoteFindIterable findResults = taskColl
-//                            .find(filterDoc).sort(new Document("dueDate", -1));
-//                    findResults.forEach(item -> {
-//                        Log.d("app", String.format("successfully found Task:  %s", item.toString()));
-//                        tasks.add(Task.fromBsonDocument((Document) item));
-//                        if (count == numDocs)
-//                            consumer.accept(tasks);
-//                    });
-//                } else {
-//                    consumer.accept(tasks);
-//                }
-//            }
-//        });
     } //tested
 
     @SuppressWarnings("unchecked")
@@ -648,20 +598,29 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     public void getAllFeesFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Fee>> consumer) {
 //        ArrayList<Fee> fees = new ArrayList<>();
         Document filterDoc = new Document()
-                .append("houseId", houseId);
-        filterDoc.append("userId", userId);
+                .append("houseId", houseId.toString())
+                .append("userId", userId.toString());
         eventColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
                 ArrayList<Fee> fees = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
-                    Event.FromBsonDocument(doc, event -> {
+                    Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
                             consumer.accept(fees);
                         } else {
                             next.accept(docs.remove(0), next);
                         }
-                    });
+                    };
+                    try {
+                        new Fee().fromJSON(EasyJSON.parse(doc).getRootNode(), fee -> {
+                            fees.add((Fee) fee);
+                            onParse.accept(null);
+                        });
+                    } catch (EasyJSONException e) {
+                        Log.e(TAG, "Failed to findOne: ", e);
+                        onParse.accept(null);
+                    }
                 };
                 if (docs.isEmpty()) {
                     consumer.accept(fees);
@@ -670,28 +629,9 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 }
             } else {
                 consumer.accept(null);
-                Log.e("app", "Failed to findTasksFromHouse: ", task.getException());
+                Log.e(TAG, "Failed to findTasksFromHouse: ", task.getException());
             }
         });
-//        feeColl.count(filterDoc).addOnCompleteListener(new OnCompleteListener<Long>() {
-//            @Override
-//            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Long> task) {
-//                if (task.isSuccessful()) {
-//                    final Long numDocs = task.getResult();
-//                    count = 0L;
-//                    RemoteFindIterable findResults = feeColl
-//                            .find(filterDoc).sort(new Document("dueDate", -1));
-//                    findResults.forEach(item -> {
-//                        Log.d("app", String.format("successfully found Fees:  %s", item.toString()));
-//                        fees.add(Fee.fromBsonDocument((Document) item));
-//                        if (count.equals(numDocs))
-//                            consumer.accept(fees);
-//                    });
-//                } else {
-//                    consumer.accept(fees);
-//                }
-//            }
-//        });
     } //tested
 
     //Need to make, Ne
@@ -702,14 +642,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     //Post---
     @Override
     public void postUser(User user, Consumer<Boolean> consumer) {
-        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask = userColl.insertOne(user.toBsonDocument());
+        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask =
+                userColl.insertOne(Document.parse(user.toJSON().toString()));
         insertTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("app", String.format("successfully inserted user with id %s",
+                Log.d(TAG, String.format("successfully inserted user with id %s",
                         task.getResult().getInsertedId()));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to insert user with: ", task.getException());
+                Log.e(TAG, "failed to insert user with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -717,14 +658,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void postEvent(Event event, Consumer<Boolean> consumer) {
-        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask = eventColl.insertOne(event.toBsonDocument());
+        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask =
+                eventColl.insertOne(Document.parse(event.toJSON().toString()));
         insertTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("app", String.format("successfully inserted event with id %s",
+                Log.d(TAG, String.format("successfully inserted event with id %s",
                         task.getResult().getInsertedId()));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to insert event with: ", task.getException());
+                Log.e(TAG, "failed to insert event with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -732,14 +674,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void postTask(Task post_task, Consumer<Boolean> consumer) {
-        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask = taskColl.insertOne(post_task.toBsonDocument());
+        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask =
+                taskColl.insertOne(Document.parse(post_task.toJSON().toString()));
         insertTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("app", String.format("successfully inserted task with id %s",
+                Log.d(TAG, String.format("successfully inserted task with id %s",
                         task.getResult().getInsertedId()));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to insert task with: ", task.getException());
+                Log.e(TAG, "failed to insert task with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -747,14 +690,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void postFee(Fee fee, Consumer<Boolean> consumer) {
-        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask = feeColl.insertOne(fee.toBsonDocument());
+        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask =
+                feeColl.insertOne(Document.parse(fee.toJSON().toString()));
         insertTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("app", String.format("successfully inserted fee with id %s",
+                Log.d(TAG, String.format("successfully inserted fee with id %s",
                         task.getResult().getInsertedId()));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to insert fee with: ", task.getException());
+                Log.e(TAG, "failed to insert fee with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -762,14 +706,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void postHouse(House house, Consumer<Boolean> consumer) {
-        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask = housesColl.insertOne(house.toBsonDocument());
+        final com.google.android.gms.tasks.Task<RemoteInsertOneResult> insertTask = housesColl.insertOne(Document.parse(house.toJSON().toString()));
         insertTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("app", String.format("successfully inserted house with id %s",
+                Log.d(TAG, String.format("successfully inserted house with id %s",
                         task.getResult().getInsertedId()));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to insert house with: ", task.getException());
+                Log.e(TAG, "failed to insert house with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -785,10 +729,10 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -796,16 +740,17 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteAllTasksFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("houseId", houseId);
-        filterDoc.append("userId", userId);
+        Document filterDoc = new Document()
+                .append("houseId", houseId.toString())
+                .append("userId", userId.toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = taskColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -813,16 +758,17 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteAllFeesFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("houseId", houseId);
-        filterDoc.append("userId", userId);
+        Document filterDoc = new Document()
+                .append("houseId", houseId.toString())
+                .append("userId", userId.toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = feeColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -831,15 +777,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     @Override
     public void deleteAllEventsFromUser(ObjectId userId, Consumer<Boolean> consumer) {
         Document filterDoc = new Document().append("assignedTo", userId);
-        Log.d("app", String.format("successfully deleted %s documents", userId.toString()));
+        Log.d(TAG, String.format("successfully deleted %s documents", userId.toString()));
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = eventColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -847,15 +793,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteAllTasksFromUser(ObjectId userId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("userId", userId);
+        Document filterDoc = new Document().append("userId", userId.toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = taskColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -863,15 +809,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteAllFeesFromUser(ObjectId userId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("userId", userId);
+        Document filterDoc = new Document().append("userId", userId.toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = feeColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -884,10 +830,10 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -895,15 +841,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteAllTasksFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("houseId", houseId);
+        Document filterDoc = new Document().append("houseId", houseId.toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = taskColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -911,15 +857,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteAllFeesFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("houseId", houseId);
+        Document filterDoc = new Document().append("houseId", houseId.toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = feeColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -949,15 +895,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 //                  deleteUserFromHouse(userHouse, user, bool -> {
 //                     if (!bool) Log.d("deleteAllFeesFromUser", "Failed");
 //                   });
-                    Document filterDoc = new Document().append("_id", user.getId());
+                    Document filterDoc = new Document().append("_id", user.getId().toString());
                     final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = userColl.deleteOne(filterDoc);
                     deleteTask.addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             long numDeleted = task.getResult().getDeletedCount();
-                            Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                            Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                             consumer.accept(true);
                         } else {
-                            Log.e("app", "failed to delete document with: ", task.getException());
+                            Log.e(TAG, "failed to delete document with: ", task.getException());
                             consumer.accept(false);
                         }
                     });
@@ -973,10 +919,10 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -984,14 +930,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteEvent(Event event, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", event.getId());
+        Document filterDoc = new Document().append("_id", event.getId().toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = eventColl.deleteOne(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
             }
             consumer.accept(task.isSuccessful());
         });
@@ -999,14 +945,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteTask(Task task, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", task.getId());
+        Document filterDoc = new Document().append("_id", task.getId().toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = taskColl.deleteOne(filterDoc);
         deleteTask.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
                 long numDeleted = task1.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
             } else {
-                Log.e("app", "failed to delete document with: ", task1.getException());
+                Log.e(TAG, "failed to delete document with: ", task1.getException());
             }
             consumer.accept(task1.isSuccessful());
         });
@@ -1014,14 +960,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteFee(Fee fee, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", fee.getId());
+        Document filterDoc = new Document().append("_id", fee.getId().toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = feeColl.deleteOne(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
             }
             consumer.accept(task.isSuccessful());
         });
@@ -1029,39 +975,19 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteHouse(House house, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", house.getId());
+        Document filterDoc = new Document().append("_id", house.getId().toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = housesColl.deleteOne(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
             } else {
                 consumer.accept(false);
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
             }
             consumer.accept(task.isSuccessful());
         });
     } //tested
-
-//    @Override
-//    public void deleteOwnerFromHouse(House house, User user, Consumer<Boolean> consumer) {
-//        //Ensure not null
-//        if (house != null && user != null) {
-//            //if there is nobody or just the owner, you can't delete the owner from delete Occupant, you must use deleteUserFromHouse
-//            if (house.getOccupants().size() == 1) {
-//                consumer.accept(false);
-//            } else {
-//                //Ensure Owner
-//                if (user.getId() != house.getOwner().getId()) {
-//                    consumer.accept(false);
-//                    return;
-//                }
-//                deleteUserFromHouse(house, user, consumer);
-//            }
-//        } else {
-//            consumer.accept(false);
-//        }
-//    } //tested
 
     @Override
     public void deleteUserFromHouse(House house, User user, Consumer<Boolean> consumer) {
@@ -1099,7 +1025,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                             }
                             consumer.accept(true);
                         });
-                        user.removeHouseId(house.getId());
+                        user.removeHouse(house.getId());
                         updateUser(user, successful5 -> {
                             if (!successful5) {
                                 failConsumer.accept("updateUser");
@@ -1115,7 +1041,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                                 failConsumer.accept("updateHouse");
                                 return;
                             }
-                            user.removeHouseId(house.getId());
+                            user.removeHouse(house.getId());
                             updateUser(user, successful5 -> {
                                 if (!successful5) {
                                     failConsumer.accept("updateUser");
@@ -1124,10 +1050,10 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                                 consumer.accept(true);
                             });
                         };
-                        if (house.getOwner().getId() == user.getId()) {
-                            for (User user1 : house.getOccupants()) {
-                                if (user.getId() != user1.getId()) {
-                                    house.setOwner(user1);
+                        if (house.getOwner() == user.getId()) {
+                            for (ObjectId user2 : house.getOccupants()) {
+                                if (user.getId() != user2) {
+                                    house.setOwner(user2);
                                     house.removeOccupant(user);
                                     updateHouse(house, afterUpdateOwner);
                                     break;
@@ -1148,18 +1074,18 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     //Update X
     @Override
     public void updateUser(User user, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", user.getId());
-        Document updateDoc = user.toBsonDocument();
-        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask = userColl.updateOne(filterDoc, updateDoc);
+        Document filterDoc = new Document().append("_id", user.getId().toString());
+        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask =
+                userColl.updateOne(filterDoc, Document.parse(user.toJSON().toString()));
         updateTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numMatched = task.getResult().getMatchedCount();
                 long numModified = task.getResult().getModifiedCount();
-                Log.d("app", String.format("successfully matched %d and modified %d documents",
+                Log.d(TAG, String.format("successfully matched %d and modified %d documents",
                         numMatched, numModified));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to update document with: ", task.getException());
+                Log.e(TAG, "failed to update document with: ", task.getException());
                 consumer.accept(true);
             }
         });
@@ -1167,18 +1093,18 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void updateFee(Fee fee, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", fee.getId());
-        Document updateDoc = fee.toBsonDocument();
-        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask = feeColl.updateOne(filterDoc, updateDoc);
+        Document filterDoc = new Document().append("_id", fee.getId().toString());
+        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask =
+                feeColl.updateOne(filterDoc, Document.parse(fee.toJSON().toString()));
         updateTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numMatched = task.getResult().getMatchedCount();
                 long numModified = task.getResult().getModifiedCount();
-                Log.d("app", String.format("successfully matched %d and modified %d documents",
+                Log.d(TAG, String.format("successfully matched %d and modified %d documents",
                         numMatched, numModified));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to update document with: ", task.getException());
+                Log.e(TAG, "failed to update document with: ", task.getException());
                 consumer.accept(true);
             }
         });
@@ -1186,18 +1112,18 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void updateEvent(Event event, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", event.getId());
-        Document updateDoc = event.toBsonDocument();
-        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask = eventColl.updateOne(filterDoc, updateDoc);
+        Document filterDoc = new Document().append("_id", event.getId().toString());
+        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask =
+                eventColl.updateOne(filterDoc, Document.parse(event.toJSON().toString()));
         updateTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numMatched = task.getResult().getMatchedCount();
                 long numModified = task.getResult().getModifiedCount();
-                Log.d("app", String.format("successfully matched %d and modified %d documents",
+                Log.d(TAG, String.format("successfully matched %d and modified %d documents",
                         numMatched, numModified));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to update document with: ", task.getException());
+                Log.e(TAG, "failed to update document with: ", task.getException());
                 consumer.accept(true);
             }
         });
@@ -1205,18 +1131,18 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void updateHouse(House house, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", house.getId());
-        Document updateDoc = house.toBsonDocument();
-        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask = housesColl.updateOne(filterDoc, updateDoc);
+        Document filterDoc = new Document().append("_id", house.getId().toString());
+        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask =
+                housesColl.updateOne(filterDoc, Document.parse(house.toJSON().toString()));
         updateTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numMatched = task.getResult().getMatchedCount();
                 long numModified = task.getResult().getModifiedCount();
-                Log.d("app", String.format("successfully matched %d and modified %d documents",
+                Log.d(TAG, String.format("successfully matched %d and modified %d documents",
                         numMatched, numModified));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to update document with: ", task.getException());
+                Log.e(TAG, "failed to update document with: ", task.getException());
                 consumer.accept(true);
             }
         });
@@ -1224,18 +1150,18 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void updateTask(Task task, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("_id", task.getId());
-        Document updateDoc = task.toBsonDocument();
-        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask = taskColl.updateOne(filterDoc, updateDoc);
+        Document filterDoc = new Document().append("_id", task.getId().toString());
+        final com.google.android.gms.tasks.Task<RemoteUpdateResult> updateTask =
+                taskColl.updateOne(filterDoc, Document.parse(task.toJSON().toString()));
         updateTask.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
                 long numMatched = task1.getResult().getMatchedCount();
                 long numModified = task1.getResult().getModifiedCount();
-                Log.d("app", String.format("successfully matched %d and modified %d documents",
+                Log.d(TAG, String.format("successfully matched %d and modified %d documents",
                         numMatched, numModified));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to update document with: ", task1.getException());
+                Log.e(TAG, "failed to update document with: ", task1.getException());
                 consumer.accept(true);
             }
         });
@@ -1243,7 +1169,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void updateOwner(House house, User user, Consumer<Boolean> consumer) {
-        house.setOwner(user);
+        house.setOwner(user.getId());
         updateHouse(house, consumer);
     } //tested
     //-------------------------------------------------------------
@@ -1257,15 +1183,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         final com.google.android.gms.tasks.Task<Document> findOne = housesColl.findOne(query);
         findOne.addOnCompleteListener(task -> {
             if (task.getResult() == null) {
-                Log.d("app", String.format("No document matches the provided query"));
+                Log.d(TAG, String.format("No document matches the provided query"));
                 consumer.accept(true);
             } else if (task.isSuccessful()) {
-                Log.d("app", String.format("Successfully found document: %s",
+                Log.d(TAG, String.format("Successfully found document: %s",
                         task.getResult()));
                 consumer.accept(false);
             } else {
                 consumer.accept(false);
-                Log.e("app", "Failed to findOne: ", task.getException());
+                Log.e(TAG, "Failed to findOne: ", task.getException());
             }
         });
     }
@@ -1287,10 +1213,10 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -1298,10 +1224,10 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         deleteFee.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });
@@ -1309,10 +1235,10 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         deleteEvent.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
                 consumer.accept(true);
             } else {
-                Log.e("app", "failed to delete document with: ", task.getException());
+                Log.e(TAG, "failed to delete document with: ", task.getException());
                 consumer.accept(false);
             }
         });

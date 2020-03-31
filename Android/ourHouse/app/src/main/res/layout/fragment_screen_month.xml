@@ -35,8 +35,8 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="116dp"
-        android:layout_height="162dp"
+        android:layout_width="108dp"
+        android:layout_height="53dp"
         android:layout_marginTop="24dp"
         android:text="string/*variable*"
         android:textAlignment="center"
@@ -49,11 +49,11 @@
         android:id="@+id/viewAmountPaid"
         android:layout_width="163dp"
         android:layout_height="51dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/loginbutton_selector"
         android:text="View Amount Paid"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -71,11 +71,11 @@
         app:layout_constraintTop_toBottomOf="@+id/viewAmountPaid" />
 
     <Button
-        android:id="@+id/statsBack"
+        android:id="@+id/monthly_fees"
         android:layout_width="163dp"
         android:layout_height="51dp"
         android:layout_marginTop="30dp"
-        android:text="Back"
+        android:text="Your Monthly Fees"
         android:textAlignment="center"
         android:background="@drawable/loginbutton_selector"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,5 +83,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewPerformance" />
 
+    <Button
+        android:id="@+id/statsBack"
+        android:layout_width="163dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/loginbutton_selector"
+        android:text="Back"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/monthly_fees"
+        app:layout_constraintVertical_bias="0.087" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

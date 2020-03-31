@@ -1,14 +1,10 @@
 package com.uniques.ourhouse.model;
 
-import android.util.Log;
-
-import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -32,7 +28,7 @@ public class Event implements Observable, Indexable {
     @NonNull
     private String title;
     @NonNull
-    private User assignedTo;
+    private ObjectId assignedTo;
     @NonNull
     private Date dueDate;
     private Date dateCompleted;
@@ -57,18 +53,7 @@ public class Event implements Observable, Indexable {
 //                new Event("Buy us a TV", new User("Seb", "", ""), new ObjectId(), new ObjectId(), new Date(now + 2000000), null)};
 //    }
 
-    public Event(@NonNull ObjectId eventId, @NonNull Integer type, @NonNull String title, @NonNull User assignedTo, @NonNull ObjectId assignedHouse, @NonNull ObjectId associatedTask, @NonNull Date dueDate, Date dateCompleted) {
-        this.eventId = eventId;
-        this.type = type;
-        this.title = title;
-        this.assignedTo = assignedTo;
-        this.assignedHouse = assignedHouse;
-        this.associatedTask = associatedTask;
-        this.dueDate = dueDate;
-        this.dateCompleted = dateCompleted;
-    }
-
-    public Event(@NonNull Integer type, @NonNull String title, @NonNull Date dueDate, @NonNull User assignedTo, @NonNull ObjectId assignedHouse, @NonNull ObjectId associatedTask) {
+    public Event(@NonNull Integer type, @NonNull String title, @NonNull Date dueDate, @NonNull ObjectId assignedTo, @NonNull ObjectId assignedHouse, @NonNull ObjectId associatedTask) {
         this.eventId = new ObjectId();
         this.type = type;
         this.title = title;
@@ -86,10 +71,11 @@ public class Event implements Observable, Indexable {
         assignedHouse = new ObjectId();
         associatedTask = new ObjectId();
         title = "< untitled event >";
-        assignedTo = new User();
+        assignedTo = new ObjectId();
         dueDate = new Date();
     }
 
+    @NonNull
     public Integer getType(){
         return type;
     }
@@ -111,7 +97,7 @@ public class Event implements Observable, Indexable {
     }
 
     @NonNull
-    public User getAssignedTo() {
+    public ObjectId getAssignedTo() {
         return assignedTo;
     }
 
@@ -149,64 +135,7 @@ public class Event implements Observable, Indexable {
     }
 
     public String consoleFormat(String prefix) {
-        return title + " (>" + assignedTo.consoleFormat("") + "), due (" + dueDate + "), completed (" + dateCompleted + ")";
-    }
-
-    public Document toBsonDocument() {
-        final Document asDoc = new Document();
-        asDoc.put("_id", eventId);
-        asDoc.put("title", title);
-        asDoc.put("assignedTo", assignedTo.getId());
-        asDoc.put("assignedHouse", assignedHouse);
-        asDoc.put("associatedTask", associatedTask);
-        asDoc.put("dueDate", dueDate);
-        asDoc.put("dateCompleted", dateCompleted);
-        return asDoc;
-    }
-
-    public static void FromBsonDocument(final Document doc, Consumer<Event> eventConsumer) {
-        if (doc.getObjectId("assignedTo") == null) {
-            eventConsumer.accept(null);
-            return;
-        }
-        Session.getSession().getDatabase().getUser(doc.getObjectId("assignedTo"), user -> {
-            if (user == null) {
-                Log.d("checking", "Null user return");
-                eventConsumer.accept(null);
-            } else {
-                //TODO this won't bee needed once all events in the database conform to the new requirement
-                // of having an associatedTask
-                ObjectId associatedTask = doc.getObjectId("associatedTask");
-                if (associatedTask != null) {
-                    eventConsumer.accept(new Event(
-                            doc.getObjectId("_id"),
-                            doc.getInteger("type", Event.TYPE_TASK),
-                            doc.getString("title"),
-                            user,
-                            doc.getObjectId("assignedHouse"),
-                            associatedTask,
-                            doc.getDate("dueDate"),
-                            doc.getDate("dateCompleted")
-                    ));
-                } else {
-                    // prune non-conforming event object
-                    Session.getSession().getDatabase().deleteEvent(new Event(
-                            doc.getObjectId("_id"),
-                            doc.getInteger("type", Event.TYPE_TASK),
-                            doc.getString("title"),
-                            user,
-                            doc.getObjectId("assignedHouse"),
-                            new ObjectId(),
-                            doc.getDate("dueDate"),
-                            doc.getDate("dateCompleted")), deleted -> {
-                        if (!deleted) {
-                            Log.w("EventModel", "Failed to prune non-conforming event object");
-                        }
-                        eventConsumer.accept(null);
-                    });
-                }
-            }
-        });
+        return title + " (> usr " + assignedTo + "), due (" + dueDate + "), completed (" + dateCompleted + ")";
     }
 
     @Override
@@ -214,7 +143,7 @@ public class Event implements Observable, Indexable {
         EasyJSON json = EasyJSON.create();
         json.putPrimitive("_id", eventId.toString());
         json.putPrimitive("title", title);
-        json.putPrimitive("assignedTo", assignedTo.getId().toString());
+        json.putPrimitive("assignedTo", assignedTo.toString());
         json.putPrimitive("assignedHouse", assignedHouse.toString());
         json.putPrimitive("associatedTask", associatedTask.toString());
         json.putPrimitive("dueDate", dueDate.getTime());
@@ -226,19 +155,16 @@ public class Event implements Observable, Indexable {
 
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
-        Event that = this;
-        Session.getSession().getDatabase().getUser(new ObjectId(json.<String>valueOf("assignedTo")), user -> {
-            eventId = new ObjectId(json.<String>valueOf("eventId"));
-            title = json.valueOf("title");
-            assignedTo = user;
-            assignedHouse = new ObjectId(json.<String>valueOf("assignedHouse"));
-            associatedTask = new ObjectId(json.<String>valueOf("associatedTask"));
-            dueDate = new Date((long) json.valueOf("dueDate"));
-            if (json.elementExists("dateCompleted")) {
-                dateCompleted = new Date((long) json.valueOf("dateCompleted"));
-            }
-            consumer.accept(that);
-        });
+        eventId = new ObjectId(json.<String>valueOf("eventId"));
+        title = json.valueOf("title");
+        assignedTo = new ObjectId(json.<String>valueOf("assignedTo"));
+        assignedHouse = new ObjectId(json.<String>valueOf("assignedHouse"));
+        associatedTask = new ObjectId(json.<String>valueOf("associatedTask"));
+        dueDate = new Date((long) json.valueOf("dueDate"));
+        if (json.elementExists("dateCompleted")) {
+            dateCompleted = new Date((long) json.valueOf("dateCompleted"));
+        }
+        consumer.accept(this);
     }
 
     @Override
