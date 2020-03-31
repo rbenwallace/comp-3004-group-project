@@ -72,7 +72,6 @@ public class JoinHouseCtrl implements FragmentCtrl{
             updateInfo();
         };
 
-        User myUser = Session.getSession().getLoggedInUser();
         SearchView simpleSearchView = view.findViewById(R.id.houseName_join);
 
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -82,7 +81,7 @@ public class JoinHouseCtrl implements FragmentCtrl{
             }
             @Override
             public boolean onQueryTextChange(String s) {
-
+                Log.d("CheckingHouses", s.trim());
                 database.findHousesByName(s.trim(), myList ->{
                     Log.d("CheckingHouses", Integer.toString(myList.size()));
                     searchedHouses = myList;
@@ -156,14 +155,25 @@ public class JoinHouseCtrl implements FragmentCtrl{
                                 return;
                             } else {
                                 myUser.addHouse(searchedHouses.get(i).getId());
+                                House updatedHouse = searchedHouses.get(i);
+                                updatedHouse.addOccupant(myUser);
                                 database.updateUser(myUser, success -> {
                                     if (success) {
-                                        popupWindow.dismiss();
-                                        activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+                                        database.updateHouse(searchedHouses.get(i), bool ->{
+                                            if (bool){
+                                                popupWindow.dismiss();
+                                                activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+                                            }
+                                            else {
+                                                popupWindow.dismiss();
+                                                Toast.makeText(activity, "Internet Connection", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
                                     } else {
                                         Log.d("JoinHouseCtrl", "Failed to add house to user's houses");
                                     }
                                 });
+
                             }
                         });
                     }

@@ -98,6 +98,7 @@ class DatabaseCoordinator implements DatabaseLink {
 
     @Override
     public void findHousesByName(String name, Consumer<List<House>> consumer) {
+        Log.d("CheckingHouses", "Inside DB Cord");
         remoteDatabase.findHousesByName(name, consumer);
     }
 
