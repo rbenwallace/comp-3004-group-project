@@ -31,6 +31,10 @@ public class AmountPaidCtrl implements FragmentCtrl {
     private int year;
     private String strMonth;
     private TextView calculateTitle;
+    private HashMap<User, Float> userAmountPaid;
+    private HashMap<User, Float> userPerformance;
+    private HashMap<User, Integer> userTasksCompleted;
+    private ArrayList<String> userFees;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     //for jon
@@ -55,14 +59,6 @@ public class AmountPaidCtrl implements FragmentCtrl {
         Button rightButton = (Button) view.findViewById(R.id.right_button);
 
         Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
-        leftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year);
-            }
-        });
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,6 +136,12 @@ public class AmountPaidCtrl implements FragmentCtrl {
     public void acceptArguments(Object... args) {
         month = Integer.parseInt(String.valueOf(args[0]));
         year = Integer.parseInt(String.valueOf(args[1]));;
+
+        userAmountPaid = (HashMap<User, Float>) args[2];
+        System.out.println("wallace Amount Paid: " + userAmountPaid.toString());
+        userPerformance = (HashMap<User, Float>) args[3];
+        userTasksCompleted = (HashMap<User, Integer>) args[4];
+        userFees = (ArrayList<String>) args[5];
     }
 
     @Override

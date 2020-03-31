@@ -46,6 +46,9 @@ public class House implements Indexable, Observable {
     private HashMap<ObjectId, Float> userPoints;
     private HashMap<ObjectId, Float> userAmountPaid;
 
+    private HashMap<ObjectId, Integer> tasksCompleted;
+    private ArrayList<String> userFees;
+
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
 
     public House(@NonNull ObjectId id, @NonNull String houseKey, @NonNull ObjectId owner, @NonNull String name, @NonNull List<ObjectId> occupants, @NonNull House.Rotation rotation, @NonNull String password, boolean showTaskDifficulty, boolean penalizeLateTasks) {
@@ -115,6 +118,14 @@ public class House implements Indexable, Observable {
         return houseUpdated;
     }
 
+    public HashMap<ObjectId, Integer> getTasksCompleted() {
+        return tasksCompleted;
+    }
+
+    public ArrayList<String> getUserFees() {
+        return userFees;
+    }
+
     public void setHouseUpdated(boolean houseUpdated) {
         this.houseUpdated = houseUpdated;
     }
@@ -138,13 +149,16 @@ public class House implements Indexable, Observable {
     public void initHouseEvents() {
         userPoints = new HashMap<>();
         userAmountPaid = new HashMap<>();
+        tasksCompleted = new HashMap<>();
+        userFees = new ArrayList<>();
         for (ObjectId userId : occupants) {
             userPoints.put(userId, Float.valueOf("0.0"));
             userAmountPaid.put(userId, Float.valueOf("0.0"));
+            tasksCompleted.put(userId, Integer.parseInt("0"));
         }
     }
 
-    public void populateStats(int year, int month) {
+    public void populateStats(int year, int month, ObjectId taskUser) {
         initHouseEvents();
         myDatabase.getAllEventsFromHouse(houseId, events -> {
             for (Event event : events) {
@@ -154,9 +168,11 @@ public class House implements Indexable, Observable {
                     int tempMonth = event.getDateCompleted().getMonth();
                     if ((event.getType() == 0) && (tempMonth == month) && (tempYear == year)) {
                         myDatabase.getTask(event.getAssociatedTask(), task -> {
+                            int completed = tasksCompleted.get(eventUser) + 1;
+                            tasksCompleted.put(eventUser, completed);
                             if (showTaskDifficulty && penalizeLateTasks) {
                                 if (event.getDueDate().after(event.getDateCompleted())) {
-                                    float num = userPoints.get(eventUser) + task.getDifficulty();
+                                    float num = (float) (userPoints.get(eventUser) + task.getDifficulty());
                                     userPoints.put(eventUser, num);
                                 } else {
                                     float num = (float) (userPoints.get(eventUser) + task.getDifficulty() * 0.5);
@@ -177,7 +193,11 @@ public class House implements Indexable, Observable {
                         });
                     } else if (event.getType() == 1 && (tempMonth == month) && (tempYear == year)) {
                         myDatabase.getFee(event.getAssociatedTask(), fee -> {
-                            float num = userAmountPaid.get(eventUser) + fee.getAmount();
+                            String userFee = "Amt: " + String.valueOf(fee.getAmount()) + " - " + fee.getName();
+                            if (eventUser.equals(taskUser)) {
+                                userFees.add(userFee);
+                            }
+                            float num = (float) (userAmountPaid.get(eventUser) + fee.getAmount());
                             userAmountPaid.put(eventUser, num);
                         });
                     }

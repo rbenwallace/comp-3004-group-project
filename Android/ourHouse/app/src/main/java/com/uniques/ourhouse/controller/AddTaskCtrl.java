@@ -73,7 +73,7 @@ public class AddTaskCtrl implements FragmentCtrl {
             int month = datePicker.getMonth();
             int year = datePicker.getYear();
             Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month, day, 19, 59, 59);
+            calendar.set(year, month, day, 23, 59, 59);
             calendar.set(Calendar.MILLISECOND, 0);
             Date date = calendar.getTime();
             if (String.valueOf(taskName.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherTaskFrequency.getText()).equals(""))) {
@@ -104,17 +104,31 @@ public class AddTaskCtrl implements FragmentCtrl {
                 schedule.setStart(date);
                 schedule.setEndPseudoIndefinite();
                 schedule.resumeStartEndBoundsChecking();
-                if (selectedFrequencyText.equals("Other")) {
-                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                    schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherTaskFrequency.getText())));
-                } else if (selectedFrequencyText.equals("Yearly")) {
-                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
-                } else if (selectedFrequencyText.equals("Monthly")) {
-                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
-                } else if (selectedFrequencyText.equals("Weekly")) {
-                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
-                } else if (selectedFrequencyText.equals("Daily")) {
-                    schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherTaskFrequency.getText())));
+                switch (selectedFrequencyText) {
+                    case "Other":
+                    case "Daily":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                        break;
+                    case "Yearly":
+                        if(day > 28 && month == 1){
+                            datePicker.updateDate(year, month, 28);
+                            Toast.makeText(activity, "Yearly Tasks in February must be set between the 1st and 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                        break;
+                    case "Monthly":
+                        if(day > 28){
+                            datePicker.updateDate(year, month, 28);
+                            Toast.makeText(activity, "Monthly Tasks must be set between the 1st and 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                        break;
+                    case "Weekly":
+                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+                        break;
                 }
                 schedule.setEndType(Schedule.EndType.AFTER_TIMES);
             }

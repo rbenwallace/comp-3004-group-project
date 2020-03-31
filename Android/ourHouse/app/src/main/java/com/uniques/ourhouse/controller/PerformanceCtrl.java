@@ -8,16 +8,21 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AmountPaidFragment;
 import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
+import com.uniques.ourhouse.fragment.FeeListFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.model.User;
@@ -29,6 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.graphics.Color.BLACK;
 
@@ -141,7 +147,8 @@ public class PerformanceCtrl implements FragmentCtrl {
 
         ArrayList<BarEntry> entries = new ArrayList<>();
 
-        final ArrayList<String> xLabel = new ArrayList<>();
+
+        ArrayList<String> list_x_axis_name = new ArrayList<>();
 
         if (!points.isEmpty()) {
             int count = 0;
@@ -150,9 +157,20 @@ public class PerformanceCtrl implements FragmentCtrl {
             {
                 Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
                 entries.add(new BarEntry(count, pair.getValue(), pair.getKey().getFirstName()));
+                list_x_axis_name.add(pair.getKey().getFirstName());
+                Log.d("test", pair.getKey().getFirstName());
                 count += 1;
             }
         }
+
+        for(int i=0; i<3; i++) {
+            Log.d(AmountPaidFragment.TAG, list_x_axis_name.get(i));
+        }
+
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setAvoidFirstLastClipping(true);
+        barChart.getXAxis().setCenterAxisLabels(true);
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(list_x_axis_name));
 
         BarDataSet bardataset = new BarDataSet(entries, "");
         bardataset.setDrawValues(true);
@@ -163,7 +181,6 @@ public class PerformanceCtrl implements FragmentCtrl {
         bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
 
 
-
         //BarData data = new BarData(bars);
         data.setBarWidth(0.6f); //how thick
         barChart.setData(data);
@@ -171,11 +188,11 @@ public class PerformanceCtrl implements FragmentCtrl {
         barChart.getXAxis().setDrawAxisLine(false);
         barChart.getAxisRight().setDrawAxisLine(false);
         barChart.getAxisRight().setDrawLabels(false);
-        barChart.getXAxis().setDrawLabels(false);
+        barChart.getXAxis().setDrawLabels(true);
         barChart.getLegend().setEnabled(false);
         barChart.getDescription().setEnabled(false);
         barChart.setFitBars(true); //make x-axis fit exactly all bars
-        barChart.setHighlightFullBarEnabled(true);
+        barChart.setHighlightFullBarEnabled(false);
         barChart.invalidate(); //refresh
         barChart.setDoubleTapToZoomEnabled(false);
         barChart.setPinchZoom(false);

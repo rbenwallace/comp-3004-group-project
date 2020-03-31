@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AmountPaidFragment;
 import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
+import com.uniques.ourhouse.fragment.FeeListFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
