@@ -104,7 +104,9 @@ public class AddTaskCtrl implements FragmentCtrl {
                 schedule.setStart(date);
                 schedule.setEndPseudoIndefinite();
                 schedule.resumeStartEndBoundsChecking();
-                schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherTaskFrequency.getText())));
+                if(!String.valueOf(otherTaskFrequency.getText()).equals("")){
+                    schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherTaskFrequency.getText())));
+                }
                 switch (selectedFrequencyText) {
                     case "Other":
                     case "Daily":
@@ -113,7 +115,7 @@ public class AddTaskCtrl implements FragmentCtrl {
                     case "Yearly":
                         if(day > 28 && month == 1){
                             datePicker.updateDate(year, month, 28);
-                            Toast.makeText(activity, "Yearly Tasks in February must be set between the 1st and 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "Yearly February Tasks must be set between the 1st and 28th", Toast.LENGTH_LONG).show();
                             return;
                         }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);

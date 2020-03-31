@@ -22,7 +22,10 @@ import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.fragment.ScreenMonthFragment;
 import com.uniques.ourhouse.model.User;
 
+import org.bson.types.ObjectId;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -37,13 +40,17 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     private int month;
     private int chosenYearInt;
     private int year;
-    private int thisMonth;
-    private int thisYear;
     private int newMonth;
     private int newYear;
     private Button selectedMonth;
     private Button selectedYear;
     private boolean menuOpen = false;
+    private HashMap<ObjectId, Float> userAmountPaid;
+    private HashMap<ObjectId, Float> userPerformance;
+    private HashMap<ObjectId, Integer> userTasksCompleted;
+    private ArrayList<String> userFees;
+    private int changedMonth;
+    private int changedYear;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     //For jon
@@ -68,8 +75,6 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     public void init(View view) {
         points = new HashMap<>();
         amounts = new HashMap<>();
-        thisMonth = month;
-        thisYear = year;
         newMonth = month;
         newYear = year;
         Button leftButton = (Button) view.findViewById(R.id.left_button);
@@ -129,9 +134,12 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String month = selectedMonth.getText().toString();
-                //String year = selectedYear.getText().toString();
-                activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), thisMonth, thisYear, newMonth, newYear);
+                if(changedMonth == newMonth && changedYear == newYear){
+                    activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), newMonth, newYear, userAmountPaid, userPerformance, userTasksCompleted, userFees, false);
+                }
+                else{
+                    activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), newMonth, newYear, userAmountPaid, userPerformance, userTasksCompleted, userFees, true);
+                }
             }
         });
 
@@ -262,7 +270,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year);
+                activity.popFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG));
             }
         });
         rightButton.setOnClickListener(new View.OnClickListener() {
@@ -370,6 +378,12 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     public void acceptArguments(Object... args) {
         month = Integer.parseInt(String.valueOf(args[0]));
         year = Integer.parseInt(String.valueOf(args[1]));;
+        userAmountPaid = (HashMap<ObjectId, Float>) args[2];
+        userPerformance = (HashMap<ObjectId, Float>) args[3];
+        userTasksCompleted = (HashMap<ObjectId, Integer>) args[4];
+        userFees = (ArrayList<String>) args[5];
+        changedMonth = month;
+        changedYear = year;
     }
 
     @Override

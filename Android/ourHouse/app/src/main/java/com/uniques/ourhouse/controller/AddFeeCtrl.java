@@ -161,7 +161,9 @@ public class AddFeeCtrl implements FragmentCtrl {
                 schedule.setStart(date);
                 schedule.setEndPseudoIndefinite();
                 schedule.resumeStartEndBoundsChecking();
-                schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherFeeFrequency.getText())));
+                if(!String.valueOf(otherFeeFrequency.getText()).equals("")){
+                    schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherFeeFrequency.getText())));
+                }
                 switch (selectedFrequencyText) {
                     case "Other":
                     case "Daily":
@@ -175,10 +177,11 @@ public class AddFeeCtrl implements FragmentCtrl {
                             schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
                             break;
                         }
-                        if(date.getDay() > 28 && date.getMonth() == 1){
+                        if(date.getDate() > 28 && date.getMonth() == 1){
                             newDate = date;
                             newDate.setDate(28);
-                            Toast.makeText(activity, "Since the month is Feb the recurrence day is set to Feb 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            useNewDay = true;
+                            Toast.makeText(activity, "Yearly recurrence day is set to Feb 28th. Press add to continue", Toast.LENGTH_LONG).show();
                             return;
                         }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
@@ -191,10 +194,11 @@ public class AddFeeCtrl implements FragmentCtrl {
                             schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
                             break;
                         }
-                        if(date.getDay() > 28){
+                        if(date.getDate() > 28){
                             newDateMonth = date;
                             newDateMonth.setDate(28);
-                            Toast.makeText(activity, "Monthly tasks must be between the 1st and 28th so recurrence date has been set to the 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            useNewDayMonth = true;
+                            Toast.makeText(activity, "Monthly recurrence date has been set to the 28th. Press add to continue", Toast.LENGTH_LONG).show();
                             return;
                         }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);

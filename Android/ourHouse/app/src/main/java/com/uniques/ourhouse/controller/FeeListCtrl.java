@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AmountPaidFragment;
 import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
+import com.uniques.ourhouse.fragment.FeeListFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
@@ -28,6 +29,7 @@ public class FeeListCtrl implements RecyclerCtrl<FeeListItemCard>, FragmentCtrl 
     private int month;
     private int year;
     private String string;
+    private ArrayList<String> userFees;
 
     public List<FeeListItemCard> observableCards;
     private RecyclerAdapter<FeeListItemCard> recyclerAdapter;
@@ -49,7 +51,7 @@ public class FeeListCtrl implements RecyclerCtrl<FeeListItemCard>, FragmentCtrl 
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(ScreenMonthFragment.TAG), month, year);
+                activity.popFragment(FragmentId.GET(FeeListFragment.TAG));
             }
         });
     }
@@ -59,6 +61,7 @@ public class FeeListCtrl implements RecyclerCtrl<FeeListItemCard>, FragmentCtrl 
     public void acceptArguments(Object... args) {
         month = Integer.parseInt(String.valueOf(args[0]));
         year = Integer.parseInt(String.valueOf(args[1]));;
+        userFees = (ArrayList<String>) args[2];
     }
 
     @Override
