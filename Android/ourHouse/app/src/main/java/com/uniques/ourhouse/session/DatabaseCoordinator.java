@@ -135,20 +135,6 @@ class DatabaseCoordinator implements DatabaseLink {
     }
 
     @Override
-    public void getUsers(List<ObjectId> user_ids, Consumer<ArrayList<User>> consumer) {
-        if (networkAvailable()) {
-            remoteDatabase.getUsers(user_ids, userArray -> {
-                if (userArray != null) {
-                    consumer.accept(userArray);
-                } else
-                    consumer.accept(null);
-            });
-        }
-        //TODO Victor how can i make this work w local?
-        consumer.accept(null);
-    }
-
-    @Override
     public void getEvent(ObjectId id, Consumer<Event> consumer) {
         Consumer<Event> networkConsumer = event -> {
             if (event != null) {

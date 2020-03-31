@@ -1,18 +1,13 @@
 package com.uniques.ourhouse.model;
 
-import android.util.Log;
-
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.Date;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
@@ -22,30 +17,30 @@ public class Task extends ManageItem implements Indexable, Observable {
     private String type;
     private int difficulty;
 
-    public static Task[] testTasks() {
-//        Event r = new Event("Recycling Bin Day", new Date(now), new User("Ben", "", ""));
-//        r.setDateCompleted(new Date(now + 76543210));
-//        return new Event[]{
-//                new Event("Dishes", new Date(now + 1000000), new User("Victor", "", "")),
-//                r,
-//                new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""))};
-        Schedule.Repeat repeat;
-        Task r = new Task("Recycling", new Schedule(), DIFFICULTY_EASY);
-        repeat = r.schedule.initRepeatSchedule();
-        repeat.setType(Schedule.RepeatType.ITERATIVE);
-        repeat.setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
-        r.schedule.setEndPseudoIndefinite();
-
-        Task d = new Task("Dishes", new Schedule(), DIFFICULTY_MEDIUM);
-        repeat = d.schedule.initRepeatSchedule();
-        repeat.setType(Schedule.RepeatType.ITERATIVE);
-        repeat.setRepeatBasis(Schedule.RepeatBasis.DAILY);
-        d.schedule.setEndPseudoIndefinite();
-
-        Task t = new Task("Buy us a TV", new Schedule(), DIFFICULTY_HARD);
-        t.schedule.setEnd(new Date(new Date().getTime() + 176543210));
-        return new Task[]{r, d, t};
-    }
+//    public static Task[] testTasks() {
+////        Event r = new Event("Recycling Bin Day", new Date(now), new User("Ben", "", ""));
+////        r.setDateCompleted(new Date(now + 76543210));
+////        return new Event[]{
+////                new Event("Dishes", new Date(now + 1000000), new User("Victor", "", "")),
+////                r,
+////                new Event("Buy us a TV", new Date(now + 2000000), new User("Seb", "", ""))};
+//        Schedule.Repeat repeat;
+//        Task r = new Task("Recycling", new Schedule(), DIFFICULTY_EASY);
+//        repeat = r.schedule.initRepeatSchedule();
+//        repeat.setType(Schedule.RepeatType.ITERATIVE);
+//        repeat.setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+//        r.schedule.setEndPseudoIndefinite();
+//
+//        Task d = new Task("Dishes", new Schedule(), DIFFICULTY_MEDIUM);
+//        repeat = d.schedule.initRepeatSchedule();
+//        repeat.setType(Schedule.RepeatType.ITERATIVE);
+//        repeat.setRepeatBasis(Schedule.RepeatBasis.DAILY);
+//        d.schedule.setEndPseudoIndefinite();
+//
+//        Task t = new Task("Buy us a TV", new Schedule(), DIFFICULTY_HARD);
+//        t.schedule.setEnd(new Date(new Date().getTime() + 176543210));
+//        return new Task[]{r, d, t};
+//    }
 
     public Task() {
     }
@@ -82,38 +77,6 @@ public class Task extends ManageItem implements Indexable, Observable {
     @Override
     public String consoleFormat(String prefix) {
         return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), " + "id: (" + manageItemOwner.toString() + "), " + "id: (" + manageItemHouse.toString() + "), name: [" + name + "] , Difficulty:" + difficulty + ", First Time Task is Due: " + schedule.getStart().toString();
-    }
-
-
-
-
-
-    public Document toBsonDocument() {
-        final Document asDoc = new Document();
-        Log.d("taskchecking : Uploading", this.toString());
-        asDoc.put("_id", manageItemId);
-        asDoc.put("userId", manageItemOwner);
-        asDoc.put("houseId", manageItemHouse);
-        asDoc.put("name", name);
-        asDoc.put("schedule", schedule.toBsonDocument());//Fix
-        asDoc.put("difficulty", difficulty);
-        return asDoc;
-    }
-
-    public static Task fromBsonDocument(final Document doc) {
-        Log.d("taskchecking : DownLoading", doc.toString());
-        Schedule schedule = new Schedule();
-        schedule = schedule.fromBsonDocument((Document) Objects.requireNonNull(doc.get("schedule")));
-        Task checking = new Task(
-                doc.getObjectId("_id"),
-                doc.getObjectId("userId"),
-                doc.getObjectId("houseId"),
-                doc.getString("name"),
-                schedule,
-                doc.getInteger("difficulty")
-        );
-        Log.d("taskchecking : DownLoading", checking.toString());
-        return checking;
     }
 
     @Override

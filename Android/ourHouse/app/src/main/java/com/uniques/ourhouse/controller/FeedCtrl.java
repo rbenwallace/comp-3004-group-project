@@ -236,8 +236,8 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 }
 
                 @Override
-                public User getPerson() {
-                    return null;
+                public void getPerson(Consumer<User> consumer) {
+                    consumer.accept(null);
                 }
 
                 @Override
@@ -291,7 +291,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                 Date now = new Date();
 
                 for (Event event : retrievedEvents) {
-                    if (filterUser != null && !filterUser.equals(event.getAssignedTo().getId())) {
+                    if (filterUser != null && !filterUser.equals(event.getAssignedTo())) {
                         continue;
                     }
                     if (event.isLate()) {
@@ -367,8 +367,8 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                         }
 
                         @Override
-                        public User getPerson() {
-                            return event.getAssignedTo();
+                        public void getPerson(Consumer<User> consumer) {
+                            Session.getSession().getDatabase().getUser(event.getAssignedTo(), consumer);
                         }
 
                         @Override
@@ -492,8 +492,8 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         }
 
         @Override
-        default User getPerson() {
-            return null;
+        default void getPerson(Consumer<User> consumer) {
+            consumer.accept(null);
         }
 
         @Override

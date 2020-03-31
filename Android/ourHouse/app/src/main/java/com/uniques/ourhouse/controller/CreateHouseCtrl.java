@@ -3,7 +3,6 @@ package com.uniques.ourhouse.controller;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -19,12 +18,12 @@ import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.TextChangeListener;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
-
-import org.bson.types.ObjectId;
 
 public class CreateHouseCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -56,8 +55,8 @@ public class CreateHouseCtrl implements FragmentCtrl {
         penLateTasks = view.findViewById(R.id.penalizeLateTasks);
 
         House.Rotation rotation = new House.Rotation();
-        ArrayList<User> occupants = new ArrayList<>();
-        occupants.add(myUser);
+        ArrayList<ObjectId> occupants = new ArrayList<>();
+        occupants.add(myUser.getId());
         rotation.addUserToRotation(myUser);
 
         houseName.addTextChangedListener((TextChangeListener) (charSequence, i, i1, i2) -> {
@@ -84,10 +83,10 @@ public class CreateHouseCtrl implements FragmentCtrl {
                     DrawableCompat.setTint(confirmPassword.getBackground(), ContextCompat.getColor(activity, R.color.red));
                     return;
                 }
-                House newHouse = new House(houseName.getText().toString().trim(), myUser, occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
+                House newHouse = new House(houseName.getText().toString().trim(), myUser.getId(), occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
 
                 // add the new house to the user's houses
-                myUser.addHouseId(newHouse.getId());
+                myUser.addHouse(newHouse.getId());
                 database.postHouse(newHouse, successful -> {
                     if (successful) {
                         database.updateUser(myUser, successful2 -> {

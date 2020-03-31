@@ -67,34 +67,31 @@ public class LoginCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
 
-        if (Session.getSession().isLoggedIn()) {
+        if (Session.getSession().isLoggedIn() && Session.getSession().getLoggedInUser() != null) {
             activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
             return;
         }
 
-        //Grab compoments
+        //Grab components
         email = view.findViewById(R.id.login_emailid);
         password = view.findViewById(R.id.login_password);
         Button backToSignUp = view.findViewById(R.id.createAccount);
         Button loginBtn = view.findViewById(R.id.loginBtn);
         forgetPassword = view.findViewById(R.id.forgot_password);
         errorDisplay = view.findViewById(R.id.errorMessage);
-        password.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
+        password.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_LEFT = 0;
+            final int DRAWABLE_TOP = 1;
+            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_BOTTOM = 3;
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (password.getRight() - password.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        changePasswordDisplay();
-                        return true;
-                    }
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (password.getRight() - password.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    changePasswordDisplay();
+                    return true;
                 }
-                return false;
             }
+            return false;
         });
         //Grab any login info if there was any
         try {
