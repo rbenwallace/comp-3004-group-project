@@ -49,8 +49,7 @@ public class LS_Main extends FragmentActivity {
         JoinHouseFragment.setupId(getActivityId());
         CreateHouseFragment.setupId(getActivityId());
         final String HOUSEID = houseId;
-        assert action != null;
-        if(action.equals("joinhouse")) {
+        if(action != null && action.equals("joinhouse")) {
             if ((Session.getSession().isLoggedIn())) {
                 Session.getSession().getDatabase().getUser(Session.getSession().getLoggedInUserId(), myUser -> {
                     myUser.addHouse(new ObjectId(HOUSEID));

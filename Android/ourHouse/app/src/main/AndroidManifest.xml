@@ -23,7 +23,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity android:name=".LS_Main">
             <intent-filter>
@@ -54,21 +53,10 @@
                 <!-- Allows the deep link to be used without specifying the app name -->
                 <category android:name = "android.intent.category.DEFAULT" />
                 <!-- URI http://www.mydeeplink.com/semester -->
-                <data android:scheme = "http" android:host = "www.ourhouse.com"/>
-            </intent-filter>
-            <intent-filter>
-                <!-- Sets the intent action to view the activity -->
-                <action android:name = "android.intent.action.VIEW" />
-                <!-- Allows the link to be opened from a web browser -->
-                <category android:name = "android.intent.category.BROWSABLE" />
-                <!-- Allows the deep link to be used without specifying the app name -->
-                <category android:name = "android.intent.category.DEFAULT" />
-                <!-- URI http://www.mydeeplink.com/semester -->
                 <data android:scheme = "app" android:host = "www.ourhouse.com"/>
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-
         <service
             android:name=".EventService"
             android:enabled="true"

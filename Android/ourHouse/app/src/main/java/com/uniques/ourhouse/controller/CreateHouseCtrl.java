@@ -153,6 +153,7 @@ public class CreateHouseCtrl implements FragmentCtrl {
                 }
                 House newHouse = new House(houseName.getText().toString().trim(), myUser.getId(), occupants, rotation, password.getText().toString().trim(), taskDiff.isChecked(), penLateTasks.isChecked());
 
+
                 for(String email : friends){
                     database.emailFriends(email, email.split("@")[0], myUser.getFirstName(), newHouse.getId(),  bool ->{
                         if (bool)
