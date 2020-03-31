@@ -82,7 +82,7 @@ public class PerformanceCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(FeeListFragment.TAG), month, year);
+                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year);
             }
         });
 
