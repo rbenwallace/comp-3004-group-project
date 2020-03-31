@@ -48,7 +48,7 @@ public interface DatabaseLink {
 
     void getEvent(ObjectId id, Consumer<Event> consumer);
 
-    void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer);
+    void getHouseEventOnDay(ObjectId houseId, ObjectId taskId, Date day, Consumer<Event> consumer);
 
     void getTask(ObjectId id, Consumer<Task> consumer);
 
@@ -113,8 +113,6 @@ public interface DatabaseLink {
     void deleteHouse(House house, Consumer<Boolean> consumer);
 
     void deleteAllHouses(Consumer<Boolean> consumer);
-//
-//    void deleteOwnerFromHouse(House house, User user, Consumer<Boolean> consumer);
 
     void deleteUserFromHouse(House house, User user, Consumer<Boolean> consumer);
 

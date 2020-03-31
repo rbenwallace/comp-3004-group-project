@@ -27,13 +27,13 @@ import com.uniques.ourhouse.session.Settings;
 
 import org.bson.types.ObjectId;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends FragmentActivity {
     public static final String TAG = "MainActivity";
@@ -59,7 +59,7 @@ public class MainActivity extends FragmentActivity {
         userId = Session.getSession().getLoggedInUserId();
         Calendar calendar = Calendar.getInstance();
         strYear = new SimpleDateFormat("yyyy").format(calendar.getTime());
-        currentMonth = calendar.getTime().getMonth();
+        currentMonth = calendar.get(Calendar.MONTH);
 
         Log.d(TAG, "Launching");
 
@@ -107,7 +107,15 @@ public class MainActivity extends FragmentActivity {
                     myDatabase.getHouse(houseId, house -> {
                         System.out.println("wallace occupants: " + house.getOccupants().toString());
                         house.populateStats(Integer.parseInt(strYear), currentMonth, userId);
-                        pushFragment(FragmentId.GET(AmountPaidFragment.TAG), currentMonth, Integer.parseInt(strYear), house.getUserAmountPaid(), house.getUserPoints(), house.getTasksCompleted(), house.getUserFees());
+                        pushFragment(
+                                Objects.requireNonNull(FragmentId.GET(AmountPaidFragment.TAG)),
+                                currentMonth,
+                                Integer.parseInt(strYear),
+                                house.getUserAmountPaid(),
+                                house.getUserPoints(),
+                                house.getTasksCompleted(),
+                                house.getUserFees()
+                        );
                     });
                 }
                 return true;
@@ -133,7 +141,7 @@ public class MainActivity extends FragmentActivity {
      * @see FragmentId#GET(String) getting a fragmentId
      */
     @Override
-    public void pushFragment(FragmentId fragmentId, Object... args) {
+    public void pushFragment(@NonNull FragmentId fragmentId, Object... args) {
         Fragment fragment;
         try {
             fragment = fragmentId.newInstance();
@@ -183,28 +191,30 @@ public class MainActivity extends FragmentActivity {
                 navView.setVisibility(View.VISIBLE);
             }
 
+            forLoop:
             for (int i = fragmentStack.size() - 1; i >= 0; --i) {
                 String name = fragmentStack.get(i).getFragmentId().getName();
                 Log.d(TAG, i + " " + name);
-                if (name.equals(FeedFragment.TAG)) {
-                    Log.d(TAG, "last nav item in stack is feed");
-                    navViewUpdatedByCode = true;
-                    navView.setSelectedItemId(R.id.navigation_feed);
-                    break;
-                } else if (name.equals(ManageFragment.TAG)) {
-                    Log.d(TAG, "last nav item in stack is manage");
-                    navViewUpdatedByCode = true;
-                    navView.setSelectedItemId(R.id.navigation_manage);
-                    break;
-                } else if (name.equals(AmountPaidFragment.TAG)) {
-                    Log.d(TAG, "last nav item in stack is stats");
-                    navViewUpdatedByCode = true;
-                    navView.setSelectedItemId(R.id.navigation_stats);
-                    break;
+                switch (name) {
+                    case FeedFragment.TAG:
+                        Log.d(TAG, "last nav item in stack is feed");
+                        navViewUpdatedByCode = true;
+                        navView.setSelectedItemId(R.id.navigation_feed);
+                        break forLoop;
+                    case ManageFragment.TAG:
+                        Log.d(TAG, "last nav item in stack is manage");
+                        navViewUpdatedByCode = true;
+                        navView.setSelectedItemId(R.id.navigation_manage);
+                        break forLoop;
+                    case AmountPaidFragment.TAG:
+                        Log.d(TAG, "last nav item in stack is stats");
+                        navViewUpdatedByCode = true;
+                        navView.setSelectedItemId(R.id.navigation_stats);
+                        break forLoop;
                 }
             }
-        } catch (Exception ignored) {
-//            FragmentActivity.getSavedInstance(ActivityId.MAIN_ACTIVITY).popFragment(fragmentId);
+        } catch (Exception e) {
+            Log.e(TAG, "popFragment('" + fragmentId.getName() + "') failed", e);
         }
     }
 

@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.EditTaskFragment;
@@ -133,7 +134,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
         private TextView largeTxtAssignedTo;
         private TextView largeTxtCompletedDate;
         private TextView largeTxtComplete;
-        private boolean isComplete;
+        private boolean isComplete, updatingEvent;
 
         public void attachLayoutViews(View layout, CardView cv) {
             smallView = layout.findViewById(R.id.feed_card_smallPanel);
@@ -151,12 +152,25 @@ public final class FeedCard implements RecyclerCard, Comparable {
             largeTxtComplete = layout.findViewById(R.id.feed_card_large_txtComplete);
 
             layout.setOnClickListener(v -> handleClick());
-            layout.findViewById(R.id.feed_card_pnlEdit).setOnClickListener(v ->
-                    activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getId(), object.getEvent().getAssociatedTask()));
+            layout.findViewById(R.id.feed_card_pnlEdit).setOnClickListener(v -> {
+                if (updatingEvent) {
+                    Toast.makeText(activity, "We are updating this event, please wait a second", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getAssociatedTask());
+            });
             layout.findViewById(R.id.feed_card_pnlComplete).setOnClickListener(v -> {
+                if (updatingEvent) {
+                    Toast.makeText(activity, "We are updating this event, please wait a second", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 object.getEvent().setDateCompleted(isComplete ? null : new Date());
                 isComplete = !isComplete;
-                updateInfo();
+                updatingEvent = true;
+                Session.getSession().getDatabase().updateEvent(object.getEvent(), updated -> {
+                    updateInfo();
+                    updatingEvent = false;
+                });
             });
 
             isComplete = object.getDateCompleted() != null;
@@ -175,8 +189,8 @@ public final class FeedCard implements RecyclerCard, Comparable {
             }
 
             boolean isLate =
-                    (object.getDateCompleted() == null ||
-                            object.getDateCompleted().getTime() > object.getDueDate().getTime());
+                    (object.getDateCompleted() == null ? System.currentTimeMillis() :
+                            object.getDateCompleted().getTime()) > object.getDueDate().getTime();
 
             if (!isExpanded) {
                 txtTitle.setText(object.getName());
@@ -187,6 +201,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
                 txtStatus.setText(isLate ? "Late" : "On Time");
                 txtStatus.setTextColor(activity.getColor(
                         isLate ? R.color.feedCardLate : R.color.feedCardOnTime));
+                txtStatus.setVisibility(object.getDateCompleted() == null ? View.INVISIBLE : View.VISIBLE);
 
                 imgFace.setImageDrawable(activity.getDrawable(
                         isLate ? R.drawable.icons8_puzzled_80 : R.drawable.icons8_angel_80));

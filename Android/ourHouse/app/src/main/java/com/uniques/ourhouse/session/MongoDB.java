@@ -278,21 +278,21 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     } //tested
 
     @Override
-    public void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer) {
+    public void getHouseEventOnDay(ObjectId houseId, ObjectId taskId, Date day, Consumer<Event> consumer) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(day);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        Date fromDate = cal.getTime();
+        long fromDate = cal.getTimeInMillis();
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 999);
-        Date toDate = cal.getTime();
-        Document query = new Document()
-                .append("assignedHouse", houseId)
+        long toDate = cal.getTimeInMillis();
+        Document query = new Document("associatedTask", taskId.toString())
+                .append("assignedHouse", houseId.toString())
                 .append("dueDate", BasicDBObjectBuilder.start("$gte", fromDate).add("$lte", toDate).get());
         Log.d("MongoDB", query.toString());
         final com.google.android.gms.tasks.Task<Document> findOne = eventColl.findOne(query);
@@ -397,8 +397,12 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     public void getAllEventsFromHouse(ObjectId houseId, Consumer<List<Event>> consumer) {
 //        ArrayList<Event> events = new ArrayList<>();
         Document filterDoc = new Document()
-                .append("assignedHouse", houseId);
-        eventColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
+                .append("assignedHouse", houseId.toString());
+        eventColl
+                .find(filterDoc)
+                .sort(new Document("dueDate", -1).append("title", 1))
+                .into(new ArrayList<>())
+                .addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
                 ArrayList<Event> events = new ArrayList<>();
@@ -517,8 +521,8 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     public void getAllEventsFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Event>> consumer) {
 //        ArrayList<Event> events = new ArrayList<>();
         Document filterDoc = new Document()
-                .append("assignedHouse", houseId);
-        filterDoc.append("assignedTo", userId);
+                .append("assignedHouse", houseId.toString());
+        filterDoc.append("assignedTo", userId.toString());
         eventColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
@@ -723,9 +727,9 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     //Delete---
     @Override
     public void deleteAllEventsFromUserInHouse(ObjectId userId, ObjectId houseId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("assignedHouse", houseId);
-        filterDoc.append("assignedTo", userId);
-        Log.d("deleteAllEventsFromUserInHouse", "userId: " + userId + " houseId: " + houseId);
+        Document filterDoc = new Document().append("assignedHouse", houseId.toString());
+        filterDoc.append("assignedTo", userId.toString());
+        Log.d("deleteAllEventsFromUserInHouse", "userId: " + userId + " houseId: " + houseId.toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = eventColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -777,7 +781,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteAllEventsFromUser(ObjectId userId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("assignedTo", userId);
+        Document filterDoc = new Document().append("assignedTo", userId.toString());
         Log.d(TAG, String.format("successfully deleted %s documents", userId.toString()));
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = eventColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
@@ -826,7 +830,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteAllEventsFromHouse(ObjectId houseId, Consumer<Boolean> consumer) {
-        Document filterDoc = new Document().append("assignedHouse", houseId);
+        Document filterDoc = new Document().append("assignedHouse", houseId.toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = eventColl.deleteMany(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

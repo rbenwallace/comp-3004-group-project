@@ -1,5 +1,6 @@
 package com.uniques.ourhouse.controller;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,7 +50,6 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 
     public FeedCtrl(FragmentActivity activity) {
         this.activity = activity;
-        showingPastEvents = true;
         observableCards = new ArrayList<>();
     }
 
@@ -60,15 +61,19 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         loadingPanel = view.findViewById(R.id.feed_loadingPanel);
         recyclerView = view.findViewById(R.id.feed_recycler);
 
+        showingPastEvents = Settings.FEED_SHOWING_PAST_EVENTS.get();
+
         txtPastEvents.setOnClickListener(v -> {
             if (!showingPastEvents) {
                 showingPastEvents = true;
+                Settings.FEED_SHOWING_PAST_EVENTS.set(true);
                 updateInfo();
             }
         });
         txtUpcomingEvents.setOnClickListener(v -> {
             if (showingPastEvents) {
                 showingPastEvents = false;
+                Settings.FEED_SHOWING_PAST_EVENTS.set(false);
                 updateInfo();
             }
         });
@@ -92,6 +97,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         updateInfo();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void updateInfo() {
         loadingPanel.setVisibility(View.VISIBLE);
@@ -302,7 +308,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                             continue;
                     }
                     if (event.getCompareObject() instanceof Date) {
-                        cal.setTime((Date) event.getCompareObject());
+                        cal.setTime(event.getDateCompleted() != null ? event.getDateCompleted() : event.getDueDate());
                         if (controller.showingPastEvents) {
                             cal.set(Calendar.HOUR_OF_DAY, 23);
                             cal.set(Calendar.MINUTE, 59);
@@ -378,12 +384,12 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
 
                         @Override
                         public int getCompareType() {
-                            return event.getCompareType();
+                            return DATE;
                         }
 
                         @Override
                         public java.lang.Comparable getCompareObject() {
-                            return event.getCompareObject();
+                            return event.getDateCompleted() != null ? event.getDateCompleted() : event.getDueDate();
                         }
 
                         @Override
@@ -415,8 +421,13 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         }
 
         private void retrieveEvents(Consumer<List<Event>> consumer) {
-//        consumer.accept(Arrays.asList(showingPastEvents ? Event.testEvents() : new Event[0]));
-            Session.getSession().getDatabase().getAllEventsFromHouse(Settings.OPEN_HOUSE.get(), consumer);
+            Session.getSession().getDatabase().getAllEventsFromHouse(Settings.OPEN_HOUSE.get(), events -> {
+                Date now = new Date();
+                consumer.accept(events.stream()
+                        .filter(event -> controller.showingPastEvents
+                                ? event.getDueDate().before(now) : event.getDueDate().after(now))
+                        .collect(Collectors.toList()));
+            });
         }
 
         private boolean occursInSameCalendarField(Date a, Date b, int field, int fieldTolerance) {

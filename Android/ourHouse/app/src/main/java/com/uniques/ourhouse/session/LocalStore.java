@@ -97,7 +97,7 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
-    public void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer) {
+    public void getHouseEventOnDay(ObjectId houseId, ObjectId taskId, Date day, Consumer<Event> consumer) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(day);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -112,7 +112,8 @@ final class LocalStore implements DatabaseLink {
         long toDate = cal.getTimeInMillis();
         for (JSONElement eventJSON : EVENTS_JSON) {
             try {
-                if (eventJSON.valueOf("assignedHouse").equals(houseId.toString())) {
+                if (eventJSON.valueOf("associatedTask").equals(taskId.toString())
+                        && eventJSON.valueOf("assignedHouse").equals(houseId.toString())) {
                     long dueDate = eventJSON.valueOf("dueDate");
                     if (dueDate >= fromDate && dueDate <= toDate) {
                         new Event().fromJSON(eventJSON, consumer);
