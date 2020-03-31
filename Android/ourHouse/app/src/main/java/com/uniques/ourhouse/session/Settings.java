@@ -24,6 +24,18 @@ public enum Settings {
         }
     }),
 
+    FEED_SHOWING_PAST_EVENTS(new DefaultHandler<Boolean>() {
+        @Override
+        String getKey() {
+            return "feed.showingPastEvents";
+        }
+
+        @Override
+        Boolean getDefault() {
+            return true;
+        }
+    }),
+
     FEED_FILTER_USER(new ObjectIdHandler() {
         @Override
         String getKey() {

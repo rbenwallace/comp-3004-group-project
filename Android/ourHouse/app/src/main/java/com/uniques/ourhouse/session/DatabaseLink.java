@@ -48,7 +48,7 @@ public interface DatabaseLink {
 
     void getEvent(ObjectId id, Consumer<Event> consumer);
 
-    void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer);
+    void getHouseEventOnDay(ObjectId houseId, ObjectId taskId, Date day, Consumer<Event> consumer);
 
     void getTask(ObjectId id, Consumer<Task> consumer);
 
@@ -142,6 +142,10 @@ public interface DatabaseLink {
     default void clearLocalState(Consumer<Boolean> consumer) {
         consumer.accept(true);
     }
+
+    void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool);
+
+
 }
 
 

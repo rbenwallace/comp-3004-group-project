@@ -16,7 +16,6 @@ import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import org.bson.types.ObjectId;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -162,8 +161,8 @@ class DatabaseCoordinator implements DatabaseLink {
     }
 
     @Override
-    public void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer) {
-        remoteDatabase.getHouseEventOnDay(houseId, day, consumer);
+    public void getHouseEventOnDay(ObjectId houseId, ObjectId taskId, Date day, Consumer<Event> consumer) {
+        remoteDatabase.getHouseEventOnDay(houseId, taskId, day, consumer);
     }
 
     @Override
@@ -481,6 +480,7 @@ class DatabaseCoordinator implements DatabaseLink {
             });
         } else consumer.accept(false);
     }
+
     @Override
     public void deleteAllCollectionData(Consumer<Boolean> consumer) {
         if (networkAvailable()) {
@@ -489,7 +489,8 @@ class DatabaseCoordinator implements DatabaseLink {
                     consumer.accept(false);
                     return;
                 }
-                localDatabase.deleteAllCollectionData(bool->{});
+                localDatabase.deleteAllCollectionData(bool -> {
+                });
             });
         } else consumer.accept(false);
     }
@@ -589,6 +590,17 @@ class DatabaseCoordinator implements DatabaseLink {
                 localDatabase.clearLocalState(consumer);
             } else consumer.accept(false);
         });
+    }
+
+    @Override
+    public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool){
+        if (networkAvailable()) {
+            remoteDatabase.emailFriends(email, firstName, friend, houseId, bool);
+        }
+        else {
+            Log.d("CheckingEmailSending", "DB Cord: " + bool.toString());
+            bool.accept(false);
+        }
     }
 
     private static class InternetChecker implements Runnable {

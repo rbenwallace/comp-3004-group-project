@@ -10,130 +10,202 @@
         android:id="@+id/house"
         android:src="@drawable/house"/>
 
-    <RelativeLayout
-        android:layout_width="250dp"
-        android:id="@+id/houseR"
-        android:layout_marginHorizontal="80dp"
-        android:layout_margin="0dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
+    <ScrollView
         android:layout_below="@+id/house"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        <RelativeLayout
+            android:layout_width="250dp"
+            android:id="@+id/houseR"
+            android:layout_marginHorizontal="80dp"
+            android:layout_margin="0dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/houseName_create"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:inputType="textPersonName"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:gravity="center"
+                android:hint="@string/house_name"
+                android:textSize="20sp">
+
+            </EditText>
+        </RelativeLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/houseKey"
+            android:layout_alignBaseline="@+id/houseR"
+            android:textSize="14sp"
+            android:layout_toRightOf="@+id/houseR"
+            android:hint="#2343"
+            >
+        </TextView>
         <EditText
-            android:id="@+id/houseName_create"
+            android:id="@+id/password1CH"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+
             android:maxEms="1"
-            android:inputType="textPersonName"
+            android:layout_below="@+id/houseR"
+            android:inputType="textPassword"
+            android:layout_centerHorizontal="true"
             android:backgroundTint="@color/colorPrimaryDark"
             android:gravity="center"
-            android:hint="@string/house_name"
+            android:hint="@string/password"
             android:textSize="20sp">
 
         </EditText>
-    </RelativeLayout>
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/houseKey"
-        android:layout_alignBaseline="@+id/houseR"
-        android:layout_below="@+id/house"
-        android:textSize="14sp"
-        android:layout_toRightOf="@+id/houseR"
-        android:hint="#2343"
-        >
-    </TextView>
-    <EditText
-        android:id="@+id/password1CH"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:maxEms="1"
-        android:layout_below="@+id/houseR"
-        android:inputType="textPassword"
-        android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:gravity="center"
-        android:hint="@string/password"
-        android:textSize="20sp">
-
-    </EditText>
-    <EditText
-        android:id="@+id/password2CH"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:maxEms="1"
-        android:layout_marginTop="10dp"
-        android:inputType="textPassword"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/password1CH"
-        android:gravity="center"
-        android:hint="@string/confirmPassword"
-        android:textSize="20sp">
-    </EditText>
-    <TextView
-        android:id="@+id/textPasswordExplain"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/password2CH"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:text="@string/passwordExplainHouse"
-        android:textSize="16sp">
-    </TextView>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/roomateLayoutR"
-        android:layout_below="@+id/houseR"
-        android:gravity="center"
-        />
-
-    <RelativeLayout
-        android:id="@+id/checks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_below="@+id/textPasswordExplain">
-        <CheckBox
-            android:id="@+id/showDifficulty"
-            android:layout_width="match_parent"
-            android:layout_marginStart="20dp"
+        <EditText
+            android:id="@+id/password2CH"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="@string/show_difficulty"/>
+            android:maxEms="1"
+            android:inputType="textPassword"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/password1CH"
+            android:gravity="center"
+            android:hint="@string/confirmPassword"
+            android:textSize="20sp">
+        </EditText>
+<!--        <TextView-->
+<!--            android:id="@+id/textPasswordExplain"-->
+<!--            android:layout_width="250dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:layout_below="@+id/password2CH"-->
+<!--            android:gravity="center"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:text="@string/passwordExplainHouse"-->
+<!--            android:textSize="16sp">-->
+<!--        </TextView>-->
+            <View
+                android:id="@+id/passwordBorder"
+                android:layout_below="@+id/password2CH"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:background="@color/black"
+                android:layout_height="2dp">
+            </View>
 
-        <CheckBox
-            android:id="@+id/penalizeLateTasks"
-            android:layout_below="@id/showDifficulty"
-            android:layout_width="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_height="wrap_content"
-            android:text="Penalize Late Tasks"/>
-
-        <Button
-            android:id="@+id/createBtn"
-            android:layout_below="@+id/penalizeLateTasks"
+        <TextView
+            android:layout_below="@id/passwordBorder"
+            android:id="@+id/invFriends"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:background="@drawable/loginbutton_selector"
-            android:paddingHorizontal="40dp"
-            android:paddingVertical="5dp"
-            android:text="Create"
+            android:textSize="20sp"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/colorTextPrimary"
-            android:textSize="34sp" />
+            android:text="@string/invFriends">
+        </TextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/emailFriend"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:layout_below="@id/invFriends"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/friendEmail"
+                android:layout_width="250dp"
+                android:inputType="textEmailAddress"
+                android:hint="email@gmail.com"
+                android:layout_height="wrap_content"
+                >
+            </EditText>
+            <Button
+                android:id="@+id/addEmail"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/friendEmail"
+                android:text="Add"
+                android:background="@drawable/loginbutton_selector"
+                android:layout_alignBaseline="@id/friendEmail"
+                android:layout_height="wrap_content">
+            </Button>
+
+        </RelativeLayout>
+
+            <View
+                android:id="@+id/friendListTopBorder"
+                android:layout_below="@+id/emailFriend"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:background="@color/black"
+                android:layout_height="1dp">
+            </View>
+        <ListView
+            android:layout_below="@+id/friendListTopBorder"
+            android:background="@color/white"
+            android:id="@+id/friendsList"
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+        </ListView>
+            <View
+                android:id="@+id/friendListBotBorder"
+                android:layout_below="@+id/friendsList"
+                android:layout_width="match_parent"
+                android:background="@color/black"
+                android:layout_height="1dp">
+            </View>
+
+        <RelativeLayout
+            android:id="@+id/checks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/friendsList">
+            <CheckBox
+                android:id="@+id/showDifficulty"
+                android:layout_width="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_height="wrap_content"
+                android:text="@string/show_difficulty"/>
+
+            <CheckBox
+                android:id="@+id/penalizeLateTasks"
+                android:layout_below="@id/showDifficulty"
+                android:layout_width="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_height="wrap_content"
+                android:text="Penalize Late Tasks"/>
+
+            <Button
+                android:id="@+id/createBtn"
+                android:layout_below="@+id/penalizeLateTasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/loginbutton_selector"
+                android:paddingHorizontal="40dp"
+                android:paddingVertical="5dp"
+                android:text="Create"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="34sp" />
 
 
 
-    </RelativeLayout>
-
+        </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
 
 
 </RelativeLayout>
+
