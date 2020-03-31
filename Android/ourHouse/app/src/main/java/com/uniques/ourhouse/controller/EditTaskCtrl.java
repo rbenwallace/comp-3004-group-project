@@ -99,6 +99,7 @@ public class EditTaskCtrl implements FragmentCtrl {
 
         myDatabase.getTask(taskId, task -> {
             Log.d(EditTaskFragment.TAG, "Trying to get Task");
+            System.out.println("wallace: task- " + task.toString());
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
             if (difficulty == 1) {
@@ -124,8 +125,7 @@ public class EditTaskCtrl implements FragmentCtrl {
             oldCalendar.set(Calendar.MILLISECOND, 0);
 
             Schedule schedule = task.getSchedule();
-            System.out.println("wallace: " + schedule.getRepeatSchedule().getRepeatBasis());
-            if (schedule.getEndType().toString().equals(Schedule.EndType.ON_DATE.toString()) || (currentCalendar.getTime().before(oldCalendar.getTime()))) {
+            if (schedule.getEndType().toString().equals(Schedule.EndType.ON_DATE.toString())) {
                 System.out.println("wallace: once");
                 onceButton.performClick();
                 datePicker.updateDate(Integer.parseInt(oldYear), Integer.parseInt(oldMonth), Integer.parseInt(oldDay));
@@ -148,7 +148,7 @@ public class EditTaskCtrl implements FragmentCtrl {
                     String newMonth = (String) DateFormat.format("MM", oldCalendar.getTime());
                     String newYear = (String) DateFormat.format("yyyy", oldCalendar.getTime());
                     datePicker.updateDate(Integer.parseInt(newYear), Integer.parseInt(newMonth), Integer.parseInt(newDay));
-                } else if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.WEEKLY)) {
+                } else if (schedule.getRepeatSchedule().getRepeatBasis().toString().equals(Schedule.RepeatBasis.WEEKLY.toString())) {
                     weeklyButton.performClick();
                     while (oldCalendar.getTimeInMillis() < currentCalendar.getTimeInMillis()) {
                         oldCalendar.add(Calendar.DAY_OF_YEAR, 7);
