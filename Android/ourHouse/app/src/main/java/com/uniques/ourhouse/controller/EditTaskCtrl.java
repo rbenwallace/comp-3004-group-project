@@ -125,7 +125,8 @@ public class EditTaskCtrl implements FragmentCtrl {
 
             Schedule schedule = task.getSchedule();
             System.out.println("wallace: " + schedule.getRepeatSchedule().getRepeatBasis());
-            if (schedule.getEndType().equals(Schedule.EndType.ON_DATE) || (currentCalendar.getTimeInMillis() < oldCalendar.getTimeInMillis())) {
+            if (schedule.getEndType().toString().equals(Schedule.EndType.ON_DATE.toString()) || (currentCalendar.getTime().before(oldCalendar.getTime()))) {
+                System.out.println("wallace: once");
                 onceButton.performClick();
                 datePicker.updateDate(Integer.parseInt(oldYear), Integer.parseInt(oldMonth), Integer.parseInt(oldDay));
             } else {
