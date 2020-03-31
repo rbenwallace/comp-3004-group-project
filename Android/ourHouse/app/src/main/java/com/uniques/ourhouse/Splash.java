@@ -1,6 +1,7 @@
 package com.uniques.ourhouse;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,14 +12,15 @@ import com.uniques.ourhouse.session.Settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.List;
+
 public class Splash extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        //This always gets called after you login successfully once and try coming back to the application
-        //Basically Session is not saving its user or itself, how can one save the session?
+
         if (Session.getSession() == null) {
             Session.newSession(this);
         }

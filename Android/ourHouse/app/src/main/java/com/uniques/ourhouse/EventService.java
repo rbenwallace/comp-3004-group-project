@@ -10,6 +10,7 @@ import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.ManageItem;
 import com.uniques.ourhouse.model.Task;
+import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Schedule;
@@ -92,7 +93,11 @@ public class EventService extends JobService {
                 onCompleteCallback.accept(new NullPointerException("session is null"), null);
                 return null;
             }
-
+            DatabaseLink database = session.getDatabase();
+            if (database == null) {
+                onCompleteCallback.accept(new NullPointerException("session database is null"), null);
+                return null;
+            }
             ObjectId loggedInUser = session.getLoggedInUserId();
             // a user must be logged in
             if (loggedInUser == null) {
@@ -108,7 +113,7 @@ public class EventService extends JobService {
             }
 
             // get tasks from database
-            session.getDatabase().getHouse(openHouse, house -> {
+            database.getHouse(openHouse, house -> {
                 if (isCancelled()) return;
                 if (house == null) {
                     onCompleteCallback.accept(new NullPointerException("Failed to get open house object"), null);
@@ -116,7 +121,7 @@ public class EventService extends JobService {
                 }
                 Log.d(TAG, "Got open house object");
                 Log.d(TAG, "Fetching house tasks.. (might take a while)");
-                session.getDatabase().getAllTasksFromHouse(openHouse, tasks -> {
+                database.getAllTasksFromHouse(openHouse, tasks -> {
                     if (isCancelled()) return;
                     if (tasks == null) {
                         onCompleteCallback.accept(new NullPointerException("getAllTasksFromHouse() failed"), null);
@@ -128,7 +133,7 @@ public class EventService extends JobService {
                     //noinspection UnusedAssignment
                     tasks = null;
 
-                    session.getDatabase().getAllFeesFromHouse(openHouse, fees -> {
+                    database.getAllFeesFromHouse(openHouse, fees -> {
                         if (isCancelled()) return;
                         if (fees == null) {
                             onCompleteCallback.accept(new NullPointerException("getAllFeesFromHouse() failed"), null);
@@ -142,6 +147,7 @@ public class EventService extends JobService {
                         fees = null;
 
                         if (items.isEmpty()) {
+
                             onCompleteCallback.accept(new Exception("No Tasks or Fees created in house"), null);
                             return;
                         }
@@ -223,6 +229,7 @@ public class EventService extends JobService {
                             return;
                         }
 
+                        long now = System.currentTimeMillis();
                         List<Event> failedEvents = new ArrayList<>();
 
                         // eventPair = { fetchedEvent, orgEvent }
@@ -243,23 +250,50 @@ public class EventService extends JobService {
                                 } else {
                                     Event nextEvent = events.remove(0);
                                     //noinspection unchecked
-                                    session.getDatabase().getHouseEventOnDay(openHouse, nextEvent.getDueDate(),
-                                            e -> next.accept(new Pair<>(event, nextEvent), next));
+                                    database.getHouseEventOnDay(
+                                            openHouse,
+                                            nextEvent.getAssociatedTask(),
+                                            nextEvent.getDueDate(),
+                                            e -> next.accept(new Pair<>(e, nextEvent), next)
+                                    );
                                 }
                             };
 
+                            // event doesn't exist yet
                             if (fetchedEvent == null) {
-                                session.getDatabase().postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
-                            } else {
-                                putterConsumer.accept(true, null);
+                                // post a new one
+                                database.postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
+                                return;
                             }
+
+                            // event is in the past (we don't update past events)
+                            if (fetchedEvent.getDueDate().getTime() < now) {
+                                // mark event as successful
+                                putterConsumer.accept(true, null);
+                                return;
+                            }
+
+                            // event is in the future, delete old event and post a new one
+                            database.deleteEvent(fetchedEvent, deleted -> {
+                                if (!deleted) {
+                                    // old event must be deleted to count as a success
+                                    putterConsumer.accept(false, orgEvent);
+                                    return;
+                                }
+                                // post the new event
+                                database.postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
+                            });
                         };
 
                         Log.d(TAG, "Posting (non-existent) events to database.. (might take a while)");
 
                         Event firstEvent = events.remove(0);
-                        session.getDatabase().getHouseEventOnDay(openHouse, firstEvent.getDueDate(),
-                                event -> batchConsumer.accept(new Pair<>(event, firstEvent), batchConsumer));
+                        database.getHouseEventOnDay(
+                                openHouse,
+                                firstEvent.getAssociatedTask(),
+                                firstEvent.getDueDate(),
+                                event -> batchConsumer.accept(new Pair<>(event, firstEvent), batchConsumer)
+                        );
                     });
                 });
             });

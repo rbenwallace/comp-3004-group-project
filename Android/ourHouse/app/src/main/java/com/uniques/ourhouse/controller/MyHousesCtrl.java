@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
-
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.CreateHouseFragment;
@@ -28,11 +27,13 @@ import com.uniques.ourhouse.session.Settings;
 
 import org.bson.types.ObjectId;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import java.io.IOException;
 
 public class MyHousesCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -78,14 +79,13 @@ public class MyHousesCtrl implements FragmentCtrl {
                 });
             });
         });
-        Session.getSession().getDatabase().deleteAllCollectionData(bool -> {
-        });
     }
 
     private void fetchMyHouses(View view, List<ObjectId> houseIds, List<House> fetchedHouses) {
         if (filler != null) {
             return;
         }
+        Log.d("MongoDB", houseIds.toString());
         if (houseIds.isEmpty()) {
             onPostFetchMyHouses(view);
             return;
@@ -108,10 +108,8 @@ public class MyHousesCtrl implements FragmentCtrl {
     }
 
     private void onPostFetchMyHouses(View view) {
-
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
-
         //check for duplicates idk why this is happening
         for (int i = 0; i < myHouses.size(); i++) {
             int check = 0;

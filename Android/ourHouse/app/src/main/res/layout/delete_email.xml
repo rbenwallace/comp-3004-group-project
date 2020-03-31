@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background= "@drawable/layout_bg"
+    android:padding="23dp"
+    >
+    <TextView
+        android:id="@+id/deleteEmailWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="50sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:text="Warning"
+        android:layout_marginStart="5dp"
+        />
+    <Button
+        android:id="@+id/deleteEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:layout_below="@+id/deleteEmailWarning"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_selector"
+        android:text="@string/delete_email"
+        android:textColor="@color/red"
+        android:textSize="25sp"/>
+    <Button
+        android:id="@+id/deleteCancelEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:layout_below="@+id/deleteEmail"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_selector"
+        android:text="@string/cancel"
+        android:textColor="@color/colorPrimary"
+        android:textSize="25sp"/>
+
+</RelativeLayout>

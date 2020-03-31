@@ -76,7 +76,11 @@ public class Task extends ManageItem implements Indexable, Observable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), " + "id: (" + manageItemOwner.toString() + "), " + "id: (" + manageItemHouse.toString() + "), name: [" + name + "] , Difficulty:" + difficulty + ", First Time Task is Due: " + schedule.getStart().toString();
+        return prefix + ": , id: (" + manageItemId.toString() + "), " +
+                "owner: (" + manageItemOwner.toString() + "), " +
+                "house: (" + manageItemHouse.toString() + "), name: [" + name +
+                "] , Difficulty:" + difficulty +
+                ", First Time Task is Due: " + schedule.getStart().toString();
     }
 
     @Override
@@ -85,10 +89,11 @@ public class Task extends ManageItem implements Indexable, Observable {
         json.putPrimitive("_id", manageItemId.toString());
         json.putPrimitive("userId", manageItemOwner.toString());
         json.putPrimitive("houseId", manageItemHouse.toString());
+        json.putPrimitive("serialVersionId", serialVersionId);
         json.putPrimitive("name", name);
         json.putPrimitive("type", type);
         json.putPrimitive("difficulty", String.valueOf(difficulty));
-        json.putElement("schedule", schedule.toJSON());//FIX
+        json.putElement("schedule", schedule.toJSON());
         return json.getRootNode();
     }
 
@@ -97,6 +102,9 @@ public class Task extends ManageItem implements Indexable, Observable {
         manageItemId = new ObjectId(json.<String>valueOf("_id"));
         manageItemOwner = new ObjectId(json.<String>valueOf("userId"));
         manageItemHouse = new ObjectId(json.<String>valueOf("houseId"));
+        if (json.elementExists("serialVersionId")) {
+            serialVersionId = json.valueOf("serialVersionId");
+        }
         name = json.valueOf("name");
         type = json.valueOf("type");
         difficulty = Integer.parseInt(json.valueOf("difficulty"));
