@@ -2,6 +2,7 @@ package com.uniques.ourhouse.util.easyjson;
 
 import com.uniques.ourhouse.util.simple.JSONArray;
 import com.uniques.ourhouse.util.simple.JSONObject;
+import com.uniques.ourhouse.util.simple.JSONValue;
 import com.uniques.ourhouse.util.simple.parser.JSONParser;
 import com.uniques.ourhouse.util.simple.parser.ParseException;
 
@@ -10,6 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 
@@ -100,7 +102,6 @@ public class EasyJSON implements Iterable<JSONElement> {
 
     /**
      * Attempts to parse the specified JSON-string into an EasyJSON structure.
-     *
      * @param jsonAsText the JSON content stringified to text
      * @return The parsed EasyJSON structure
      * @throws EasyJSONException if the JSON structure is incompatible with EasyJSON.
@@ -109,6 +110,22 @@ public class EasyJSON implements Iterable<JSONElement> {
         EasyJSON json = new EasyJSON();
         try {
             json.init((JSONObject) (new JSONParser()).parse(jsonAsText));
+        } catch (ParseException e) {
+            throw new EasyJSONException(EasyJSONException.FILE_NOT_JSON, e);
+        }
+        return json;
+    }
+
+    /**
+     * Attempts to parse the specified Map representation of JSON into an EasyJSON structure.
+     * @param jsonAsMap the Map (mapped) representation of JSON
+     * @return The parsed EasyJSON structure
+     * @throws EasyJSONException if the JSON structure is incompatible with EasyJSON.
+     */
+    public static EasyJSON parse(Map jsonAsMap) throws EasyJSONException {
+        EasyJSON json = new EasyJSON();
+        try {
+            json.init((JSONObject) (new JSONParser()).parse(JSONValue.toJSONString(jsonAsMap)));
         } catch (ParseException e) {
             throw new EasyJSONException(EasyJSONException.FILE_NOT_JSON, e);
         }
@@ -165,8 +182,11 @@ public class EasyJSON implements Iterable<JSONElement> {
             } else if (value instanceof JSONObject) {
                 type = JSONElementType.STRUCTURE;
             }
-            JSONElement parentElement = new JSONElement(this, null, type, key.toString(), value);
+            JSONElement parentElement = new JSONElement(this, rootNode, type, key.toString(), value);
             iterateElement(parentElement);
+            if (parentElement.getValue() instanceof  JSONArray || parentElement.getValue() instanceof JSONObject) {
+                parentElement.setValue(null);
+            }
             rootNode.getChildren().add(parentElement);
         }
     }

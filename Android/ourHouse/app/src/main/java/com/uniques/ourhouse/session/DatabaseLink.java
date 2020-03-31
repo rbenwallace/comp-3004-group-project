@@ -8,7 +8,6 @@ import com.uniques.ourhouse.model.User;
 
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -46,8 +45,6 @@ public interface DatabaseLink {
     //Get
     //-------------------------------------------------------------
     void getUser(ObjectId id, Consumer<User> consumer);
-
-    void getUsers(List<ObjectId> user_ids, Consumer<ArrayList<User>> consumer);
 
     void getEvent(ObjectId id, Consumer<Event> consumer);
 

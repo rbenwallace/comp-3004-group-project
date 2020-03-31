@@ -16,16 +16,16 @@ public abstract class ManageItem implements Model, Indexable, Observable {
     static final int DIFFICULTY_MEDIUM = 2;
     static final int DIFFICULTY_HARD = 3;
 
-    protected ObjectId manageItemId;
-    protected ObjectId manageItemOwner;
-    protected ObjectId manageItemHouse;
+    ObjectId manageItemId;
+    ObjectId manageItemOwner;
+    ObjectId manageItemHouse;
     protected String name;
     protected Schedule schedule;
 
-    public ManageItem() {
+    ManageItem() {
     }
 
-    public ManageItem(ObjectId idItem, ObjectId owner, ObjectId house, String name, Schedule schedule) {
+    ManageItem(ObjectId idItem, ObjectId owner, ObjectId house, String name, Schedule schedule) {
         manageItemId = idItem;
         manageItemOwner = owner;
         manageItemHouse = house;

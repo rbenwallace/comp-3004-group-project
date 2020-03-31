@@ -6,10 +6,8 @@ import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
@@ -64,6 +62,7 @@ public class Fee extends ManageItem implements Indexable, Observable {
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
+        json.putPrimitive("_id", manageItemId.toString());
         json.putPrimitive("feeId", manageItemId.toString());
         json.putPrimitive("userId", manageItemOwner.toString());
         json.putPrimitive("houseId", manageItemHouse.toString());
@@ -72,32 +71,6 @@ public class Fee extends ManageItem implements Indexable, Observable {
         json.putPrimitive("amount", String.valueOf(amount));
         json.putElement("schedule", schedule.toJSON());
         return json.getRootNode();
-    }
-
-    public Document toBsonDocument() {
-        Document scheduleDoc = new Document();
-        scheduleDoc.append("schedule", schedule.toBsonDocument());
-        final Document asDoc = new Document();
-        asDoc.put("_id", manageItemId);
-        asDoc.put("userId", manageItemOwner);
-        asDoc.put("houseId", manageItemHouse);
-        asDoc.put("name", name);
-        asDoc.put("amount", Float.toString(amount));
-        asDoc.put("schedule", scheduleDoc);
-        return asDoc;
-    }
-
-    public static Fee fromBsonDocument(final Document doc){
-        Schedule schedule = new Schedule();
-        schedule = schedule.fromBsonDocument((Document) Objects.requireNonNull(doc.get("schedule")));
-        return new Fee(
-                doc.getObjectId("_id"),
-                doc.getObjectId("userId"),
-                doc.getObjectId("houseId"),
-                doc.getString("name"),
-                Float.parseFloat(doc.getString("amount")),
-                schedule
-        );
     }
 
     @Override

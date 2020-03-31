@@ -10,7 +10,6 @@ import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.ManageItem;
 import com.uniques.ourhouse.model.Task;
-import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Schedule;
@@ -184,8 +183,8 @@ public class EventService extends JobService {
                         }
 
                         PriorityQueue<UsersDuties> results = new PriorityQueue<>();
-                        for (User user : rotation) {
-                            results.add(new UsersDuties(user, openHouse));
+                        for (ObjectId userId : rotation) {
+                            results.add(new UsersDuties(userId, openHouse));
                         }
 
                         Log.d(TAG, "Assigning each gathered occurrence..");
@@ -301,13 +300,13 @@ public class EventService extends JobService {
         }
 
         private static class UsersDuties implements Comparable {
-            private final User user;
+            private final ObjectId userId;
             private final ObjectId houseId;
             private int totalDifficulty;
             private HashMap<Date, List<ManageItem>> duties;
 
-            private UsersDuties(User user, ObjectId houseId) {
-                this.user = user;
+            private UsersDuties(ObjectId userId, ObjectId houseId) {
+                this.userId = userId;
                 this.houseId = houseId;
                 duties = new HashMap<>();
             }
@@ -329,7 +328,7 @@ public class EventService extends JobService {
                 duties.forEach((day, duty) ->
                         duty.forEach(dutyItem -> {
                             int type = dutyItem instanceof Task ? Event.TYPE_TASK : Event.TYPE_FEE;
-                            events.add(new Event(type, dutyItem.getName(), day, user, houseId, dutyItem.getId()));
+                            events.add(new Event(type, dutyItem.getName(), day, userId, houseId, dutyItem.getId()));
                         }));
                 return events;
             }
