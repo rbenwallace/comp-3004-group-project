@@ -717,6 +717,11 @@ final class LocalStore implements DatabaseLink {
         }
     }
 
+    @Override
+    public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool) {
+
+    }
+
     private File getLocalFile(String fileName) {
         return new File(context.getFilesDir(), fileName);
     }

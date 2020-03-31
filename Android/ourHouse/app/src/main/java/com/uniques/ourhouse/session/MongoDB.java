@@ -28,6 +28,7 @@ import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 
 import org.bson.BsonRegularExpression;
+import org.bson.BsonString;
 import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -1244,13 +1245,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         });
     } //tested
 
-    public void emailFriends(String recipientEmail, String recipientName, String friend){
-        CLIENT.callFunction("sum", Arrays.asList(new FriendRequest(recipientEmail, recipientName, friend)), FriendRequest.class)
+    @Override
+    public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool){
+        CLIENT.callFunction("Mailing_Function", Arrays.asList(email, firstName, friend, houseId.toString()), BsonValue.class)
             .addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Log.d("stitch", String.format("%s", task.getResult())); // Output: 7
+                    bool.accept(true);
                 } else {
-                    Log.e("stitch", "Error calling function:", task.getException());
+                    Log.d("CheckingEmailSending", "MongoDB Err " + task.getException().toString());
+                    bool.accept(false);
                 }
             });
     }

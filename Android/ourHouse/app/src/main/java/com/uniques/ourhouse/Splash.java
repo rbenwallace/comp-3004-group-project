@@ -1,6 +1,7 @@
 package com.uniques.ourhouse;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -10,6 +11,8 @@ import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.session.Settings;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.List;
 
 public class Splash extends AppCompatActivity {
 

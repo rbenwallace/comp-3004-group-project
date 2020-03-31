@@ -107,7 +107,6 @@ public class SignUpCtrl implements FragmentCtrl {
     private boolean checkValidation(View view, String email, String password) {
         // Check pattern for email id
         Pattern p = Pattern.compile(regEx);
-        Pattern ph = Pattern.compile(phone_regEx);
 
         Matcher m = p.matcher(email);
 

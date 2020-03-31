@@ -144,6 +144,10 @@ public interface DatabaseLink {
     default void clearLocalState(Consumer<Boolean> consumer) {
         consumer.accept(true);
     }
+
+    void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool);
+
+
 }
 
 

@@ -591,6 +591,17 @@ class DatabaseCoordinator implements DatabaseLink {
         });
     }
 
+    @Override
+    public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool){
+        if (networkAvailable()) {
+            remoteDatabase.emailFriends(email, firstName, friend, houseId, bool);
+        }
+        else {
+            Log.d("CheckingEmailSending", "DB Cord: " + bool.toString());
+            bool.accept(false);
+        }
+    }
+
     private static class InternetChecker implements Runnable {
         private final Context context;
         private boolean networkAvailable;

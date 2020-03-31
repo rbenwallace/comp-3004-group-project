@@ -79,14 +79,13 @@ public class MyHousesCtrl implements FragmentCtrl {
                 });
             });
         });
-        Session.getSession().getDatabase().deleteAllCollectionData(bool -> {
-        });
     }
 
     private void fetchMyHouses(View view, List<ObjectId> houseIds, List<House> fetchedHouses) {
         if (filler != null) {
             return;
         }
+        Log.d("MongoDB", houseIds.toString());
         if (houseIds.isEmpty()) {
             onPostFetchMyHouses(view);
             return;
@@ -109,10 +108,8 @@ public class MyHousesCtrl implements FragmentCtrl {
     }
 
     private void onPostFetchMyHouses(View view) {
-
         Button createHouse = view.findViewById(R.id.createHouseBtn);
         Button joinHouse = view.findViewById(R.id.joinHouseBtn);
-
         //check for duplicates idk why this is happening
         for (int i = 0; i < myHouses.size(); i++) {
             int check = 0;
