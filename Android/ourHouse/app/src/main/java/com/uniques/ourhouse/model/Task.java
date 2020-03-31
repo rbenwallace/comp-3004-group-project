@@ -76,7 +76,11 @@ public class Task extends ManageItem implements Indexable, Observable {
 
     @Override
     public String consoleFormat(String prefix) {
-        return prefix + ": " + type + ", id: (" + manageItemId.toString() + "), " + "id: (" + manageItemOwner.toString() + "), " + "id: (" + manageItemHouse.toString() + "), name: [" + name + "] , Difficulty:" + difficulty + ", First Time Task is Due: " + schedule.getStart().toString();
+        return prefix + ": , id: (" + manageItemId.toString() + "), " +
+                "owner: (" + manageItemOwner.toString() + "), " +
+                "house: (" + manageItemHouse.toString() + "), name: [" + name +
+                "] , Difficulty:" + difficulty +
+                ", First Time Task is Due: " + schedule.getStart().toString();
     }
 
     @Override
