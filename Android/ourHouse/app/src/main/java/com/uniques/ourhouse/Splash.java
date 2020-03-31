@@ -20,8 +20,7 @@ public class Splash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        //This always gets called after you login successfully once and try coming back to the application
-        //Basically Session is not saving its user or itself, how can one save the session?
+
         if (Session.getSession() == null) {
             Session.newSession(this);
         }
