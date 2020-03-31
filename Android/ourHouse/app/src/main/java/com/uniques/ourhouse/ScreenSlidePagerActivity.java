@@ -5,6 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
@@ -21,6 +27,7 @@ import com.uniques.ourhouse.fragment.ManageFragment;
 import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.fragment.ScreenMonthFragment;
+import com.uniques.ourhouse.fragment.ScreenSlidePageFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
 import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
@@ -28,15 +35,16 @@ import com.uniques.ourhouse.session.Settings;
 
 import org.bson.types.ObjectId;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-public class MainActivity extends FragmentActivity {
+public class ScreenSlidePagerActivity extends FragmentActivity {
+    private static final int NUM_PAGES = 3;
+
+    private ViewPager mPager;
+
+    private PagerAdapter pagerAdapter;
+
     public static final String TAG = "MainActivity";
     static final int LAYOUT_ID = R.layout.activity_main;
 
@@ -53,68 +61,37 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getActivityId().getLayoutId());
-        saveInstance(getActivityId(), this);
+        setContentView(R.layout.activity_screen_slide);
 
-        houseId = Settings.OPEN_HOUSE.get();
-        userId = Session.getSession().getLoggedInUserId();
-        Calendar calendar = Calendar.getInstance();
-        strYear = new SimpleDateFormat("yyyy").format(calendar.getTime());
-        currentMonth = calendar.getTime().getMonth();
-
-        Log.d(TAG, "Launching");
-
-        FeedFragment.setupId(getActivityId());
-        ManageFragment.setupId(getActivityId());
-        AddFeeFragment.setupId(getActivityId());
-        AddTaskFragment.setupId(getActivityId());
-        SettingsFragment.setupId(getActivityId());
-        AmountPaidFragment.setupId(getActivityId());
-        CalculateAmountToPayFragment.setupId(getActivityId());
-        PerformanceFragment.setupId(getActivityId());
-        FeeListFragment.setupId(getActivityId());
-        ScreenMonthFragment.setupId(getActivityId());
-        EditTaskFragment.setupId(getActivityId());
-        EditFeeFragment.setupId(getActivityId());
-
-        BottomNavigationView navigation = findViewById(R.id.main_navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navView = navigation;
-
-        pushFragment(FragmentId.GET(FeedFragment.TAG));
-
-        Log.d(TAG, "Checking jobs...");
-        BootReceiver.scheduleJobs(this);
+        mPager = (ViewPager) findViewById(R.id.pager);
+        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(pagerAdapter);
     }
 
+    @Override
+    public void onBackPressed() {
+        if(mPager.getCurrentItem() == 0) {
+            super.onBackPressed();
+        } else {
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        }
+    }
 
-    public final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = item -> {
-        if (navViewUpdatedByCode) {
-            navViewUpdatedByCode = false;
-            return true;
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
         }
-        switch (item.getItemId()) {
-            case R.id.navigation_feed:
-                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(FeedFragment.TAG))
-                    pushFragment(FragmentId.GET(FeedFragment.TAG));
-                return true;
-            case R.id.navigation_manage:
-                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(ManageFragment.TAG))
-                    pushFragment(FragmentId.GET(ManageFragment.TAG));
-                return true;
-            case R.id.navigation_stats:
-                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(MyHousesFragment.TAG)) {
-                    myDatabase.getHouse(houseId, house -> {
-                        System.out.println("wallace occupants: " + house.getOccupants().toString());
-                        house.populateStats(Integer.parseInt(strYear), currentMonth, userId);
-                        pushFragment(FragmentId.GET(AmountPaidFragment.TAG), currentMonth, Integer.parseInt(strYear), house.getUserAmountPaid(), house.getUserPoints(), house.getTasksCompleted(), house.getUserFees());
-                    });
-                }
-                return true;
+
+        @Override
+        public Fragment getItem(int position) {
+            return new ScreenSlidePageFragment();
         }
-        return false;
-    };
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
+    }
 
     @Override
     protected ActivityId getActivityId() {
