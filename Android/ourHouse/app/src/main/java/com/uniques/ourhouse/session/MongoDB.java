@@ -2,6 +2,9 @@ package com.uniques.ourhouse.session;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
@@ -23,10 +26,12 @@ import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
 
 import org.bson.BsonRegularExpression;
+import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -1312,5 +1317,30 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
             }
         });
     } //tested
+
+    public void emailFriends(String recipientEmail, String recipientName, String friend){
+        CLIENT.callFunction("sum", Arrays.asList(new FriendRequest(recipientEmail, recipientName, friend)), FriendRequest.class)
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d("stitch", String.format("%s", task.getResult())); // Output: 7
+                } else {
+                    Log.e("stitch", "Error calling function:", task.getException());
+                }
+            });
+    }
+
+    private class FriendRequest {
+        String recipientEmail;
+        String recipientName;
+        String friend;
+
+        public FriendRequest(String recipientEmail, String recipientName, String friend) {
+            this.recipientEmail = recipientEmail;
+            this.recipientName = recipientName;
+            this.friend = friend;
+        }
+
+
+    }
 
 }
