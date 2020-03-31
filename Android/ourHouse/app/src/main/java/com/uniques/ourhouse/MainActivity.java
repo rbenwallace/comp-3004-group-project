@@ -12,6 +12,7 @@ import com.uniques.ourhouse.fragment.AmountPaidFragment;
 import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
 import com.uniques.ourhouse.fragment.EditFeeFragment;
 import com.uniques.ourhouse.fragment.EditTaskFragment;
+import com.uniques.ourhouse.fragment.FeeListFragment;
 import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.Fragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
@@ -68,6 +69,7 @@ public class MainActivity extends FragmentActivity {
         AmountPaidFragment.setupId(getActivityId());
         CalculateAmountToPayFragment.setupId(getActivityId());
         PerformanceFragment.setupId(getActivityId());
+        FeeListFragment.setupId(getActivityId());
         ScreenMonthFragment.setupId(getActivityId());
         EditTaskFragment.setupId(getActivityId());
         EditFeeFragment.setupId(getActivityId());

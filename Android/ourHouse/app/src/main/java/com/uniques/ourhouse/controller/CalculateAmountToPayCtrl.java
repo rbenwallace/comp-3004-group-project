@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AmountPaidFragment;
 import com.uniques.ourhouse.fragment.CalculateAmountToPayFragment;
+import com.uniques.ourhouse.fragment.FeeListFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
@@ -261,7 +262,7 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year);
+                activity.pushFragment(FragmentId.GET(FeeListFragment.TAG), month, year);
             }
         });
         rightButton.setOnClickListener(new View.OnClickListener() {

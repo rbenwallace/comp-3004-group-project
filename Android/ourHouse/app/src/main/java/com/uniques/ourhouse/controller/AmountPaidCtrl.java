@@ -55,14 +55,6 @@ public class AmountPaidCtrl implements FragmentCtrl {
         Button rightButton = (Button) view.findViewById(R.id.right_button);
 
         Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
-        leftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
-                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year);
-            }
-        });
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -106,13 +106,6 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             observableCards.add(new TaskRotationCard(new User("Jon", "Lim", "jon@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Victor", "Olaitin", "vic@gmail.com")));
 
-            RecyclerAdapter<TaskRotationCard> adapter = new RecyclerAdapter<>(
-                personRecycler,
-                observableCards,
-                R.layout.roommate_item);
-            personRecycler.setAdapter(adapter);
-            setRecyclerAdapter(adapter);
-
             btnSwitchHouse.setOnClickListener(view13 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);=
