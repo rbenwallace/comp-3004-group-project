@@ -272,20 +272,20 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     } //tested
 
     @Override
-    public void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer) {
+    public void getHouseEventOnDay(ObjectId houseId, ObjectId taskId, Date day, Consumer<Event> consumer) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(day);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        Date fromDate = cal.getTime();
+        long fromDate = cal.getTimeInMillis();
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 999);
-        Date toDate = cal.getTime();
-        Document query = new Document()
+        long toDate = cal.getTimeInMillis();
+        Document query = new Document("associatedTask", taskId.toString())
                 .append("assignedHouse", houseId.toString())
                 .append("dueDate", BasicDBObjectBuilder.start("$gte", fromDate).add("$lte", toDate).get());
         Log.d("MongoDB", query.toString());
@@ -392,7 +392,11 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 //        ArrayList<Event> events = new ArrayList<>();
         Document filterDoc = new Document()
                 .append("assignedHouse", houseId.toString());
-        eventColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
+        eventColl
+                .find(filterDoc)
+                .sort(new Document("dueDate", -1).append("title", 1))
+                .into(new ArrayList<>())
+                .addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
                 ArrayList<Event> events = new ArrayList<>();

@@ -48,7 +48,7 @@ public interface DatabaseLink {
 
     void getEvent(ObjectId id, Consumer<Event> consumer);
 
-    void getHouseEventOnDay(ObjectId houseId, Date day, Consumer<Event> consumer);
+    void getHouseEventOnDay(ObjectId houseId, ObjectId taskId, Date day, Consumer<Event> consumer);
 
     void getTask(ObjectId id, Consumer<Task> consumer);
 

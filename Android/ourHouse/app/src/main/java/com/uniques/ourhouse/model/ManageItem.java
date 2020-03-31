@@ -21,6 +21,7 @@ public abstract class ManageItem implements Model, Indexable, Observable {
     ObjectId manageItemHouse;
     protected String name;
     protected Schedule schedule;
+    long serialVersionId;
 
     ManageItem() {
     }

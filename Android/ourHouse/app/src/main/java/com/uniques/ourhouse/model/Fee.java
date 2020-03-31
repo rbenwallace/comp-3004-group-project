@@ -66,6 +66,7 @@ public class Fee extends ManageItem implements Indexable, Observable {
         json.putPrimitive("feeId", manageItemId.toString());
         json.putPrimitive("userId", manageItemOwner.toString());
         json.putPrimitive("houseId", manageItemHouse.toString());
+        json.putPrimitive("serialVersionId", serialVersionId);
         json.putPrimitive("name", name);
         json.putPrimitive("type", type);
         json.putPrimitive("amount", String.valueOf(amount));
@@ -78,6 +79,9 @@ public class Fee extends ManageItem implements Indexable, Observable {
         manageItemId = new ObjectId(json.<String>valueOf("feeId"));
         manageItemId = new ObjectId(json.<String>valueOf("userId"));
         manageItemId = new ObjectId(json.<String>valueOf("houseId"));
+        if (json.elementExists("serialVersionId")) {
+            serialVersionId = json.valueOf("serialVersionId");
+        }
         name = json.valueOf("name");
         type = json.valueOf("type");
         amount = Float.parseFloat(json.valueOf("amount"));
