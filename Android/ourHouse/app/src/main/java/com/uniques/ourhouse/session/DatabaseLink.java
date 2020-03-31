@@ -113,8 +113,6 @@ public interface DatabaseLink {
     void deleteHouse(House house, Consumer<Boolean> consumer);
 
     void deleteAllHouses(Consumer<Boolean> consumer);
-//
-//    void deleteOwnerFromHouse(House house, User user, Consumer<Boolean> consumer);
 
     void deleteUserFromHouse(House house, User user, Consumer<Boolean> consumer);
 

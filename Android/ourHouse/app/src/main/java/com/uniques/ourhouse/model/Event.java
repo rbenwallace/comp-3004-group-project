@@ -155,7 +155,7 @@ public class Event implements Observable, Indexable {
 
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
-        eventId = new ObjectId(json.<String>valueOf("eventId"));
+        eventId = new ObjectId(json.<String>valueOf("_id"));
         title = json.valueOf("title");
         assignedTo = new ObjectId(json.<String>valueOf("assignedTo"));
         assignedHouse = new ObjectId(json.<String>valueOf("assignedHouse"));

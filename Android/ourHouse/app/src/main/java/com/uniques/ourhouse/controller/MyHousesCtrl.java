@@ -78,8 +78,6 @@ public class MyHousesCtrl implements FragmentCtrl {
                 });
             });
         });
-        Session.getSession().getDatabase().deleteAllCollectionData(bool -> {
-        });
     }
 
     private void fetchMyHouses(View view, List<ObjectId> houseIds, List<House> fetchedHouses) {

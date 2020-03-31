@@ -25,9 +25,9 @@ public class ManageCtrl implements FragmentCtrl {
 
     @Override
     public void init(View view) {
-        addFeeButton = (Button) view.findViewById(R.id.manage_btnAddFee);
-        addTaskButton = (Button) view.findViewById(R.id.manage_btnAddTask);
-        settingsButton = (Button) view.findViewById(R.id.manage_btnSettings);
+        addFeeButton = view.findViewById(R.id.manage_btnAddFee);
+        addTaskButton = view.findViewById(R.id.manage_btnAddTask);
+        settingsButton = view.findViewById(R.id.manage_btnSettings);
 
         Log.d(ManageFragment.TAG, "Controller init()");
         addFeeButton.setOnClickListener(view1 -> {
