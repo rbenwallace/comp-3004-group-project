@@ -11,6 +11,7 @@ import com.uniques.ourhouse.fragment.Fragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.JoinHouseFragment;
+import com.uniques.ourhouse.fragment.JoiningHouseFragment;
 import com.uniques.ourhouse.fragment.LoginFragment;
 import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SignUpFragment;
@@ -50,6 +51,7 @@ public class LS_Main extends FragmentActivity {
         CreateHouseFragment.setupId(getActivityId());
         final String HOUSEID = houseId;
         if(action != null && action.equals("joinhouse")) {
+            pushFragment(FragmentId.GET(JoiningHouseFragment.TAG));
             if ((Session.getSession().isLoggedIn())) {
                 Session.getSession().getDatabase().getUser(Session.getSession().getLoggedInUserId(), myUser -> {
                     myUser.addHouse(new ObjectId(HOUSEID));

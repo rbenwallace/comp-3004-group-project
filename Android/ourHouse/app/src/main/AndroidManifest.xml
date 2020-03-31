@@ -33,7 +33,7 @@
                 <!-- Allows the deep link to be used without specifying the app name -->
                 <category android:name = "android.intent.category.DEFAULT" />
                 <!-- URI example://deeplink -->
-                <data android:scheme = "https" android:host = "www.ourhouse.com/joinhouse"/>
+                <data android:scheme = "https" android:host = "www.ourhouse.com"/>
             </intent-filter>
             <intent-filter>
                 <!-- Sets the intent action to view the activity -->
@@ -43,7 +43,7 @@
                 <!-- Allows the deep link to be used without specifying the app name -->
                 <category android:name = "android.intent.category.DEFAULT" />
                 <!-- URI http://www.mydeeplink.com/semester -->
-                <data android:scheme = "http" android:host = "www.ourhouse.com" android:pathPrefix = "/joinhouse" />
+                <data android:scheme = "http" android:host = "www.ourhouse.com"  />
             </intent-filter>
             <intent-filter>
                 <!-- Sets the intent action to view the activity -->
