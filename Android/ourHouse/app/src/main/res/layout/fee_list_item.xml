@@ -7,9 +7,9 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/fee_list_item_card"
-        android:layout_width="399dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +31,7 @@
                 android:layout_marginBottom="8dp"
                 android:text="Sample Card Title"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -39,6 +39,6 @@
 
 
         </LinearLayout>
-
+≠≠≠
     </androidx.cardview.widget.CardView>
 </LinearLayout>
