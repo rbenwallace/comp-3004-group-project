@@ -11,11 +11,10 @@ import androidx.annotation.Nullable;
 import com.uniques.ourhouse.ActivityId;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
-import com.uniques.ourhouse.controller.JoinHouseCtrl;
 import com.uniques.ourhouse.controller.JoiningHouseCtrl;
 
 public class JoiningHouseFragment extends Fragment<JoiningHouseCtrl>  {
-    public static final String TAG = "FeeListFragment";
+    public static final String TAG = "JoiningHouseCtrl";
     private static final String ACTIVITY_TAG = MainActivity.TAG;
     private static final int LAYOUT_ID = R.layout.fragment_joining_house;
 

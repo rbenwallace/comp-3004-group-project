@@ -187,13 +187,15 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void findHousesByName(String name, Consumer<List<House>> consumer) {
+        Log.d("CheckingHouses", "Inside Remote");
         ArrayList<House> houses = new ArrayList<>();
         String pattern = "^" + name;
         BsonRegularExpression nameRE = new BsonRegularExpression(pattern);
         Document filterDoc = new Document()
-                .append("key", new Document().append("$regex", nameRE));
+                .append("houseKey", new Document().append("$regex", nameRE));
         housesColl.count(filterDoc).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                Log.d("CheckingHouses", task.getResult().toString());
                 final Long numDocs = task.getResult();
                 RemoteFindIterable<Document> findResults = housesColl
                         .find(filterDoc)
@@ -216,6 +218,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                     }
                 });
             } else {
+                Log.d("CheckingHouses", task.getException().toString());
                 consumer.accept(houses);
             }
         });
