@@ -131,13 +131,24 @@ public class AddFeeCtrl implements FragmentCtrl {
 
         addFeeAddButton.setOnClickListener(view1 -> {
             String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
-            if(String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherFeeFrequency.getText()).equals(""))){
+            if(String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("")){
                 Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
                 return;
             }
             if(Float.parseFloat(feeAmount.getText().toString()) < 0.0){
                 Toast.makeText(activity, "Please only enter positive values", Toast.LENGTH_SHORT).show();
                 return;
+            }
+            if(!String.valueOf(otherFeeFrequency.getText()).equals("")){
+                try{
+                    int checkNum = Integer.parseInt(String.valueOf(otherFeeFrequency.getText()));
+                    if(checkNum < 0){
+                        Toast.makeText(activity, "For frequency number please enter a number greater than 1", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }catch (NumberFormatException ex) {
+                    Toast.makeText(activity, "Please enter a whole number for frequency number", Toast.LENGTH_LONG).show();
+                }
             }
             String name = String.valueOf(feeName.getText());
             float amount = Float.parseFloat(String.valueOf(feeAmount.getText()));
@@ -165,7 +176,6 @@ public class AddFeeCtrl implements FragmentCtrl {
                     schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherFeeFrequency.getText())));
                 }
                 switch (selectedFrequencyText) {
-                    case "Other":
                     case "Daily":
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                         break;

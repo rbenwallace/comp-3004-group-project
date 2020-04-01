@@ -31,7 +31,6 @@
     <string name="fee_details">Fee Details</string>
     <string name="fee_amount">Fee Amount</string>
     <string name="fee_frequency">Fee Frequency</string>
-    <string name="fee_num_days">Number of Days</string>
     <string name="task_deadline">Task Deadline</string>
     <string name="task_details">Task Details</string>
     <string name="task_frequency">Task Frequency</string>
@@ -49,8 +48,6 @@
     <string name="tax">Apply Tax</string>
     <string name="enter">Enter</string>
     <string name="tax_rate">Tax %</string>
-    <string name="task_num_days">Number of Days</string>
-    <string name="task_num_dayds">Number of Days</string>
     <string name="appbar_scrolling_view_behavior">Number of Days</string>
     <string name="error_invalid_email">Email provided is invalid</string>
     <string name="invFriends"><u>Invite Your Friends!</u></string>

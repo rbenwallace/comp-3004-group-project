@@ -207,27 +207,31 @@
                 android:layout_height="wrap_content"
                 android:text="Yearly" />
 
-            <RadioButton
-                android:id="@+id/addFee_other"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Other" />
+                android:layout_marginBottom="5dp"
+                android:gravity="left"
+                android:text="# of Days/Weeks/Months/Years"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
         </RadioGroup>
 
 
         <EditText
             android:id="@+id/addFee_editNumberOfDays"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/fee_num_days"
+            android:text="1"
             android:inputType="number" />
 
         <Button
             android:id="@+id/addFee_btnAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/loginbutton_selector"
             android:text="@string/add" />
 

@@ -65,7 +65,6 @@ public class EditFeeCtrl implements FragmentCtrl {
         weeklyButton = view.findViewById(R.id.addFee_weekly);
         monthlyButton = view.findViewById(R.id.addFee_monthly);
         yearlyButton = view.findViewById(R.id.addFee_yearly);
-        otherButton = view.findViewById(R.id.addFee_other);
         editNumberOfDays = view.findViewById(R.id.addFee_editNumberOfDays);
         feeViewTitle = view.findViewById(R.id.addFee_title);
         saveFee = view.findViewById(R.id.addFee_btnAdd);
