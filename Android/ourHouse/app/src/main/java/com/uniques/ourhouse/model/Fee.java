@@ -56,7 +56,8 @@ public class Fee extends ManageItem implements Indexable, Observable {
     @NonNull
     @Override
     public String toString() {
-        return consoleFormat("Fee");
+        return "";
+        //return consoleFormat("Fee");
     }
 
     @Override

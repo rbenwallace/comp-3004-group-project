@@ -131,6 +131,12 @@ public class AddFeeCtrl implements FragmentCtrl {
 
         addFeeAddButton.setOnClickListener(view1 -> {
             String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MILLISECOND, 0);
+            Date date = calendar.getTime();
             if(String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("")){
                 Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
                 return;
@@ -154,20 +160,13 @@ public class AddFeeCtrl implements FragmentCtrl {
             float amount = Float.parseFloat(String.valueOf(feeAmount.getText()));
             Schedule schedule = new Schedule();
             if(selectedFrequencyText.equals("Once")){
-                schedule.setEndType(Schedule.EndType.ON_DATE);
                 schedule.pauseStartEndBoundsChecking();
-                schedule.setStart(Calendar.getInstance().getTime());
-                schedule.setEnd(Calendar.getInstance().getTime());
+                schedule.setStart(date);
+                schedule.setEnd(date);
                 schedule.resumeStartEndBoundsChecking();
+                schedule.setEndType(Schedule.EndType.ON_DATE);
             }
             else{
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, 23);
-                calendar.set(Calendar.MINUTE, 59);
-                calendar.set(Calendar.SECOND, 59);
-                calendar.set(Calendar.MILLISECOND, 0);
-                Date date = calendar.getTime();
-                schedule.setEndType(Schedule.EndType.AFTER_TIMES);
                 schedule.pauseStartEndBoundsChecking();
                 schedule.setStart(date);
                 schedule.setEndPseudoIndefinite();
@@ -191,7 +190,7 @@ public class AddFeeCtrl implements FragmentCtrl {
                             newDate = date;
                             newDate.setDate(28);
                             useNewDay = true;
-                            Toast.makeText(activity, "Yearly recurrence day is set to Feb 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "Recurrence date set to Feb 28th. Press add to continue", Toast.LENGTH_LONG).show();
                             return;
                         }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
@@ -208,7 +207,7 @@ public class AddFeeCtrl implements FragmentCtrl {
                             newDateMonth = date;
                             newDateMonth.setDate(28);
                             useNewDayMonth = true;
-                            Toast.makeText(activity, "Monthly recurrence date has been set to the 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "Recurrence date set to the 28th. Press add to continue", Toast.LENGTH_LONG).show();
                             return;
                         }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
@@ -217,6 +216,7 @@ public class AddFeeCtrl implements FragmentCtrl {
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
                         break;
                 }
+                schedule.setEndType(Schedule.EndType.AFTER_TIMES);
             }
             Fee fee = new Fee(userId, houseId, name, amount, schedule);
             myDatabase.postFee(fee, bool->{

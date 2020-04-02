@@ -52,6 +52,8 @@ public class EditTaskCtrl implements FragmentCtrl {
     private DatePicker datePicker;
     private TextView taskViewTitle;
     private Button saveTask;
+    private Schedule.RepeatBasis sameSchedule;
+    private Schedule oldSchedule;
 
     public EditTaskCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -94,7 +96,6 @@ public class EditTaskCtrl implements FragmentCtrl {
 
         myDatabase.getTask(taskId, task -> {
             Log.d(EditTaskFragment.TAG, "Trying to get Task from database");
-            System.out.println("wallace after: " + task.getSchedule().getStart().toString());
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
             if (difficulty == 1) {
@@ -116,10 +117,12 @@ public class EditTaskCtrl implements FragmentCtrl {
             String oldYear = (String) DateFormat.format("yyyy", oldCalendar.getTime());
             System.out.println("wallace date: " + oldDay + " " + oldMonth + " " + oldYear);
             Schedule schedule = task.getSchedule();
+            oldSchedule = task.getSchedule();
             if (schedule.getEndType().equals(Schedule.EndType.ON_DATE)) {
                 onceButton.performClick();
                 datePicker.updateDate(Integer.parseInt(oldYear), Integer.parseInt(oldMonth), Integer.parseInt(oldDay));
             } else {
+                sameSchedule = schedule.getRepeatSchedule().getRepeatBasis();
                 editNumberOfDays.setText(String.valueOf(schedule.getRepeatSchedule().getDelay()));
                 if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.YEARLY)) {
                     yearlyButton.performClick();
@@ -171,12 +174,17 @@ public class EditTaskCtrl implements FragmentCtrl {
             int year = datePicker.getYear();
             oldCalendar.set(year, month, day, 23, 59, 59);
             oldCalendar.set(Calendar.MILLISECOND, 0);
+            Calendar currentDate = Calendar.getInstance();
+            currentDate.set(Calendar.HOUR_OF_DAY, 23);
+            currentDate.set(Calendar.MINUTE, 59);
+            currentDate.set(Calendar.SECOND, 59);
+            currentDate.set(Calendar.MILLISECOND, 0);
             Date date = oldCalendar.getTime();
             if (String.valueOf(taskName.getText()).equals("")) {
                 Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!date.after(Calendar.getInstance().getTime())) {
+            if (!date.after(currentDate.getTime())) {
                 Toast.makeText(activity, "Please choose a date later than today", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -219,9 +227,19 @@ public class EditTaskCtrl implements FragmentCtrl {
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                         break;
                     case "Yearly":
+                        if(day > 28 && month == 1){
+                            datePicker.updateDate(year, month, 28);
+                            Toast.makeText(activity, "Recurrence date set to Feb 28th, press add to continue", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
                         break;
                     case "Monthly":
+                        if(day > 28){
+                            datePicker.updateDate(year, month, 28);
+                            Toast.makeText(activity, "Recurrence date set to 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
                         break;
                     case "Weekly":
@@ -230,8 +248,13 @@ public class EditTaskCtrl implements FragmentCtrl {
                 }
                 schedule.setEndType(Schedule.EndType.AFTER_TIMES);
             }
-            System.out.println();
-            Task task = new Task(taskId, userId, houseId, name, schedule, selectedDifficultyNum);
+            Task task;
+            if(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis()){
+                task = new Task(taskId, userId, houseId, name, oldSchedule, selectedDifficultyNum);
+            }
+            else{
+                task = new Task(taskId, userId, houseId, name, schedule, selectedDifficultyNum);
+            }
             myDatabase.updateTask(task, bool -> {
                 if (bool) {
                     Log.d(EditTaskFragment.TAG, "Task updated in the Database");

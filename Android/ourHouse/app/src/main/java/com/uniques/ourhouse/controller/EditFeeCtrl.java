@@ -25,6 +25,7 @@ import com.uniques.ourhouse.util.Schedule;
 import org.bson.types.ObjectId;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class EditFeeCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -42,12 +43,17 @@ public class EditFeeCtrl implements FragmentCtrl {
     private RadioButton weeklyButton;
     private RadioButton monthlyButton;
     private RadioButton yearlyButton;
-    private RadioButton otherButton;
     private EditText editNumberOfDays;
     private TextView feeViewTitle;
     private Button saveFee;
     private EditText feeAmount;
     private EditText feeTaxRate;
+    private boolean useNewDay = false;
+    private Date newDate;
+    private boolean useNewDayMonth = false;
+    private Date newDateMonth;
+    private Schedule.RepeatBasis sameSchedule;
+    private Schedule oldSchedule;
 
     public EditFeeCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -74,7 +80,7 @@ public class EditFeeCtrl implements FragmentCtrl {
         feeViewTitle.setText("Edit Task");
         saveFee.setText("SAVE");
 
-        onceButton.setVisibility(View.INVISIBLE);
+        //onceButton.setVisibility(View.INVISIBLE);
 
         userId = Session.getSession().getLoggedInUserId();
         houseId = Settings.OPEN_HOUSE.get();
@@ -91,10 +97,12 @@ public class EditFeeCtrl implements FragmentCtrl {
             feeName.setText(fee.getName());
             feeAmount.setText(String.valueOf(fee.getAmount()));
             schedule = fee.getSchedule();
+            oldSchedule = fee.getSchedule();
             if (schedule.getEndType().equals(Schedule.EndType.ON_DATE)) {
-                Toast.makeText(activity, "Task not Editable", Toast.LENGTH_SHORT).show();
-                activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
+                onceButton.performClick();
             } else {
+                editNumberOfDays.setText(String.valueOf(schedule.getRepeatSchedule().getDelay()));
+                sameSchedule = fee.getSchedule().getRepeatSchedule().getRepeatBasis();
                 if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.YEARLY)) {
                     yearlyButton.performClick();
                 } else if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.MONTHLY)) {
@@ -102,12 +110,7 @@ public class EditFeeCtrl implements FragmentCtrl {
                 } else if (schedule.getRepeatSchedule().getRepeatBasis().equals(Schedule.RepeatBasis.WEEKLY)) {
                     weeklyButton.performClick();
                 } else {
-                    if (schedule.getRepeatSchedule().getDelay() == 1) {
-                        dailyButton.performClick();
-                    } else {
-                        otherButton.performClick();
-                        editNumberOfDays.setText(schedule.getRepeatSchedule().getDelay());
-                    }
+                    dailyButton.performClick();
                 }
             }
 
@@ -121,48 +124,100 @@ public class EditFeeCtrl implements FragmentCtrl {
             //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
             String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
-            if (String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(editNumberOfDays.getText()).equals(""))) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MILLISECOND, 0);
+            Date date = calendar.getTime();
+            if(String.valueOf(feeName.getText()).equals("") || String.valueOf(feeAmount.getText()).equals("")){
                 Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (Float.parseFloat(feeAmount.getText().toString()) < 0.0) {
+            if(Float.parseFloat(feeAmount.getText().toString()) < 0.0){
                 Toast.makeText(activity, "Please only enter positive values", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if(!String.valueOf(editNumberOfDays.getText()).equals("")){
+                try{
+                    int checkNum = Integer.parseInt(String.valueOf(editNumberOfDays.getText()));
+                    if(checkNum < 0){
+                        Toast.makeText(activity, "For frequency number please enter a number greater than 1", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }catch (NumberFormatException ex) {
+                    Toast.makeText(activity, "Please enter a whole number for frequency number", Toast.LENGTH_LONG).show();
+                }
+            }
             String name = String.valueOf(feeName.getText());
             float amount = Float.parseFloat(String.valueOf(feeAmount.getText()));
-            if (selectedFrequencyText.equals("Once")) {
-                schedule.setEndType(Schedule.EndType.ON_DATE);
+            Schedule schedule = new Schedule();
+            if(selectedFrequencyText.equals("Once")){
                 schedule.pauseStartEndBoundsChecking();
-                schedule.setStart(Calendar.getInstance().getTime());
-                schedule.setEnd(Calendar.getInstance().getTime());
+                schedule.setStart(date);
+                schedule.setEnd(date);
                 schedule.resumeStartEndBoundsChecking();
-            } else {
-                schedule.setEndType(Schedule.EndType.AFTER_TIMES);
+                schedule.setEndType(Schedule.EndType.ON_DATE);
+            }
+            else{
                 schedule.pauseStartEndBoundsChecking();
-                schedule.setStart(Calendar.getInstance().getTime());
+                schedule.setStart(date);
                 schedule.setEndPseudoIndefinite();
                 schedule.resumeStartEndBoundsChecking();
+                if(!String.valueOf(editNumberOfDays.getText()).equals("")){
+                    schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(editNumberOfDays.getText())));
+                }
                 switch (selectedFrequencyText) {
-                    case "Other":
+                    case "Daily":
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                        schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(editNumberOfDays.getText())));
                         break;
                     case "Yearly":
+                        if(useNewDay){
+                            schedule.pauseStartEndBoundsChecking();
+                            schedule.setStart(newDate);
+                            schedule.resumeStartEndBoundsChecking();
+                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                            break;
+                        }
+                        if(date.getDate() > 28 && date.getMonth() == 1){
+                            newDate = date;
+                            newDate.setDate(28);
+                            useNewDay = true;
+                            Toast.makeText(activity, "Recurrence date set to Feb 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
                         break;
                     case "Monthly":
+                        if(useNewDayMonth){
+                            schedule.pauseStartEndBoundsChecking();
+                            schedule.setStart(newDateMonth);
+                            schedule.resumeStartEndBoundsChecking();
+                            schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                            break;
+                        }
+                        if(date.getDate() > 28){
+                            newDateMonth = date;
+                            newDateMonth.setDate(28);
+                            useNewDayMonth = true;
+                            Toast.makeText(activity, "Recurrence date set to the 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
                         break;
                     case "Weekly":
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
                         break;
-                    case "Daily":
-                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
-                        break;
                 }
+                schedule.setEndType(Schedule.EndType.AFTER_TIMES);
             }
-            Fee fee = new Fee(userId, houseId, name, amount, schedule);
+            Fee fee;
+            if(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis()){
+                fee = new Fee(userId, houseId, name, amount, oldSchedule);
+            }
+            else{
+                fee = new Fee(userId, houseId, name, amount, schedule);
+            }
             myDatabase.updateFee(fee, bool -> {
                 if (bool) {
                     Log.d(AddTaskFragment.TAG, "Fee Saved to Database");
