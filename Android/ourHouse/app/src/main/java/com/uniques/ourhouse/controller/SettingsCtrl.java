@@ -105,16 +105,16 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             if (house.getShowTaskDifficulty()) {
                 showTaskDifficultyButton.performClick();
             }
-            System.out.println("wallace occupants: " + house.getOccupants().size());
             observableCards = new ArrayList<>();
-            /*for(User user:house.getRotation().getRotation()){
-                observableCards.add(new TaskRotationCard(user));
-            }*/
-            observableCards.add(new TaskRotationCard(new User("Ben", "Wallace", "ben@gmail.com")));
+            for(ObjectId userId:house.getRotation().getRotation()){
+                myDatabase.getUser(userId, user -> {
+                    observableCards.add(new TaskRotationCard(user));
+                });
+            }
+            /*observableCards.add(new TaskRotationCard(new User("Ben", "Wallace", "ben@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Seb", "Gadzinski", "seb@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Jon", "Lim", "jon@gmail.com")));
-            observableCards.add(new TaskRotationCard(new User("Victor", "Olaitin", "vic@gmail.com")));
-
+            observableCards.add(new TaskRotationCard(new User("Victor", "Olaitin", "vic@gmail.com")));*/
             RecyclerAdapter<TaskRotationCard> adapter = new RecyclerAdapter<>(
                     personRecycler,
                     observableCards,
@@ -155,11 +155,11 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
                 } else {
                     newHouse.setShowTaskDifficulty(false);
                 }
-                /*ArrayList<User> userRotation = new ArrayList<>();
+                ArrayList<ObjectId> userRotation = new ArrayList<>();
                 for(TaskRotationCard user:observableCards){
-                    userRotation.add(user.getObject());
+                    userRotation.add(user.getObject().getId());
                 }
-                newHouse.getRotation().setRotation(userRotation);*/
+                newHouse.getRotation().setRotation(userRotation);
                 String name = houseName.getText().toString();
                 newHouse.setName(name);
                 myDatabase.updateHouse(newHouse, aBoolean -> {

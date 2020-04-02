@@ -39,7 +39,6 @@ public class House implements Indexable, Observable {
     @NonNull
     private String password;
 
-    private boolean houseUpdated = false;
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
 
@@ -114,20 +113,12 @@ public class House implements Indexable, Observable {
         return userAmountPaid;
     }
 
-    public boolean getHouseUpdated() {
-        return houseUpdated;
-    }
-
     public HashMap<ObjectId, Integer> getTasksCompleted() {
         return tasksCompleted;
     }
 
     public ArrayList<String> getUserFees() {
         return userFees;
-    }
-
-    public void setHouseUpdated(boolean houseUpdated) {
-        this.houseUpdated = houseUpdated;
     }
 
     public boolean getShowTaskDifficulty() {
@@ -224,6 +215,7 @@ public class House implements Indexable, Observable {
 
     public void addOccupant(User occupant) {
         occupants.add(occupant.getId());
+        rotation.getRotation().add(occupant.getId());
     }
 
     public void removeOccupant(User occupant) {
@@ -284,14 +276,18 @@ public class House implements Indexable, Observable {
     }
 
     public static class Rotation implements Model, Iterable<ObjectId> {
-        private List<ObjectId> rotation;
+        private ArrayList<ObjectId> rotation;
 
         public Rotation() {
             rotation = new ArrayList<>();
         }
 
-        public List<ObjectId> getRotation() {
+        public ArrayList<ObjectId> getRotation() {
             return rotation;
+        }
+
+        public void setRotation(ArrayList<ObjectId> rotation) {
+            this.rotation = rotation;
         }
 
         @Override
