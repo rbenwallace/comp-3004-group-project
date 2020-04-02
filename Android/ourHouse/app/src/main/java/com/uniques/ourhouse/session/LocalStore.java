@@ -3,6 +3,7 @@ package com.uniques.ourhouse.session;
 import android.content.Context;
 import android.util.Log;
 
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.model.House;
@@ -13,6 +14,7 @@ import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.io.File;
@@ -51,10 +53,10 @@ final class LocalStore implements DatabaseLink {
     }
 
     @Override
-    public void findHousesByName(String name, Consumer<List<House>> consumer) {
+    public void findHousesByName(String name, Consumer<ArrayList<House>> consumer) {
         EasyJSON json = Objects.requireNonNull(retrieveLocal(HOUSES_FILE));
         List<JSONElement> houses = json.getRootNode().getChildren();
-        List<House> results = new ArrayList<>();
+        ArrayList<House> results = new ArrayList<>();
         for (int i = houses.size() - 1; i >= 0; --i) {
             JSONElement element = houses.get(i);
             if (!element.getKey().startsWith(name)) {

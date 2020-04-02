@@ -56,6 +56,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         logoutBtn = view.findViewById(R.id.logoutBtnMH);
         // Gather houses if there are any from the shared pref Houses
 //        User myUser = Session.getSession().getLoggedInUser();
+        Log.d("MongoDB", "CHECKING IF RESTART");
         database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
             myUser = myUser != null ? myUser : Session.getSession().getLoggedInUser();
             if (myUser.getMyHouses() == null) {
@@ -166,15 +167,18 @@ public class MyHousesCtrl implements FragmentCtrl {
                 }
             });
             Button btnDeleteHouse = popupView.findViewById(R.id.deleteConfirmHouse);
-            btnDeleteHouse.setOnClickListener(view131 -> {
-                database.deleteUserFromHouse(myHouses.get(i), myUser, success -> {
-                    if (!success) {
-                        Log.d("deleteUserFromHouse: ", "Failed");
-                    } else {
-                        //TODO Remove the user from the House from the house
-                        popupWindow.dismiss();
-                        activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
-                    }
+            database.getUser(Session.getSession().getLoggedInUserId(), user ->{
+                btnDeleteHouse.setOnClickListener(view131 -> {
+                    database.deleteUserFromHouse(myHouses.get(i), user, success -> {
+                        if (!success) {
+                            Log.d("Deletion: ", "Failed" + myHouses.get(i).getName());
+                        } else {
+                            //TODO Remove the user from the House from the house
+                            Log.d("Deletion: ", "Passed" + myHouses.get(i).getName());
+                            popupWindow.dismiss();
+                            activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+                        }
+                    });
                 });
             });
             return true;

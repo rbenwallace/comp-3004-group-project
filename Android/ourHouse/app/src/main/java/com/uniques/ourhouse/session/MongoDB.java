@@ -186,13 +186,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 //    }
 
     @Override
-    public void findHousesByName(String name, Consumer<List<House>> consumer) {
+    public void findHousesByName(String name, Consumer<ArrayList<House>> consumer) {
         Log.d("CheckingHouses", "Inside Remote");
         ArrayList<House> houses = new ArrayList<>();
         String pattern = "^" + name;
         BsonRegularExpression nameRE = new BsonRegularExpression(pattern);
         Document filterDoc = new Document()
                 .append("houseKey", new Document().append("$regex", nameRE));
+        Log.d("CheckingHouses", filterDoc.toString());
         housesColl.count(filterDoc).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.d("CheckingHouses", task.getResult().toString());
@@ -217,7 +218,8 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                         onParse.accept(null);
                     }
                 });
-            } else {
+            }
+            else {
                 Log.d("CheckingHouses", task.getException().toString());
                 consumer.accept(houses);
             }
@@ -983,12 +985,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteHouse(House house, Consumer<Boolean> consumer) {
+        Log.d("Deletion", "DELETION OCCURING");
         Document filterDoc = new Document().append("_id", house.getId().toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = housesColl.deleteOne(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                Log.d("Deletion", "DELETION OF HOUSE COMPLETE");
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
+                Log.d("Deletion", String.format("successfully deleted %d documents", numDeleted));
             } else {
                 consumer.accept(false);
                 Log.e(TAG, "failed to delete document with: ", task.getException());
@@ -1025,12 +1029,13 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                     }
                     //Delete the house if it's the only user
                     if (house.getOccupants().size() <= 1) {
-                        Log.d("HouseDeleted: ", "Verified");
                         deleteHouse(house, successful4 -> {
                             if (!successful4) {
                                 failConsumer.accept("deleteHouse");
                                 return;
                             }
+                            if(successful4)
+                                Log.d("HouseDeleted: ", "Verified");
                             consumer.accept(true);
                         });
                         user.removeHouse(house.getId());
