@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
@@ -26,6 +27,7 @@ import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.session.Settings;
 
 import org.bson.types.ObjectId;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class MyHousesCtrl implements FragmentCtrl {
     private ListView housesList;
     private House selectedHouse;
     private ArrayList<House> myHouses;
+    private TextView gatheringHouses;
     private Button logoutBtn;
     ArrayAdapter adapter;
     private DatabaseLink database = Session.getSession().getDatabase();
@@ -53,12 +56,17 @@ public class MyHousesCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         housesList = view.findViewById(R.id.myHousesList);
+        gatheringHouses = view.findViewById(R.id.gatheringHouses);
         logoutBtn = view.findViewById(R.id.logoutBtnMH);
         // Gather houses if there are any from the shared pref Houses
 //        User myUser = Session.getSession().getLoggedInUser();
         Log.d("MongoDB", "CHECKING IF RESTART");
         database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
-            myUser = myUser != null ? myUser : Session.getSession().getLoggedInUser();
+            if(myUser == null){
+                Log.d("Deletion", "myUser not available  " + myUser.getMyHouses().toString());
+                myUser = Session.getSession().getLoggedInUser();
+            }
+            else Log.d("Deletion", "My User Houses Off Bat " + myUser.getMyHouses().toString());
             if (myUser.getMyHouses() == null) {
                 myUser.setMyHouses(new ArrayList<>());
                 database.updateUser(myUser, success -> {
@@ -66,6 +74,7 @@ public class MyHousesCtrl implements FragmentCtrl {
             }
             if (myHouses == null) {
                 myHouses = new ArrayList<>();
+                gatheringHouses.setVisibility(View.VISIBLE);
                 fetchMyHouses(view, myUser.getMyHouses(), myHouses);
             } else
                 onPostFetchMyHouses(view);
@@ -88,6 +97,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         }
         Log.d("MongoDB", houseIds.toString());
         if (houseIds.isEmpty()) {
+            gatheringHouses.setVisibility(View.GONE);
             onPostFetchMyHouses(view);
             return;
         }
@@ -98,6 +108,7 @@ public class MyHousesCtrl implements FragmentCtrl {
             if (houseIds.isEmpty()) {
                 filler = null;
                 Log.d("MyHousesCtrl", "got all houses to go");
+                gatheringHouses.setVisibility(View.GONE);
                 onPostFetchMyHouses(view);
             } else {
                 Log.d("MyHousesCtrl", houseIds.toString());
@@ -166,6 +177,7 @@ public class MyHousesCtrl implements FragmentCtrl {
                     popupWindow.dismiss();
                 }
             });
+            Log.d("Deletion: ", "House : " + myHouses.get(i).getName() + " ID : " + myHouses.get(i).getId().toString());
             Button btnDeleteHouse = popupView.findViewById(R.id.deleteConfirmHouse);
             database.getUser(Session.getSession().getLoggedInUserId(), user ->{
                 btnDeleteHouse.setOnClickListener(view131 -> {
@@ -173,8 +185,11 @@ public class MyHousesCtrl implements FragmentCtrl {
                         if (!success) {
                             Log.d("Deletion: ", "Failed" + myHouses.get(i).getName());
                         } else {
-                            //TODO Remove the user from the House from the house
+                            user.removeHouse(myHouses.get(i).getId());
+                            Session.newSession(activity);
+                            Session.getSession().setLoggedInUser(user);
                             Log.d("Deletion: ", "Passed" + myHouses.get(i).getName());
+                            Log.d("Deletion: ", "Houses" + user.getMyHouses().toString());
                             popupWindow.dismiss();
                             activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
                         }

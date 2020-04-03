@@ -985,14 +985,11 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 
     @Override
     public void deleteHouse(House house, Consumer<Boolean> consumer) {
-        Log.d("Deletion", "DELETION OCCURING");
         Document filterDoc = new Document().append("_id", house.getId().toString());
         final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = housesColl.deleteOne(filterDoc);
         deleteTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("Deletion", "DELETION OF HOUSE COMPLETE");
                 long numDeleted = task.getResult().getDeletedCount();
-                Log.d("Deletion", String.format("successfully deleted %d documents", numDeleted));
             } else {
                 consumer.accept(false);
                 Log.e(TAG, "failed to delete document with: ", task.getException());
@@ -1035,7 +1032,6 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                                 return;
                             }
                             if(successful4)
-                                Log.d("HouseDeleted: ", "Verified");
                             consumer.accept(true);
                         });
                         user.removeHouse(house.getId());

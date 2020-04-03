@@ -135,6 +135,7 @@ public class JoinHouseCtrl implements FragmentCtrl{
                 Button enter_pw = popupView.findViewById(R.id.enterPw);
                 enter_pw.setOnClickListener(v -> {
                     Log.d("Password Check", "Users PW: " + houseJoinPW.getText().toString().trim() + " HousePW: " + searchedHouses.get(i).getPassword());
+
                     if (houseJoinPW.getText().toString().trim().equals(searchedHouses.get(i).getPassword())) {
                         database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
                             if(myUser == null){

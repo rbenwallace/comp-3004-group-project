@@ -80,6 +80,7 @@ final class LocalStore implements DatabaseLink {
 
     @Override
     public void getUser(ObjectId id, Consumer<User> consumer) {
+        Log.d("Deletion", "Grabbed from json");
         JSONElement json = searchLocal(USERS_JSON, id);
         if (json == null) {
             consumer.accept(null);

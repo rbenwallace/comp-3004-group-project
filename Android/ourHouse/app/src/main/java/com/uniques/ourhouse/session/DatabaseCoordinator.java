@@ -122,13 +122,21 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getUser(id, user -> {
-                if (user != null) consumer.accept(user);
-                else {
-                    if (networkAvailable()) remoteDatabase.getUser(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if(networkAvailable()){
+                remoteDatabase.getUser(id, networkConsumer);
+            }
+            else
+            {
+                localDatabase.getUser(id, user -> {
+                    if (user != null){
+                        consumer.accept(user);
+                    }
+                    else {
+                        if (networkAvailable()) remoteDatabase.getUser(id, networkConsumer);
+                        else consumer.accept(null);
+                    }
+                });
+            }
         } else if (networkAvailable()) {
             remoteDatabase.getUser(id, networkConsumer);
         } else {
@@ -237,13 +245,16 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getHouse(id, user -> {
-                if (user != null) consumer.accept(user);
-                else {
-                    if (networkAvailable()) remoteDatabase.getHouse(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if(networkAvailable()) remoteDatabase.getHouse(id, networkConsumer);
+            else{
+                localDatabase.getHouse(id, user -> {
+                    if (user != null) consumer.accept(user);
+                    else {
+                        if (networkAvailable()) remoteDatabase.getHouse(id, networkConsumer);
+                        else consumer.accept(null);
+                    }
+                });
+            }
         } else if (networkAvailable()) {
             remoteDatabase.getHouse(id, networkConsumer);
         } else {
@@ -506,9 +517,11 @@ class DatabaseCoordinator implements DatabaseLink {
                     consumer.accept(false);
                     return;
                 }
+                Log.d("Deletion", "Updating Locally");
                 localDatabase.updateUser(user, consumer);
             });
-        } else consumer.accept(false);
+        } else {consumer.accept(false);}
+
     }
 
     @Override
