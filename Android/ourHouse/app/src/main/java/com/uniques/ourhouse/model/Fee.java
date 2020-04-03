@@ -5,11 +5,8 @@ import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
-
 import org.bson.types.ObjectId;
-
 import java.util.function.Consumer;
-
 import androidx.annotation.NonNull;
 
 public class Fee extends ManageItem implements Indexable, Observable {
@@ -56,7 +53,8 @@ public class Fee extends ManageItem implements Indexable, Observable {
     @NonNull
     @Override
     public String toString() {
-        return consoleFormat("Fee");
+        return "";
+        //return consoleFormat("Fee");
     }
 
     @Override

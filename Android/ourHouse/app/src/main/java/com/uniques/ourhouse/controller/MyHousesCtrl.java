@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.uniques.ourhouse.MainActivity;
 import com.uniques.ourhouse.R;
@@ -26,6 +27,7 @@ import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.session.Settings;
 
 import org.bson.types.ObjectId;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class MyHousesCtrl implements FragmentCtrl {
     private ListView housesList;
     private House selectedHouse;
     private ArrayList<House> myHouses;
+    private TextView gatheringHouses;
     private Button logoutBtn;
     ArrayAdapter adapter;
     private DatabaseLink database = Session.getSession().getDatabase();
@@ -53,11 +56,17 @@ public class MyHousesCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         housesList = view.findViewById(R.id.myHousesList);
+        gatheringHouses = view.findViewById(R.id.gatheringHouses);
         logoutBtn = view.findViewById(R.id.logoutBtnMH);
         // Gather houses if there are any from the shared pref Houses
 //        User myUser = Session.getSession().getLoggedInUser();
+        Log.d("MongoDB", "CHECKING IF RESTART");
         database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
-            myUser = myUser != null ? myUser : Session.getSession().getLoggedInUser();
+            if(myUser == null){
+                Log.d("Deletion", "myUser not available  " + myUser.getMyHouses().toString());
+                myUser = Session.getSession().getLoggedInUser();
+            }
+            else Log.d("Deletion", "My User Houses Off Bat " + myUser.getMyHouses().toString());
             if (myUser.getMyHouses() == null) {
                 myUser.setMyHouses(new ArrayList<>());
                 database.updateUser(myUser, success -> {
@@ -65,6 +74,7 @@ public class MyHousesCtrl implements FragmentCtrl {
             }
             if (myHouses == null) {
                 myHouses = new ArrayList<>();
+                gatheringHouses.setVisibility(View.VISIBLE);
                 fetchMyHouses(view, myUser.getMyHouses(), myHouses);
             } else
                 onPostFetchMyHouses(view);
@@ -87,6 +97,7 @@ public class MyHousesCtrl implements FragmentCtrl {
         }
         Log.d("MongoDB", houseIds.toString());
         if (houseIds.isEmpty()) {
+            gatheringHouses.setVisibility(View.GONE);
             onPostFetchMyHouses(view);
             return;
         }
@@ -97,6 +108,7 @@ public class MyHousesCtrl implements FragmentCtrl {
             if (houseIds.isEmpty()) {
                 filler = null;
                 Log.d("MyHousesCtrl", "got all houses to go");
+                gatheringHouses.setVisibility(View.GONE);
                 onPostFetchMyHouses(view);
             } else {
                 Log.d("MyHousesCtrl", houseIds.toString());
@@ -146,9 +158,22 @@ public class MyHousesCtrl implements FragmentCtrl {
             activity.finish();
         });
         housesList.setOnItemLongClickListener((adapterView, view13, i, l) -> {
+            int layoutToInflate;
+            int eventButton;
+            int cancelButton;
+            if(myHouses.get(i).getOccupants().size() == 1) {
+                layoutToInflate = R.layout.delete_house;
+                eventButton = R.id.deleteConfirmHouse;
+                cancelButton = R.id.deleteCancelHouse;
+            }
+            else {
+                layoutToInflate = R.layout.leave_house;
+                eventButton = R.id.leaveConfirmHouse;
+                cancelButton = R.id.leaveCancelHouse;
+            }
             LayoutInflater inflater = (LayoutInflater)
                     activity.getSystemService(LAYOUT_INFLATER_SERVICE);
-            View popupView = inflater.inflate(R.layout.delete_house, null);
+            View popupView = inflater.inflate(layoutToInflate, null);
             // create the popup window
             int width = LinearLayout.LayoutParams.WRAP_CONTENT;
             int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -158,23 +183,27 @@ public class MyHousesCtrl implements FragmentCtrl {
             // which view you pass in doesn't matter, it is only used for the window tolken
             popupWindow.showAtLocation(view13, Gravity.CENTER, 0, 0);
             // dismiss the popup window when touched
-            Button btnDismiss = popupView.findViewById(R.id.deleteCancelHouse);
+            Button btnDismiss = popupView.findViewById(cancelButton);
             btnDismiss.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     popupWindow.dismiss();
                 }
             });
-            Button btnDeleteHouse = popupView.findViewById(R.id.deleteConfirmHouse);
-            btnDeleteHouse.setOnClickListener(view131 -> {
-                database.deleteUserFromHouse(myHouses.get(i), myUser, success -> {
-                    if (!success) {
-                        Log.d("deleteUserFromHouse: ", "Failed");
-                    } else {
-                        //TODO Remove the user from the House from the house
-                        popupWindow.dismiss();
-                        activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
-                    }
+            Log.d("Deletion: ", "House : " + myHouses.get(i).getName() + " ID : " + myHouses.get(i).getId().toString());
+            Button btnDeleteHouse = popupView.findViewById(eventButton);
+            database.getUser(Session.getSession().getLoggedInUserId(), user ->{
+                btnDeleteHouse.setOnClickListener(view131 -> {
+                    database.deleteUserFromHouse(myHouses.get(i), user, success -> {
+                        if (!success) {
+                            Log.d("Deletion: ", "Failed" + myHouses.get(i).getName());
+                        } else {
+                            Log.d("Deletion: ", "Passed" + myHouses.get(i).getName());
+                            Log.d("Deletion: ", "Houses" + user.getMyHouses().toString());
+                            popupWindow.dismiss();
+                            activity.pushFragment(FragmentId.GET(MyHousesFragment.TAG));
+                        }
+                    });
                 });
             });
             return true;

@@ -167,20 +167,24 @@
                 tools:layout_editor_absoluteX="56dp"
                 tools:layout_editor_absoluteY="318dp" />
 
-            <RadioButton
-                android:id="@+id/addTask_other"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Other"
-                tools:layout_editor_absoluteX="56dp"
-                tools:layout_editor_absoluteY="318dp" />
+                android:layout_marginBottom="5dp"
+                android:gravity="left"
+                android:text="# of Days/Weeks/Months/Years"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/addTask_editNumberOfDays"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="@string/task_num_days"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:text="1"
                 android:inputType="number"
                 android:textSize="12dp" />
         </RadioGroup>

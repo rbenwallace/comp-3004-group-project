@@ -37,27 +37,44 @@
 
             </ImageView>
 
-            <EditText
-                android:id="@+id/settings_editHouseName"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/houseImage"
+            <RelativeLayout
+                android:id="@+id/r1"
+                android:layout_width="match_parent"
                 android:gravity="center"
-                android:paddingVertical="5dp"
-                android:hint="@string/house_name"
-                android:inputType="textPersonName"
-                android:layout_centerHorizontal="true"
-                android:padding="10dp"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:textSize="20sp" />
+                android:layout_below="@id/houseImage"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/settings_editHouseName"
+                    android:layout_width="250dp"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp"
+                    android:hint="@string/house_name"
+                    android:inputType="textPersonName"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textSize="20sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_toRightOf="@id/settings_editHouseName"
+                    android:text="#####"
+                    android:id="@+id/houseKeySettings"
+                    android:layout_alignBaseline="@id/settings_editHouseName"
+                    android:layout_height="wrap_content">
+
+                </TextView>
+
+            </RelativeLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_below="@+id/settings_editHouseName"
+                android:layout_below="@+id/r1"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:drawableStart="@drawable/rotation"
                 android:drawablePadding="8dp"
@@ -66,7 +83,22 @@
                 android:text="@string/edit_task_rotation"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
+
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/waiter"
+            android:background="@drawable/loginbutton_selector"
+            android:textColor="@color/black"
+            android:text="Gathering Info..."
+            android:layout_gravity="center"
+            android:padding="20dp"
+            android:layout_marginVertical="20dp"
+            android:textSize="30sp"
+            android:layout_height="wrap_content">
+        </TextView>
 
         <View
             android:layout_width="match_parent"
@@ -86,16 +118,16 @@
 
         <CheckBox
             android:id="@+id/settings_chkShowLateTasks"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="3dp"
             android:text="@string/show_late" />
 
         <CheckBox
             android:id="@+id/settings_chkShowDifficulty"
-            android:layout_width="170dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="3dp"
             android:text="@string/show_difficulty" />
 
         <Button
@@ -103,7 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/loginbutton_selector"
             android:drawableStart="@drawable/switch_house"
             android:drawablePadding="8dp"
@@ -112,7 +144,18 @@
             android:text="@string/switch_house"
             android:textColor="@color/black"
             android:textSize="18sp" />
-
+        <Button
+            android:id="@+id/settings_btnDeleteHouse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/loginbutton_selector"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="5dp"
+            android:text="@string/Leave_house"
+            android:textColor="@color/red"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </ScrollView>

@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.model.House;
@@ -13,9 +14,11 @@ import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -97,8 +100,7 @@ class DatabaseCoordinator implements DatabaseLink {
     }
 
     @Override
-    public void findHousesByName(String name, Consumer<List<House>> consumer) {
-        Log.d("CheckingHouses", "Inside DB Cord");
+    public void findHousesByName(String name, Consumer<ArrayList<House>> consumer) {
         remoteDatabase.findHousesByName(name, consumer);
     }
 
@@ -120,13 +122,21 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getUser(id, user -> {
-                if (user != null) consumer.accept(user);
-                else {
-                    if (networkAvailable()) remoteDatabase.getUser(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if(networkAvailable()){
+                remoteDatabase.getUser(id, networkConsumer);
+            }
+            else
+            {
+                localDatabase.getUser(id, user -> {
+                    if (user != null){
+                        consumer.accept(user);
+                    }
+                    else {
+                        if (networkAvailable()) remoteDatabase.getUser(id, networkConsumer);
+                        else consumer.accept(null);
+                    }
+                });
+            }
         } else if (networkAvailable()) {
             remoteDatabase.getUser(id, networkConsumer);
         } else {
@@ -235,13 +245,16 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getHouse(id, user -> {
-                if (user != null) consumer.accept(user);
-                else {
-                    if (networkAvailable()) remoteDatabase.getHouse(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if(networkAvailable()) remoteDatabase.getHouse(id, networkConsumer);
+            else{
+                localDatabase.getHouse(id, user -> {
+                    if (user != null) consumer.accept(user);
+                    else {
+                        if (networkAvailable()) remoteDatabase.getHouse(id, networkConsumer);
+                        else consumer.accept(null);
+                    }
+                });
+            }
         } else if (networkAvailable()) {
             remoteDatabase.getHouse(id, networkConsumer);
         } else {
@@ -504,9 +517,11 @@ class DatabaseCoordinator implements DatabaseLink {
                     consumer.accept(false);
                     return;
                 }
+                Log.d("Deletion", "Updating Locally");
                 localDatabase.updateUser(user, consumer);
             });
         } else consumer.accept(false);
+
     }
 
     @Override

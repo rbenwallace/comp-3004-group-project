@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uniques.ourhouse.R;
+import com.uniques.ourhouse.fragment.EditFeeFragment;
 import com.uniques.ourhouse.fragment.EditTaskFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
@@ -157,7 +158,12 @@ public final class FeedCard implements RecyclerCard, Comparable {
                     Toast.makeText(activity, "We are updating this event, please wait a second", Toast.LENGTH_LONG).show();
                     return;
                 }
-                activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getAssociatedTask());
+                if(object.getEvent().getType() == 0) {
+                    activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getAssociatedTask());
+                }
+                else{
+                    activity.pushFragment(FragmentId.GET(EditFeeFragment.TAG), object.getEvent().getAssociatedTask());
+                }
             });
             layout.findViewById(R.id.feed_card_pnlComplete).setOnClickListener(v -> {
                 if (updatingEvent) {

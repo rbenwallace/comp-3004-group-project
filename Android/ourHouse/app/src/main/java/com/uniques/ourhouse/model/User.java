@@ -1,5 +1,7 @@
 package com.uniques.ourhouse.model;
 
+import android.util.Log;
+
 import com.google.gson.JsonElement;
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
@@ -96,7 +98,10 @@ public class User implements Observable, Indexable {
     }
 
     public void removeHouse(ObjectId id) {
+        Log.d("Deletion", myHouses.toString());
+        Log.d("Deletion", "Deleting : " + id.toString());
         myHouses.remove(id);
+        Log.d("Deletion", myHouses.toString());
     }
 
     public void setMyHouses(List<ObjectId> myHouses) {

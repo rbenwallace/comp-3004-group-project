@@ -86,12 +86,25 @@
         android:background="@color/colorInverse"
         android:layout_height="match_parent"
         android:layout_below="@+id/border">
+        <TextView
+            android:id="@+id/gatheringHouses"
+            android:visibility="gone"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:text="Gathering Houses..."
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:layout_height="wrap_content">
+
+        </TextView>
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/myHousesList">
 
         </ListView>
+
 
     </RelativeLayout>
 </RelativeLayout>

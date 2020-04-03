@@ -76,13 +76,29 @@ public class AddTaskCtrl implements FragmentCtrl {
             calendar.set(year, month, day, 23, 59, 59);
             calendar.set(Calendar.MILLISECOND, 0);
             Date date = calendar.getTime();
-            if (String.valueOf(taskName.getText()).equals("") || (selectedFrequencyText.equals("Other") && String.valueOf(otherTaskFrequency.getText()).equals(""))) {
+            Calendar currentDate = Calendar.getInstance();
+            currentDate.set(Calendar.HOUR_OF_DAY, 23);
+            currentDate.set(Calendar.MINUTE, 59);
+            currentDate.set(Calendar.SECOND, 59);
+            currentDate.set(Calendar.MILLISECOND, 0);
+            if (String.valueOf(taskName.getText()).equals("")) {
                 Toast.makeText(activity, "Please fill out the whole form", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!date.after(Calendar.getInstance().getTime())) {
-                Toast.makeText(activity, "Please choose a date later than today", Toast.LENGTH_SHORT).show();
+            if (!date.after(currentDate.getTime())) {
+                Toast.makeText(activity, "Please choose a date later than today", Toast.LENGTH_LONG).show();
                 return;
+            }
+            if(!String.valueOf(otherTaskFrequency.getText()).equals("")){
+                try{
+                    int checkNum = Integer.parseInt(String.valueOf(otherTaskFrequency.getText()));
+                    if(checkNum < 0){
+                        Toast.makeText(activity, "For frequency number please enter a number greater than 1", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }catch (NumberFormatException ex) {
+                    Toast.makeText(activity, "Please enter a whole number for frequency number", Toast.LENGTH_LONG).show();
+                }
             }
             String name = String.valueOf(taskName.getText());
             String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
@@ -108,14 +124,13 @@ public class AddTaskCtrl implements FragmentCtrl {
                     schedule.getRepeatSchedule().setDelay(Integer.parseInt(String.valueOf(otherTaskFrequency.getText())));
                 }
                 switch (selectedFrequencyText) {
-                    case "Other":
                     case "Daily":
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
                         break;
                     case "Yearly":
                         if(day > 28 && month == 1){
                             datePicker.updateDate(year, month, 28);
-                            Toast.makeText(activity, "Yearly February Tasks must be set between the 1st and 28th", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "Recurrence date set to Feb 28th, press add to continue", Toast.LENGTH_LONG).show();
                             return;
                         }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
@@ -123,7 +138,7 @@ public class AddTaskCtrl implements FragmentCtrl {
                     case "Monthly":
                         if(day > 28){
                             datePicker.updateDate(year, month, 28);
-                            Toast.makeText(activity, "Monthly Tasks must be set between the 1st and 28th. Press add to continue", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "Recurrence date set to 28th. Press add to continue", Toast.LENGTH_LONG).show();
                             return;
                         }
                         schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
@@ -136,7 +151,6 @@ public class AddTaskCtrl implements FragmentCtrl {
             }
             Task task = new Task(userId, houseId, name, schedule, selectedDifficultyNum);
             myDatabase.postTask(task, bool -> {
-                System.out.println("wallace: " + schedule.getStart().toString());
                 if (bool) {
                     Log.d(AddTaskFragment.TAG, "Task Added to Database");
                     Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();

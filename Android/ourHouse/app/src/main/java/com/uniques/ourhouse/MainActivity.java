@@ -29,7 +29,9 @@ import com.uniques.ourhouse.session.Settings;
 import org.bson.types.ObjectId;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -41,9 +43,6 @@ public class MainActivity extends FragmentActivity {
     static final int LAYOUT_ID = R.layout.activity_main;
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-    private DatabaseLink myDatabase = Session.getSession().getDatabase();
-    private ObjectId houseId;
-    private ObjectId userId;
     private BottomNavigationView navView;
     private boolean navViewUpdatedByCode;
     private int currentMonth;
@@ -55,9 +54,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(getActivityId().getLayoutId());
         saveInstance(getActivityId(), this);
-
-        houseId = Settings.OPEN_HOUSE.get();
-        userId = Session.getSession().getLoggedInUserId();
         Calendar calendar = Calendar.getInstance();
         strYear = new SimpleDateFormat("yyyy").format(calendar.getTime());
         currentMonth = calendar.get(Calendar.MONTH);
@@ -104,20 +100,20 @@ public class MainActivity extends FragmentActivity {
                     pushFragment(FragmentId.GET(ManageFragment.TAG));
                 return true;
             case R.id.navigation_stats:
-                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(MyHousesFragment.TAG)) {
-                    myDatabase.getHouse(houseId, house -> {
-                        System.out.println("wallace occupants: " + house.getOccupants().toString());
-                        house.populateStats(Integer.parseInt(strYear), currentMonth, userId);
-                        pushFragment(
-                                Objects.requireNonNull(FragmentId.GET(AmountPaidFragment.TAG)),
-                                currentMonth,
-                                Integer.parseInt(strYear),
-                                house.getUserAmountPaid(),
-                                house.getUserPoints(),
-                                house.getTasksCompleted(),
-                                house.getUserFees()
-                        );
-                    });
+                HashMap<ObjectId, Float> userAmountPaid = new HashMap<>();
+                HashMap<ObjectId, Float> userPerformance = new HashMap<>();
+                HashMap<ObjectId, Integer> userTasksCompleted = new HashMap<>();
+                ArrayList<String> userFees = new ArrayList<>();
+                if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(AmountPaidFragment.TAG)) {
+                    pushFragment(
+                            Objects.requireNonNull(FragmentId.GET(AmountPaidFragment.TAG)),
+                            currentMonth,
+                            Integer.parseInt(strYear),
+                            userAmountPaid,
+                            userPerformance,
+                            userTasksCompleted,
+                            userFees, true
+                    );
                 }
                 return true;
         }

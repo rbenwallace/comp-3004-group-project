@@ -1,5 +1,6 @@
 package com.uniques.ourhouse.controller;
 
+import android.os.AsyncTask;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -23,14 +26,12 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.model.House;
-import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
@@ -40,12 +41,13 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class JoinHouseCtrl implements FragmentCtrl{
     private FragmentActivity activity;
-    private List<House> searchedHouses;
+    private ArrayList<House> searchedHouses;
     private DatabaseLink database = Session.getSession().getDatabase();
-    private List<String> houses;
+    private ArrayList<String> houses;
     private ArrayAdapter adapter;
     private ListView housesList;
     private EditText houseJoinPW;
+    private View fragView;
     private int sem = 1;
     private String houseKey;
     private boolean userPwError;
@@ -57,6 +59,7 @@ public class JoinHouseCtrl implements FragmentCtrl{
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void init(View view) {
+        fragView = view;
         housesList = view.findViewById(R.id.housesListJoin);
         searchedHouses = new ArrayList<>();
         houses = new ArrayList<>();
@@ -72,8 +75,24 @@ public class JoinHouseCtrl implements FragmentCtrl{
             }
             @Override
             public boolean onQueryTextChange(String s) {
-                houseKey = s;
-                updateInfo();
+                database.findHousesByName(s.trim(), myList -> {
+                    if (myList == null) return;
+                    Log.d("CheckingHouses", "recieved list");
+                    houses.clear();
+                    searchedHouses = myList;
+                    for (int i = 0; i < myList.size(); i = i + 1) {
+                        houses.add(myList.get(i).getKeyId());
+                    }
+                    Log.d("CheckingHouses", Integer.toString(houses.size()));
+                    Log.d("CheckingHouses", Integer.toString(searchedHouses.size()));
+                    adapter.notifyDataSetChanged();
+                    try {
+                        adapter.wait(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("CheckingHouses", Integer.toString(housesList.getChildCount()));
+                });
                 return true;
             }
         });
@@ -116,6 +135,7 @@ public class JoinHouseCtrl implements FragmentCtrl{
                 Button enter_pw = popupView.findViewById(R.id.enterPw);
                 enter_pw.setOnClickListener(v -> {
                     Log.d("Password Check", "Users PW: " + houseJoinPW.getText().toString().trim() + " HousePW: " + searchedHouses.get(i).getPassword());
+
                     if (houseJoinPW.getText().toString().trim().equals(searchedHouses.get(i).getPassword())) {
                         database.getUser(Session.getSession().getLoggedInUserId(), myUser -> {
                             if(myUser == null){
@@ -167,23 +187,6 @@ public class JoinHouseCtrl implements FragmentCtrl{
 
     @Override
     public void updateInfo() {
-        database.findHousesByName(houseKey, myList ->{
-            if (myList == null || myList.isEmpty()) return;
-            sem = 0;
-//            Log.d("CheckingHousesList", Integer.toString(housesList.getChildCount()));
-//            Log.d("CheckingHouses", Integer.toString(myList.size()));
-//            searchedHouses = myList;
-            houses.clear();
-            for(int i = 0; i < myList.size(); i= i+1){
-                Log.d("CheckingHousesInside", i + " total: " + myList.size());
-                houses.add(myList.get(i).getKeyId());
-            }
-            Log.d("CheckingAdapterList", Integer.toString(adapter.getCount()));
-            Log.d("CheckingHousesList", Integer.toString(housesList.getChildCount()));
-            Log.d("CheckingHousesStringList", Integer.toString(houses.size()));
-            adapter.notifyDataSetChanged();
-        });
+
     }
-
-
 }
