@@ -50,6 +50,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     private CheckBox showTaskDifficultyButton;
     private CheckBox showLateTasksButton;
     private ProgressBar pd;
+    private int count;
 
     public List<TaskRotationCard> observableCards;
     private RecyclerAdapter<TaskRotationCard> recyclerAdapter;
@@ -83,6 +84,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
         layout.addView(pd, params);
         pd.setVisibility(View.VISIBLE);*/
         personRecycler = view.findViewById(R.id.settings_recycler);
+        count = 0;
 
         btnSwitchHouse = view.findViewById(R.id.settings_btnSwitchHouse);
 
@@ -105,22 +107,22 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
             if (house.getShowTaskDifficulty()) {
                 showTaskDifficultyButton.performClick();
             }
+
             observableCards = new ArrayList<>();
             for(ObjectId userId:house.getRotation().getRotation()){
                 myDatabase.getUser(userId, user -> {
+                    count++;
                     observableCards.add(new TaskRotationCard(user));
+                    if(count == house.getRotation().getRotation().size()) updateInfo();
                 });
             }
+
             /*observableCards.add(new TaskRotationCard(new User("Ben", "Wallace", "ben@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Seb", "Gadzinski", "seb@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Jon", "Lim", "jon@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Victor", "Olaitin", "vic@gmail.com")));*/
-            RecyclerAdapter<TaskRotationCard> adapter = new RecyclerAdapter<>(
-                    personRecycler,
-                    observableCards,
-                    R.layout.roommate_item);
-            personRecycler.setAdapter(adapter);
-            setRecyclerAdapter(adapter);
+            Log.d("RotationFixes", "Before recycler" + house.getRotation().getRotation().toString());
+            Log.d("RotationFixes", "Before recycler" + observableCards.toString());
             //pd.setVisibility(View.GONE);
 
             btnSwitchHouse.setOnClickListener(view13 -> {
@@ -183,12 +185,12 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
     @Override
     public void updateInfo() {
-        /*RecyclerAdapter<TaskRotationCard> adapter = new RecyclerAdapter<>(
+        RecyclerAdapter<TaskRotationCard> adapter = new RecyclerAdapter<>(
                 personRecycler,
                 observableCards,
                 R.layout.roommate_item);
         personRecycler.setAdapter(adapter);
-        setRecyclerAdapter(adapter);*/
+        setRecyclerAdapter(adapter);
     }
 
     @Override
