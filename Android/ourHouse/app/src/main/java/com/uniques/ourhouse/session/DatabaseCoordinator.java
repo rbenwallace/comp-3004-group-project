@@ -520,7 +520,7 @@ class DatabaseCoordinator implements DatabaseLink {
                 Log.d("Deletion", "Updating Locally");
                 localDatabase.updateUser(user, consumer);
             });
-        } else {consumer.accept(false);}
+        } else consumer.accept(false);
 
     }
 
