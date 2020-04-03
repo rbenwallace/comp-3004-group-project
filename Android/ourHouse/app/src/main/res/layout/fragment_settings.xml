@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_below="@+id/r1"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:drawableStart="@drawable/rotation"
                 android:drawablePadding="8dp"
@@ -118,16 +118,16 @@
 
         <CheckBox
             android:id="@+id/settings_chkShowLateTasks"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="3dp"
             android:text="@string/show_late" />
 
         <CheckBox
             android:id="@+id/settings_chkShowDifficulty"
-            android:layout_width="170dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="3dp"
             android:text="@string/show_difficulty" />
 
         <Button
@@ -135,7 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/loginbutton_selector"
             android:drawableStart="@drawable/switch_house"
             android:drawablePadding="8dp"
@@ -144,7 +144,18 @@
             android:text="@string/switch_house"
             android:textColor="@color/black"
             android:textSize="18sp" />
-
+        <Button
+            android:id="@+id/settings_btnDeleteHouse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/loginbutton_selector"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="5dp"
+            android:text="@string/Leave_house"
+            android:textColor="@color/red"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </ScrollView>

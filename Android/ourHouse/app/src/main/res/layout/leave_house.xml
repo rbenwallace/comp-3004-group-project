@@ -25,11 +25,11 @@
         android:layout_below="@+id/deleteTextHouse"
         android:layout_centerHorizontal="true"
         android:textColor="@color/black"
-        android:text="You are the only member in the house, if left the house will be deleted"
+        android:text="Once you leave, your events get deleted"
         android:layout_marginStart="5dp"
         />
     <Button
-        android:id="@+id/deleteConfirmHouse"
+        android:id="@+id/leaveConfirmHouse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="20dp"
@@ -37,15 +37,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_selector"
-        android:text="@string/delete_house"
+        android:text="@string/Leave_house"
         android:textColor="@color/red"
         android:textSize="25sp"/>
     <Button
-        android:id="@+id/deleteCancelHouse"
+        android:id="@+id/leaveCancelHouse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="20dp"
-        android:layout_below="@+id/deleteConfirmHouse"
+        android:layout_below="@+id/leaveConfirmHouse"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_selector"

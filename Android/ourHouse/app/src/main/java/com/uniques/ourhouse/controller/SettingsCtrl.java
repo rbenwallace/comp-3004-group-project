@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +25,7 @@ import com.uniques.ourhouse.fragment.EditTaskFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
+import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.User;
@@ -42,6 +47,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+
 public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard> {
     private FragmentActivity activity;
     private RecyclerView personRecycler;
@@ -50,7 +57,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     private EditText houseName;
     private Button btnSwitchHouse;
     private Button settingsBackButton;
-    private Button settingsSaveButton;
+    private Button settingsSaveButton, settingsDeleteHouse;
     private TextView loader, houseKey;
     private String key;
     private CheckBox showTaskDifficultyButton;
@@ -104,6 +111,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
         settingsBackButton = (Button) view.findViewById(R.id.settings_btnBackHouse);
         settingsSaveButton = (Button) view.findViewById(R.id.settings_btnSaveHouse);
+        settingsDeleteHouse = view.findViewById(R.id.settings_btnDeleteHouse);
         houseName = view.findViewById(R.id.settings_editHouseName);
         houseKey = view.findViewById(R.id.houseKeySettings);
         showTaskDifficultyButton = (CheckBox) view.findViewById(R.id.settings_chkShowDifficulty);
@@ -111,7 +119,10 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
 
         myDatabase.getHouse(houseId, house -> {
-            if (house == null) throw new RuntimeException("OPEN_HOUSE failed to load object");
+            if (house == null){
+                Log.d("checking", "NULL");
+                return;
+            };
             houseName.setText(house.getName());
             houseKey.setText(grabKeyId(house.getKeyId()));
             if (house.getPenalizeLateTasks()) {
@@ -167,6 +178,59 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 activity.popFragment(FragmentId.GET(SettingsFragment.TAG));
+            });
+            settingsDeleteHouse.setOnClickListener(deleteview->{
+                int layoutToInflate;
+                int eventButton;
+                int cancelButton;
+                if(house.getOccupants().size() == 1) {
+                    layoutToInflate = R.layout.delete_house;
+                    eventButton = R.id.deleteConfirmHouse;
+                    cancelButton = R.id.deleteCancelHouse;
+                }
+                else {
+                    layoutToInflate = R.layout.leave_house;
+                    eventButton = R.id.leaveConfirmHouse;
+                    cancelButton = R.id.leaveCancelHouse;
+                }
+                LayoutInflater inflater = (LayoutInflater)
+                        activity.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(layoutToInflate, null);
+                // create the popup window
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                boolean focusable = true; // lets taps outside the popup also dismiss it
+                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                // show the popup window
+                // which view you pass in doesn't matter, it is only used for the window tolken
+                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                // dismiss the popup window when touched
+                Button btnDismiss = popupView.findViewById(cancelButton);
+                btnDismiss.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+                Button btnDeleteHouse = popupView.findViewById(eventButton);
+                    Session.getSession().getDatabase().getUser(Session.getSession().getLoggedInUserId(), user ->{
+                        btnDeleteHouse.setOnClickListener(view1 -> {
+                            Session.getSession().getDatabase().deleteUserFromHouse(house, user, success -> {
+                                if (!success) {
+                                    Log.d("Deletion: ", "Failed" + house.getName());
+                                    Toast.makeText(activity, "Could not leave house", Toast.LENGTH_LONG);
+                                    popupWindow.dismiss();
+                                } else {
+                                    Log.d("Deletion: ", "Passed" + house.getName());
+                                    Log.d("Deletion: ", "Houses" + user.getMyHouses().toString());
+                                    Settings.OPEN_HOUSE.set(null);
+                                    Intent intent = new Intent(activity, LS_Main.class)
+                                            .putExtra("network_connected", Session.getSession().isNetworkConnected());
+                                    activity.startActivity(intent);
+                                }
+                            });
+                    });
+                });
             });
             settingsSaveButton.setOnClickListener(view1 -> {
                 //TODO NAVIGATE TO NEXT FRAGMENT

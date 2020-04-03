@@ -158,9 +158,22 @@ public class MyHousesCtrl implements FragmentCtrl {
             activity.finish();
         });
         housesList.setOnItemLongClickListener((adapterView, view13, i, l) -> {
+            int layoutToInflate;
+            int eventButton;
+            int cancelButton;
+            if(myHouses.get(i).getOccupants().size() == 1) {
+                layoutToInflate = R.layout.delete_house;
+                eventButton = R.id.deleteConfirmHouse;
+                cancelButton = R.id.deleteCancelHouse;
+            }
+            else {
+                layoutToInflate = R.layout.leave_house;
+                eventButton = R.id.leaveConfirmHouse;
+                cancelButton = R.id.leaveCancelHouse;
+            }
             LayoutInflater inflater = (LayoutInflater)
                     activity.getSystemService(LAYOUT_INFLATER_SERVICE);
-            View popupView = inflater.inflate(R.layout.delete_house, null);
+            View popupView = inflater.inflate(layoutToInflate, null);
             // create the popup window
             int width = LinearLayout.LayoutParams.WRAP_CONTENT;
             int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -170,7 +183,7 @@ public class MyHousesCtrl implements FragmentCtrl {
             // which view you pass in doesn't matter, it is only used for the window tolken
             popupWindow.showAtLocation(view13, Gravity.CENTER, 0, 0);
             // dismiss the popup window when touched
-            Button btnDismiss = popupView.findViewById(R.id.deleteCancelHouse);
+            Button btnDismiss = popupView.findViewById(cancelButton);
             btnDismiss.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -178,16 +191,13 @@ public class MyHousesCtrl implements FragmentCtrl {
                 }
             });
             Log.d("Deletion: ", "House : " + myHouses.get(i).getName() + " ID : " + myHouses.get(i).getId().toString());
-            Button btnDeleteHouse = popupView.findViewById(R.id.deleteConfirmHouse);
+            Button btnDeleteHouse = popupView.findViewById(eventButton);
             database.getUser(Session.getSession().getLoggedInUserId(), user ->{
                 btnDeleteHouse.setOnClickListener(view131 -> {
                     database.deleteUserFromHouse(myHouses.get(i), user, success -> {
                         if (!success) {
                             Log.d("Deletion: ", "Failed" + myHouses.get(i).getName());
                         } else {
-                            user.removeHouse(myHouses.get(i).getId());
-                            Session.newSession(activity);
-                            Session.getSession().setLoggedInUser(user);
                             Log.d("Deletion: ", "Passed" + myHouses.get(i).getName());
                             Log.d("Deletion: ", "Houses" + user.getMyHouses().toString());
                             popupWindow.dismiss();
