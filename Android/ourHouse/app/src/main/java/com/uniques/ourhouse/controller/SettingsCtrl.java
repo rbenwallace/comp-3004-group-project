@@ -1,10 +1,13 @@
 package com.uniques.ourhouse.controller;
 
 import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +30,7 @@ import com.uniques.ourhouse.session.Settings;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.ReadOnlyNameable;
 import com.uniques.ourhouse.util.RecyclerCtrl;
+import com.uniques.ourhouse.util.TextChangeListener;
 
 import org.bson.types.ObjectId;
 
@@ -43,10 +47,12 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     private RecyclerView personRecycler;
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private ObjectId houseId;
+    private EditText houseName;
     private Button btnSwitchHouse;
     private Button settingsBackButton;
     private Button settingsSaveButton;
-    private TextView houseName, loader;
+    private TextView loader, houseKey;
+    private String key;
     private CheckBox showTaskDifficultyButton;
     private CheckBox showLateTasksButton;
     private ProgressBar pd;
@@ -77,6 +83,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
     @Override
     public void init(View view) {
+        key = "";
         /*RelativeLayout layout = view.findViewById(R.id.login_root_display);
         pd = new ProgressBar(activity, null, android.R.attr.progressBarStyleLarge);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(300, 300);
@@ -97,13 +104,16 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
 
         settingsBackButton = (Button) view.findViewById(R.id.settings_btnBackHouse);
         settingsSaveButton = (Button) view.findViewById(R.id.settings_btnSaveHouse);
-        houseName = (TextView) view.findViewById(R.id.settings_editHouseName);
+        houseName = view.findViewById(R.id.settings_editHouseName);
+        houseKey = view.findViewById(R.id.houseKeySettings);
         showTaskDifficultyButton = (CheckBox) view.findViewById(R.id.settings_chkShowDifficulty);
         showLateTasksButton = (CheckBox) view.findViewById(R.id.settings_chkShowLateTasks);
+
 
         myDatabase.getHouse(houseId, house -> {
             if (house == null) throw new RuntimeException("OPEN_HOUSE failed to load object");
             houseName.setText(house.getName());
+            houseKey.setText(grabKeyId(house.getKeyId()));
             if (house.getPenalizeLateTasks()) {
                 showLateTasksButton.performClick();
             }
@@ -122,6 +132,17 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
                     }
                 });
             }
+            houseName.addTextChangedListener((TextChangeListener) (charSequence, i, i1, i2) -> {
+                key = Session.keyGen();
+                Session.getSession().getDatabase().checkIfHouseKeyExists(key, bool -> {
+                    if (bool) {
+                        houseKey.setText(key);
+                    } else {
+                        key = Session.keyGen();
+                        houseName.setText(houseName.getText());
+                    }
+                });
+            });
 
             /*observableCards.add(new TaskRotationCard(new User("Ben", "Wallace", "ben@gmail.com")));
             observableCards.add(new TaskRotationCard(new User("Seb", "Gadzinski", "seb@gmail.com")));
@@ -169,6 +190,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
                 }
                 newHouse.getRotation().setRotation(userRotation);
                 String name = houseName.getText().toString();
+                newHouse.setHouseKey(houseKey.getText().toString().trim());
                 newHouse.setName(name);
                 myDatabase.updateHouse(newHouse, aBoolean -> {
                     if (aBoolean) {
@@ -182,6 +204,10 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
                 });
             });
         });
+    }
+
+    private String grabKeyId(String keyId) {
+        return keyId.substring(keyId.length()-5);
     }
 
     @Override

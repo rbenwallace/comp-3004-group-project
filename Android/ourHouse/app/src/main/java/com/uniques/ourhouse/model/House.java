@@ -227,6 +227,10 @@ public class House implements Indexable, Observable {
         }
     }
 
+    public void setHouseKey(@NonNull String houseKey) {
+        this.houseKey = houseKey;
+    }
+
     @NonNull
     public String getPassword() {
         return password;
