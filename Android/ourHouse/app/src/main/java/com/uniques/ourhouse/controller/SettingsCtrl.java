@@ -46,7 +46,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
     private Button btnSwitchHouse;
     private Button settingsBackButton;
     private Button settingsSaveButton;
-    private TextView houseName;
+    private TextView houseName, loader;
     private CheckBox showTaskDifficultyButton;
     private CheckBox showLateTasksButton;
     private ProgressBar pd;
@@ -84,6 +84,9 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
         layout.addView(pd, params);
         pd.setVisibility(View.VISIBLE);*/
         personRecycler = view.findViewById(R.id.settings_recycler);
+        loader = view.findViewById(R.id.waiter);
+        loader.setVisibility(View.VISIBLE);
+
         count = 0;
 
         btnSwitchHouse = view.findViewById(R.id.settings_btnSwitchHouse);
@@ -113,7 +116,10 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
                 myDatabase.getUser(userId, user -> {
                     count++;
                     observableCards.add(new TaskRotationCard(user));
-                    if(count == house.getRotation().getRotation().size()) updateInfo();
+                    if(count == house.getRotation().getRotation().size()){
+                        updateInfo();
+                        loader.setVisibility(View.GONE);
+                    }
                 });
             }
 
