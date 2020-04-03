@@ -85,14 +85,14 @@ public class ScreenMonthCtrl implements FragmentCtrl {
             @Override
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
-                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
+                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees, false);
             }
         });
         viewPerformance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO NAVIGATE TO NEXT FRAGMENT
-                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
+                activity.pushFragment(FragmentId.GET(AmountPaidFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees, false);
                 activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
             }
         });

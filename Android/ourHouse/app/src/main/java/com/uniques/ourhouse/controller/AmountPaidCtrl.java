@@ -17,6 +17,9 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.model.User;
+import com.uniques.ourhouse.session.DatabaseLink;
+import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 
 import org.bson.types.ObjectId;
 
@@ -26,6 +29,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 public class AmountPaidCtrl implements FragmentCtrl {
     private FragmentActivity activity;
@@ -37,6 +41,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
     private HashMap<ObjectId, Float> userPerformance;
     private HashMap<ObjectId, Integer> userTasksCompleted;
     private ArrayList<String> userFees;
+    private boolean recalculate;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     //for jon
@@ -49,6 +54,18 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
+        if(recalculate){
+            DatabaseLink myDatabase = Session.getSession().getDatabase();
+            ObjectId houseId = Settings.OPEN_HOUSE.get();
+            ObjectId userId = Session.getSession().getLoggedInUserId();
+            myDatabase.getHouse(houseId, house -> {
+                house.populateStats(year, month, userId);
+                userAmountPaid = house.getUserAmountPaid();
+                userPerformance = house.getUserPoints();
+                userTasksCompleted = house.getTasksCompleted();
+                userFees = house.getUserFees();
+            });
+        }
         points = new HashMap<>();
         amounts = new HashMap<>();
         strMonth = months[month];
@@ -142,6 +159,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
         userPerformance = (HashMap<ObjectId, Float>) args[3];
         userTasksCompleted = (HashMap<ObjectId, Integer>) args[4];
         userFees = (ArrayList<String>) args[5];
+        recalculate = (Boolean) args[6];
     }
 
     @Override

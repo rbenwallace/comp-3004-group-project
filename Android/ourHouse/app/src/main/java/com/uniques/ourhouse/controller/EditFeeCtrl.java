@@ -212,7 +212,7 @@ public class EditFeeCtrl implements FragmentCtrl {
                 schedule.setEndType(Schedule.EndType.AFTER_TIMES);
             }
             Fee fee;
-            if(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis()){
+            if(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis() && oldSchedule.getRepeatSchedule().getDelay() == schedule.getRepeatSchedule().getDelay()){
                 fee = new Fee(userId, houseId, name, amount, oldSchedule);
             }
             else{

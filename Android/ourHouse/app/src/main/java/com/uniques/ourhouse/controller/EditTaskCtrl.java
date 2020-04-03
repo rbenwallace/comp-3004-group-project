@@ -161,13 +161,9 @@ public class EditTaskCtrl implements FragmentCtrl {
 
         });
         editTaskBackButton.setOnClickListener(view12 -> {
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
             activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
         });
         saveTask.setOnClickListener(view1 -> {
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
             String selectedFrequencyText = ((RadioButton) view.findViewById(taskFrequencies.getCheckedRadioButtonId())).getText().toString();
             int day = datePicker.getDayOfMonth();
             int month = datePicker.getMonth();
@@ -249,7 +245,7 @@ public class EditTaskCtrl implements FragmentCtrl {
                 schedule.setEndType(Schedule.EndType.AFTER_TIMES);
             }
             Task task;
-            if(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis()){
+            if(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis() && oldSchedule.getRepeatSchedule().getDelay() == schedule.getRepeatSchedule().getDelay()){
                 task = new Task(taskId, userId, houseId, name, oldSchedule, selectedDifficultyNum);
             }
             else{

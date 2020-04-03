@@ -28,7 +28,9 @@ import com.uniques.ourhouse.session.Settings;
 import org.bson.types.ObjectId;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -97,22 +99,20 @@ public class MainActivity extends FragmentActivity {
                     pushFragment(FragmentId.GET(ManageFragment.TAG));
                 return true;
             case R.id.navigation_stats:
-                DatabaseLink myDatabase = Session.getSession().getDatabase();
-                ObjectId houseId = Settings.OPEN_HOUSE.get();
-                ObjectId userId = Session.getSession().getLoggedInUserId();
+                HashMap<ObjectId, Float> userAmountPaid = new HashMap<>();
+                HashMap<ObjectId, Float> userPerformance = new HashMap<>();
+                HashMap<ObjectId, Integer> userTasksCompleted = new HashMap<>();
+                ArrayList<String> userFees = new ArrayList<>();
                 if (currentFragment() == null || currentFragment().getFragmentId() != FragmentId.GET(AmountPaidFragment.TAG)) {
-                    myDatabase.getHouse(houseId, house -> {
-                        house.populateStats(Integer.parseInt(strYear), currentMonth, userId);
-                        pushFragment(
-                                Objects.requireNonNull(FragmentId.GET(AmountPaidFragment.TAG)),
-                                currentMonth,
-                                Integer.parseInt(strYear),
-                                house.getUserAmountPaid(),
-                                house.getUserPoints(),
-                                house.getTasksCompleted(),
-                                house.getUserFees()
-                        );
-                    });
+                    pushFragment(
+                            Objects.requireNonNull(FragmentId.GET(AmountPaidFragment.TAG)),
+                            currentMonth,
+                            Integer.parseInt(strYear),
+                            userAmountPaid,
+                            userPerformance,
+                            userTasksCompleted,
+                            userFees, true
+                    );
                 }
                 return true;
         }
