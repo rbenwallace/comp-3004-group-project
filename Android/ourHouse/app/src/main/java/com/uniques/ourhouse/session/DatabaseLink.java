@@ -1,16 +1,13 @@
 package com.uniques.ourhouse.session;
 
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.model.House;
 import com.uniques.ourhouse.model.Task;
 import com.uniques.ourhouse.model.User;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -42,7 +39,7 @@ public interface DatabaseLink {
     //-------
 //    void addMyUser(User user, FragmentActivity activity);
 //    void addMyHouse(House house, FragmentActivity activity, Consumer<Boolean> boolConsumer);
-    void findHousesByName(String name, Consumer<ArrayList<House>> consumer);
+    void findHousesByName(String name, Consumer<List<House>> consumer);
     //-------
 
     //Get

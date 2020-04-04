@@ -38,6 +38,7 @@ public class AddTaskCtrl implements FragmentCtrl {
     private TextView otherTaskFrequency;
     private DatePicker datePicker;
     private TextView taskViewTitle;
+    private Button deleteTask;
 
     public AddTaskCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -47,6 +48,7 @@ public class AddTaskCtrl implements FragmentCtrl {
     public void init(View view) {
         addTaskBackButton = view.findViewById(R.id.addTask_btnBack);
         addTaskAddButton = view.findViewById(R.id.addTask_btnAdd);
+        deleteTask = view.findViewById(R.id.addTask_btnDelete);
         taskName = view.findViewById(R.id.addTask_editDescription);
         taskFrequencies = view.findViewById(R.id.addTask_radioFrequency);
         taskDifficulty = view.findViewById(R.id.addTask_radioDifficulty);
@@ -56,6 +58,7 @@ public class AddTaskCtrl implements FragmentCtrl {
 
         userId = Session.getSession().getLoggedInUserId();
         houseId = Settings.OPEN_HOUSE.get();
+        deleteTask.setVisibility(View.GONE);
 
         taskViewTitle.setText("Add Task");
         addTaskAddButton.setText("ADD");

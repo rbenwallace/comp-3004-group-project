@@ -116,7 +116,6 @@ public class ScreenMonthCtrl implements FragmentCtrl {
 
         calculateBody.setText(amount);
 
-
         if(changed) {
             myDatabase.getHouse(houseId, house -> {
                 house.populateStats(year, month, userId);

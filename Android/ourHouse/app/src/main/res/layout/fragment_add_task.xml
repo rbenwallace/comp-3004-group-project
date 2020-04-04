@@ -236,13 +236,32 @@
 
         </RadioGroup>
 
-        <Button
-            android:id="@+id/addTask_btnAdd"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:background="@drawable/loginbutton_selector"
-            android:text="" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/addTask_btnAdd"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/loginbutton_selector"
+                android:text="@string/add" />
+            <Button
+                android:id="@+id/addTask_btnDelete"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/loginbutton_selector"
+                android:text="@string/delete" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"

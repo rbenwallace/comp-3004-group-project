@@ -36,6 +36,7 @@ public class EditFeeCtrl implements FragmentCtrl {
     private ObjectId feeId;
     private Schedule schedule;
     private Button editFeeBackButton;
+    private Button deleteFeeButton;
     private TextView feeName;
     private RadioGroup feeFrequencies;
     private RadioButton onceButton;
@@ -46,6 +47,7 @@ public class EditFeeCtrl implements FragmentCtrl {
     private EditText editNumberOfDays;
     private TextView feeViewTitle;
     private Button saveFee;
+    private Fee currentFee;
     private EditText feeAmount;
     private EditText feeTaxRate;
     private boolean useNewDay = false;
@@ -64,6 +66,7 @@ public class EditFeeCtrl implements FragmentCtrl {
     public void init(View view) {
         Log.d(AddTaskFragment.TAG, "Edit Task Clicked");
         editFeeBackButton = view.findViewById(R.id.addFee_btnBack);
+        deleteFeeButton = view.findViewById(R.id.addFee_btnDelete);
         feeName = view.findViewById(R.id.addFee_editName);
         feeFrequencies = view.findViewById(R.id.addFee_radioFrequency);
         onceButton = view.findViewById(R.id.addFee_once);
@@ -94,6 +97,14 @@ public class EditFeeCtrl implements FragmentCtrl {
         }
 
         myDatabase.getFee(feeId, fee -> {
+            Log.d(EditFeeFragment.TAG, "Trying to get Fee from database");
+            if(fee == null){
+                Log.d(EditFeeFragment.TAG, "Fee not received from the Database");
+                Toast.makeText(activity, "Fee not found", Toast.LENGTH_SHORT).show();
+                activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
+                return;
+            }
+            currentFee = fee;
             feeName.setText(fee.getName());
             feeAmount.setText(String.valueOf(fee.getAmount()));
             schedule = fee.getSchedule();
@@ -116,13 +127,24 @@ public class EditFeeCtrl implements FragmentCtrl {
 
         });
         editFeeBackButton.setOnClickListener(view12 -> {
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
             activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
         });
+        deleteFeeButton.setOnClickListener(view123 -> {
+            myDatabase.deleteFee(currentFee, deleteBool -> {
+                if (deleteBool) {
+                    Log.d(EditFeeFragment.TAG, "Fee deleted from the Database");
+                    Toast.makeText(activity, "Fee Deleted", Toast.LENGTH_SHORT).show();
+                    Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
+                    activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
+                } else {
+                    Log.d(EditFeeFragment.TAG, "Fee not deleted in the  Database");
+                    Toast.makeText(activity, "Fee Not Deleted", Toast.LENGTH_SHORT).show();
+                    activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
+                }
+            });
+
+        });
         saveFee.setOnClickListener(view1 -> {
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
             String selectedFrequencyText = ((RadioButton) view.findViewById(feeFrequencies.getCheckedRadioButtonId())).getText().toString();
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, 23);
