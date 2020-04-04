@@ -70,31 +70,9 @@ public class PerformanceCtrl implements FragmentCtrl {
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
 
+
+//piechart
         PieChart pieChart;
-        BarChart barChart;
-
-        Button leftButton = (Button) view.findViewById(R.id.left_button);
-        Button rightButton = (Button) view.findViewById(R.id.right_button);
-
-        Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
-        leftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
-                activity.popFragment(FragmentId.GET(PerformanceFragment.TAG));
-            }
-        });
-        rightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
-            }
-        });
-
-
 
         pieChart = (PieChart) view.findViewById(R.id.idPieChart);
         pieChart.setUsePercentValues(true);
@@ -142,8 +120,8 @@ public class PerformanceCtrl implements FragmentCtrl {
         //addDataSet(pieChart);
 
 
-
-
+//barchart
+        BarChart barChart;
 
         barChart = (BarChart) view.findViewById(R.id.idBarChart);
 
@@ -164,15 +142,6 @@ public class PerformanceCtrl implements FragmentCtrl {
             count = 0;
         }
 
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setEnabled(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        barChart.getXAxis().setAvoidFirstLastClipping(true);
-        barChart.getXAxis().setCenterAxisLabels(true);
-        xAxis.setGranularity(1f);
-        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
-
-
         BarDataSet bardataset = new BarDataSet(entries, "");
         bardataset.setDrawValues(true);
 
@@ -181,6 +150,14 @@ public class PerformanceCtrl implements FragmentCtrl {
 
         bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
 
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setAvoidFirstLastClipping(true);
+        barChart.getXAxis().setCenterAxisLabels(true);
+        xAxis.setGranularity(1f);
+        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
 
         //BarData data = new BarData(bars);
         data.setBarWidth(0.6f); //how thick
@@ -200,6 +177,29 @@ public class PerformanceCtrl implements FragmentCtrl {
 
         barChart.invalidate(); //refresh
 
+
+
+
+        Button leftButton = (Button) view.findViewById(R.id.left_button);
+        Button rightButton = (Button) view.findViewById(R.id.right_button);
+
+        Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(4);
+                activity.popFragment(FragmentId.GET(PerformanceFragment.TAG));
+            }
+        });
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(5);
+                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
+            }
+        });
     }
 
     @Override
