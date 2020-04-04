@@ -47,6 +47,8 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private String amount = "";
+    private float count = (float)0.5;
+    private int counter = 0;
 
     public AmountPaidCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -97,19 +99,25 @@ public class AmountPaidCtrl implements FragmentCtrl {
         ArrayList<String> list_x_axis_name = new ArrayList<>();
 
         if (!userAmountPaid.isEmpty()) {
-            float count = (float)0.5;
             Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
             while(it.hasNext())
             {
                 Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+                Log.d("does it get here?", "maybe");
                 myDatabase.getUser(pair.getKey(), user -> {
                     Log.d("test", user.getFirstName());
+                    counter ++;
                     list_x_axis_name.add(user.getFirstName());
                     amount += user.getFirstName() + ": " + pair.getValue() + "\n";
+                    entries.add(new BarEntry(count, pair.getValue(), user.getFirstName()));
+                    count += 1;
+                    if (counter == userAmountPaid.size()) {
+                        Log.d("does it get here", "pls");
+                        updateInfo();
+                    }
                 });
-                entries.add(new BarEntry(count, pair.getValue(), pair.getKey()));
-                count += 1;
             }
+            count = (float)0.5;
             amountview.setText(amount);
         }
 

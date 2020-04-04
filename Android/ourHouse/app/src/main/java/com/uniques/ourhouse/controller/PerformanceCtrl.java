@@ -58,6 +58,7 @@ public class PerformanceCtrl implements FragmentCtrl {
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private Float total;
+    private float count = (float)0.5;
 
     public PerformanceCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -112,7 +113,6 @@ public class PerformanceCtrl implements FragmentCtrl {
 
         List<PieEntry> value = new ArrayList<>();
         if (!userPerformance.isEmpty()) {
-            int count = 0;
             Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
             while(it.hasNext())
             {
@@ -120,8 +120,8 @@ public class PerformanceCtrl implements FragmentCtrl {
                 myDatabase.getUser(pair.getKey(), user -> {
                     value.add(new PieEntry((float)(Math.round((pair.getValue()/total)*10000)/100), user.getFirstName()));
                 });
-                count += 1;
             }
+            total = 0f;
         }
 
         PieDataSet pieDataSet = new PieDataSet(value, "");
@@ -151,16 +151,17 @@ public class PerformanceCtrl implements FragmentCtrl {
         ArrayList<String> list_x_axis_name = new ArrayList<>();
 
         if (!userTasksCompleted.isEmpty()) {
-            float count = (float)0.5;
             Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
             while(it.hasNext())
             {
                 Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
                 myDatabase.getUser(pair.getKey(), user -> {
                     list_x_axis_name.add(user.getFirstName());
+                    entries.add(new BarEntry(count, pair.getValue(), user.getFirstName()));
+                    count += 1;
                 });
-                count += 1;
             }
+            count = 0;
         }
 
         XAxis xAxis = barChart.getXAxis();
