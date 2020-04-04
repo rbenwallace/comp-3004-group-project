@@ -135,14 +135,6 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
         bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
 
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setEnabled(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        barChart.getXAxis().setAvoidFirstLastClipping(true);
-        barChart.getXAxis().setCenterAxisLabels(true);
-        xAxis.setGranularity(1f);
-        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
-
         data.setBarWidth(0.6f); //how thick
         barChart.setData(data);
         barChart.getXAxis().setDrawGridLines(false);
