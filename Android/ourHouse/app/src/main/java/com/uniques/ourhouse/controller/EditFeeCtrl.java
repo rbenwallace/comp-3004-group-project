@@ -95,7 +95,6 @@ public class EditFeeCtrl implements FragmentCtrl {
         } else {
             Log.d(EditFeeFragment.TAG, "Fee: " + feeId + " received");
         }
-
         myDatabase.getFee(feeId, fee -> {
             Log.d(EditFeeFragment.TAG, "Trying to get Fee from database");
             if(fee == null){
@@ -259,9 +258,10 @@ public class EditFeeCtrl implements FragmentCtrl {
 
     @Override
     public void acceptArguments(Object... args) {
-        if (!(args[1] == null)) {
-            feeIdStr = args[1].toString();
+        if (!(args[0] == null)) {
+            feeIdStr = args[0].toString();
             feeId = new ObjectId(feeIdStr);
+            Log.d("CheckingFee", feeId.toString());
         }
     }
 

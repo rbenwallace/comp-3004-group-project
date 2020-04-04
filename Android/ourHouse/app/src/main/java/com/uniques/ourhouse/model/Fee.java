@@ -63,7 +63,6 @@ public class Fee extends ManageItem implements Indexable, Observable {
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
         json.putPrimitive("_id", manageItemId.toString());
-        json.putPrimitive("feeId", manageItemId.toString());
         json.putPrimitive("userId", manageItemOwner.toString());
         json.putPrimitive("houseId", manageItemHouse.toString());
         if (deletedDate != null) {
@@ -78,9 +77,9 @@ public class Fee extends ManageItem implements Indexable, Observable {
 
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
-        manageItemId = new ObjectId(json.<String>valueOf("feeId"));
-        manageItemId = new ObjectId(json.<String>valueOf("userId"));
-        manageItemId = new ObjectId(json.<String>valueOf("houseId"));
+        manageItemId = new ObjectId(json.<String>valueOf("_id"));
+        manageItemOwner = new ObjectId(json.<String>valueOf("userId"));
+        manageItemHouse = new ObjectId(json.<String>valueOf("houseId"));
         if (json.elementExists("deletedDate")) {
             deletedDate = new Date((long) json.valueOf("deletedDate"));
         }

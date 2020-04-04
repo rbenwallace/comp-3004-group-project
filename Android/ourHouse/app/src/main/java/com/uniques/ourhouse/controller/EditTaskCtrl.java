@@ -105,7 +105,6 @@ public class EditTaskCtrl implements FragmentCtrl {
                 activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
                 return;
             }
-            System.out.println("wallace: "+ task.getDeletedDate());
             currentTask = task.getId();
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
