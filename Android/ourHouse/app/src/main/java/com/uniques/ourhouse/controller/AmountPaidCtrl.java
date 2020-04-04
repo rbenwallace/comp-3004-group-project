@@ -45,9 +45,8 @@ public class AmountPaidCtrl implements FragmentCtrl {
     private boolean recalculate;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
-    //for jon
-    HashMap<User, Float> points = new HashMap<>();
-    HashMap<User, Float> amounts = new HashMap<>();
+    private DatabaseLink myDatabase = Session.getSession().getDatabase();
+    private String amount = "";
 
     public AmountPaidCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -67,8 +66,6 @@ public class AmountPaidCtrl implements FragmentCtrl {
                 userFees = house.getUserFees();
             });
         }
-        points = new HashMap<>();
-        amounts = new HashMap<>();
         strMonth = months[month];
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
@@ -90,38 +87,26 @@ public class AmountPaidCtrl implements FragmentCtrl {
             }
         });
 
-        String amount = "";
         TextView amountview = (TextView) view.findViewById(R.id.amount);
 
 
         barChart = (BarChart) view.findViewById(R.id.idBarChart);
 
-        //this is for creating a testing hashmap
-        User jon = new User();
-        User seb = new User();
-        User victor = new User();
-        User ben = new User();
-        jon.setFirstName("jon");
-        seb.setFirstName("seb");
-        victor.setFirstName("victor");
-        ben.setFirstName("ben");
-        amounts.put(jon, (float)2251.23);
-        amounts.put(victor, (float)3315.23);
-        amounts.put(ben, (float)200);
-        amounts.put(seb, (float)1242.32);
-
 
         ArrayList<BarEntry> entries = new ArrayList<>();
         ArrayList<String> list_x_axis_name = new ArrayList<>();
 
-        if (!amounts.isEmpty()) {
+        if (!userAmountPaid.isEmpty()) {
             float count = (float)0.5;
-            Iterator<Map.Entry<User, Float>> it = amounts.entrySet().iterator();
+            Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
             while(it.hasNext())
             {
-                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
-                list_x_axis_name.add(pair.getKey().getFirstName());
-                amount += pair.getKey().getFirstName() + ": " + pair.getValue() + "\n";
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+                myDatabase.getUser(pair.getKey(), user -> {
+                    Log.d("test", user.getFirstName());
+                    list_x_axis_name.add(user.getFirstName());
+                    amount += user.getFirstName() + ": " + pair.getValue() + "\n";
+                });
                 entries.add(new BarEntry(count, pair.getValue(), pair.getKey()));
                 count += 1;
             }

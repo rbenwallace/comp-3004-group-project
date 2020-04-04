@@ -106,7 +106,7 @@ public class PerformanceCtrl implements FragmentCtrl {
         points.put(ben, (float)11);
         points.put(seb, (float)34);
         points.put(barry, (float)32);
-        points.put(tester, (float)1);
+        points.put(tester, (float)52);
 
 
 
@@ -133,7 +133,12 @@ public class PerformanceCtrl implements FragmentCtrl {
             while(it.hasNext())
             {
                 Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
-                value.add(new PieEntry((Math.round((pair.getValue()/total)*1000)/10), pair.getKey().getFirstName()));
+                value.add(new PieEntry((float)(Math.round((pair.getValue()/total)*10000)/100), pair.getKey().getFirstName()));
+                Log.d("test1", String.valueOf(pair.getValue()));
+                Log.d("test2", String.valueOf(pair.getValue()/total));
+                Log.d("test2.1", String.valueOf(pair.getValue()/total*10000));
+                Log.d("test3", String.valueOf(Math.round((pair.getValue()/total)*10000)));
+                Log.d("test4", String.valueOf(Math.round((pair.getValue()/total*10000)/100)));
                 count += 1;
             }
         }
