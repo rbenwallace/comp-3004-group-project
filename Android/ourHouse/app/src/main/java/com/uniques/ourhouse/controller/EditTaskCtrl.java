@@ -52,6 +52,8 @@ public class EditTaskCtrl implements FragmentCtrl {
     private DatePicker datePicker;
     private TextView taskViewTitle;
     private Button saveTask;
+    private Button deleteTask;
+    private Task currentTask;
     private Schedule.RepeatBasis sameSchedule;
     private Schedule oldSchedule;
 
@@ -79,6 +81,7 @@ public class EditTaskCtrl implements FragmentCtrl {
         datePicker = view.findViewById(R.id.addTask_datePicked);
         taskViewTitle = view.findViewById(R.id.addTask_title);
         saveTask = view.findViewById(R.id.addTask_btnAdd);
+        deleteTask = view.findViewById(R.id.addTask_btnDelete);
 
         taskViewTitle.setText("Edit Task");
         saveTask.setText("SAVE");
@@ -96,6 +99,7 @@ public class EditTaskCtrl implements FragmentCtrl {
 
         myDatabase.getTask(taskId, task -> {
             Log.d(EditTaskFragment.TAG, "Trying to get Task from database");
+            currentTask = task;
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
             if (difficulty == 1) {
@@ -115,7 +119,6 @@ public class EditTaskCtrl implements FragmentCtrl {
             String oldDay = (String) DateFormat.format("dd", oldCalendar.getTime());
             String oldMonth = String.valueOf(oldCalendar.getTime().getMonth());
             String oldYear = (String) DateFormat.format("yyyy", oldCalendar.getTime());
-            System.out.println("wallace date: " + oldDay + " " + oldMonth + " " + oldYear);
             Schedule schedule = task.getSchedule();
             oldSchedule = task.getSchedule();
             if (schedule.getEndType().equals(Schedule.EndType.ON_DATE)) {
@@ -158,10 +161,22 @@ public class EditTaskCtrl implements FragmentCtrl {
                     datePicker.updateDate(Integer.parseInt(newYear), oldCalendar.getTime().getMonth(), Integer.parseInt(newDay));
                 }
             }
-
         });
         editTaskBackButton.setOnClickListener(view12 -> {
             activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
+        });
+        deleteTask.setOnClickListener(view123 -> {
+            myDatabase.deleteTask(currentTask, deleteBool -> {
+                if (deleteBool) {
+                    Log.d(EditTaskFragment.TAG, "Task deleted from the Database");
+                    Toast.makeText(activity, "Task Deleted", Toast.LENGTH_SHORT).show();
+                    activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
+                } else {
+                    Log.d(EditTaskFragment.TAG, "Task not deleted in the  Database");
+                    Toast.makeText(activity, "Task Not Deleted", Toast.LENGTH_SHORT).show();
+                    activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
+                }
+            });
         });
         saveTask.setOnClickListener(view1 -> {
             String selectedFrequencyText = ((RadioButton) view.findViewById(taskFrequencies.getCheckedRadioButtonId())).getText().toString();

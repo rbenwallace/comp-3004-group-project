@@ -35,7 +35,9 @@ public class AddFeeCtrl implements FragmentCtrl {
     private ObjectId userId;
     private ObjectId houseId;
     private Button addFeeBackButton;
+    private Button addFeeDeleteButton;
     private Button addFeeAddButton;
+    private Button deleteFeeButton;
     private Button addTaxButton;
     private EditText taxRate;
     private TextView feeName;
@@ -55,6 +57,7 @@ public class AddFeeCtrl implements FragmentCtrl {
     public void init(View view) {
         addFeeBackButton = view.findViewById(R.id.addFee_btnBack);
         addFeeAddButton = view.findViewById(R.id.addFee_btnAdd);
+        deleteFeeButton = view.findViewById(R.id.addFee_btnDelete);
         addTaxButton = view.findViewById(R.id.addFee_addTax);
         taxRate = view.findViewById(R.id.addFee_editTaxRate);
         feeName = view.findViewById(R.id.addFee_editName);
@@ -64,6 +67,7 @@ public class AddFeeCtrl implements FragmentCtrl {
 
         userId = Session.getSession().getLoggedInUserId();
         houseId = Settings.OPEN_HOUSE.get();
+        deleteFeeButton.setVisibility(View.GONE);
 
         taxRate.addTextChangedListener(new TextWatcher() {
             @Override
