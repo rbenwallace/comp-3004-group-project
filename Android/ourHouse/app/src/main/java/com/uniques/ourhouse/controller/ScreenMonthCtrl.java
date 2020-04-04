@@ -96,6 +96,8 @@ public class ScreenMonthCtrl implements FragmentCtrl {
                     }
                 });
             }
+            total = 0;
+            amount = "";
         }
 
         calculateBody.setText(amount);

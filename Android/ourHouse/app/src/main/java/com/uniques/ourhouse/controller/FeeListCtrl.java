@@ -67,20 +67,9 @@ public class FeeListCtrl implements RecyclerCtrl<FeeListItemCard>, FragmentCtrl 
     @Override
     public void updateInfo() {
 
-        ArrayList<String> feeList = new ArrayList<>();
-        feeList.add("ben sucks");
-        feeList.add("hello");
-        feeList.add("world");
-        feeList.add("Jonathan is a bitch he owes me $60 for the internet bill");
-        feeList.add("fuck u");
-        feeList.add("jon");
-        feeList.add("it works");
-        feeList.add("rfoft4j3");
-        feeList.add("u3-vnuengrfwniutgo");
-
         observableCards.clear();
 
-        for(String text: feeList)
+        for(String text: userFees)
         {
             observableCards.add(new FeeListItemCard(text));
         }

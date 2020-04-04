@@ -87,22 +87,20 @@ public class AmountPaidCtrl implements FragmentCtrl {
             while(it.hasNext())
             {
                 Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                Log.d("does it get here?", "maybe");
                 myDatabase.getUser(pair.getKey(), user -> {
-                    Log.d("test", user.getFirstName());
                     counter ++;
                     list_x_axis_name.add(user.getFirstName());
                     amount += user.getFirstName() + ": " + pair.getValue() + "\n";
                     entries.add(new BarEntry(count, pair.getValue(), user.getFirstName()));
                     count += 1;
                     if (counter == userAmountPaid.size()) {
-                        Log.d("does it get here", "pls");
                         updateInfo();
                     }
                 });
             }
             count = (float)0.5;
             amountview.setText(amount);
+            amount = "";
         }
 
         BarDataSet bardataset = new BarDataSet(entries, "label");

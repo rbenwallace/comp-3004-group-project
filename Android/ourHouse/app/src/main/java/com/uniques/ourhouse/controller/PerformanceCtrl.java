@@ -57,7 +57,7 @@ public class PerformanceCtrl implements FragmentCtrl {
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
-    private Float total;
+    private Float total = 0f;
     private float count = (float)0.5;
 
     public PerformanceCtrl(FragmentActivity activity) {
@@ -80,8 +80,10 @@ public class PerformanceCtrl implements FragmentCtrl {
         pieChart.setHoleRadius(0f);
         pieChart.setTransparentCircleRadius(0f);
 
+        Log.d("do I die here?", "no");
         if (!userTasksCompleted.isEmpty()) {
             Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
+            Log.d("do I die here??", "no");
             while(it.hasNext())
             {
                 Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
@@ -102,22 +104,27 @@ public class PerformanceCtrl implements FragmentCtrl {
             total = 0f;
         }
 
+
         PieDataSet pieDataSet = new PieDataSet(value, "");
-        pieDataSet.setDrawValues(true);
         pieChart.setEntryLabelColor(BLACK);
         pieChart.setDrawEntryLabels(false);
         pieChart.getDescription().setEnabled(false);
         PieData pieData = new PieData(pieDataSet);
 
-        pieChart.setData(pieData);
+        if (value.size() != 0) {
 
-        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+            pieDataSet.setDrawValues(true);
 
-        pieChart.animateXY(1500, 1500);
+            pieChart.setData(pieData);
 
-        //pieChart.setTransparentCircleAlpha(0);
+            pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
 
-        //addDataSet(pieChart);
+            pieChart.animateXY(1500, 1500);
+
+            //pieChart.setTransparentCircleAlpha(0);
+
+            //addDataSet(pieChart);
+        }
 
 
 //barchart
@@ -139,7 +146,7 @@ public class PerformanceCtrl implements FragmentCtrl {
                     count += 1;
                 });
             }
-            count = 0;
+            count = (float)0.5;
         }
 
         BarDataSet bardataset = new BarDataSet(entries, "");
