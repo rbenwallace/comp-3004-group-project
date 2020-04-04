@@ -53,9 +53,6 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
     private int changedYear;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
-    //For jon
-    HashMap<User, Float> points;
-    HashMap<User, Float> amounts;
 
     public CalculateAmountToPayCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -73,8 +70,6 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
-        points = new HashMap<>();
-        amounts = new HashMap<>();
         newMonth = month;
         newYear = year;
         Button leftButton = (Button) view.findViewById(R.id.left_button);
