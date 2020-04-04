@@ -6,6 +6,8 @@ import com.uniques.ourhouse.util.Schedule;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.JSONElement;
 import org.bson.types.ObjectId;
+
+import java.util.Date;
 import java.util.function.Consumer;
 import androidx.annotation.NonNull;
 
@@ -61,10 +63,11 @@ public class Fee extends ManageItem implements Indexable, Observable {
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
         json.putPrimitive("_id", manageItemId.toString());
-        json.putPrimitive("feeId", manageItemId.toString());
         json.putPrimitive("userId", manageItemOwner.toString());
         json.putPrimitive("houseId", manageItemHouse.toString());
-        json.putPrimitive("serialVersionId", serialVersionId);
+        if (deletedDate != null) {
+            json.putPrimitive("deletedDate", deletedDate);
+        }
         json.putPrimitive("name", name);
         json.putPrimitive("type", type);
         json.putPrimitive("amount", String.valueOf(amount));
@@ -74,11 +77,11 @@ public class Fee extends ManageItem implements Indexable, Observable {
 
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
-        manageItemId = new ObjectId(json.<String>valueOf("feeId"));
-        manageItemId = new ObjectId(json.<String>valueOf("userId"));
-        manageItemId = new ObjectId(json.<String>valueOf("houseId"));
-        if (json.elementExists("serialVersionId")) {
-            serialVersionId = json.valueOf("serialVersionId");
+        manageItemId = new ObjectId(json.<String>valueOf("_id"));
+        manageItemOwner = new ObjectId(json.<String>valueOf("userId"));
+        manageItemHouse = new ObjectId(json.<String>valueOf("houseId"));
+        if (json.elementExists("deletedDate")) {
+            deletedDate = new Date((long) json.valueOf("deletedDate"));
         }
         name = json.valueOf("name");
         type = json.valueOf("type");

@@ -99,6 +99,8 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
 
         Button calculateButton = (Button) view.findViewById(R.id.calculate);
 
+        rightButton.setVisibility(View.GONE);
+
         selectedYear = currentYear;
 
         Button[] monthButtons = {currentMonth, pastMonthButton01, pastMonthButton02, pastMonthButton03, pastMonthButton04, pastMonthButton05, pastMonthButton06, pastMonthButton07, pastMonthButton08, pastMonthButton09, pastMonthButton10, pastMonthButton11};
@@ -271,14 +273,6 @@ public class CalculateAmountToPayCtrl implements FragmentCtrl {
                 //TODO NAVIGATE TO NEXT FRAGMENT
 //                ((LS_Main) activity).setViewPager(4);
                 activity.popFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG));
-            }
-        });
-        rightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(5);
-                //activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year);
             }
         });
 

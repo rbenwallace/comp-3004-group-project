@@ -41,7 +41,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class JoinHouseCtrl implements FragmentCtrl{
     private FragmentActivity activity;
-    private ArrayList<House> searchedHouses;
+    private List<House> searchedHouses;
     private DatabaseLink database = Session.getSession().getDatabase();
     private ArrayList<String> houses;
     private ArrayAdapter adapter;

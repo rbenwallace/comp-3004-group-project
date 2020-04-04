@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.uniques.ourhouse.model.Event;
 import com.uniques.ourhouse.model.Fee;
 import com.uniques.ourhouse.model.House;
@@ -14,11 +13,9 @@ import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -100,7 +97,7 @@ class DatabaseCoordinator implements DatabaseLink {
     }
 
     @Override
-    public void findHousesByName(String name, Consumer<ArrayList<House>> consumer) {
+    public void findHousesByName(String name, Consumer<List<House>> consumer) {
         remoteDatabase.findHousesByName(name, consumer);
     }
 
@@ -638,11 +635,10 @@ class DatabaseCoordinator implements DatabaseLink {
     }
 
     @Override
-    public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool){
+    public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool) {
         if (networkAvailable()) {
             remoteDatabase.emailFriends(email, firstName, friend, houseId, bool);
-        }
-        else {
+        } else {
             Log.d("CheckingEmailSending", "DB Cord: " + bool.toString());
             bool.accept(false);
         }

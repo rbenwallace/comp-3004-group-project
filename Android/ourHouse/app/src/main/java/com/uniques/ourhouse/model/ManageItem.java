@@ -7,6 +7,8 @@ import com.uniques.ourhouse.util.Schedule;
 
 import org.bson.types.ObjectId;
 
+import java.util.Date;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -16,15 +18,14 @@ public abstract class ManageItem implements Model, Indexable, Observable {
     static final int DIFFICULTY_MEDIUM = 2;
     static final int DIFFICULTY_HARD = 3;
 
-    ObjectId manageItemId;
-    ObjectId manageItemOwner;
-    ObjectId manageItemHouse;
+    protected ObjectId manageItemId;
+    protected ObjectId manageItemOwner;
+    protected ObjectId manageItemHouse;
     protected String name;
     protected Schedule schedule;
-    long serialVersionId;
+    protected Date deletedDate;
 
-    ManageItem() {
-    }
+    ManageItem(){}
 
     ManageItem(ObjectId idItem, ObjectId owner, ObjectId house, String name, Schedule schedule) {
         manageItemId = idItem;
@@ -46,6 +47,14 @@ public abstract class ManageItem implements Model, Indexable, Observable {
 
     public ObjectId getHouseId() {
         return manageItemOwner;
+    }
+
+    public Date getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(Date deletedDate) {
+        this.deletedDate = deletedDate;
     }
 
     @Override

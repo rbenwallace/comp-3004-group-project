@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class Event implements Observable, Indexable {
+    private static final int TYPE_UNDEFINED = -1;
     public static final int TYPE_TASK = 0;
     public static final int TYPE_FEE = 1;
 
@@ -67,7 +68,7 @@ public class Event implements Observable, Indexable {
 
     public Event() {
         eventId = new ObjectId();
-        type = TYPE_TASK;
+        type = TYPE_UNDEFINED;
         assignedHouse = new ObjectId();
         associatedTask = new ObjectId();
         title = "< untitled event >";
@@ -142,6 +143,7 @@ public class Event implements Observable, Indexable {
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
         json.putPrimitive("_id", eventId.toString());
+        json.putPrimitive("type", type);
         json.putPrimitive("title", title);
         json.putPrimitive("assignedTo", assignedTo.toString());
         json.putPrimitive("assignedHouse", assignedHouse.toString());
@@ -156,6 +158,7 @@ public class Event implements Observable, Indexable {
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
         eventId = new ObjectId(json.<String>valueOf("_id"));
+        type = Integer.parseInt(String.valueOf(json.<String>valueOf("type")));
         title = json.valueOf("title");
         assignedTo = new ObjectId(json.<String>valueOf("assignedTo"));
         assignedHouse = new ObjectId(json.<String>valueOf("assignedHouse"));

@@ -8,6 +8,7 @@ import com.uniques.ourhouse.util.easyjson.JSONElement;
 
 import org.bson.types.ObjectId;
 
+import java.util.Date;
 import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
@@ -89,7 +90,9 @@ public class Task extends ManageItem implements Indexable, Observable {
         json.putPrimitive("_id", manageItemId.toString());
         json.putPrimitive("userId", manageItemOwner.toString());
         json.putPrimitive("houseId", manageItemHouse.toString());
-        json.putPrimitive("serialVersionId", serialVersionId);
+        if (deletedDate != null) {
+            json.putPrimitive("deletedDate", deletedDate);
+        }
         json.putPrimitive("name", name);
         json.putPrimitive("type", type);
         json.putPrimitive("difficulty", String.valueOf(difficulty));
@@ -102,8 +105,8 @@ public class Task extends ManageItem implements Indexable, Observable {
         manageItemId = new ObjectId(json.<String>valueOf("_id"));
         manageItemOwner = new ObjectId(json.<String>valueOf("userId"));
         manageItemHouse = new ObjectId(json.<String>valueOf("houseId"));
-        if (json.elementExists("serialVersionId")) {
-            serialVersionId = json.valueOf("serialVersionId");
+        if (json.elementExists("deletedDate")) {
+            deletedDate = new Date((long) json.valueOf("deletedDate"));
         }
         name = json.valueOf("name");
         type = json.valueOf("type");
