@@ -18,6 +18,7 @@ import com.uniques.ourhouse.fragment.Fragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
+import com.uniques.ourhouse.fragment.MyHousesFragment;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.fragment.ScreenMonthFragment;
 import com.uniques.ourhouse.fragment.SettingsFragment;

@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -111,19 +112,29 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
 
         ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<String> list_x_axis_name = new ArrayList<>();
 
         if (!amounts.isEmpty()) {
-            int count = 0;
+            float count = (float)0.5;
             Iterator<Map.Entry<User, Float>> it = amounts.entrySet().iterator();
             while(it.hasNext())
             {
                 Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                list_x_axis_name.add(pair.getKey().getFirstName());
                 amount += pair.getKey().getFirstName() + ": " + pair.getValue() + "\n";
                 entries.add(new BarEntry(count, pair.getValue(), pair.getKey()));
                 count += 1;
             }
             amountview.setText(amount);
         }
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setAvoidFirstLastClipping(true);
+        barChart.getXAxis().setCenterAxisLabels(true);
+        xAxis.setGranularity(1f);
+        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
 
         BarDataSet bardataset = new BarDataSet(entries, "label");
         bardataset.setDrawValues(false);
@@ -142,7 +153,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
         barChart.getXAxis().setDrawAxisLine(false);
         barChart.getAxisRight().setDrawAxisLine(false);
         barChart.getAxisRight().setDrawLabels(false);
-        barChart.getXAxis().setDrawLabels(false);
+        barChart.getXAxis().setDrawLabels(true);
         barChart.getLegend().setEnabled(false);
         barChart.getDescription().setEnabled(false);
         barChart.setFitBars(true); //make x-axis fit exactly all bars

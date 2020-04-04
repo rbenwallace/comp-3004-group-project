@@ -2,9 +2,6 @@ package com.uniques.ourhouse.session;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
@@ -28,7 +25,6 @@ import com.uniques.ourhouse.util.easyjson.EasyJSON;
 import com.uniques.ourhouse.util.easyjson.EasyJSONException;
 
 import org.bson.BsonRegularExpression;
-import org.bson.BsonString;
 import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -186,9 +182,9 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
 //    }
 
     @Override
-    public void findHousesByName(String name, Consumer<ArrayList<House>> consumer) {
+    public void findHousesByName(String name, Consumer<List<House>> consumer) {
         Log.d("CheckingHouses", "Inside Remote");
-        ArrayList<House> houses = new ArrayList<>();
+        List<House> houses = new ArrayList<>();
         String pattern = "^" + name;
         BsonRegularExpression nameRE = new BsonRegularExpression(pattern);
         Document filterDoc = new Document()
@@ -400,7 +396,6 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     @SuppressWarnings("unchecked")
     @Override
     public void getAllEventsFromHouse(ObjectId houseId, Consumer<List<Event>> consumer) {
-//        ArrayList<Event> events = new ArrayList<>();
         Document filterDoc = new Document()
                 .append("assignedHouse", houseId.toString());
         eventColl
@@ -410,7 +405,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 .addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
-                ArrayList<Event> events = new ArrayList<>();
+                List<Event> events = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
                     Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
@@ -444,13 +439,12 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     @SuppressWarnings("unchecked")
     @Override
     public void getAllTasksFromHouse(ObjectId houseId, Consumer<List<Task>> consumer) {
-//        ArrayList<Task> tasks = new ArrayList<>();
         Document filterDoc = new Document()
                 .append("houseId", houseId.toString());
         taskColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
-                ArrayList<Task> tasks = new ArrayList<>();
+                List<Task> tasks = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
                     Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
@@ -484,13 +478,12 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     @SuppressWarnings("unchecked")
     @Override
     public void getAllFeesFromHouse(ObjectId houseId, Consumer<List<Fee>> consumer) {
-//        ArrayList<Fee> fees = new ArrayList<>();
         Document filterDoc = new Document()
                 .append("houseId", houseId.toString());
         feeColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
-                ArrayList<Fee> fees = new ArrayList<>();
+                List<Fee> fees = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
                     Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
@@ -524,14 +517,13 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     @SuppressWarnings("unchecked")
     @Override
     public void getAllEventsFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Event>> consumer) {
-//        ArrayList<Event> events = new ArrayList<>();
         Document filterDoc = new Document()
                 .append("assignedHouse", houseId.toString());
         filterDoc.append("assignedTo", userId.toString());
         eventColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
-                ArrayList<Event> events = new ArrayList<>();
+                List<Event> events = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
                     Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
@@ -565,14 +557,13 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     @SuppressWarnings("unchecked")
     @Override
     public void getAllTasksFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Task>> consumer) {
-//        ArrayList<Task> tasks = new ArrayList<>();
         Document filterDoc = new Document()
                 .append("houseId", houseId.toString())
                 .append("userId", userId.toString());
         taskColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
-                ArrayList<Task> parsedTasks = new ArrayList<>();
+                List<Task> parsedTasks = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
                     Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
@@ -606,14 +597,13 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     @SuppressWarnings("unchecked")
     @Override
     public void getAllFeesFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Fee>> consumer) {
-//        ArrayList<Fee> fees = new ArrayList<>();
         Document filterDoc = new Document()
                 .append("houseId", houseId.toString())
                 .append("userId", userId.toString());
         eventColl.find(filterDoc).sort(new Document("dueDate", -1)).into(new ArrayList<>()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Document> docs = task.getResult();
-                ArrayList<Fee> fees = new ArrayList<>();
+                List<Fee> fees = new ArrayList<>();
                 BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
                     Consumer<Void> onParse = v -> {
                         if (docs.isEmpty()) {
@@ -645,9 +635,9 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     } //tested
 
     //Need to make, Ne
-//    public void getAllEventsSince(ObjectId houseId, Date tillDate, Consumer<ArrayList<Task>> consumer){}
-//    public void getAllTasksSince(ObjectId houseId, Date tillDate, Consumer<ArrayList<Task>> consumer){}
-//    public void getAllFeesSince(ObjectId houseId, Date tillDate, Consumer<ArrayList<Task>> consumer){}
+//    public void getAllEventsSince(ObjectId houseId, Date tillDate, Consumer<List<Task>> consumer){}
+//    public void getAllTasksSince(ObjectId houseId, Date tillDate, Consumer<List<Task>> consumer){}
+//    public void getAllFeesSince(ObjectId houseId, Date tillDate, Consumer<List<Task>> consumer){}
     //House Content Grabs
     //Post---
     @Override

@@ -18,6 +18,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AmountPaidFragment;
@@ -98,10 +99,14 @@ public class PerformanceCtrl implements FragmentCtrl {
         User seb = new User("seb", "b", "2");
         User jon = new User("jon", "c", "3");
         User victor = new User("victor", "d", "4");
+        User barry = new User("barry", "e", "5");
+        User tester = new User ("tester", "f", "6");
         points.put(jon, (float)32);
-        points.put(victor, (float)23);
+        points.put(victor, (float)82);
         points.put(ben, (float)11);
         points.put(seb, (float)34);
+        points.put(barry, (float)32);
+        points.put(tester, (float)1);
 
 
 
@@ -128,15 +133,15 @@ public class PerformanceCtrl implements FragmentCtrl {
             while(it.hasNext())
             {
                 Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
-                value.add(new PieEntry((pair.getValue()/total), pair.getKey().getFirstName()));
+                value.add(new PieEntry((Math.round((pair.getValue()/total)*1000)/10), pair.getKey().getFirstName()));
                 count += 1;
             }
         }
 
         PieDataSet pieDataSet = new PieDataSet(value, "");
-        pieDataSet.setDrawValues(false);
+        pieDataSet.setDrawValues(true);
         pieChart.setEntryLabelColor(BLACK);
-        pieChart.setDrawEntryLabels(true);
+        pieChart.setDrawEntryLabels(false);
         pieChart.getDescription().setEnabled(false);
         PieData pieData = new PieData(pieDataSet);
 
@@ -150,34 +155,35 @@ public class PerformanceCtrl implements FragmentCtrl {
 
         //addDataSet(pieChart);
 
+
+
+
+
         barChart = (BarChart) view.findViewById(R.id.idBarChart);
 
         ArrayList<BarEntry> entries = new ArrayList<>();
-
-
         ArrayList<String> list_x_axis_name = new ArrayList<>();
 
         if (!points.isEmpty()) {
-            int count = 0;
+            float count = (float)0.5;
             Iterator<Map.Entry<User, Float>> it = points.entrySet().iterator();
             while(it.hasNext())
             {
                 Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
-                entries.add(new BarEntry(count, pair.getValue(), pair.getKey().getFirstName()));
                 list_x_axis_name.add(pair.getKey().getFirstName());
-                Log.d("test", pair.getKey().getFirstName());
+                entries.add(new BarEntry(count, pair.getValue(), pair.getKey().getFirstName()));
                 count += 1;
             }
         }
 
-        for(int i=0; i<3; i++) {
-            Log.d(AmountPaidFragment.TAG, list_x_axis_name.get(i));
-        }
-
-        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         barChart.getXAxis().setAvoidFirstLastClipping(true);
         barChart.getXAxis().setCenterAxisLabels(true);
-        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(list_x_axis_name));
+        xAxis.setGranularity(1f);
+        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
+
 
         BarDataSet bardataset = new BarDataSet(entries, "");
         bardataset.setDrawValues(true);
@@ -198,11 +204,14 @@ public class PerformanceCtrl implements FragmentCtrl {
         barChart.getXAxis().setDrawLabels(true);
         barChart.getLegend().setEnabled(false);
         barChart.getDescription().setEnabled(false);
+        barChart.setScaleEnabled(true);
         barChart.setFitBars(true); //make x-axis fit exactly all bars
         barChart.setHighlightFullBarEnabled(false);
-        barChart.invalidate(); //refresh
         barChart.setDoubleTapToZoomEnabled(false);
         barChart.setPinchZoom(false);
+
+        barChart.invalidate(); //refresh
+
     }
 
     @Override

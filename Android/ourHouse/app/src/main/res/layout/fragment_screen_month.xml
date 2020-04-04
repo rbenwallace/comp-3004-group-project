@@ -26,6 +26,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="This Month You "
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +41,7 @@
         android:text=""
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
