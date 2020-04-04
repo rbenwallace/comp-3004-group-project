@@ -53,7 +53,7 @@ public class EditTaskCtrl implements FragmentCtrl {
     private TextView taskViewTitle;
     private Button saveTask;
     private Button deleteTask;
-    private Task currentTask;
+    private ObjectId currentTask;
     private Schedule.RepeatBasis sameSchedule;
     private Schedule oldSchedule;
 
@@ -105,7 +105,7 @@ public class EditTaskCtrl implements FragmentCtrl {
                 activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
                 return;
             }
-            currentTask = task;
+            currentTask = task.getId();
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
             if (difficulty == 1) {
@@ -172,17 +172,20 @@ public class EditTaskCtrl implements FragmentCtrl {
             activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
         });
         deleteTask.setOnClickListener(view123 -> {
-            myDatabase.deleteTask(currentTask, deleteBool -> {
-                if (deleteBool) {
-                    Log.d(EditTaskFragment.TAG, "Task deleted from the Database");
-                    Toast.makeText(activity, "Task Deleted", Toast.LENGTH_SHORT).show();
-                    Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
-                    activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
-                } else {
-                    Log.d(EditTaskFragment.TAG, "Task not deleted in the  Database");
-                    Toast.makeText(activity, "Task Not Deleted", Toast.LENGTH_SHORT).show();
-                    activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
-                }
+            myDatabase.getTask(currentTask, deleteTask -> {
+                deleteTask.setDeletedDate(Calendar.getInstance().getTime());
+                myDatabase.updateTask(deleteTask, deleteBool -> {
+                    if (deleteBool) {
+                        Log.d(EditTaskFragment.TAG, "Task delete date set in the Database");
+                        Toast.makeText(activity, "Task Deleted", Toast.LENGTH_SHORT).show();
+                        Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
+                        activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
+                    } else {
+                        Log.d(EditTaskFragment.TAG, "Task delete date not set in the  Database");
+                        Toast.makeText(activity, "Task Not Deleted", Toast.LENGTH_SHORT).show();
+                        activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
+                    }
+                });
             });
         });
         saveTask.setOnClickListener(view1 -> {

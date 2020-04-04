@@ -11,28 +11,18 @@
 
     <TextView
         android:id="@+id/amount"
-        android:layout_width="264dp"
-        android:layout_height="145dp"
+        android:layout_width="301dp"
+        android:layout_height="255dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
         android:text=""
-        android:textAlignment="center"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.017"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.676" />
-
-    <TextView
-        android:id="@+id/swipe"
-        android:layout_width="179dp"
-        android:layout_height="22dp"
-        android:text="Swipe left to view more"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.794" />
+        app:layout_constraintVertical_bias="0.995" />
 
     <Button
         android:id="@+id/right_button"
@@ -46,7 +36,7 @@
         app:layout_constraintHorizontal_bias="0.991"
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.869" />
+        app:layout_constraintVertical_bias="0.939" />
 
     <Button
         android:id="@+id/left_button"
@@ -60,7 +50,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.869" />
+        app:layout_constraintVertical_bias="0.939" />
 
     <TextView
         android:id="@+id/title"
@@ -94,8 +84,8 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/idBarChart"
-        android:layout_width="301dp"
-        android:layout_height="216dp"
+        android:layout_width="407dp"
+        android:layout_height="215dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
