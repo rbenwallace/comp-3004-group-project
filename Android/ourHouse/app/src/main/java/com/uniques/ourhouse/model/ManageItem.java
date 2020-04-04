@@ -49,6 +49,14 @@ public abstract class ManageItem implements Model, Indexable, Observable {
         return manageItemOwner;
     }
 
+    public Date getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(Date deletedDate) {
+        this.deletedDate = deletedDate;
+    }
+
     @Override
     public String getName() {
         return name;

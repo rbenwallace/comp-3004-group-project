@@ -47,7 +47,7 @@ public class EditFeeCtrl implements FragmentCtrl {
     private EditText editNumberOfDays;
     private TextView feeViewTitle;
     private Button saveFee;
-    private Fee currentFee;
+    private ObjectId currentFee;
     private EditText feeAmount;
     private EditText feeTaxRate;
     private boolean useNewDay = false;
@@ -104,7 +104,7 @@ public class EditFeeCtrl implements FragmentCtrl {
                 activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
                 return;
             }
-            currentFee = fee;
+            currentFee = fee.getId();
             feeName.setText(fee.getName());
             feeAmount.setText(String.valueOf(fee.getAmount()));
             schedule = fee.getSchedule();
@@ -130,17 +130,20 @@ public class EditFeeCtrl implements FragmentCtrl {
             activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
         });
         deleteFeeButton.setOnClickListener(view123 -> {
-            myDatabase.deleteFee(currentFee, deleteBool -> {
-                if (deleteBool) {
-                    Log.d(EditFeeFragment.TAG, "Fee deleted from the Database");
-                    Toast.makeText(activity, "Fee Deleted", Toast.LENGTH_SHORT).show();
-                    Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
-                    activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
-                } else {
-                    Log.d(EditFeeFragment.TAG, "Fee not deleted in the  Database");
-                    Toast.makeText(activity, "Fee Not Deleted", Toast.LENGTH_SHORT).show();
-                    activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
-                }
+            myDatabase.getFee(currentFee, deleteFee -> {
+                deleteFee.setDeletedDate(Calendar.getInstance().getTime());
+                myDatabase.updateFee(deleteFee, deleteBool -> {
+                    if (deleteBool) {
+                        Log.d(EditFeeFragment.TAG, "Fee delete date set in the Database");
+                        Toast.makeText(activity, "Fee Deleted", Toast.LENGTH_SHORT).show();
+                        Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
+                        activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
+                    } else {
+                        Log.d(EditFeeFragment.TAG, "Fee delete date not set in the  Database");
+                        Toast.makeText(activity, "Fee Not Deleted", Toast.LENGTH_SHORT).show();
+                        activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
+                    }
+                });
             });
 
         });
