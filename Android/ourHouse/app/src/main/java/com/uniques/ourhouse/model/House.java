@@ -1,5 +1,7 @@
 package com.uniques.ourhouse.model;
 
+import android.annotation.SuppressLint;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.uniques.ourhouse.session.DatabaseLink;
@@ -13,6 +15,7 @@ import com.uniques.ourhouse.util.easyjson.SafeJSONElementType;
 
 import org.bson.types.ObjectId;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -155,8 +158,10 @@ public class House implements Indexable, Observable {
             for(Event event : events){
                 if(event.getDateCompleted() != null){
                     ObjectId eventUser = event.getAssignedTo();
-                    int tempYear = event.getDateCompleted().getYear();
+                    String strYear = (String) DateFormat.format("yyyy", event.getDateCompleted());
+                    int tempYear = Integer.parseInt(strYear);
                     int tempMonth = event.getDateCompleted().getMonth();
+                    System.out.println("wallace check " + event.getType() + " " + tempMonth + " " + month + " " + tempYear  + " " + year);
                     if((event.getType() == 0) && (tempMonth == month) && (tempYear == year)){
                         myDatabase.getTask(event.getAssociatedTask(), task -> {
                             int completed =  tasksCompleted.get(eventUser) + 1;
@@ -188,12 +193,14 @@ public class House implements Indexable, Observable {
                         });
                     }
                     else if(event.getType() == 1 && (tempMonth == month) && (tempYear == year)){
+                        System.out.println("wallace gets here");
                         myDatabase.getFee(event.getAssociatedTask(), fee -> {
                             String userFee = "Amt: " + String.valueOf(fee.getAmount()) + " - " + fee.getName();
                             if(eventUser.equals(taskUser)){
                                 userFees.add(userFee);
                             }
                             float num = (float) (userAmountPaid.get(eventUser) + fee.getAmount());
+                            System.out.println("wallace gets num " + " " + eventUser + " " +  num);
                             userAmountPaid.put(eventUser, num);
                         });
                     }
