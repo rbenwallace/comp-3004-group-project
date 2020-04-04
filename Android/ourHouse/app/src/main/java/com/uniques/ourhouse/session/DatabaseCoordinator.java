@@ -405,6 +405,11 @@ class DatabaseCoordinator implements DatabaseLink {
     }
 
     @Override
+    public void deleteAllEventsFromHouseSince(ObjectId houseId, Date sinceDate, Consumer<Boolean> consumer) {
+        remoteDatabase.deleteAllEventsFromHouseSince(houseId, sinceDate, consumer);
+    }
+
+    @Override
     public void deleteUser(User user, Consumer<Boolean> consumer) {
         if (networkAvailable()) {
             remoteDatabase.deleteUser(user, remoteSuccess -> {

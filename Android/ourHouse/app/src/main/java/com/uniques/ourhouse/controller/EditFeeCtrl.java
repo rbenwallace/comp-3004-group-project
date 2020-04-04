@@ -131,7 +131,8 @@ public class EditFeeCtrl implements FragmentCtrl {
         deleteFeeButton.setOnClickListener(view123 -> {
             myDatabase.getFee(currentFee, deleteFee -> {
                 deleteFee.setDeletedDate(Calendar.getInstance().getTime());
-                myDatabase.updateFee(deleteFee, deleteBool -> {
+//                myDatabase.updateFee(deleteFee, deleteBool -> {
+                myDatabase.deleteFee(deleteFee, deleteBool -> {
                     if (deleteBool) {
                         Log.d(EditFeeFragment.TAG, "Fee delete date set in the Database");
                         Toast.makeText(activity, "Fee Deleted", Toast.LENGTH_SHORT).show();

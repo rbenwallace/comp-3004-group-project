@@ -62,6 +62,12 @@ public interface DatabaseLink {
 
     void getAllFeesFromHouse(ObjectId houseId, Consumer<List<Fee>> consumer);
 
+//    void getAllEventsFromHouseSince(ObjectId houseId, Date sinceDate, Consumer<List<Event>> consumer);
+
+//    void getAllTasksFromHouseSince(ObjectId houseId, Date sinceDate, Consumer<List<Task>> consumer);
+//
+//    void getAllFeesFromHouseSince(ObjectId houseId, Date sinceDate, Consumer<List<Fee>> consumer);
+
     void getAllEventsFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Event>> consumer);
 
     void getAllTasksFromUserInHouse(ObjectId houseId, ObjectId userId, Consumer<List<Task>> consumer);
@@ -101,6 +107,8 @@ public interface DatabaseLink {
     void deleteAllTasksFromHouse(ObjectId houseId, Consumer<Boolean> consumer);
 
     void deleteAllFeesFromHouse(ObjectId houseId, Consumer<Boolean> consumer);
+
+    void deleteAllEventsFromHouseSince(ObjectId houseId, Date sinceDate, Consumer<Boolean> consumer);
 
     void deleteUser(User user, Consumer<Boolean> consumer);
 
