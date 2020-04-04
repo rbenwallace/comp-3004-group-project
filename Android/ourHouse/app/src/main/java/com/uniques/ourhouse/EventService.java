@@ -139,6 +139,7 @@ public class EventService extends JobService {
                             onCompleteCallback.accept(new NullPointerException("getAllFeesFromHouse() failed"), null);
                             return;
                         }
+                        Log.d(TAG, "Got house fees");
 
                         while (!fees.isEmpty()) {
                             items.add(fees.remove(0));
@@ -150,7 +151,6 @@ public class EventService extends JobService {
                             onCompleteCallback.accept(new Exception("No Tasks or Fees created in house"), null);
                             return;
                         }
-                        Log.d(TAG, "Got house fees");
 
                         HashMap<Date, List<ManageItem>> occurrences = new HashMap<>();
 
