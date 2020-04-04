@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class ScreenMonthCtrl implements FragmentCtrl {
@@ -69,7 +71,50 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         Button statsBack = (Button) view.findViewById(R.id.statsBack);
         TextView calculateBody = (TextView) view.findViewById(R.id.textView2);
 
-        calculateBody.setText(String.valueOf(changed));
+        int total = 0;
+        String amount = "";
+
+        //testing
+        User jon = new User();
+        User seb = new User();
+        User victor = new User();
+        User ben = new User();
+        jon.setFirstName("jon");
+        seb.setFirstName("seb");
+        victor.setFirstName("victor");
+        ben.setFirstName("ben");
+        amounts.put(jon, (float)2251.23);
+        amounts.put(victor, (float)3315.23);
+        amounts.put(ben, (float)200);
+        amounts.put(seb, (float)1242.32);
+
+        if (!amounts.isEmpty()) {
+            Iterator<Map.Entry<User, Float>> it = amounts.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                total += pair.getValue();
+            }
+        }
+
+        if (!amounts.isEmpty()) {
+            Iterator<Map.Entry<User, Float>> it = amounts.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                if (total/amounts.size() - pair.getValue() > 0) {
+                    amount += pair.getKey().getFirstName() + " owes: " + (total/amounts.size() - pair.getValue()) + "\n";
+                }
+                else if (total/amounts.size() - pair.getValue() == 0) {
+                    amount += pair.getKey().getFirstName() + " owes: 0";
+                }
+                else {
+                    amount += pair.getKey().getFirstName() + " is owed: " + (pair.getValue() - total/amounts.size()) + "\n";
+                }
+            }
+        }
+
+        calculateBody.setText(amount);
 
         if(changed) {
             myDatabase.getHouse(houseId, house -> {
