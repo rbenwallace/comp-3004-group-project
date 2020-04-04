@@ -49,14 +49,12 @@ public class AmountPaidCtrl implements FragmentCtrl {
     private ArrayList<String> userFees;
     private ArrayList<User> userArray;
     private Consumer<User> filler;
-    private ArrayList<Float> floatArray;
+    private ArrayList<Float> floatAmountArray;
     private boolean recalculate;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private String amount = "";
-    private float count = (float)0.5;
-    private int counter = 0;
 
     public AmountPaidCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -65,7 +63,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
         userArray = new ArrayList<>();
-        floatArray = new ArrayList<>();
+        floatAmountArray = new ArrayList<>();
         gatheringInfo = view.findViewById(R.id.gatheringUsers);
         if(recalculate){
             gatheringInfo.setVisibility(View.VISIBLE);
@@ -111,14 +109,16 @@ public class AmountPaidCtrl implements FragmentCtrl {
         ArrayList<String> list_x_axis_name = new ArrayList<>();
         int curUser = 0;
         for(int i = 0; i < userArray.size(); i++){
-            Log.d("test", userArray.get(curUser).getFirstName());
             list_x_axis_name.add(userArray.get(curUser).getFirstName());
-            amount += userArray.get(curUser).getFirstName() + ": " + floatArray.get(curUser) + "\n";
-            entries.add(new BarEntry(count, floatArray.get(curUser), userArray.get(curUser)));
+            Log.d("names in amount", userArray.get(curUser).toString());
+            amount += userArray.get(curUser).getFirstName() + ": " + floatAmountArray.get(curUser) + "\n";
+            entries.add(new BarEntry(count, floatAmountArray.get(curUser), userArray.get(curUser)));
             count += 1;
             curUser++;
         }
         amountview.setText(amount);
+        amount = "";
+
         XAxis xAxis = barChart.getXAxis();
         xAxis.setEnabled(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -190,12 +190,12 @@ public class AmountPaidCtrl implements FragmentCtrl {
                 doneCalculatingScreen(view);
             } else {
                 Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                floatArray.add(pair.getValue());
+                floatAmountArray.add(pair.getValue());
                 myDatabase.getUser(pair.getKey(), filler);
             }
         };
         Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-        floatArray.add(pair.getValue());
+        floatAmountArray.add(pair.getValue());
         myDatabase.getUser(pair.getKey(), filler);
     }
 }

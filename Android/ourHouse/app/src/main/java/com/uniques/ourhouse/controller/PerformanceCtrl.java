@@ -30,6 +30,7 @@ import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.model.User;
 import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
+import com.uniques.ourhouse.session.Settings;
 
 import org.bson.types.ObjectId;
 
@@ -41,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static android.graphics.Color.BLACK;
 
@@ -49,16 +51,20 @@ public class PerformanceCtrl implements FragmentCtrl {
     private int month;
     private int year;
     private String strMonth;
-    private TextView calculateTitle;
+    private TextView calculateTitle, gatheringInfo;
     private HashMap<ObjectId, Float> userAmountPaid;
     private HashMap<ObjectId, Float> userPerformance;
     private HashMap<ObjectId, Integer> userTasksCompleted;
     private ArrayList<String> userFees;
+    private ArrayList<User> userArray, userArray2;
+    private Consumer<User> filler, filler2;
+    private ArrayList<Float> floatPerformanceArray;
+    private ArrayList<Integer> intTaskCompletedArray;
+    private boolean recalculate;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private Float total = 0f;
-    private float count = (float)0.5;
 
     public PerformanceCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -66,44 +72,94 @@ public class PerformanceCtrl implements FragmentCtrl {
 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
+        userArray = new ArrayList<>();
+        userArray2 = new ArrayList<>();
+        floatPerformanceArray = new ArrayList<>();
+        intTaskCompletedArray = new ArrayList<>();
+        gatheringInfo = view.findViewById(R.id.gatheringUsers);
+        if (recalculate) {
+            gatheringInfo.setVisibility(View.VISIBLE);
+            DatabaseLink myDatabase = Session.getSession().getDatabase();
+            ObjectId houseId = Settings.OPEN_HOUSE.get();
+            ObjectId userId = Session.getSession().getLoggedInUserId();
+            myDatabase.getHouse(houseId, house -> {
+                house.populateStats(year, month, userId);
+                userAmountPaid = house.getUserAmountPaid();
+                userPerformance = house.getUserPoints();
+                userTasksCompleted = house.getTasksCompleted();
+                userFees = house.getUserFees();
+                gatheringUsers(view);
+            });
+        } else {
+            gatheringUsers(view);
+        }
+    }
+
+    private void doneCalculatingScreen(View view) {
         strMonth = months[month];
+        BarChart barChart;
+        PieChart pieChart;
+        barChart = (BarChart) view.findViewById(R.id.idBarChart);
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
+        Button leftButton = (Button) view.findViewById(R.id.left_button);
+        Button rightButton = (Button) view.findViewById(R.id.right_button);
 
+        Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(4);
+                activity.popFragment(FragmentId.GET(PerformanceFragment.TAG));
+            }
+        });
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(5);
+                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
+            }
+        });
+
+        float count = (float) 0.5;
+        Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<String> list_x_axis_name = new ArrayList<>();
+        int curUser = 0;
+        for (int i = 0; i < userArray.size(); i++) {
+            Log.d("array size", Integer.toString(i));
+            list_x_axis_name.add(userArray.get(curUser).getFirstName());
+            Log.d("names", userArray.get(curUser).toString());
+            entries.add(new BarEntry(count, intTaskCompletedArray.get(curUser), userArray.get(curUser)));
+            count += 1;
+            curUser++;
+        }
+
+        count = 0.5f;
+
+        for (int j = 0; j < floatPerformanceArray.size(); j++) {
+            total += floatPerformanceArray.get(j);
+        }
+
+        List<PieEntry> value = new ArrayList<>();
+        Iterator<Map.Entry<ObjectId, Float>> it2 = userPerformance.entrySet().iterator();
+        ArrayList<PieEntry> entries2 = new ArrayList<>();
+        curUser = 0;
+        for (int i = 0; i < userArray2.size(); i++) {
+            value.add(new PieEntry((float) (Math.round((floatPerformanceArray.get(curUser) / total) * 10000) / 100), userArray2.get(curUser)));
+            curUser++;
+        }
+
+        curUser = 0;
 
 //piechart
-        PieChart pieChart;
-
         pieChart = (PieChart) view.findViewById(R.id.idPieChart);
         pieChart.setUsePercentValues(true);
 
         pieChart.setHoleRadius(0f);
         pieChart.setTransparentCircleRadius(0f);
-
-        Log.d("do I die here?", "no");
-        if (!userTasksCompleted.isEmpty()) {
-            Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
-            Log.d("do I die here??", "no");
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                total += pair.getValue();
-            }
-        }
-
-        List<PieEntry> value = new ArrayList<>();
-        if (!userPerformance.isEmpty()) {
-            Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                myDatabase.getUser(pair.getKey(), user -> {
-                    value.add(new PieEntry((float)(Math.round((pair.getValue()/total)*10000)/100), user.getFirstName()));
-                });
-            }
-            total = 0f;
-        }
-
 
         PieDataSet pieDataSet = new PieDataSet(value, "");
         pieChart.setEntryLabelColor(BLACK);
@@ -111,43 +167,20 @@ public class PerformanceCtrl implements FragmentCtrl {
         pieChart.getDescription().setEnabled(false);
         PieData pieData = new PieData(pieDataSet);
 
-        if (value.size() != 0) {
+        pieDataSet.setDrawValues(true);
 
-            pieDataSet.setDrawValues(true);
+        pieChart.setData(pieData);
 
-            pieChart.setData(pieData);
+        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
 
-            pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        pieChart.animateXY(1500, 1500);
 
-            pieChart.animateXY(1500, 1500);
+        //pieChart.setTransparentCircleAlpha(0);
 
-            //pieChart.setTransparentCircleAlpha(0);
-
-            //addDataSet(pieChart);
-        }
-
+        //addDataSet(pieChart);
 
 //barchart
-        BarChart barChart;
-
         barChart = (BarChart) view.findViewById(R.id.idBarChart);
-
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        ArrayList<String> list_x_axis_name = new ArrayList<>();
-
-        if (!userTasksCompleted.isEmpty()) {
-            Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
-                myDatabase.getUser(pair.getKey(), user -> {
-                    list_x_axis_name.add(user.getFirstName());
-                    entries.add(new BarEntry(count, pair.getValue(), user.getFirstName()));
-                    count += 1;
-                });
-            }
-            count = (float)0.5;
-        }
 
         BarDataSet bardataset = new BarDataSet(entries, "");
         bardataset.setDrawValues(true);
@@ -184,29 +217,6 @@ public class PerformanceCtrl implements FragmentCtrl {
 
         barChart.invalidate(); //refresh
 
-
-
-
-        Button leftButton = (Button) view.findViewById(R.id.left_button);
-        Button rightButton = (Button) view.findViewById(R.id.right_button);
-
-        Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
-        leftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
-                activity.popFragment(FragmentId.GET(PerformanceFragment.TAG));
-            }
-        });
-        rightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
-            }
-        });
     }
 
     @Override
@@ -223,4 +233,73 @@ public class PerformanceCtrl implements FragmentCtrl {
     public void updateInfo() {
 
     }
+
+    public void gatheringUsers(View view) {
+        if (!userTasksCompleted.isEmpty()) gatheringUsers2(view);
+        Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
+        if (filler != null) {
+            return;
+        }
+        if (!it.hasNext()) {
+            gatheringInfo.setVisibility(View.GONE);
+            gatheringUsers2(view);
+            return;
+        }
+        filler = user -> {
+            if (user != null) {
+                userArray.add(user);
+            }
+            if (!it.hasNext()) {
+                filler = null;
+                Log.d("MyHousesCtrl", "All users are a go");
+                gatheringInfo.setVisibility(View.GONE);
+                gatheringUsers2(view);
+            } else {
+                Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
+                intTaskCompletedArray.add(pair.getValue());
+                Log.d("gathering1", pair.getKey().toString());
+                myDatabase.getUser(pair.getKey(), filler);
+            }
+        };
+        Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
+        intTaskCompletedArray.add(pair.getValue());
+        Log.d("gathering1", pair.getKey().toString());
+        myDatabase.getUser(pair.getKey(), filler);
+    }
+
+    public void gatheringUsers2(View view) {
+        if (!userPerformance.isEmpty()) doneCalculatingScreen(view);
+        float count = (float)0.5;
+        Iterator<Map.Entry<ObjectId, Float>> it2 = userPerformance.entrySet().iterator();
+        if (filler2 != null) {
+            return;
+        }
+        if (!it2.hasNext()) {
+            gatheringInfo.setVisibility(View.GONE);
+            doneCalculatingScreen(view);
+            return;
+        }
+        filler2 = user -> {
+            if (user != null) {
+                userArray2.add(user);
+            }
+            if (!it2.hasNext()) {
+                filler2 = null;
+                Log.d("MyHousesCtrl", "All users are a go");
+                gatheringInfo.setVisibility(View.GONE);
+                doneCalculatingScreen(view);
+            } else {
+                Map.Entry<ObjectId, Float> pair2 = (Map.Entry<ObjectId, Float>) it2.next();
+                floatPerformanceArray.add(pair2.getValue());
+                Log.d("gathering2", pair2.getKey().toString());
+                myDatabase.getUser(pair2.getKey(), filler2);
+            }
+        };
+        Map.Entry<ObjectId, Float> pair2 = (Map.Entry<ObjectId, Float>) it2.next();
+        floatPerformanceArray.add(pair2.getValue());
+        Log.d("gathering2", pair2.getKey().toString());
+        myDatabase.getUser(pair2.getKey(), filler2);
+    }
+
+
 }
