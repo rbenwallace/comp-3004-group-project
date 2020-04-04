@@ -91,7 +91,7 @@ public class Task extends ManageItem implements Indexable, Observable {
         json.putPrimitive("userId", manageItemOwner.toString());
         json.putPrimitive("houseId", manageItemHouse.toString());
         if (deletedDate != null) {
-            json.putPrimitive("deletedDate", deletedDate);
+            json.putPrimitive("deletedDate", deletedDate.getTime());
         }
         json.putPrimitive("name", name);
         json.putPrimitive("type", type);

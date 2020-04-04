@@ -214,8 +214,7 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                         onParse.accept(null);
                     }
                 });
-            }
-            else {
+            } else {
                 Log.d("CheckingHouses", task.getException().toString());
                 consumer.accept(houses);
             }
@@ -403,37 +402,37 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 .sort(new Document("dueDate", -1).append("title", 1))
                 .into(new ArrayList<>())
                 .addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                List<Document> docs = task.getResult();
-                List<Event> events = new ArrayList<>();
-                BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
-                    Consumer<Void> onParse = v -> {
+                    if (task.isSuccessful()) {
+                        List<Document> docs = task.getResult();
+                        List<Event> events = new ArrayList<>();
+                        BiConsumer<Document, BiConsumer> createNextEvent = (doc, next) -> {
+                            Consumer<Void> onParse = v -> {
+                                if (docs.isEmpty()) {
+                                    consumer.accept(events);
+                                } else {
+                                    next.accept(docs.remove(0), next);
+                                }
+                            };
+                            try {
+                                new Event().fromJSON(EasyJSON.parse(doc).getRootNode(), event -> {
+                                    events.add((Event) event);
+                                    onParse.accept(null);
+                                });
+                            } catch (EasyJSONException e) {
+                                Log.e(TAG, "Failed to findOne: ", e);
+                                onParse.accept(null);
+                            }
+                        };
                         if (docs.isEmpty()) {
                             consumer.accept(events);
                         } else {
-                            next.accept(docs.remove(0), next);
+                            createNextEvent.accept(docs.remove(0), createNextEvent);
                         }
-                    };
-                    try {
-                        new Event().fromJSON(EasyJSON.parse(doc).getRootNode(), event -> {
-                            events.add((Event) event);
-                            onParse.accept(null);
-                        });
-                    } catch (EasyJSONException e) {
-                        Log.e(TAG, "Failed to findOne: ", e);
-                        onParse.accept(null);
+                    } else {
+                        consumer.accept(null);
+                        Log.e(TAG, "Failed to findTasksFromHouse: ", task.getException());
                     }
-                };
-                if (docs.isEmpty()) {
-                    consumer.accept(events);
-                } else {
-                    createNextEvent.accept(docs.remove(0), createNextEvent);
-                }
-            } else {
-                consumer.accept(null);
-                Log.e(TAG, "Failed to findTasksFromHouse: ", task.getException());
-            }
-        });
+                });
     } //tested
 
     @SuppressWarnings("unchecked")
@@ -634,10 +633,6 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
         });
     } //tested
 
-    //Need to make, Ne
-//    public void getAllEventsSince(ObjectId houseId, Date tillDate, Consumer<List<Task>> consumer){}
-//    public void getAllTasksSince(ObjectId houseId, Date tillDate, Consumer<List<Task>> consumer){}
-//    public void getAllFeesSince(ObjectId houseId, Date tillDate, Consumer<List<Task>> consumer){}
     //House Content Grabs
     //Post---
     @Override
@@ -872,6 +867,24 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     } //tested
 
     @Override
+    public void deleteAllEventsFromHouseSince(ObjectId houseId, Date sinceDate, Consumer<Boolean> consumer) {
+        Document filterDoc = new Document()
+                .append("assignedHouse", houseId.toString())
+                .append("dueDate", BasicDBObjectBuilder.start("$gte", sinceDate.getTime()).get());
+        final com.google.android.gms.tasks.Task<RemoteDeleteResult> deleteTask = eventColl.deleteMany(filterDoc);
+        deleteTask.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                long numDeleted = task.getResult().getDeletedCount();
+                Log.d(TAG, String.format("successfully deleted %d documents", numDeleted));
+                consumer.accept(true);
+            } else {
+                Log.e(TAG, "failed to delete document with: ", task.getException());
+                consumer.accept(false);
+            }
+        });
+    }
+
+    @Override
     public void deleteUser(User user, Consumer<Boolean> consumer) {
         Consumer<String> failConsumer = name -> {
             Log.e(TAG, name + " failed");
@@ -1021,8 +1034,8 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                                 failConsumer.accept("deleteHouse");
                                 return;
                             }
-                            if(successful4)
-                            consumer.accept(true);
+                            if (successful4)
+                                consumer.accept(true);
                         });
                         user.removeHouse(house.getId());
                         updateUser(user, successful5 -> {
@@ -1244,16 +1257,16 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
     } //tested
 
     @Override
-    public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool){
+    public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool) {
         CLIENT.callFunction("Mailing_Function", Arrays.asList(email, firstName, friend, houseId.toString()), BsonValue.class)
-            .addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    bool.accept(true);
-                } else {
-                    Log.d("CheckingEmailSending", "MongoDB Err " + task.getException().toString());
-                    bool.accept(false);
-                }
-            });
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        bool.accept(true);
+                    } else {
+                        Log.d("CheckingEmailSending", "MongoDB Err " + task.getException().toString());
+                        bool.accept(false);
+                    }
+                });
     }
 
     private class FriendRequest {

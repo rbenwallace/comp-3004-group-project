@@ -60,8 +60,8 @@ public class EventService extends JobService {
                 if (failedEvents.isEmpty()) {
                     Log.i(TAG, "Finished Logic Successfully");
                 } else {
-                    Log.i(TAG, "Finished Logic with " + failedEvents.size()
-                            + " failedEvents= " + failedEvents);
+                    Log.i(TAG, "Finished Logic with " + failedEvents.size() +
+                            " failed events [" + failedEvents + "] ");
                 }
                 Settings.EVENT_SERVICE_LAST_UPDATE.set(System.currentTimeMillis());
             }
@@ -72,7 +72,6 @@ public class EventService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         if (runningLogic == null) return false;
-        Log.i(TAG, "Cancelling Logic");
         runningLogic.cancel(true);
         runningLogic = null;
         return true;
@@ -120,183 +119,198 @@ public class EventService extends JobService {
                     return;
                 }
                 Log.d(TAG, "Got open house object");
-                Log.d(TAG, "Fetching house tasks.. (might take a while)");
-                database.getAllTasksFromHouse(openHouse, tasks -> {
-                    if (isCancelled()) return;
-                    if (tasks == null) {
-                        onCompleteCallback.accept(new NullPointerException("getAllTasksFromHouse() failed"), null);
+
+                long now = System.currentTimeMillis();
+
+                Log.d(TAG, "Deleting all future events..");
+                database.deleteAllEventsFromHouseSince(openHouse, new Date(now), futureEventsDeleted -> {
+                    if (!futureEventsDeleted) {
+                        onCompleteCallback.accept(new Exception("Failed to delete future events"), null);
                         return;
                     }
-                    Log.d(TAG, "Got house tasks");
-
-                    List<ManageItem> items = new ArrayList<>(tasks);
-                    //noinspection UnusedAssignment
-                    tasks = null;
-
-                    database.getAllFeesFromHouse(openHouse, fees -> {
+                    Log.d(TAG, "All future events deleted");
+                    Log.d(TAG, "Fetching house tasks.. (might take a while)");
+                    database.getAllTasksFromHouse(openHouse, tasks -> {
                         if (isCancelled()) return;
-                        if (fees == null) {
-                            onCompleteCallback.accept(new NullPointerException("getAllFeesFromHouse() failed"), null);
+                        if (tasks == null) {
+                            onCompleteCallback.accept(new NullPointerException("getAllTasksFromHouse() failed"), null);
                             return;
                         }
-                        Log.d(TAG, "Got house fees");
+                        Log.d(TAG, "Got house tasks");
 
-                        while (!fees.isEmpty()) {
-                            items.add(fees.remove(0));
-                        }
+                        List<ManageItem> items = new ArrayList<>(tasks);
                         //noinspection UnusedAssignment
-                        fees = null;
+                        tasks = null;
 
-                        if (items.isEmpty()) {
-                            onCompleteCallback.accept(new Exception("No Tasks or Fees created in house"), null);
-                            return;
-                        }
+                        database.getAllFeesFromHouse(openHouse, fees -> {
+                            if (isCancelled()) return;
+                            if (fees == null) {
+                                onCompleteCallback.accept(new NullPointerException("getAllFeesFromHouse() failed"), null);
+                                return;
+                            }
+                            Log.d(TAG, "Got house fees");
 
-                        HashMap<Date, List<ManageItem>> occurrences = new HashMap<>();
+                            while (!fees.isEmpty()) {
+                                items.add(fees.remove(0));
+                            }
+                            //noinspection UnusedAssignment
+                            fees = null;
 
-                        Calendar cal = initializeMonth();
-                        Date lowerBound = cal.getTime();
-                        Date upperBound = upperBoundOfMonth(cal.getTime());
+                            if (items.isEmpty()) {
+                                onCompleteCallback.accept(new Exception("No Tasks or Fees created in house"), null);
+                                return;
+                            }
 
-                        for (ManageItem item : items) {
-                            Schedule schedule = item.getSchedule();
+                            HashMap<Date, List<ManageItem>> occurrences = new HashMap<>();
 
-                            Log.d(TAG, "Iterating over occurrences in {" + item + "}..");
+                            Calendar cal = initializeMonth();
+                            Date lowerBound = cal.getTime();
+                            Date upperBound = upperBoundOfMonth(cal.getTime());
 
-                            for (Date occurrence : schedule.finiteIterable(lowerBound, upperBound)) {
-                                Date dayOfOccurrence = initializeDueDay(occurrence);
+                            for (ManageItem item : items) {
+                                Schedule schedule = item.getSchedule();
 
-                                if (occurrences.containsKey(dayOfOccurrence)) {
-                                    //noinspection ConstantConditions
-                                    occurrences.get(dayOfOccurrence).add(item);
-                                } else {
-                                    ArrayList<ManageItem> l = new ArrayList<>();
-                                    l.add(item);
-                                    occurrences.put(dayOfOccurrence, l);
+                                Log.d(TAG, "Iterating over occurrences in {" + item + "}..");
+
+                                for (Date occurrence : schedule.finiteIterable(lowerBound, upperBound)) {
+                                    Date dayOfOccurrence = initializeDueDay(occurrence);
+
+                                    if (occurrences.containsKey(dayOfOccurrence)) {
+                                        //noinspection ConstantConditions
+                                        occurrences.get(dayOfOccurrence).add(item);
+                                    } else {
+                                        ArrayList<ManageItem> l = new ArrayList<>();
+                                        l.add(item);
+                                        occurrences.put(dayOfOccurrence, l);
+                                    }
                                 }
                             }
-                        }
 
-                        if (isCancelled()) return;
-
-                        Log.d(TAG, "Done iterating over items");
-
-                        House.Rotation rotation = house.getRotation();
-                        if (rotation.getRotation().isEmpty()) {
-                            onCompleteCallback.accept(new Exception("OPEN_HOUSE rotation list is empty"), null);
-                            return;
-                        }
-
-                        PriorityQueue<UsersDuties> results = new PriorityQueue<>();
-                        for (ObjectId userId : rotation) {
-                            results.add(new UsersDuties(userId, openHouse));
-                        }
-
-                        Log.d(TAG, "Assigning each gathered occurrence..");
-
-                        Iterator<Date> days = occurrences.keySet().iterator();
-                        Date curDay;
-                        while (days.hasNext()) {
-                            curDay = days.next();
-
-                            Log.d(TAG, "Assigning for day " + curDay + "...");
-
-                            PriorityQueue<ManageItem> daysDuties = new PriorityQueue<>(
-                                    (o1, o2) -> o2.getDifficulty() - o1.getDifficulty());
-                            daysDuties.addAll(occurrences.get(curDay));
-
-                            while (!daysDuties.isEmpty()) {
-                                //noinspection ConstantConditions
-                                results.peek().assignDuty(curDay, daysDuties.poll());
-                                results.offer(results.poll());
-                            }
-                        }
-
-                        Log.d(TAG, "Done assigning");
-                        Log.d(TAG, "Generating event objects..");
-
-                        List<Event> events = new ArrayList<>();
-                        for (UsersDuties result : results) {
-                            events.addAll(result.createEvents());
-                        }
-
-                        Log.d(TAG, "Done generating event objects");
-
-                        if (isCancelled()) return;
-                        if (events.isEmpty()) {
-                            onCompleteCallback.accept(new Exception("generated event list was empty"), null);
-                            return;
-                        }
-
-                        long now = System.currentTimeMillis();
-                        List<Event> failedEvents = new ArrayList<>();
-
-                        // eventPair = { fetchedEvent, orgEvent }
-                        BiConsumer<Pair<Event, Event>, BiConsumer> batchConsumer = (eventPair, next) -> {
                             if (isCancelled()) return;
 
-                            Event fetchedEvent = eventPair.first;
-                            Event orgEvent = eventPair.second;
+                            Log.d(TAG, "Done iterating over items");
 
-                            BiConsumer<Boolean, Event> putterConsumer = (success, event) -> {
+                            House.Rotation rotation = house.getRotation();
+                            if (rotation.getRotation().isEmpty()) {
+                                onCompleteCallback.accept(new Exception("OPEN_HOUSE rotation list is empty"), null);
+                                return;
+                            }
+
+                            PriorityQueue<UsersDuties> results = new PriorityQueue<>();
+                            for (ObjectId userId : rotation) {
+                                results.add(new UsersDuties(userId, openHouse));
+                            }
+
+                            Log.d(TAG, "Assigning each gathered occurrence..");
+
+                            Iterator<Date> days = occurrences.keySet().iterator();
+                            Date curDay;
+                            while (days.hasNext()) {
+                                curDay = days.next();
+
+                                Log.d(TAG, "Assigning for day " + curDay + "...");
+
+                                PriorityQueue<ManageItem> daysDuties = new PriorityQueue<>(
+                                        (o1, o2) -> o2.getDifficulty() - o1.getDifficulty());
+                                daysDuties.addAll(occurrences.get(curDay));
+
+                                while (!daysDuties.isEmpty()) {
+                                    //noinspection ConstantConditions
+                                    results.peek().assignDuty(curDay, daysDuties.poll());
+                                    results.offer(results.poll());
+                                }
+                            }
+
+                            Log.d(TAG, "Done assigning");
+                            Log.d(TAG, "Generating event objects..");
+
+                            List<Event> events = new ArrayList<>();
+                            for (UsersDuties result : results) {
+                                events.addAll(result.createEvents());
+                            }
+
+                            Log.d(TAG, "Done generating event objects");
+
+                            if (isCancelled()) return;
+                            if (events.isEmpty()) {
+                                onCompleteCallback.accept(new Exception("generated event list was empty"), null);
+                                return;
+                            }
+
+                            List<Event> failedEvents = new ArrayList<>();
+
+                            // eventPair = { fetchedEvent, orgEvent }
+                            BiConsumer<Pair<Event, Event>, BiConsumer> batchConsumer = (eventPair, next) -> {
                                 if (isCancelled()) return;
-                                if (!success) {
-                                    failedEvents.add(event);
-                                }
-                                if (events.isEmpty()) {
-                                    // COMPLETE
-                                    onCompleteCallback.accept(null, failedEvents);
-                                } else {
-                                    Event nextEvent = events.remove(0);
-                                    //noinspection unchecked
-                                    database.getHouseEventOnDay(
-                                            openHouse,
-                                            nextEvent.getAssociatedTask(),
-                                            nextEvent.getDueDate(),
-                                            e -> next.accept(new Pair<>(e, nextEvent), next)
-                                    );
-                                }
-                            };
 
-                            // event doesn't exist yet
-                            if (fetchedEvent == null) {
-                                // post a new one
-                                database.postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
-                                return;
-                            }
+                                Event fetchedEvent = eventPair.first;
+                                Event orgEvent = eventPair.second;
 
-                            // event is in the past (we don't update past events)
-                            if (fetchedEvent.getDueDate().getTime() < now) {
-                                // mark event as successful
-                                putterConsumer.accept(true, null);
-                                return;
-                            }
+                                BiConsumer<Boolean, Event> putterConsumer = (success, event) -> {
+                                    if (isCancelled()) return;
+                                    if (!success) {
+                                        failedEvents.add(event);
+                                    }
+                                    if (events.isEmpty()) {
+                                        // COMPLETE
+                                        onCompleteCallback.accept(null, failedEvents);
+                                    } else {
+                                        Event nextEvent = events.remove(0);
+                                        //noinspection unchecked
+                                        database.getHouseEventOnDay(
+                                                openHouse,
+                                                nextEvent.getAssociatedTask(),
+                                                nextEvent.getDueDate(),
+                                                e -> next.accept(new Pair<>(e, nextEvent), next)
+                                        );
+                                    }
+                                };
 
-                            // event is in the future, delete old event and post a new one
-                            database.deleteEvent(fetchedEvent, deleted -> {
-                                if (!deleted) {
-                                    // old event must be deleted to count as a success
-                                    putterConsumer.accept(false, orgEvent);
+                                // event doesn't exist yet
+                                if (fetchedEvent == null) {
+                                    // post a new one
+                                    database.postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
                                     return;
                                 }
-                                // post the new event
-                                database.postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
-                            });
-                        };
 
-                        Log.d(TAG, "Posting (non-existent) events to database.. (might take a while)");
+                                // event is in the past (we don't update past events)
+                                if (fetchedEvent.getDueDate().getTime() < now) {
+                                    // mark event as successful
+                                    putterConsumer.accept(true, null);
+                                    return;
+                                }
 
-                        Event firstEvent = events.remove(0);
-                        database.getHouseEventOnDay(
-                                openHouse,
-                                firstEvent.getAssociatedTask(),
-                                firstEvent.getDueDate(),
-                                event -> batchConsumer.accept(new Pair<>(event, firstEvent), batchConsumer)
-                        );
+                                // event is in the future, delete old event and post a new one
+                                database.deleteEvent(fetchedEvent, deleted -> {
+                                    if (!deleted) {
+                                        // old event must be deleted to count as a success
+                                        putterConsumer.accept(false, orgEvent);
+                                        return;
+                                    }
+                                    // post the new event
+                                    database.postEvent(orgEvent, success -> putterConsumer.accept(success, orgEvent));
+                                });
+                            };
+
+                            Log.d(TAG, "Posting (non-existent) events to database.. (might take a while)");
+
+                            Event firstEvent = events.remove(0);
+                            database.getHouseEventOnDay(
+                                    openHouse,
+                                    firstEvent.getAssociatedTask(),
+                                    firstEvent.getDueDate(),
+                                    event -> batchConsumer.accept(new Pair<>(event, firstEvent), batchConsumer)
+                            );
+                        });
                     });
                 });
             });
             return null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            Log.i(TAG, "Cancelling Logic");
         }
 
         private Calendar initializeMonth() {

@@ -174,7 +174,8 @@ public class EditTaskCtrl implements FragmentCtrl {
         deleteTask.setOnClickListener(view123 -> {
             myDatabase.getTask(currentTask, deleteTask -> {
                 deleteTask.setDeletedDate(Calendar.getInstance().getTime());
-                myDatabase.updateTask(deleteTask, deleteBool -> {
+//                myDatabase.updateTask(deleteTask, deleteBool -> {
+                myDatabase.deleteTask(deleteTask, deleteBool -> {
                     if (deleteBool) {
                         Log.d(EditTaskFragment.TAG, "Task delete date set in the Database");
                         Toast.makeText(activity, "Task Deleted", Toast.LENGTH_SHORT).show();
