@@ -147,7 +147,6 @@ public class EventService extends JobService {
                         fees = null;
 
                         if (items.isEmpty()) {
-
                             onCompleteCallback.accept(new Exception("No Tasks or Fees created in house"), null);
                             return;
                         }
