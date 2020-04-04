@@ -28,6 +28,8 @@ public class Splash extends AppCompatActivity {
             Session.getSession().getDatabase().getUser(Session.getSession().getLoggedInUserId(), user -> {
                 if (user == null) {
                     Toast.makeText(this, "Failed to get loggedInUser object", Toast.LENGTH_LONG).show();
+                    Log.d("Splash", "launching LS_Main");
+                    delayStart(this, LS_Main.class);
                 } else {
                     Log.d("Splash", user.toString());
                     Session.getSession().setLoggedInUser(user);

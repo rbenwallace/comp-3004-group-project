@@ -28,6 +28,8 @@ import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.PerformanceFragment;
 import com.uniques.ourhouse.model.User;
+import com.uniques.ourhouse.session.DatabaseLink;
+import com.uniques.ourhouse.session.Session;
 
 import org.bson.types.ObjectId;
 
@@ -54,9 +56,8 @@ public class PerformanceCtrl implements FragmentCtrl {
     private ArrayList<String> userFees;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
-    //for jon
-    HashMap<User, Float> points;
-    HashMap<User, Float> amounts;
+    private DatabaseLink myDatabase = Session.getSession().getDatabase();
+    private Float total;
 
     public PerformanceCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -64,8 +65,6 @@ public class PerformanceCtrl implements FragmentCtrl {
 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
-        points = new HashMap<>();
-        amounts = new HashMap<>();
         strMonth = months[month];
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
@@ -94,20 +93,6 @@ public class PerformanceCtrl implements FragmentCtrl {
             }
         });
 
-        //testing
-        User ben = new User("ben", "a", "1");
-        User seb = new User("seb", "b", "2");
-        User jon = new User("jon", "c", "3");
-        User victor = new User("victor", "d", "4");
-        User barry = new User("barry", "e", "5");
-        User tester = new User ("tester", "f", "6");
-        points.put(jon, (float)32);
-        points.put(victor, (float)82);
-        points.put(ben, (float)11);
-        points.put(seb, (float)34);
-        points.put(barry, (float)32);
-        points.put(tester, (float)1);
-
 
 
         pieChart = (PieChart) view.findViewById(R.id.idPieChart);
@@ -116,24 +101,25 @@ public class PerformanceCtrl implements FragmentCtrl {
         pieChart.setHoleRadius(0f);
         pieChart.setTransparentCircleRadius(0f);
 
-        int total = 0;
-        if (!points.isEmpty()) {
-            Iterator<Map.Entry<User, Float>> it = points.entrySet().iterator();
+        if (!userTasksCompleted.isEmpty()) {
+            Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
             while(it.hasNext())
             {
-                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
                 total += pair.getValue();
             }
         }
 
         List<PieEntry> value = new ArrayList<>();
-        if (!points.isEmpty()) {
+        if (!userPerformance.isEmpty()) {
             int count = 0;
-            Iterator<Map.Entry<User, Float>> it = points.entrySet().iterator();
+            Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
             while(it.hasNext())
             {
-                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
-                value.add(new PieEntry((Math.round((pair.getValue()/total)*1000)/10), pair.getKey().getFirstName()));
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+                myDatabase.getUser(pair.getKey(), user -> {
+                    value.add(new PieEntry((float)(Math.round((pair.getValue()/total)*10000)/100), user.getFirstName()));
+                });
                 count += 1;
             }
         }
@@ -164,14 +150,15 @@ public class PerformanceCtrl implements FragmentCtrl {
         ArrayList<BarEntry> entries = new ArrayList<>();
         ArrayList<String> list_x_axis_name = new ArrayList<>();
 
-        if (!points.isEmpty()) {
+        if (!userTasksCompleted.isEmpty()) {
             float count = (float)0.5;
-            Iterator<Map.Entry<User, Float>> it = points.entrySet().iterator();
+            Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
             while(it.hasNext())
             {
-                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
-                list_x_axis_name.add(pair.getKey().getFirstName());
-                entries.add(new BarEntry(count, pair.getValue(), pair.getKey().getFirstName()));
+                Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
+                myDatabase.getUser(pair.getKey(), user -> {
+                    list_x_axis_name.add(user.getFirstName());
+                });
                 count += 1;
             }
         }

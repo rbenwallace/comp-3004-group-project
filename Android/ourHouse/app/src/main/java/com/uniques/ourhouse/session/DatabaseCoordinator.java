@@ -107,6 +107,7 @@ class DatabaseCoordinator implements DatabaseLink {
             if (user != null) {
                 localDatabase.postUser(user, success -> {
                     if (success) {
+                        Log.d("Checking Internet", "User Cached");
                         notifyModelCached(user.getId());
                         if (user.getId().equals(Session.getSession().getLoggedInUserId())) {
                             Session.getSession().setLoggedInUser(user);
@@ -119,17 +120,34 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getUser(id, user -> {
-                if (user != null) {
-                    consumer.accept(user);
-                } else {
-                    if (networkAvailable()) remoteDatabase.getUser(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if(networkAvailable()){
+                Log.d("Checking Internet", "User Grabbed from remote");
+                remoteDatabase.getUser(id, networkConsumer);
+            }
+            else
+            {
+                localDatabase.getUser(id, user -> {
+                    if (user != null){
+                        Log.d("Checking Internet", "User Grabbed from local");
+                        consumer.accept(user);
+                    }
+                    else {
+                        if (networkAvailable()) {
+                            Log.d("Checking Internet", "User Grabbed from remote");
+                            remoteDatabase.getUser(id, networkConsumer);
+                        }
+                        else {
+                            Log.d("Checking Internet", "User No database");
+                            consumer.accept(null);
+                        }
+                    }
+                });
+            }
         } else if (networkAvailable()) {
+            Log.d("Checking Internet", "User Grabbed from remote");
             remoteDatabase.getUser(id, networkConsumer);
         } else {
+            Log.d("Checking Internet", "User No database");
             consumer.accept(null);
         }
     }
@@ -227,7 +245,10 @@ class DatabaseCoordinator implements DatabaseLink {
         Consumer<House> networkConsumer = house -> {
             if (house != null) {
                 localDatabase.postHouse(house, success -> {
-                    if (success) notifyModelCached(house.getId());
+                    if (success) {
+                        Log.d("Checking Internet", "House Cached");
+                        notifyModelCached(house.getId());
+                    }
                     consumer.accept(house);
                 });
             } else {
@@ -235,16 +256,34 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getHouse(id, user -> {
-                if (user != null) consumer.accept(user);
-                else {
-                    if (networkAvailable()) remoteDatabase.getHouse(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if(networkAvailable()){
+                Log.d("Checking Internet", "Good");
+                remoteDatabase.getHouse(id, networkConsumer);
+            }
+            else{
+                Log.d("Checking Internet", "House Bad intenet grab from local");
+                localDatabase.getHouse(id, user -> {
+                    if (user != null){
+                        Log.d("Checking Internet", "House grab from local");
+                        consumer.accept(user);
+                    }
+                    else {
+                        if (networkAvailable()){
+                            Log.d("Checking Internet", "House grab from Remote");
+                            remoteDatabase.getHouse(id, networkConsumer);
+                        }
+                        else {
+                            Log.d("Checking Internet", "House No Database");
+                            consumer.accept(null);
+                        }
+                    }
+                });
+            }
         } else if (networkAvailable()) {
+            Log.d("Checking Internet", "Good");
             remoteDatabase.getHouse(id, networkConsumer);
         } else {
+            Log.d("Checking Internet", "Bad and Model is not cached");
             consumer.accept(null);
         }
     }
