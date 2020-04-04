@@ -271,11 +271,11 @@ public class EditTaskCtrl implements FragmentCtrl {
                 schedule.setEndType(Schedule.EndType.AFTER_TIMES);
             }
             Task task;
-            if(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis() && oldSchedule.getRepeatSchedule().getDelay() == schedule.getRepeatSchedule().getDelay()){
-                task = new Task(taskId, userId, houseId, name, oldSchedule, selectedDifficultyNum);
+            if(schedule.getEndType().equals(Schedule.EndType.ON_DATE) || !(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis() && oldSchedule.getRepeatSchedule().getDelay() == schedule.getRepeatSchedule().getDelay())){
+                task = new Task(taskId, userId, houseId, name, schedule, selectedDifficultyNum);
             }
             else{
-                task = new Task(taskId, userId, houseId, name, schedule, selectedDifficultyNum);
+                task = new Task(taskId, userId, houseId, name, oldSchedule, selectedDifficultyNum);
             }
             myDatabase.updateTask(task, bool -> {
                 if (bool) {

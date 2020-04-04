@@ -80,7 +80,7 @@ public class EditFeeCtrl implements FragmentCtrl {
         feeAmount = view.findViewById(R.id.addFee_editAmount);
         feeTaxRate = view.findViewById(R.id.addFee_editTaxRate);
 
-        feeViewTitle.setText("Edit Task");
+        feeViewTitle.setText("Edit Fee");
         saveFee.setText("SAVE");
 
         //onceButton.setVisibility(View.INVISIBLE);
@@ -237,11 +237,11 @@ public class EditFeeCtrl implements FragmentCtrl {
                 schedule.setEndType(Schedule.EndType.AFTER_TIMES);
             }
             Fee fee;
-            if(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis() && oldSchedule.getRepeatSchedule().getDelay() == schedule.getRepeatSchedule().getDelay()){
-                fee = new Fee(userId, houseId, name, amount, oldSchedule);
+            if(schedule.getEndType().equals(Schedule.EndType.ON_DATE) || !(sameSchedule == schedule.getRepeatSchedule().getRepeatBasis() && oldSchedule.getRepeatSchedule().getDelay() == schedule.getRepeatSchedule().getDelay())){
+                fee = new Fee(feeId, userId, houseId, name, amount, schedule);
             }
             else{
-                fee = new Fee(userId, houseId, name, amount, schedule);
+                fee = new Fee(feeId, userId, houseId, name, amount, oldSchedule);
             }
             myDatabase.updateFee(fee, bool -> {
                 if (bool) {
