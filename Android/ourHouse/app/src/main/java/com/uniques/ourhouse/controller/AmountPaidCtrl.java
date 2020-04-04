@@ -56,6 +56,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     public void init(View view) {
+
         if(recalculate){
             DatabaseLink myDatabase = Session.getSession().getDatabase();
             ObjectId houseId = Settings.OPEN_HOUSE.get();
@@ -72,28 +73,11 @@ public class AmountPaidCtrl implements FragmentCtrl {
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
 
+
+
         BarChart barChart;
-
-        Button leftButton = (Button) view.findViewById(R.id.left_button);
-        Button rightButton = (Button) view.findViewById(R.id.right_button);
-
-        leftButton.setVisibility(View.GONE);
-
-        Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
-        rightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(5);
-                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
-            }
-        });
-
         TextView amountview = (TextView) view.findViewById(R.id.amount);
-
-
         barChart = (BarChart) view.findViewById(R.id.idBarChart);
-
 
         ArrayList<BarEntry> entries = new ArrayList<>();
         ArrayList<String> list_x_axis_name = new ArrayList<>();
@@ -121,14 +105,6 @@ public class AmountPaidCtrl implements FragmentCtrl {
             amountview.setText(amount);
         }
 
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setEnabled(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        barChart.getXAxis().setAvoidFirstLastClipping(true);
-        barChart.getXAxis().setCenterAxisLabels(true);
-        xAxis.setGranularity(1f);
-        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
-
         BarDataSet bardataset = new BarDataSet(entries, "label");
         bardataset.setDrawValues(false);
 
@@ -137,9 +113,14 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
         bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
 
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setAvoidFirstLastClipping(true);
+        barChart.getXAxis().setCenterAxisLabels(true);
+        xAxis.setGranularity(1f);
+        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
 
-
-        //BarData data = new BarData(bars);
         data.setBarWidth(0.6f); //how thick
         barChart.setData(data);
         barChart.getXAxis().setDrawGridLines(false);
@@ -155,6 +136,23 @@ public class AmountPaidCtrl implements FragmentCtrl {
         barChart.setDoubleTapToZoomEnabled(false);
         barChart.setPinchZoom(false);
 
+
+
+
+        Button leftButton = (Button) view.findViewById(R.id.left_button);
+        Button rightButton = (Button) view.findViewById(R.id.right_button);
+
+        leftButton.setVisibility(View.GONE);
+
+        Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO NAVIGATE TO NEXT FRAGMENT
+//                ((LS_Main) activity).setViewPager(5);
+                activity.pushFragment(FragmentId.GET(PerformanceFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
+            }
+        });
     }
 
     @Override
