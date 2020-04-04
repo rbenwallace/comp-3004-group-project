@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class House implements Indexable, Observable {
+    public static final String TAG = "HouseModel";
     @NonNull
     private ObjectId houseId;
     @NonNull
@@ -50,6 +51,7 @@ public class House implements Indexable, Observable {
 
     private HashMap<ObjectId, Integer> tasksCompleted;
     private ArrayList<String> userFees;
+    private int count;
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
 
@@ -155,13 +157,14 @@ public class House implements Indexable, Observable {
     public void populateStats(int year, int month, ObjectId taskUser){
         initHouseEvents();
         myDatabase.getAllEventsFromHouse(houseId, events -> {
+            int newNum = 0;
+            count = events.size();
             for(Event event : events){
                 if(event.getDateCompleted() != null){
                     ObjectId eventUser = event.getAssignedTo();
                     String strYear = (String) DateFormat.format("yyyy", event.getDateCompleted());
                     int tempYear = Integer.parseInt(strYear);
                     int tempMonth = event.getDateCompleted().getMonth();
-                    System.out.println("wallace check " + event.getType() + " " + tempMonth + " " + month + " " + tempYear  + " " + year);
                     if((event.getType() == 0) && (tempMonth == month) && (tempYear == year)){
                         myDatabase.getTask(event.getAssociatedTask(), task -> {
                             int completed =  tasksCompleted.get(eventUser) + 1;
@@ -193,18 +196,23 @@ public class House implements Indexable, Observable {
                         });
                     }
                     else if(event.getType() == 1 && (tempMonth == month) && (tempYear == year)){
-                        System.out.println("wallace gets here");
                         myDatabase.getFee(event.getAssociatedTask(), fee -> {
                             String userFee = "Amt: " + String.valueOf(fee.getAmount()) + " - " + fee.getName();
                             if(eventUser.equals(taskUser)){
                                 userFees.add(userFee);
                             }
                             float num = (float) (userAmountPaid.get(eventUser) + fee.getAmount());
-                            System.out.println("wallace gets num " + " " + eventUser + " " +  num);
                             userAmountPaid.put(eventUser, num);
                         });
                     }
                 }
+                if(newNum == events.size()-1){
+                    Log.d(House.TAG, "Fee list: " + userFees);
+                    Log.d(House.TAG, "Amountpaid: " + userAmountPaid);
+                    Log.d(House.TAG, "Performance: " + userPoints);
+                    Log.d(House.TAG, "Task completed: " + tasksCompleted);
+                }
+                newNum++;
             }
         });
     }
