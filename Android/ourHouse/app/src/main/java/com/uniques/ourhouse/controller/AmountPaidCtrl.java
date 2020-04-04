@@ -77,6 +77,8 @@ public class AmountPaidCtrl implements FragmentCtrl {
         Button leftButton = (Button) view.findViewById(R.id.left_button);
         Button rightButton = (Button) view.findViewById(R.id.right_button);
 
+        leftButton.setVisibility(View.GONE);
+
         Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
