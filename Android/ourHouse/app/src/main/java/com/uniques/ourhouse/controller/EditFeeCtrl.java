@@ -98,6 +98,12 @@ public class EditFeeCtrl implements FragmentCtrl {
 
         myDatabase.getFee(feeId, fee -> {
             Log.d(EditFeeFragment.TAG, "Trying to get Fee from database");
+            if(fee == null){
+                Log.d(EditFeeFragment.TAG, "Fee not received from the Database");
+                Toast.makeText(activity, "Fee not found", Toast.LENGTH_SHORT).show();
+                activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
+                return;
+            }
             currentFee = fee;
             feeName.setText(fee.getName());
             feeAmount.setText(String.valueOf(fee.getAmount()));
@@ -128,6 +134,7 @@ public class EditFeeCtrl implements FragmentCtrl {
                 if (deleteBool) {
                     Log.d(EditFeeFragment.TAG, "Fee deleted from the Database");
                     Toast.makeText(activity, "Fee Deleted", Toast.LENGTH_SHORT).show();
+                    Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
                     activity.popFragment(FragmentId.GET(EditFeeFragment.TAG));
                 } else {
                     Log.d(EditFeeFragment.TAG, "Fee not deleted in the  Database");

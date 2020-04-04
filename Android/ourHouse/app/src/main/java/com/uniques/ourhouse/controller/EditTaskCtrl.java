@@ -99,6 +99,12 @@ public class EditTaskCtrl implements FragmentCtrl {
 
         myDatabase.getTask(taskId, task -> {
             Log.d(EditTaskFragment.TAG, "Trying to get Task from database");
+            if(task == null){
+                Log.d(EditTaskFragment.TAG, "Task not received from the Database");
+                Toast.makeText(activity, "Task not found", Toast.LENGTH_SHORT).show();
+                activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
+                return;
+            }
             currentTask = task;
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
@@ -170,6 +176,7 @@ public class EditTaskCtrl implements FragmentCtrl {
                 if (deleteBool) {
                     Log.d(EditTaskFragment.TAG, "Task deleted from the Database");
                     Toast.makeText(activity, "Task Deleted", Toast.LENGTH_SHORT).show();
+                    Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
                     activity.popFragment(FragmentId.GET(EditTaskFragment.TAG));
                 } else {
                     Log.d(EditTaskFragment.TAG, "Task not deleted in the  Database");
