@@ -58,6 +58,7 @@ public class PerformanceCtrl implements FragmentCtrl {
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private Float total;
+    private float count = (float)0.5;
 
     public PerformanceCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -69,8 +70,115 @@ public class PerformanceCtrl implements FragmentCtrl {
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
 
+
+//piechart
         PieChart pieChart;
+
+        pieChart = (PieChart) view.findViewById(R.id.idPieChart);
+        pieChart.setUsePercentValues(true);
+
+        pieChart.setHoleRadius(0f);
+        pieChart.setTransparentCircleRadius(0f);
+
+        if (!userTasksCompleted.isEmpty()) {
+            Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+                total += pair.getValue();
+            }
+        }
+
+        List<PieEntry> value = new ArrayList<>();
+        if (!userPerformance.isEmpty()) {
+            Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+                myDatabase.getUser(pair.getKey(), user -> {
+                    value.add(new PieEntry((float)(Math.round((pair.getValue()/total)*10000)/100), user.getFirstName()));
+                });
+            }
+            total = 0f;
+        }
+
+        PieDataSet pieDataSet = new PieDataSet(value, "");
+        pieDataSet.setDrawValues(true);
+        pieChart.setEntryLabelColor(BLACK);
+        pieChart.setDrawEntryLabels(false);
+        pieChart.getDescription().setEnabled(false);
+        PieData pieData = new PieData(pieDataSet);
+
+        pieChart.setData(pieData);
+
+        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+
+        pieChart.animateXY(1500, 1500);
+
+        //pieChart.setTransparentCircleAlpha(0);
+
+        //addDataSet(pieChart);
+
+
+//barchart
         BarChart barChart;
+
+        barChart = (BarChart) view.findViewById(R.id.idBarChart);
+
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<String> list_x_axis_name = new ArrayList<>();
+
+        if (!userTasksCompleted.isEmpty()) {
+            Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
+                myDatabase.getUser(pair.getKey(), user -> {
+                    list_x_axis_name.add(user.getFirstName());
+                    entries.add(new BarEntry(count, pair.getValue(), user.getFirstName()));
+                    count += 1;
+                });
+            }
+            count = 0;
+        }
+
+        BarDataSet bardataset = new BarDataSet(entries, "");
+        bardataset.setDrawValues(true);
+
+        BarData data = new BarData(bardataset);
+        barChart.setData(data);
+
+        bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
+
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setAvoidFirstLastClipping(true);
+        barChart.getXAxis().setCenterAxisLabels(true);
+        xAxis.setGranularity(1f);
+        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
+
+        //BarData data = new BarData(bars);
+        data.setBarWidth(0.6f); //how thick
+        barChart.setData(data);
+        barChart.getXAxis().setDrawGridLines(false);
+        barChart.getXAxis().setDrawAxisLine(false);
+        barChart.getAxisRight().setDrawAxisLine(false);
+        barChart.getAxisRight().setDrawLabels(false);
+        barChart.getXAxis().setDrawLabels(true);
+        barChart.getLegend().setEnabled(false);
+        barChart.getDescription().setEnabled(false);
+        barChart.setScaleEnabled(true);
+        barChart.setFitBars(true); //make x-axis fit exactly all bars
+        barChart.setHighlightFullBarEnabled(false);
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(false);
+
+        barChart.invalidate(); //refresh
+
+
+
 
         Button leftButton = (Button) view.findViewById(R.id.left_button);
         Button rightButton = (Button) view.findViewById(R.id.right_button);
@@ -92,113 +200,6 @@ public class PerformanceCtrl implements FragmentCtrl {
                 activity.pushFragment(FragmentId.GET(CalculateAmountToPayFragment.TAG), month, year, userAmountPaid, userPerformance, userTasksCompleted, userFees);
             }
         });
-
-
-
-        pieChart = (PieChart) view.findViewById(R.id.idPieChart);
-        pieChart.setUsePercentValues(true);
-
-        pieChart.setHoleRadius(0f);
-        pieChart.setTransparentCircleRadius(0f);
-
-        if (!userTasksCompleted.isEmpty()) {
-            Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                total += pair.getValue();
-            }
-        }
-
-        List<PieEntry> value = new ArrayList<>();
-        if (!userPerformance.isEmpty()) {
-            int count = 0;
-            Iterator<Map.Entry<ObjectId, Float>> it = userPerformance.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                myDatabase.getUser(pair.getKey(), user -> {
-                    value.add(new PieEntry((float)(Math.round((pair.getValue()/total)*10000)/100), user.getFirstName()));
-                });
-                count += 1;
-            }
-        }
-
-        PieDataSet pieDataSet = new PieDataSet(value, "");
-        pieDataSet.setDrawValues(true);
-        pieChart.setEntryLabelColor(BLACK);
-        pieChart.setDrawEntryLabels(false);
-        pieChart.getDescription().setEnabled(false);
-        PieData pieData = new PieData(pieDataSet);
-
-        pieChart.setData(pieData);
-
-        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-
-        pieChart.animateXY(1500, 1500);
-
-        //pieChart.setTransparentCircleAlpha(0);
-
-        //addDataSet(pieChart);
-
-
-
-
-
-        barChart = (BarChart) view.findViewById(R.id.idBarChart);
-
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        ArrayList<String> list_x_axis_name = new ArrayList<>();
-
-        if (!userTasksCompleted.isEmpty()) {
-            float count = (float)0.5;
-            Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
-                myDatabase.getUser(pair.getKey(), user -> {
-                    list_x_axis_name.add(user.getFirstName());
-                });
-                count += 1;
-            }
-        }
-
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setEnabled(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        barChart.getXAxis().setAvoidFirstLastClipping(true);
-        barChart.getXAxis().setCenterAxisLabels(true);
-        xAxis.setGranularity(1f);
-        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
-
-
-        BarDataSet bardataset = new BarDataSet(entries, "");
-        bardataset.setDrawValues(true);
-
-        BarData data = new BarData(bardataset);
-        barChart.setData(data);
-
-        bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
-
-
-        //BarData data = new BarData(bars);
-        data.setBarWidth(0.6f); //how thick
-        barChart.setData(data);
-        barChart.getXAxis().setDrawGridLines(false);
-        barChart.getXAxis().setDrawAxisLine(false);
-        barChart.getAxisRight().setDrawAxisLine(false);
-        barChart.getAxisRight().setDrawLabels(false);
-        barChart.getXAxis().setDrawLabels(true);
-        barChart.getLegend().setEnabled(false);
-        barChart.getDescription().setEnabled(false);
-        barChart.setScaleEnabled(true);
-        barChart.setFitBars(true); //make x-axis fit exactly all bars
-        barChart.setHighlightFullBarEnabled(false);
-        barChart.setDoubleTapToZoomEnabled(false);
-        barChart.setPinchZoom(false);
-
-        barChart.invalidate(); //refresh
-
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.uniques.ourhouse.model;
 
+import android.annotation.SuppressLint;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.uniques.ourhouse.session.DatabaseLink;
@@ -13,6 +15,7 @@ import com.uniques.ourhouse.util.easyjson.SafeJSONElementType;
 
 import org.bson.types.ObjectId;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -149,46 +152,55 @@ public class House implements Indexable, Observable {
         }
     }
 
-    public void populateStats(int year, int month, ObjectId taskUser) {
+    public void populateStats(int year, int month, ObjectId taskUser){
         initHouseEvents();
         myDatabase.getAllEventsFromHouse(houseId, events -> {
-            for (Event event : events) {
-                if (event.getDateCompleted() != null) {
+            for(Event event : events){
+                if(event.getDateCompleted() != null){
                     ObjectId eventUser = event.getAssignedTo();
-                    int tempYear = event.getDateCompleted().getYear();
+                    String strYear = (String) DateFormat.format("yyyy", event.getDateCompleted());
+                    int tempYear = Integer.parseInt(strYear);
                     int tempMonth = event.getDateCompleted().getMonth();
-                    if ((event.getType() == 0) && (tempMonth == month) && (tempYear == year)) {
+                    System.out.println("wallace check " + event.getType() + " " + tempMonth + " " + month + " " + tempYear  + " " + year);
+                    if((event.getType() == 0) && (tempMonth == month) && (tempYear == year)){
                         myDatabase.getTask(event.getAssociatedTask(), task -> {
-                            int completed = tasksCompleted.get(eventUser) + 1;
+                            int completed =  tasksCompleted.get(eventUser) + 1;
                             tasksCompleted.put(eventUser, completed);
-                            if (showTaskDifficulty && penalizeLateTasks) {
-                                if (event.getDueDate().after(event.getDateCompleted())) {
+                            if(showTaskDifficulty && penalizeLateTasks){
+                                if(event.getDueDate().after(event.getDateCompleted())){
                                     float num = (float) (userPoints.get(eventUser) + task.getDifficulty());
                                     userPoints.put(eventUser, num);
-                                } else {
+                                }
+                                else {
                                     float num = (float) (userPoints.get(eventUser) + task.getDifficulty() * 0.5);
                                     userPoints.put(eventUser, num);
                                 }
-                            } else if (!showTaskDifficulty && penalizeLateTasks) {
-                                if (event.getDueDate().after(event.getDateCompleted())) {
+                            }
+                            else if(!showTaskDifficulty && penalizeLateTasks){
+                                if(event.getDueDate().after(event.getDateCompleted())){
                                     float num = (float) (userPoints.get(eventUser) + 1.0);
                                     userPoints.put(eventUser, num);
-                                } else {
+                                }
+                                else {
                                     float num = (float) (userPoints.get(eventUser) + 0.5);
                                     userPoints.put(eventUser, num);
                                 }
-                            } else {
+                            }
+                            else{
                                 float num = (float) (userPoints.get(eventUser) + 1.0);
                                 userPoints.put(eventUser, num);
                             }
                         });
-                    } else if (event.getType() == 1 && (tempMonth == month) && (tempYear == year)) {
+                    }
+                    else if(event.getType() == 1 && (tempMonth == month) && (tempYear == year)){
+                        System.out.println("wallace gets here");
                         myDatabase.getFee(event.getAssociatedTask(), fee -> {
                             String userFee = "Amt: " + String.valueOf(fee.getAmount()) + " - " + fee.getName();
-                            if (eventUser.equals(taskUser)) {
+                            if(eventUser.equals(taskUser)){
                                 userFees.add(userFee);
                             }
                             float num = (float) (userAmountPaid.get(eventUser) + fee.getAmount());
+                            System.out.println("wallace gets num " + " " + eventUser + " " +  num);
                             userAmountPaid.put(eventUser, num);
                         });
                     }

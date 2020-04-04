@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 @SuppressWarnings("CodeBlock2Expr")
-final class LocalStore implements DatabaseLink {
+class LocalStore implements DatabaseLink {
 
     private static final String TAG = "LocalStore";
     private static final String USERS_FILE = "users.json";
@@ -519,6 +519,27 @@ final class LocalStore implements DatabaseLink {
             consumer.accept(true);
         } catch (EasyJSONException e) {
             Log.e(TAG, "Failed to deleteAllFeesFromHouse", e);
+            consumer.accept(false);
+        }
+    }
+
+    @Override
+    public void deleteAllEventsFromHouseSince(ObjectId houseId, Date sinceDate, Consumer<Boolean> consumer) {
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(FEES_FILE));
+        List<JSONElement> fees = json.getRootNode().getChildren();
+        for (int i = fees.size() - 1; i >= 0; --i) {
+            JSONElement element = fees.get(i);
+            if (!element.valueOf("houseId").equals(houseId.toString())
+                    && element.<Long>valueOf("dueDate") > sinceDate.getTime()) {
+                fees.remove(i);
+            }
+        }
+        fees.forEach(element -> json.getRootNode().removeElement(element.getKey()));
+        try {
+            json.save();
+            consumer.accept(true);
+        } catch (EasyJSONException e) {
+            Log.e(TAG, "Failed to deleteAllEventsFromHouse", e);
             consumer.accept(false);
         }
     }

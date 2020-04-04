@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -55,6 +56,11 @@ public class EventServiceTest {
 
         @Override
         public void getEvent(ObjectId id, Consumer<Event> consumer) {
+
+        }
+
+        @Override
+        public void getHouseEventOnDay(ObjectId houseId, ObjectId taskId, Date day, Consumer<Event> consumer) {
 
         }
 
@@ -194,7 +200,17 @@ public class EventServiceTest {
         }
 
         @Override
+        public void deleteAllHouses(Consumer<Boolean> consumer) {
+
+        }
+
+        @Override
         public void deleteUserFromHouse(House house, User user, Consumer<Boolean> consumer) {
+
+        }
+
+        @Override
+        public void deleteAllCollectionData(Consumer<Boolean> consumer) {
 
         }
 
@@ -230,6 +246,11 @@ public class EventServiceTest {
 
         @Override
         public void checkIfHouseKeyExists(String id, Consumer<Boolean> consumer) {
+
+        }
+
+        @Override
+        public void emailFriends(String email, String firstName, String friend, ObjectId houseId, Consumer<Boolean> bool) {
 
         }
     }

@@ -45,9 +45,8 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     private ArrayList<String> userFees;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
-    //for jon
-    HashMap<User, Float> points;
-    HashMap<User, Float> amounts;
+    private int total = 0;
+    private String amount = "";
 
     public ScreenMonthCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -58,8 +57,6 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     public void init(View view) {
         houseId = Settings.OPEN_HOUSE.get();
         userId = Session.getSession().getLoggedInUserId();
-        points = new HashMap<>();
-        amounts = new HashMap<>();
         strMonth = months[month];
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
@@ -71,46 +68,33 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         Button statsBack = (Button) view.findViewById(R.id.statsBack);
         TextView calculateBody = (TextView) view.findViewById(R.id.textView2);
 
-        int total = 0;
-        String amount = "";
 
-        //testing
-        User jon = new User();
-        User seb = new User();
-        User victor = new User();
-        User ben = new User();
-        jon.setFirstName("jon");
-        seb.setFirstName("seb");
-        victor.setFirstName("victor");
-        ben.setFirstName("ben");
-        amounts.put(jon, (float)2251.23);
-        amounts.put(victor, (float)3315.23);
-        amounts.put(ben, (float)200);
-        amounts.put(seb, (float)1242.32);
-
-        if (!amounts.isEmpty()) {
-            Iterator<Map.Entry<User, Float>> it = amounts.entrySet().iterator();
+        if (!userAmountPaid.isEmpty()) {
+            Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
             while(it.hasNext())
             {
-                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
                 total += pair.getValue();
             }
         }
 
-        if (!amounts.isEmpty()) {
-            Iterator<Map.Entry<User, Float>> it = amounts.entrySet().iterator();
+        if (!userAmountPaid.isEmpty()) {
+            Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
             while(it.hasNext())
             {
-                Map.Entry<User, Float> pair = (Map.Entry<User, Float>) it.next();
-                if (total/amounts.size() - pair.getValue() > 0) {
-                    amount += pair.getKey().getFirstName() + " owes: " + (total/amounts.size() - pair.getValue()) + "\n";
-                }
-                else if (total/amounts.size() - pair.getValue() == 0) {
-                    amount += pair.getKey().getFirstName() + " owes: 0";
-                }
-                else {
-                    amount += pair.getKey().getFirstName() + " is owed: " + (pair.getValue() - total/amounts.size()) + "\n";
-                }
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+                myDatabase.getUser(pair.getKey(), user -> {
+                    Log.d("test", user.getFirstName());
+                    if (total/userAmountPaid.size() - pair.getValue() > 0) {
+                        amount += user.getFirstName() + " owes: " + (total/userAmountPaid.size() - pair.getValue()) + "\n";
+                    }
+                    else if (total/userAmountPaid.size() - pair.getValue() == 0) {
+                        amount += user.getFirstName() + " owes: 0";
+                    }
+                    else {
+                        amount += user.getFirstName() + " is owed: " + (pair.getValue() - total/userAmountPaid.size()) + "\n";
+                    }
+                });
             }
         }
 

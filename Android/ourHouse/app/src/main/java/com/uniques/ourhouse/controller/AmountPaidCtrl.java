@@ -55,6 +55,8 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private String amount = "";
+    private float count = (float)0.5;
+    private int counter = 0;
 
     public AmountPaidCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -133,9 +135,14 @@ public class AmountPaidCtrl implements FragmentCtrl {
 
         bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
 
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setAvoidFirstLastClipping(true);
+        barChart.getXAxis().setCenterAxisLabels(true);
+        xAxis.setGranularity(1f);
+        barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(list_x_axis_name));
 
-
-        //BarData data = new BarData(bars);
         data.setBarWidth(0.6f); //how thick
         barChart.setData(data);
         barChart.getXAxis().setDrawGridLines(false);
