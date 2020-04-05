@@ -63,26 +63,22 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         userArray = new ArrayList<>();
         floatAmountArray = new ArrayList<>();
         gatheringInfo = view.findViewById(R.id.gatheringUsers3);
-        if(recalculate){
-            gatheringInfo.setVisibility(View.VISIBLE);
-            DatabaseLink myDatabase = Session.getSession().getDatabase();
-            ObjectId houseId = Settings.OPEN_HOUSE.get();
-            Log.d("TestingStuff", "House ID Init : " + houseId.toString());
-            ObjectId userId = Session.getSession().getLoggedInUserId();
-            myDatabase.getHouse(houseId, house -> {
-                house.populateStats(year, month, userId, eventsGrabbed ->{
-                    userAmountPaid = house.getUserAmountPaid();
-                    userPerformance = house.getUserPoints();
-                    userTasksCompleted = house.getTasksCompleted();
-                    userFees = house.getUserFees();
-                    gatheringUsers(view);
-                });
+        gatheringInfo.setVisibility(View.VISIBLE);
+        DatabaseLink myDatabase = Session.getSession().getDatabase();
+        ObjectId houseId = Settings.OPEN_HOUSE.get();
+        Log.d("TestingStuff", "year: " + year + "month" + month);
+        Log.d("TestingStuff", "House ID Init : " + houseId.toString());
+        ObjectId userId = Session.getSession().getLoggedInUserId();
+        myDatabase.getHouse(houseId, house -> {
+            house.populateStats(year, month, userId, eventsGrabbed ->{
+                userAmountPaid = house.getUserAmountPaid();
+                userPerformance = house.getUserPoints();
+                userTasksCompleted = house.getTasksCompleted();
+                userFees = house.getUserFees();
+                gatheringUsers(view);
             });
+        });
         }
-        else {
-            gatheringUsers(view);
-        }
-    }
 
 
     private void doneCalculatingScreen(View view) {
@@ -150,22 +146,24 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         calculateBody.setText(amount);
         amount = "";
         //need to fix this
-        if(changed) {
-            gatheringInfo = view.findViewById(R.id.gatheringUsers3);
-            if(gatheringInfo.getVisibility() == View.GONE)
-                gatheringInfo.setVisibility(View.VISIBLE);
-            ObjectId houseId = Settings.OPEN_HOUSE.get();
-            Log.d("TestingStuff", "House ID Change : " + houseId.toString());
-            myDatabase.getHouse(houseId, house -> {
-                house.populateStats(year, month, userId, grabbedInfo ->{
-                    userAmountPaid = house.getUserAmountPaid();
-                    userPerformance = house.getUserPoints();
-                    userTasksCompleted = house.getTasksCompleted();
-                    userFees = house.getUserFees();
-                    gatheringUsers(view);
-                });
-            });
-        }
+//        if(changed) {
+//            Log.d("TestingStuff", "CHANGING");
+//            changed = false;
+//            gatheringInfo = view.findViewById(R.id.gatheringUsers3);
+//            if(gatheringInfo.getVisibility() == View.GONE)
+//                gatheringInfo.setVisibility(View.VISIBLE);
+//            ObjectId houseId = Settings.OPEN_HOUSE.get();
+//            Log.d("TestingStuff", "House ID Change : " + houseId.toString());
+//            myDatabase.getHouse(houseId, house -> {
+//                house.populateStats(year, month, userId, grabbedInfo ->{
+//                    userAmountPaid = house.getUserAmountPaid();
+//                    userPerformance = house.getUserPoints();
+//                    userTasksCompleted = house.getTasksCompleted();
+//                    userFees = house.getUserFees();
+//                    gatheringInfo.setVisibility(View.GONE);
+//                });
+//            });
+//        }
     }
 
 
