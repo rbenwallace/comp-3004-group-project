@@ -145,25 +145,6 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         Log.d("TestingStuff", "Amount uploading : " + amount);
         calculateBody.setText(amount);
         amount = "";
-        //need to fix this
-//        if(changed) {
-//            Log.d("TestingStuff", "CHANGING");
-//            changed = false;
-//            gatheringInfo = view.findViewById(R.id.gatheringUsers3);
-//            if(gatheringInfo.getVisibility() == View.GONE)
-//                gatheringInfo.setVisibility(View.VISIBLE);
-//            ObjectId houseId = Settings.OPEN_HOUSE.get();
-//            Log.d("TestingStuff", "House ID Change : " + houseId.toString());
-//            myDatabase.getHouse(houseId, house -> {
-//                house.populateStats(year, month, userId, grabbedInfo ->{
-//                    userAmountPaid = house.getUserAmountPaid();
-//                    userPerformance = house.getUserPoints();
-//                    userTasksCompleted = house.getTasksCompleted();
-//                    userFees = house.getUserFees();
-//                    gatheringInfo.setVisibility(View.GONE);
-//                });
-//            });
-//        }
     }
 
 
