@@ -76,7 +76,7 @@ public class PerformanceCtrl implements FragmentCtrl {
         userArray2 = new ArrayList<>();
         floatPerformanceArray = new ArrayList<>();
         intTaskCompletedArray = new ArrayList<>();
-        gatheringInfo = view.findViewById(R.id.gatheringUsers);
+        gatheringInfo = view.findViewById(R.id.gatheringUsers2);
         if (recalculate) {
             gatheringInfo.setVisibility(View.VISIBLE);
             DatabaseLink myDatabase = Session.getSession().getDatabase();
@@ -97,6 +97,7 @@ public class PerformanceCtrl implements FragmentCtrl {
     }
 
     private void doneCalculatingScreen(View view) {
+        gatheringInfo.setVisibility(View.GONE);
         strMonth = months[month];
         BarChart barChart;
         PieChart pieChart;
@@ -230,6 +231,7 @@ public class PerformanceCtrl implements FragmentCtrl {
     }
 
     public void gatheringUsers(View view) {
+        gatheringInfo.setVisibility(View.VISIBLE);
         if (userTasksCompleted.isEmpty()) doneCalculatingScreen(view);
         Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
         if (filler != null) {

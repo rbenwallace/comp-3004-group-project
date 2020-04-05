@@ -62,11 +62,12 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     public void init(View view) {
         userArray = new ArrayList<>();
         floatAmountArray = new ArrayList<>();
-        gatheringInfo = view.findViewById(R.id.gatheringUsers);
+        gatheringInfo = view.findViewById(R.id.gatheringUsers3);
         if(recalculate){
             gatheringInfo.setVisibility(View.VISIBLE);
             DatabaseLink myDatabase = Session.getSession().getDatabase();
             ObjectId houseId = Settings.OPEN_HOUSE.get();
+            Log.d("TestingStuff", "House ID Init : " + houseId.toString());
             ObjectId userId = Session.getSession().getLoggedInUserId();
             myDatabase.getHouse(houseId, house -> {
                 house.populateStats(year, month, userId, eventsGrabbed ->{
@@ -85,6 +86,7 @@ public class ScreenMonthCtrl implements FragmentCtrl {
 
 
     private void doneCalculatingScreen(View view) {
+        gatheringInfo.setVisibility(View.GONE);
         strMonth = months[month];
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
@@ -128,7 +130,7 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         for (int j = 0; j < floatAmountArray.size(); j++) {
             total += floatAmountArray.get(j);
         }
-
+        Log.d("TestingStuff", "Uploading stuff");
         Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
         int curUser = 0;
         for(int i = 0; i < userArray.size(); i++){
@@ -144,17 +146,23 @@ public class ScreenMonthCtrl implements FragmentCtrl {
             }
             curUser ++;
         }
+        Log.d("TestingStuff", "Amount uploading : " + amount);
         calculateBody.setText(amount);
         amount = "";
-
         //need to fix this
         if(changed) {
+            gatheringInfo = view.findViewById(R.id.gatheringUsers3);
+            if(gatheringInfo.getVisibility() == View.GONE)
+                gatheringInfo.setVisibility(View.VISIBLE);
+            ObjectId houseId = Settings.OPEN_HOUSE.get();
+            Log.d("TestingStuff", "House ID Change : " + houseId.toString());
             myDatabase.getHouse(houseId, house -> {
                 house.populateStats(year, month, userId, grabbedInfo ->{
                     userAmountPaid = house.getUserAmountPaid();
                     userPerformance = house.getUserPoints();
                     userTasksCompleted = house.getTasksCompleted();
                     userFees = house.getUserFees();
+                    gatheringUsers(view);
                 });
             });
         }
@@ -178,6 +186,7 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     }
 
     public void gatheringUsers(View view){
+        gatheringInfo.setVisibility(View.VISIBLE);
         if (userAmountPaid.isEmpty()) doneCalculatingScreen(view);
         float count = (float)0.5;
         Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
