@@ -1,5 +1,7 @@
 package com.uniques.ourhouse.model;
 
+import android.util.Log;
+
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.easyjson.EasyJSON;
@@ -157,6 +159,7 @@ public class Event implements Observable, Indexable {
 
     @Override
     public void fromJSON(JSONElement json, Consumer consumer) {
+        Log.d("CheckingCompleted", json.toString());
         eventId = new ObjectId(json.<String>valueOf("_id"));
         type = Integer.parseInt(String.valueOf(json.<String>valueOf("type")));
         title = json.valueOf("title");
@@ -166,6 +169,7 @@ public class Event implements Observable, Indexable {
         dueDate = new Date((long) json.valueOf("dueDate"));
         if (json.elementExists("dateCompleted")) {
             dateCompleted = new Date((long) json.valueOf("dateCompleted"));
+            Log.d("CheckingCompleted", dateCompleted.toString());
         }
         consumer.accept(this);
     }

@@ -1129,12 +1129,14 @@ public class MongoDB extends SecurityLink implements DatabaseLink {
                 eventColl.updateOne(filterDoc, Document.parse(event.toJSON().toString()));
         updateTask.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                Log.d("CheckingCompleteness", "Event was updated");
                 long numMatched = task.getResult().getMatchedCount();
                 long numModified = task.getResult().getModifiedCount();
                 Log.d(TAG, String.format("successfully matched %d and modified %d documents",
                         numMatched, numModified));
                 consumer.accept(true);
             } else {
+                Log.d("CheckingCompleteness", "Failed");
                 Log.e(TAG, "failed to update document with: ", task.getException());
                 consumer.accept(true);
             }

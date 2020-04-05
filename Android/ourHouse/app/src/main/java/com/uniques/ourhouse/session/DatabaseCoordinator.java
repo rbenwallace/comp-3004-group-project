@@ -165,13 +165,17 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getEvent(id, event -> {
-                if (event != null) consumer.accept(event);
-                else {
-                    if (networkAvailable()) remoteDatabase.getEvent(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if (networkAvailable())
+                remoteDatabase.getEvent(id, networkConsumer);
+            else{
+                localDatabase.getEvent(id, event -> {
+                    if (event != null) consumer.accept(event);
+                    else {
+                        if (networkAvailable()) remoteDatabase.getEvent(id, networkConsumer);
+                        else consumer.accept(null);
+                    }
+                });
+            }
         } else if (networkAvailable()) {
             remoteDatabase.getEvent(id, networkConsumer);
         } else {
@@ -198,13 +202,17 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getTask(id, task -> {
-                if (task != null) consumer.accept(task);
-                else {
-                    if (networkAvailable()) remoteDatabase.getTask(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if (networkAvailable())
+                remoteDatabase.getTask(id, networkConsumer);
+            else{
+                localDatabase.getTask(id, task -> {
+                    if (task != null) consumer.accept(task);
+                    else {
+                        if (networkAvailable()) remoteDatabase.getTask(id, networkConsumer);
+                        else consumer.accept(null);
+                    }
+                });
+            }
         } else if (networkAvailable()) {
             remoteDatabase.getTask(id, networkConsumer);
         } else {
@@ -225,13 +233,17 @@ class DatabaseCoordinator implements DatabaseLink {
             }
         };
         if (modelIsCached(id)) {
-            localDatabase.getFee(id, user -> {
-                if (user != null) consumer.accept(user);
-                else {
-                    if (networkAvailable()) remoteDatabase.getFee(id, networkConsumer);
-                    else consumer.accept(null);
-                }
-            });
+            if (networkAvailable())
+                remoteDatabase.getFee(id, networkConsumer);
+            else{
+                localDatabase.getFee(id, user -> {
+                    if (user != null) consumer.accept(user);
+                    else {
+                        if (networkAvailable()) remoteDatabase.getFee(id, networkConsumer);
+                        else consumer.accept(null);
+                    }
+                });
+            }
         } else if (networkAvailable()) {
             remoteDatabase.getFee(id, networkConsumer);
         } else {

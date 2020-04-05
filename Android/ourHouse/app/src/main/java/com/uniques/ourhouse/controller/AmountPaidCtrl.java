@@ -52,7 +52,6 @@ public class AmountPaidCtrl implements FragmentCtrl {
     private ArrayList<Float> floatAmountArray;
     private boolean recalculate;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private String amount = "";
 
