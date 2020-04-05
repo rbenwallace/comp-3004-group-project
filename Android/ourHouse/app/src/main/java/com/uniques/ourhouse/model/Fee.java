@@ -1,5 +1,7 @@
 package com.uniques.ourhouse.model;
 
+import android.util.Log;
+
 import com.uniques.ourhouse.util.Indexable;
 import com.uniques.ourhouse.util.Observable;
 import com.uniques.ourhouse.util.Schedule;
@@ -88,6 +90,7 @@ public class Fee extends ManageItem implements Indexable, Observable {
         amount = Float.parseFloat(json.valueOf("amount"));
         new Schedule().fromJSON(json.search("schedule"), schedule -> {
             this.schedule = (Schedule) schedule;
+            Log.d("checkinglist", this.toString());
             consumer.accept(this);
         });
     }

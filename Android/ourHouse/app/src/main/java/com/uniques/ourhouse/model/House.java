@@ -177,41 +177,41 @@ public class House implements Indexable, Observable {
         if (taskFiller != null) {
             return;
         }
+        ArrayList<Event> eventsToSendTemp = new ArrayList<>();
+        ArrayList<Event> eventsToKeepTemp = new ArrayList<>();
         for(Event event : events){
             if(event.getDateCompleted() != null){
                 String strYear = (String) DateFormat.format("yyyy", event.getDateCompleted());
                 int tempYear = Integer.parseInt(strYear);
                 int tempMonth = event.getDateCompleted().getMonth();
                 if((tempMonth == month) && (tempYear == year)) {
-                    if(event.getType() != 0)feeEvents.add(event);
-                    else taskEvents.add(event);
+                    if(event.getType() != 0){
+                        feeEvents.add(event);
+                        eventsToSendTemp.add(event);
+                    }
+                    else {
+                        taskEvents.add(event);
+                        eventsToKeepTemp.add(event);
+                    }
                 }
             }
         }
-        ArrayList<Event> eventsToSendTemp = feeEvents;
-        ArrayList<Event> eventsToKeepTemp = taskEvents;
-
         if (eventsToKeepTemp.isEmpty()) {
-            Log.d("checkinglists", "Fees" + " " + eventsToKeepTemp.toString());
             gatheringFees(eventsToSendTemp, year, month, taskUser, returnStats);
             return;
         }
         taskFiller = task -> {
             if (task != null) {
-                Log.d("checkinglists", "TASK ADDED: " + task.toString());
                 gatheredTasks.add(task);
             }
             if (eventsToKeepTemp.isEmpty()) {
                 taskFiller = null;
-                Log.d("checkinglists", "ALL TASKS GRABBED");
                 gatheringFees(eventsToSendTemp,  year, month, taskUser,returnStats);
             } else {
-                Log.d("checkinglists", "GRABBING TASK : " + eventsToKeepTemp.remove(0).getId().toString());
-                myDatabase.getTask(eventsToKeepTemp.remove(0).getId(), taskFiller);
+                myDatabase.getTask(eventsToKeepTemp.remove(0).getAssociatedTask(), taskFiller);
             }
         };
-        Log.d("checkinglists", "GRABBING TASK : " + eventsToKeepTemp.get(0).getId().toString());
-        myDatabase.getTask(eventsToKeepTemp.remove(0).getId(), taskFiller);
+        myDatabase.getTask(eventsToKeepTemp.remove(0).getAssociatedTask(), taskFiller);
     }
     public void gatheringFees(ArrayList<Event> events, int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats) {
         if (events.isEmpty()) doneCalculating(new ArrayList<Event>(), year, month, taskUser,returnStats);
@@ -229,21 +229,15 @@ public class House implements Indexable, Observable {
             if (events.isEmpty()) {
                 feeFiller = null;
                 tempId = null;
-                Log.d("MyHousesCtrl", "All users are a go");
                 doneCalculating(events, year, month, taskUser, returnStats);
             } else {
-                myDatabase.getFee(events.remove(0).getId(), feeFiller);
+                myDatabase.getFee(events.remove(0).getAssociatedTask(), feeFiller);
             }
         };
-        Log.d("gathering1", events.get(0).getName().toString());
-        myDatabase.getFee(events.remove(0).getId(), feeFiller);
+        myDatabase.getFee(events.remove(0).getAssociatedTask(), feeFiller);
     }
 
     private void doneCalculating(ArrayList<Event> events, int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats) {
-        Log.d("checkinglists", "Fees" + " " + gatheredFees.toString());
-        Log.d("checkinglists", "Tasks" + " " + gatheredTasks.toString());
-        Log.d("checkinglists", "TaskEvents" + " " + taskEvents.toString());
-        Log.d("checkinglists", "FeesEvents" + " " + feeEvents.toString());
         for(int i = 0; i < gatheredTasks.size(); i++) {
             int completed =  tasksCompleted.get(taskEvents.get(i).getAssignedTo()) + 1;
             tasksCompleted.put(taskEvents.get(i).getId(), completed);
