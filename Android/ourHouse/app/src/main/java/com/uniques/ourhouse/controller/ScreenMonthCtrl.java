@@ -89,7 +89,7 @@ public class ScreenMonthCtrl implements FragmentCtrl {
                         amount += user.getFirstName() + " owes: " + (total/userAmountPaid.size() - pair.getValue()) + "\n";
                     }
                     else if (total/userAmountPaid.size() - pair.getValue() == 0) {
-                        amount += user.getFirstName() + " owes: 0";
+                        amount += user.getFirstName() + " owes: 0" + "\n";
                     }
                     else {
                         amount += user.getFirstName() + " is owed: " + (pair.getValue() - total/userAmountPaid.size()) + "\n";
@@ -97,10 +97,11 @@ public class ScreenMonthCtrl implements FragmentCtrl {
                 });
             }
             total = 0;
-            amount = "";
         }
 
         calculateBody.setText(amount);
+
+        amount = "";
 
         if(changed) {
             myDatabase.getHouse(houseId, house -> {
