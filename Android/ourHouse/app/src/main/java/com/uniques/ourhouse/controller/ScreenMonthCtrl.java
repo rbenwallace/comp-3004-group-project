@@ -125,30 +125,24 @@ public class ScreenMonthCtrl implements FragmentCtrl {
                 activity.popFragment(FragmentId.GET(ScreenMonthFragment.TAG));            }
         });
 
-        if (!userAmountPaid.isEmpty()) {
-            Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                total += pair.getValue();
-            }
+        for (int j = 0; j < floatAmountArray.size(); j++) {
+            total += floatAmountArray.get(j);
         }
 
         Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
+        int curUser = 0;
         for(int i = 0; i < userArray.size(); i++){
-            Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-            myDatabase.getUser(pair.getKey(), user -> {
-                Log.d("test", user.getFirstName());
-                if (total/userAmountPaid.size() - pair.getValue() > 0) {
-                    amount += user.getFirstName() + " owes: " + (total/userAmountPaid.size() - pair.getValue()) + "\n";
-                }
-                else if (total/userAmountPaid.size() - pair.getValue() == 0) {
-                    amount += user.getFirstName() + " owes: 0" + "\n";
-                }
-                else {
-                    amount += user.getFirstName() + " is owed: " + (pair.getValue() - total/userAmountPaid.size()) + "\n";
-                }
-            });
+            System.out.println(floatAmountArray.get(curUser));
+            if (total/userArray.size() - floatAmountArray.get(curUser) > 0) {
+                amount += userArray.get(curUser).getFirstName() + " owes: " + (total/floatAmountArray.size() - floatAmountArray.get(curUser)) + "\n";
+            }
+            else if (total/userArray.size() - floatAmountArray.get(curUser) == 0) {
+                amount += userArray.get(curUser).getFirstName() + " owes: 0" + "\n";
+            }
+            else {
+                amount += userArray.get(curUser).getFirstName() + " is owed: " + (floatAmountArray.get(curUser) - total/floatAmountArray.size()) + "\n";
+            }
+            curUser ++;
         }
         calculateBody.setText(amount);
         amount = "";
