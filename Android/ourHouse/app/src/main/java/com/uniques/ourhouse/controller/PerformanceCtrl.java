@@ -97,6 +97,7 @@ public class PerformanceCtrl implements FragmentCtrl {
     }
 
     private void doneCalculatingScreen(View view) {
+        System.out.println("wallace red");
         strMonth = months[month];
         BarChart barChart;
         PieChart pieChart;
@@ -149,6 +150,7 @@ public class PerformanceCtrl implements FragmentCtrl {
         ArrayList<PieEntry> entries2 = new ArrayList<>();
         curUser = 0;
         for (int i = 0; i < userArray2.size(); i++) {
+            System.out.println("wallace pie" + userArray2.get(curUser).getFirstName());
             value.add(new PieEntry((float) (Math.round((floatPerformanceArray.get(curUser) / total) * 10000) / 100), userArray2.get(curUser).getFirstName()));
             curUser++;
         }
