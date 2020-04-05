@@ -175,7 +175,7 @@ public class House implements Indexable, Observable {
                                     userPoints.put(eventUser, num);
                                 }
                                 else {
-                                    float num = (float) (userPoints.get(eventUser) + task.getDifficulty() * 0.5);
+                                    float num = (float) (userPoints.get(eventUser) + (task.getDifficulty() * 0.5));
                                     userPoints.put(eventUser, num);
                                 }
                             }
@@ -190,8 +190,14 @@ public class House implements Indexable, Observable {
                                 }
                             }
                             else{
-                                float num = (float) (userPoints.get(eventUser) + 1.0);
-                                userPoints.put(eventUser, num);
+                                if (showTaskDifficulty) {
+                                    float num = (float) (userPoints.get(eventUser) + task.getDifficulty());
+                                    userPoints.put(eventUser, num);
+                                }
+                                else{
+                                    float num = (float) (userPoints.get(eventUser) + 1.0);
+                                    userPoints.put(eventUser, num);
+                                }
                             }
                         });
                     }
