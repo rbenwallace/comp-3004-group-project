@@ -199,13 +199,7 @@ public final class FeedCard implements RecyclerCard, Comparable {
                             object.getDateCompleted().getTime()) > object.getDueDate().getTime();
 
             if (!isExpanded) {
-                if(object.getEvent().getType() == 0){
-                    txtTitle.setText("Task: " + object.getName());
-                }
-                else{
-                    txtTitle.setText("Fee: " + object.getName());
-                }
-                //txtTitle.setText(object.getName());
+                txtTitle.setText(object.getName());
                 txtDate.setText(new SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
                         .format(cardType == FeedCardType.BUBBLE && object.getDateCompleted() != null ? object.getDateCompleted() : object.getDueDate()));
                 object.getPerson(person -> txtName.setText(person.getFirstName()));
