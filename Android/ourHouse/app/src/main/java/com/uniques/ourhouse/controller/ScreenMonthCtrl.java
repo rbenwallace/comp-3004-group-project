@@ -62,7 +62,7 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     public void init(View view) {
         userArray = new ArrayList<>();
         floatAmountArray = new ArrayList<>();
-        gatheringInfo = view.findViewById(R.id.gatheringUsers3)
+        gatheringInfo = view.findViewById(R.id.gatheringUsers3);
         gatheringInfo.setVisibility(View.VISIBLE);
         DatabaseLink myDatabase = Session.getSession().getDatabase();
         ObjectId houseId = Settings.OPEN_HOUSE.get();
@@ -145,7 +145,7 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         }
         Log.d("TestingStuff", "Amount uploading : " + amount);
         calculateBody.setText(amount);
-        amount = ""; this
+        amount = "";
     }
 
 
