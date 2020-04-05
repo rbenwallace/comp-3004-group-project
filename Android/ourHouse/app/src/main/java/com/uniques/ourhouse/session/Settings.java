@@ -24,10 +24,10 @@ public enum Settings {
         }
     }),
 
-    FEED_SHOWING_PAST_EVENTS(new DefaultHandler<Boolean>() {
+    FEED_SHOWING_PAST_EVENTS(new PrimitiveHandler<Boolean>() {
         @Override
         String getKey() {
-            return "feed.showingPastEvents";
+            return "feed_showingPastEvents";
         }
 
         @Override
@@ -39,7 +39,7 @@ public enum Settings {
     FEED_FILTER_USER(new ObjectIdHandler() {
         @Override
         String getKey() {
-            return "feed.filterUser";
+            return "feed_filterUser";
         }
 
         @Override
@@ -48,10 +48,10 @@ public enum Settings {
         }
     }),
 
-    FEED_SHOW_LATE(new DefaultHandler<Boolean>() {
+    FEED_SHOW_LATE(new PrimitiveHandler<Boolean>() {
         @Override
         String getKey() {
-            return "feed.showLate";
+            return "feed_showLate";
         }
 
         @Override
@@ -60,10 +60,10 @@ public enum Settings {
         }
     }),
 
-    FEED_SHOW_ON_TIME(new DefaultHandler<Boolean>() {
+    FEED_SHOW_ON_TIME(new PrimitiveHandler<Boolean>() {
         @Override
         String getKey() {
-            return "feed.showOnTime";
+            return "feed_showOnTime";
         }
 
         @Override
@@ -72,10 +72,10 @@ public enum Settings {
         }
     }),
 
-    EVENT_SERVICE_LAST_UPDATE(new DefaultHandler<Long>() {
+    EVENT_SERVICE_LAST_UPDATE(new PrimitiveHandler<Long>() {
         @Override
         String getKey() {
-            return "eventService.lastUpdate";
+            return "eventService_lastUpdate";
         }
 
         @Override
@@ -84,10 +84,10 @@ public enum Settings {
         }
     }),
 
-    EVENT_SERVICE_DUTIES_ARE_PRISTINE(new DefaultHandler<Boolean>() {
+    EVENT_SERVICE_DUTIES_ARE_PRISTINE(new PrimitiveHandler<Boolean>() {
         @Override
         String getKey() {
-            return "eventService.dutiesArePristine";
+            return "eventService_dutiesArePristine";
         }
 
         @Override
@@ -164,7 +164,7 @@ public enum Settings {
         protected abstract void write(JSONElement parent);
     }
 
-    private static abstract class DefaultHandler<T> extends Handler<T> {
+    private static abstract class PrimitiveHandler<U> extends Handler<U> {
 
         @Override
         protected void read(JSONElement parent) {
@@ -173,7 +173,11 @@ public enum Settings {
 
         @Override
         protected void write(JSONElement parent) {
-            parent.putPrimitive(getKey(), obj.toString());
+            if (obj == null) {
+                parent.removeElement(getKey());
+            } else {
+                parent.putPrimitive(getKey(), obj);
+            }
         }
     }
 

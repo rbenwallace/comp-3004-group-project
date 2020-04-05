@@ -3,7 +3,7 @@
     package="com.uniques.ourhouse">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name = "android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -21,42 +21,26 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".LS_Main">
             <intent-filter>
                 <!-- Sets the intent action to view the activity -->
-                <action android:name = "android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW" />
                 <!-- Allows the link to be opened from a web browser -->
-                <category android:name = "android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Allows the deep link to be used without specifying the app name -->
-                <category android:name = "android.intent.category.DEFAULT" />
-                <!-- URI example://deeplink -->
-                <data android:scheme = "https" android:host = "www.ourhouse.com"/>
-            </intent-filter>
-            <intent-filter>
-                <!-- Sets the intent action to view the activity -->
-                <action android:name = "android.intent.action.VIEW" />
-                <!-- Allows the link to be opened from a web browser -->
-                <category android:name = "android.intent.category.BROWSABLE" />
-                <!-- Allows the deep link to be used without specifying the app name -->
-                <category android:name = "android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT" />
                 <!-- URI http://www.mydeeplink.com/semester -->
-                <data android:scheme = "http" android:host = "www.ourhouse.com"  />
-            </intent-filter>
-            <intent-filter>
-                <!-- Sets the intent action to view the activity -->
-                <action android:name = "android.intent.action.VIEW" />
-                <!-- Allows the link to be opened from a web browser -->
-                <category android:name = "android.intent.category.BROWSABLE" />
-                <!-- Allows the deep link to be used without specifying the app name -->
-                <category android:name = "android.intent.category.DEFAULT" />
-                <!-- URI http://www.mydeeplink.com/semester -->
-                <data android:scheme = "app" android:host = "www.ourhouse.com"/>
+                <data
+                    android:host="www.ourhouse.com"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
+
         <service
             android:name=".EventService"
             android:enabled="true"
