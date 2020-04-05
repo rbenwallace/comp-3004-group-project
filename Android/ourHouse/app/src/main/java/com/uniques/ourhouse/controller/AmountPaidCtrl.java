@@ -168,7 +168,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
     }
 
     public void gatheringUsers(View view){
-        if (!userAmountPaid.isEmpty()) doneCalculatingScreen(view);
+        if (userAmountPaid.isEmpty()) doneCalculatingScreen(view);
         float count = (float)0.5;
         Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
         if (filler != null) {

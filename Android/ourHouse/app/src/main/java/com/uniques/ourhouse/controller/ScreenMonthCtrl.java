@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Consumer;
 
 
 public class ScreenMonthCtrl implements FragmentCtrl {
@@ -37,12 +38,16 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     private ObjectId userId;
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
     private String strMonth;
-    private TextView calculateTitle;
+    private TextView calculateTitle, gatheringInfo;
     private boolean changed;
     private HashMap<ObjectId, Float> userAmountPaid;
     private HashMap<ObjectId, Float> userPerformance;
     private HashMap<ObjectId, Integer> userTasksCompleted;
     private ArrayList<String> userFees;
+    private ArrayList<User> userArray;
+    private Consumer<User> filler;
+    private ArrayList<Float> floatAmountArray;
+    private boolean recalculate;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     private int total = 0;
@@ -55,64 +60,41 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     @SuppressLint("SetTextI18n")
     @Override
     public void init(View view) {
-        houseId = Settings.OPEN_HOUSE.get();
-        userId = Session.getSession().getLoggedInUserId();
+        userArray = new ArrayList<>();
+        floatAmountArray = new ArrayList<>();
+        gatheringInfo = view.findViewById(R.id.gatheringUsers);
+        if(recalculate){
+            gatheringInfo.setVisibility(View.VISIBLE);
+            DatabaseLink myDatabase = Session.getSession().getDatabase();
+            ObjectId houseId = Settings.OPEN_HOUSE.get();
+            ObjectId userId = Session.getSession().getLoggedInUserId();
+            myDatabase.getHouse(houseId, house -> {
+                house.populateStats(year, month, userId, eventsGrabbed ->{
+                    userAmountPaid = house.getUserAmountPaid();
+                    userPerformance = house.getUserPoints();
+                    userTasksCompleted = house.getTasksCompleted();
+                    userFees = house.getUserFees();
+                    gatheringUsers(view);
+                });
+            });
+        }
+        else {
+            gatheringUsers(view);
+        }
+    }
+
+
+    private void doneCalculatingScreen(View view) {
         strMonth = months[month];
         calculateTitle = (TextView) view.findViewById(R.id.calculate_date);
         calculateTitle.setText(strMonth + " : " + year);
-        Log.d(ScreenMonthFragment.TAG, "Screen Month Clicked");
+        Log.d(AmountPaidFragment.TAG, "onCreatedView: Amount Paid");
 
         Button viewAmountPaid = (Button) view.findViewById(R.id.viewAmountPaid);
         Button viewPerformance = (Button) view.findViewById(R.id.viewPerformance);
         Button viewMonthlyFees = (Button) view.findViewById(R.id.monthly_fees);
         Button statsBack = (Button) view.findViewById(R.id.statsBack);
         TextView calculateBody = (TextView) view.findViewById(R.id.textView2);
-
-
-        if (!userAmountPaid.isEmpty()) {
-            Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                total += pair.getValue();
-            }
-        }
-
-        if (!userAmountPaid.isEmpty()) {
-            Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
-                myDatabase.getUser(pair.getKey(), user -> {
-                    Log.d("test", user.getFirstName());
-                    if (total/userAmountPaid.size() - pair.getValue() > 0) {
-                        amount += user.getFirstName() + " owes: " + (total/userAmountPaid.size() - pair.getValue()) + "\n";
-                    }
-                    else if (total/userAmountPaid.size() - pair.getValue() == 0) {
-                        amount += user.getFirstName() + " owes: 0" + "\n";
-                    }
-                    else {
-                        amount += user.getFirstName() + " is owed: " + (pair.getValue() - total/userAmountPaid.size()) + "\n";
-                    }
-                });
-            }
-            total = 0;
-        }
-
-        calculateBody.setText(amount);
-
-        amount = "";
-
-        if(changed) {
-            myDatabase.getHouse(houseId, house -> {
-                house.populateStats(year, month, userId, grabbedInfo ->{
-                    userAmountPaid = house.getUserAmountPaid();
-                    userPerformance = house.getUserPoints();
-                    userTasksCompleted = house.getTasksCompleted();
-                    userFees = house.getUserFees();
-                });
-            });
-        }
 
         viewAmountPaid.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +124,48 @@ public class ScreenMonthCtrl implements FragmentCtrl {
                 //TODO NAVIGATE TO NEXT FRAGMENT
                 activity.popFragment(FragmentId.GET(ScreenMonthFragment.TAG));            }
         });
+
+        if (!userAmountPaid.isEmpty()) {
+            Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+                total += pair.getValue();
+            }
+        }
+
+        Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
+        for(int i = 0; i < userArray.size(); i++){
+            Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+            myDatabase.getUser(pair.getKey(), user -> {
+                Log.d("test", user.getFirstName());
+                if (total/userAmountPaid.size() - pair.getValue() > 0) {
+                    amount += user.getFirstName() + " owes: " + (total/userAmountPaid.size() - pair.getValue()) + "\n";
+                }
+                else if (total/userAmountPaid.size() - pair.getValue() == 0) {
+                    amount += user.getFirstName() + " owes: 0" + "\n";
+                }
+                else {
+                    amount += user.getFirstName() + " is owed: " + (pair.getValue() - total/userAmountPaid.size()) + "\n";
+                }
+            });
+        }
+        calculateBody.setText(amount);
+        amount = "";
+
+        //need to fix this
+        if(changed) {
+            myDatabase.getHouse(houseId, house -> {
+                house.populateStats(year, month, userId, grabbedInfo ->{
+                    userAmountPaid = house.getUserAmountPaid();
+                    userPerformance = house.getUserPoints();
+                    userTasksCompleted = house.getTasksCompleted();
+                    userFees = house.getUserFees();
+                });
+            });
+        }
     }
+
 
     @Override
     public void acceptArguments(Object... args) {
@@ -159,4 +182,39 @@ public class ScreenMonthCtrl implements FragmentCtrl {
     public void updateInfo() {
 
     }
+
+    public void gatheringUsers(View view){
+        if (userAmountPaid.isEmpty()) doneCalculatingScreen(view);
+        float count = (float)0.5;
+        Iterator<Map.Entry<ObjectId, Float>> it = userAmountPaid.entrySet().iterator();
+        if (filler != null) {
+            return;
+        }
+        if (!it.hasNext()) {
+            gatheringInfo.setVisibility(View.GONE);
+            doneCalculatingScreen(view);
+            return;
+        }
+        filler = user -> {
+            if (user != null) {
+                userArray.add(user);
+            }
+            if (!it.hasNext()) {
+                filler = null;
+                Log.d("MyHousesCtrl", "All users are a go");
+                gatheringInfo.setVisibility(View.GONE);
+                doneCalculatingScreen(view);
+            } else {
+                Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+                floatAmountArray.add(pair.getValue());
+                Log.d("CheckingNames", pair.getKey().toString() + " : " + pair.getValue().toString());
+                myDatabase.getUser(pair.getKey(), filler);
+            }
+        };
+        Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
+        floatAmountArray.add(pair.getValue());
+        Log.d("CheckingNames", pair.getKey().toString() + " : " + pair.getValue().toString());
+        myDatabase.getUser(pair.getKey(), filler);
+    }
+
 }

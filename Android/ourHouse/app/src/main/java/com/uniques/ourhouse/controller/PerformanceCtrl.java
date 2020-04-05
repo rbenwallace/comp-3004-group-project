@@ -97,7 +97,6 @@ public class PerformanceCtrl implements FragmentCtrl {
     }
 
     private void doneCalculatingScreen(View view) {
-        System.out.println("wallace red");
         strMonth = months[month];
         BarChart barChart;
         PieChart pieChart;
@@ -139,6 +138,7 @@ public class PerformanceCtrl implements FragmentCtrl {
             curUser++;
         }
 
+        curUser = 0;
         count = 0.5f;
 
         for (int j = 0; j < floatPerformanceArray.size(); j++) {
@@ -148,39 +148,31 @@ public class PerformanceCtrl implements FragmentCtrl {
         List<PieEntry> value = new ArrayList<>();
         Iterator<Map.Entry<ObjectId, Float>> it2 = userPerformance.entrySet().iterator();
         ArrayList<PieEntry> entries2 = new ArrayList<>();
-        curUser = 0;
+        int curUser2 = 0;
         for (int i = 0; i < userArray2.size(); i++) {
-            System.out.println("wallace pie" + userArray2.get(curUser).getFirstName());
-            value.add(new PieEntry((float) (Math.round((floatPerformanceArray.get(curUser) / total) * 10000) / 100), userArray2.get(curUser).getFirstName()));
-            curUser++;
+            value.add(new PieEntry((float) (Math.round((floatPerformanceArray.get(curUser2) / total) * 10000) / 100), userArray2.get(curUser2).getFirstName()));
+            System.out.println("wallace pie" + userArray2.get(curUser2).getFirstName());
+            curUser2++;
         }
 
-        curUser = 0;
+        curUser2 = 0;
 
 //piechart
         pieChart = (PieChart) view.findViewById(R.id.idPieChart);
-        pieChart.setUsePercentValues(true);
+        PieDataSet pieDataSet = new PieDataSet(value, "");
+        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.animateXY(1500, 1500);
 
         pieChart.setHoleRadius(0f);
         pieChart.setTransparentCircleRadius(0f);
 
-        PieDataSet pieDataSet = new PieDataSet(value, "");
-        pieChart.setEntryLabelColor(BLACK);
         pieChart.setDrawEntryLabels(false);
         pieChart.getDescription().setEnabled(false);
-        PieData pieData = new PieData(pieDataSet);
 
-        pieDataSet.setDrawValues(true);
+        pieChart.invalidate();
 
-        pieChart.setData(pieData);
-
-        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-
-        pieChart.animateXY(1500, 1500);
-
-        //pieChart.setTransparentCircleAlpha(0);
-
-        //addDataSet(pieChart);
 
 //barchart
         barChart = (BarChart) view.findViewById(R.id.idBarChart);
@@ -238,7 +230,7 @@ public class PerformanceCtrl implements FragmentCtrl {
     }
 
     public void gatheringUsers(View view) {
-        if (!userTasksCompleted.isEmpty()) gatheringUsers2(view);
+        if (userTasksCompleted.isEmpty()) doneCalculatingScreen(view);
         Iterator<Map.Entry<ObjectId, Integer>> it = userTasksCompleted.entrySet().iterator();
         if (filler != null) {
             return;
@@ -271,8 +263,7 @@ public class PerformanceCtrl implements FragmentCtrl {
     }
 
     public void gatheringUsers2(View view) {
-        if (!userPerformance.isEmpty()) doneCalculatingScreen(view);
-        float count = (float)0.5;
+        if (userPerformance.isEmpty()) doneCalculatingScreen(view);
         Iterator<Map.Entry<ObjectId, Float>> it2 = userPerformance.entrySet().iterator();
         if (filler2 != null) {
             return;

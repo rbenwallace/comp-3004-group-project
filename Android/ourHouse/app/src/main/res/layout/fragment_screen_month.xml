@@ -115,4 +115,19 @@
             tools:layout_editor_absoluteY="550dp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/gatheringUsers"
+        android:visibility="gone"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:background="@drawable/loginbutton_selector"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:text="Gathering Info..."
+        tools:layout_editor_absoluteX="107dp"
+        tools:layout_editor_absoluteY="370dp"
+        tools:ignore="MissingConstraints" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
