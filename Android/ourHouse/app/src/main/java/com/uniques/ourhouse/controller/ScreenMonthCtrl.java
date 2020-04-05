@@ -104,11 +104,12 @@ public class ScreenMonthCtrl implements FragmentCtrl {
 
         if(changed) {
             myDatabase.getHouse(houseId, house -> {
-                house.populateStats(year, month, userId);
-                userAmountPaid = house.getUserAmountPaid();
-                userPerformance = house.getUserPoints();
-                userTasksCompleted = house.getTasksCompleted();
-                userFees = house.getUserFees();
+                house.populateStats(year, month, userId, grabbedInfo ->{
+                    userAmountPaid = house.getUserAmountPaid();
+                    userPerformance = house.getUserPoints();
+                    userTasksCompleted = house.getTasksCompleted();
+                    userFees = house.getUserFees();
+                });
             });
         }
 

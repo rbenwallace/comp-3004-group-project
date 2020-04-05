@@ -83,12 +83,13 @@ public class PerformanceCtrl implements FragmentCtrl {
             ObjectId houseId = Settings.OPEN_HOUSE.get();
             ObjectId userId = Session.getSession().getLoggedInUserId();
             myDatabase.getHouse(houseId, house -> {
-                house.populateStats(year, month, userId);
-                userAmountPaid = house.getUserAmountPaid();
-                userPerformance = house.getUserPoints();
-                userTasksCompleted = house.getTasksCompleted();
-                userFees = house.getUserFees();
-                gatheringUsers(view);
+                house.populateStats(year, month, userId, eventsGrabbed ->{
+                    userAmountPaid = house.getUserAmountPaid();
+                    userPerformance = house.getUserPoints();
+                    userTasksCompleted = house.getTasksCompleted();
+                    userFees = house.getUserFees();
+                    gatheringUsers(view);
+                });
             });
         } else {
             gatheringUsers(view);

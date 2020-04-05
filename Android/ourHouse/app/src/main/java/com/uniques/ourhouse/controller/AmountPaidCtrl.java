@@ -70,12 +70,13 @@ public class AmountPaidCtrl implements FragmentCtrl {
             ObjectId houseId = Settings.OPEN_HOUSE.get();
             ObjectId userId = Session.getSession().getLoggedInUserId();
             myDatabase.getHouse(houseId, house -> {
-                house.populateStats(year, month, userId);
-                userAmountPaid = house.getUserAmountPaid();
-                userPerformance = house.getUserPoints();
-                userTasksCompleted = house.getTasksCompleted();
-                userFees = house.getUserFees();
-                gatheringUsers(view);
+                house.populateStats(year, month, userId, eventsGrabbed ->{
+                    userAmountPaid = house.getUserAmountPaid();
+                    userPerformance = house.getUserPoints();
+                    userTasksCompleted = house.getTasksCompleted();
+                    userFees = house.getUserFees();
+                    gatheringUsers(view);
+                });
             });
         }
         else {
@@ -109,7 +110,7 @@ public class AmountPaidCtrl implements FragmentCtrl {
         int curUser = 0;
         for(int i = 0; i < userArray.size(); i++){
             list_x_axis_name.add(userArray.get(curUser).getFirstName());
-            Log.d("names in amount", userArray.get(curUser).toString());
+            Log.d("CheckingNames", "In for loop" + userArray.get(curUser).toString());
             amount += userArray.get(curUser).getFirstName() + ": " + floatAmountArray.get(curUser) + "\n";
             entries.add(new BarEntry(count, floatAmountArray.get(curUser), userArray.get(curUser)));
             count += 1;
@@ -190,11 +191,13 @@ public class AmountPaidCtrl implements FragmentCtrl {
             } else {
                 Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
                 floatAmountArray.add(pair.getValue());
+                Log.d("CheckingNames", pair.getKey().toString() + " : " + pair.getValue().toString());
                 myDatabase.getUser(pair.getKey(), filler);
             }
         };
         Map.Entry<ObjectId, Float> pair = (Map.Entry<ObjectId, Float>) it.next();
         floatAmountArray.add(pair.getValue());
+        Log.d("CheckingNames", pair.getKey().toString() + " : " + pair.getValue().toString());
         myDatabase.getUser(pair.getKey(), filler);
     }
 }

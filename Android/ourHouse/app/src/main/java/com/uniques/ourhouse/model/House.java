@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.text.format.DateFormat;
 import android.util.Log;
 
+import com.uniques.ourhouse.controller.FeedCard;
 import com.uniques.ourhouse.session.DatabaseLink;
 import com.uniques.ourhouse.session.Session;
 import com.uniques.ourhouse.util.Indexable;
@@ -45,12 +46,18 @@ public class House implements Indexable, Observable {
 
     private boolean showTaskDifficulty;
     private boolean penalizeLateTasks;
+    private Consumer<Task> taskFiller;
+    private Consumer<Fee> feeFiller;
+    ObjectId tempId;
 
     private HashMap<ObjectId, Float> userPoints;
     private HashMap<ObjectId, Float> userAmountPaid;
 
     private HashMap<ObjectId, Integer> tasksCompleted;
     private ArrayList<String> userFees;
+    private ArrayList<Task> gatheredTasks;
+    private ArrayList<Fee> gatheredFees;
+    ArrayList<Event> taskEvents, feeEvents;
     private int count;
 
     private DatabaseLink myDatabase = Session.getSession().getDatabase();
@@ -147,6 +154,8 @@ public class House implements Indexable, Observable {
         userAmountPaid = new HashMap<>();
         tasksCompleted = new HashMap<>();
         userFees = new ArrayList<>();
+        taskEvents = new ArrayList<>();
+        feeEvents = new ArrayList<>();
         for (ObjectId userId : occupants) {
             userPoints.put(userId, Float.valueOf("0.0"));
             userAmountPaid.put(userId, Float.valueOf("0.0"));
@@ -154,74 +163,132 @@ public class House implements Indexable, Observable {
         }
     }
 
-    public void populateStats(int year, int month, ObjectId taskUser){
+    public void populateStats(int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats){
         initHouseEvents();
+        gatheredFees = new ArrayList<>();
+        gatheredTasks = new ArrayList<>();
         myDatabase.getAllEventsFromHouse(houseId, events -> {
-            int newNum = 0;
-            count = events.size();
-            for(Event event : events){
-                if(event.getDateCompleted() != null){
-                    ObjectId eventUser = event.getAssignedTo();
-                    String strYear = (String) DateFormat.format("yyyy", event.getDateCompleted());
-                    int tempYear = Integer.parseInt(strYear);
-                    int tempMonth = event.getDateCompleted().getMonth();
-                    if((event.getType() == 0) && (tempMonth == month) && (tempYear == year)){
-                        myDatabase.getTask(event.getAssociatedTask(), task -> {
-                            int completed =  tasksCompleted.get(eventUser) + 1;
-                            tasksCompleted.put(eventUser, completed);
-                            if(showTaskDifficulty && penalizeLateTasks){
-                                if(event.getDueDate().after(event.getDateCompleted())){
-                                    float num = (float) (userPoints.get(eventUser) + task.getDifficulty());
-                                    userPoints.put(eventUser, num);
-                                }
-                                else {
-                                    float num = (float) (userPoints.get(eventUser) + (task.getDifficulty() * 0.5));
-                                    userPoints.put(eventUser, num);
-                                }
-                            }
-                            else if(!showTaskDifficulty && penalizeLateTasks){
-                                if(event.getDueDate().after(event.getDateCompleted())){
-                                    float num = (float) (userPoints.get(eventUser) + 1.0);
-                                    userPoints.put(eventUser, num);
-                                }
-                                else {
-                                    float num = (float) (userPoints.get(eventUser) + 0.5);
-                                    userPoints.put(eventUser, num);
-                                }
-                            }
-                            else{
-                                if (showTaskDifficulty) {
-                                    float num = (float) (userPoints.get(eventUser) + task.getDifficulty());
-                                    userPoints.put(eventUser, num);
-                                }
-                                else{
-                                    float num = (float) (userPoints.get(eventUser) + 1.0);
-                                    userPoints.put(eventUser, num);
-                                }
-                            }
-                        });
-                    }
-                    else if(event.getType() == 1 && (tempMonth == month) && (tempYear == year)){
-                        myDatabase.getFee(event.getAssociatedTask(), fee -> {
-                            String userFee = "Amt: " + String.valueOf(fee.getAmount()) + " - " + fee.getName();
-                            if(eventUser.equals(taskUser)){
-                                userFees.add(userFee);
-                            }
-                            float num = (float) (userAmountPaid.get(eventUser) + fee.getAmount());
-                            userAmountPaid.put(eventUser, num);
-                        });
-                    }
-                }
-                if(newNum == events.size()-1){
-                    Log.d(House.TAG, "Fee list: " + userFees);
-                    Log.d(House.TAG, "Amountpaid: " + userAmountPaid);
-                    Log.d(House.TAG, "Performance: " + userPoints);
-                    Log.d(House.TAG, "Task completed: " + tasksCompleted);
-                }
-                newNum++;
-            }
+            gatheringTasks(events, year, month, taskUser, returnStats);
         });
     }
+
+    public void gatheringTasks(List<Event> events, int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats) {
+        if (events.isEmpty()) gatheringFees(new ArrayList<Event>(), year, month, taskUser,returnStats);
+        if (taskFiller != null) {
+            return;
+        }
+        for(Event event : events){
+            if(event.getDateCompleted() != null){
+                String strYear = (String) DateFormat.format("yyyy", event.getDateCompleted());
+                int tempYear = Integer.parseInt(strYear);
+                int tempMonth = event.getDateCompleted().getMonth();
+                if((tempMonth == month) && (tempYear == year)) {
+                    if(event.getType() != 0)feeEvents.add(event);
+                    else taskEvents.add(event);
+                }
+            }
+        }
+        ArrayList<Event> eventsToSendTemp = feeEvents;
+        ArrayList<Event> eventsToKeepTemp = taskEvents;
+
+        if (eventsToKeepTemp.isEmpty()) {
+            Log.d("checkinglists", "Fees" + " " + eventsToKeepTemp.toString());
+            gatheringFees(eventsToSendTemp, year, month, taskUser, returnStats);
+            return;
+        }
+        taskFiller = task -> {
+            if (task != null) {
+                Log.d("checkinglists", "TASK ADDED: " + task.toString());
+                gatheredTasks.add(task);
+            }
+            if (eventsToKeepTemp.isEmpty()) {
+                taskFiller = null;
+                Log.d("checkinglists", "ALL TASKS GRABBED");
+                gatheringFees(eventsToSendTemp,  year, month, taskUser,returnStats);
+            } else {
+                Log.d("checkinglists", "GRABBING TASK : " + eventsToKeepTemp.remove(0).getId().toString());
+                myDatabase.getTask(eventsToKeepTemp.remove(0).getId(), taskFiller);
+            }
+        };
+        Log.d("checkinglists", "GRABBING TASK : " + eventsToKeepTemp.get(0).getId().toString());
+        myDatabase.getTask(eventsToKeepTemp.remove(0).getId(), taskFiller);
+    }
+    public void gatheringFees(ArrayList<Event> events, int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats) {
+        if (events.isEmpty()) doneCalculating(new ArrayList<Event>(), year, month, taskUser,returnStats);
+        if (feeFiller != null) {
+            return;
+        }
+        if (events.isEmpty()) {
+            doneCalculating(events, year, month, taskUser, returnStats);
+            return;
+        }
+        feeFiller = fee -> {
+            if (fee != null) {
+                gatheredFees.add(fee);
+            }
+            if (events.isEmpty()) {
+                feeFiller = null;
+                tempId = null;
+                Log.d("MyHousesCtrl", "All users are a go");
+                doneCalculating(events, year, month, taskUser, returnStats);
+            } else {
+                myDatabase.getFee(events.remove(0).getId(), feeFiller);
+            }
+        };
+        Log.d("gathering1", events.get(0).getName().toString());
+        myDatabase.getFee(events.remove(0).getId(), feeFiller);
+    }
+
+    private void doneCalculating(ArrayList<Event> events, int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats) {
+        Log.d("checkinglists", "Fees" + " " + gatheredFees.toString());
+        Log.d("checkinglists", "Tasks" + " " + gatheredTasks.toString());
+        Log.d("checkinglists", "TaskEvents" + " " + taskEvents.toString());
+        Log.d("checkinglists", "FeesEvents" + " " + feeEvents.toString());
+        for(int i = 0; i < gatheredTasks.size(); i++) {
+            int completed =  tasksCompleted.get(taskEvents.get(i).getAssignedTo()) + 1;
+            tasksCompleted.put(taskEvents.get(i).getId(), completed);
+            if(showTaskDifficulty && penalizeLateTasks){
+                if(taskEvents.get(i).getDueDate().after(taskEvents.get(i).getDateCompleted())){
+                    float num = (float) (userPoints.get(taskEvents.get(i).getAssignedTo()) + gatheredTasks.get(i).getDifficulty());
+                    userPoints.put(taskEvents.get(i).getAssignedTo(), num);
+                }
+                else {
+                    float num = (float) (userPoints.get(taskEvents.get(i).getAssignedTo()) + (gatheredTasks.get(i).getDifficulty() * 0.5));
+                    userPoints.put(taskEvents.get(i).getAssignedTo(), num);
+                }
+            }
+            else if(!showTaskDifficulty && penalizeLateTasks){
+                if(taskEvents.get(i).getDueDate().after(taskEvents.get(i).getDateCompleted())){
+                    float num = (float) (userPoints.get(taskEvents.get(i).getAssignedTo()) + 1.0);
+                    userPoints.put(taskEvents.get(i).getAssignedTo(), num);
+                }
+                else {
+                    float num = (float) (userPoints.get(taskEvents.get(i).getAssignedTo()) + 0.5);
+                    userPoints.put(taskEvents.get(i).getAssignedTo(), num);
+                }
+            }
+            else{
+                if (showTaskDifficulty) {
+                    float num = (float) (userPoints.get(taskEvents.get(i).getAssignedTo()) + gatheredTasks.get(i).getDifficulty());
+                    userPoints.put(taskEvents.get(i).getAssignedTo(), num);
+                }
+                else{
+                    float num = (float) (userPoints.get(taskEvents.get(i).getAssignedTo()) + 1.0);
+                    userPoints.put(taskEvents.get(i).getAssignedTo(), num);
+                }
+            }
+        }
+        for(int i = 0; i < gatheredFees.size(); i++) {
+            String userFee = "Amt: " + String.valueOf(gatheredFees.get(i).getAmount()) + " - " + gatheredFees.get(i).getName();
+            if(feeEvents.get(i).getAssignedTo().equals(taskUser)){
+                userFees.add(userFee);
+            }
+            float num = (float) (userAmountPaid.get(feeEvents.get(i).getAssignedTo()) + gatheredFees.get(i).getAmount());
+            userAmountPaid.put(feeEvents.get(i).getAssignedTo(), num);
+        }
+        returnStats.accept(true);
+    }
+
 
     @NonNull
     @Override
