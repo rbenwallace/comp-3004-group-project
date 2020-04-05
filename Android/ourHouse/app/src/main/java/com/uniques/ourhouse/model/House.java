@@ -164,10 +164,12 @@ public class House implements Indexable, Observable {
     }
 
     public void populateStats(int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats){
+        Log.d("TestingSTuff", "Inside");
         initHouseEvents();
         gatheredFees = new ArrayList<>();
         gatheredTasks = new ArrayList<>();
         myDatabase.getAllEventsFromHouse(houseId, events -> {
+            Log.d("TestingSTuff", "Leaving to gather tasks");
             gatheringTasks(events, year, month, taskUser, returnStats);
         });
     }
