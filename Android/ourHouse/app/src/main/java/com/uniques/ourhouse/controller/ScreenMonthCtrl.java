@@ -78,7 +78,8 @@ public class ScreenMonthCtrl implements FragmentCtrl {
                 gatheringUsers(view);
             });
         });
-        }
+    }
+
 
 
     private void doneCalculatingScreen(View view) {
