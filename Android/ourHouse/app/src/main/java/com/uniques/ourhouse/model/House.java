@@ -242,7 +242,7 @@ public class House implements Indexable, Observable {
     private void doneCalculating(ArrayList<Event> events, int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats) {
         for(int i = 0; i < gatheredTasks.size(); i++) {
             int completed =  tasksCompleted.get(taskEvents.get(i).getAssignedTo()) + 1;
-            tasksCompleted.put(taskEvents.get(i).getId(), completed);
+            tasksCompleted.put(taskEvents.get(i).getAssignedTo(), completed);
             if(showTaskDifficulty && penalizeLateTasks){
                 if(taskEvents.get(i).getDueDate().after(taskEvents.get(i).getDateCompleted())){
                     float num = (float) (userPoints.get(taskEvents.get(i).getAssignedTo()) + gatheredTasks.get(i).getDifficulty());

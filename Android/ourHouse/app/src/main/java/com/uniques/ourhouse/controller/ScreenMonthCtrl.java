@@ -133,13 +133,13 @@ public class ScreenMonthCtrl implements FragmentCtrl {
         for(int i = 0; i < userArray.size(); i++){
             System.out.println(floatAmountArray.get(curUser));
             if (total/userArray.size() - floatAmountArray.get(curUser) > 0) {
-                amount += userArray.get(curUser).getFirstName() + " owes: " + (total/floatAmountArray.size() - floatAmountArray.get(curUser)) + "\n";
+                amount += userArray.get(curUser).getFirstName() + " owes: $" + (total/floatAmountArray.size() - floatAmountArray.get(curUser)) + "\n";
             }
             else if (total/userArray.size() - floatAmountArray.get(curUser) == 0) {
-                amount += userArray.get(curUser).getFirstName() + " owes: 0" + "\n";
+                amount += userArray.get(curUser).getFirstName() + " owes: $0" + "\n";
             }
             else {
-                amount += userArray.get(curUser).getFirstName() + " is owed: " + (floatAmountArray.get(curUser) - total/floatAmountArray.size()) + "\n";
+                amount += userArray.get(curUser).getFirstName() + " is owed: $" + (floatAmountArray.get(curUser) - total/floatAmountArray.size()) + "\n";
             }
             curUser ++;
         }
