@@ -149,7 +149,7 @@ public class PerformanceCtrl implements FragmentCtrl {
         ArrayList<PieEntry> entries2 = new ArrayList<>();
         curUser = 0;
         for (int i = 0; i < userArray2.size(); i++) {
-            value.add(new PieEntry((float) (Math.round((floatPerformanceArray.get(curUser) / total) * 10000) / 100), userArray2.get(curUser)));
+            value.add(new PieEntry((float) (Math.round((floatPerformanceArray.get(curUser) / total) * 10000) / 100), userArray2.get(curUser).getFirstName()));
             curUser++;
         }
 

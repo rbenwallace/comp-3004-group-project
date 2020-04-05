@@ -31,21 +31,12 @@ public class ManageCtrl implements FragmentCtrl {
 
         Log.d(ManageFragment.TAG, "Controller init()");
         addFeeButton.setOnClickListener(view1 -> {
-            Toast.makeText(activity, "Add Fee", Toast.LENGTH_LONG).show();
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(4);
             activity.pushFragment(FragmentId.GET(AddFeeFragment.TAG));
         });
         addTaskButton.setOnClickListener(view12 -> {
-            Toast.makeText(activity, "Add Task", Toast.LENGTH_LONG).show();
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(5);
             activity.pushFragment(FragmentId.GET(AddTaskFragment.TAG));
         });
         settingsButton.setOnClickListener(view13 -> {
-            Toast.makeText(activity, "SettingsFragment", Toast.LENGTH_LONG).show();
-            //TODO NAVIGATE TO NEXT FRAGMENT
-//                ((LS_Main) activity).setViewPager(6);
             activity.pushFragment(FragmentId.GET(SettingsFragment.TAG));
         });
 

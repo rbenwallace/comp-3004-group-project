@@ -34,11 +34,11 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.184" />
+        app:layout_constraintVertical_bias="0.211" />
 
     <TextView
         android:id="@+id/pie_chart_title"
-        android:layout_width="176dp"
+        android:layout_width="146dp"
         android:layout_height="31dp"
         android:text="Performance"
         android:textAlignment="center"
@@ -48,7 +48,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.524" />
+        app:layout_constraintVertical_bias="0.648" />
 
     <Button
         android:id="@+id/right_button"
@@ -99,9 +99,10 @@
         android:layout_height="191dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.727"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.737"></com.github.mikephil.charting.charts.PieChart>
+        app:layout_constraintVertical_bias="0.772"></com.github.mikephil.charting.charts.PieChart>
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/idBarChart"
@@ -109,10 +110,10 @@
         android:layout_height="176dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.288"></com.github.mikephil.charting.charts.BarChart>
+        app:layout_constraintVertical_bias="0.309"></com.github.mikephil.charting.charts.BarChart>
 
     <TextView
         android:id="@+id/gatheringUsers"
