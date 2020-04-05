@@ -1,9 +1,11 @@
 package com.uniques.ourhouse.util.easyjson;
 
+import com.uniques.ourhouse.util.exception.ElementNotFoundException;
 import com.uniques.ourhouse.util.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
@@ -15,7 +17,7 @@ public class JSONElement implements Iterable<JSONElement> {
     @NonNull
     private JSONElementType type;
     @NonNull
-    private ArrayList<JSONElement> children = new ArrayList<>();
+    private List<JSONElement> children;
     private String key;
     private Object value;
 
@@ -23,6 +25,7 @@ public class JSONElement implements Iterable<JSONElement> {
         this.easyJSONStructure = easyJSONStructure;
         this.parent = parent;
         this.type = type;
+        this.children = new ArrayList<>();
         this.key = key;
         this.value = value;
     }
@@ -45,7 +48,7 @@ public class JSONElement implements Iterable<JSONElement> {
     }
 
     @NonNull
-    public ArrayList<JSONElement> getChildren() {
+    public List<JSONElement> getChildren() {
         return children;
     }
 
@@ -248,12 +251,23 @@ public class JSONElement implements Iterable<JSONElement> {
      * In the case of a complex key, the suitable parent will never be 'this' and the final key !== key (param)
      * <br/><br/>
      * Please be mindful of this when using this method.
+     * This method will also call {@link #putStructure(String) putStructure(String)} for every missing part of a complex key.
      *
      * @param key simple/complex key you want to deconstruct
      * @return Object[] {suitable_parent: JSONElement, final_key: String}
      * @throws RuntimeException if any part (before/after '.') of a complex key has < 1 character
      */
     public Object[] deconstructKey(String key) {
+        return deconstructKey(key, true);
+    }
+
+
+    /**
+     * @param generateStructures set to true to call {@link #putStructure(String) putStructure(String)} for every missing part of a complex key.
+     *                           If set to false, this method will throw an ElementNotFoundException
+     * @see #deconstructKey(String) deconstructKey(String) for fuller docs
+     */
+    private Object[] deconstructKey(String key, boolean generateStructures) {
         if (key == null) {
             return new Object[]{this, null};
         }
@@ -273,7 +287,11 @@ public class JSONElement implements Iterable<JSONElement> {
                 }
                 JSONElement innerSearch = result.search(part);
                 if (innerSearch == null) {
-                    result = result.putStructure(part);
+                    if (generateStructures) {
+                        result = result.putStructure(part);
+                    } else {
+                        throw new ElementNotFoundException();
+                    }
                 } else {
                     result = innerSearch;
                 }
@@ -286,8 +304,28 @@ public class JSONElement implements Iterable<JSONElement> {
      * Search for the JSONElement at the specified location
      */
     public JSONElement search(String... location) {
+//        for (String loc : location) {
+//            if (loc.contains("."))
+//                return searchNested(this, location);
+//        }
         return deepSearch(this, location, 0);
     }
+
+//    private JSONElement searchNested(JSONElement at, int locIndex, String... location) {
+//        List<String> expandedPath = new ArrayList<>();
+//        if (location.length == 0) return null;
+//        if (location[locIndex].contains(".")) {
+//            try {
+//                Object[] res = this.deconstructKey(location[locIndex], false);
+//                return ((JSONElement) res[0]).searchNested(null, locIndex + 1, location);
+//            } catch (ElementNotFoundException e) {
+//                return null;
+//            }
+//        } else {
+//            JSONElement next = this.search(location[locIndex]);
+//            at.searchNested(at, locIndex + 1, location);
+//        }
+//    }
 
     private JSONElement deepSearch(JSONElement element, String[] location, int locPosition) {
         for (int i = 0; locPosition < location.length && i < element.children.size(); ++i) {
