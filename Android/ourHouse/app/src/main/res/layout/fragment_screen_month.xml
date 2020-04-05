@@ -116,7 +116,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/gatheringUsers"
+        android:id="@+id/gatheringUsers3"
         android:visibility="gone"
         android:layout_width="200dp"
         android:layout_height="50dp"
