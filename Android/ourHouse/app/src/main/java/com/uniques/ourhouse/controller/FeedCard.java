@@ -201,7 +201,12 @@ public final class FeedCard implements RecyclerCard, Comparable {
             if (!isExpanded) {
                 if(object.getEvent().getType() == 1){
                     Session.getSession().getDatabase().getFee(object.getEvent().getAssociatedTask(), fee -> {
-                        txtTitle.setText("$" + fee.getAmount() + " - " + object.getName());
+                        if(fee == null){
+                            txtTitle.setText(object.getName());
+                        }
+                        else{
+                            txtTitle.setText("$" + fee.getAmount() + " - " + object.getName());
+                        }
                     });
                 }
                 else{
