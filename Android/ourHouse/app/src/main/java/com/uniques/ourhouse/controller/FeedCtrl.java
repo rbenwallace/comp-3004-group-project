@@ -307,7 +307,7 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                         if (!Settings.FEED_SHOW_ON_TIME.<Boolean>get())
                             continue;
                     }
-                    if (event.getCompareObject() instanceof Date) {
+                    if ((event.getDateCompleted() != null ? event.getDateCompleted() : event.getDueDate()) != null) {
                         cal.setTime(event.getDateCompleted() != null ? event.getDateCompleted() : event.getDueDate());
                         if (controller.showingPastEvents) {
                             cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -322,33 +322,35 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
                         }
                         Date date = cal.getTime();
                         // if date occurs today
-                        if (occursInSameCalendarField(date, now, Calendar.DAY_OF_YEAR, 0)) {
-                            if (!doneToday) {
-                                feedCardList.add(
-                                        new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
-                                doneToday = true;
-                            }
-                        } else if (occursInSameCalendarField(date, now, Calendar.WEEK_OF_YEAR, 0)) {
-                            // if date occurs yesterday/tomorrow (within this week)
-                            if (occursInSameCalendarField(date, now, Calendar.DAY_OF_YEAR, 1)) {
-                                if (!doneDayDiff) {
+                        if (occursInSameCalendarField(date, now, Calendar.YEAR, 0)) {
+                            if (occursInSameCalendarField(date, now, Calendar.DAY_OF_YEAR, 0)) {
+                                if (!doneToday) {
                                     feedCardList.add(
                                             new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
-                                    doneDayDiff = true;
+                                    doneToday = true;
                                 }
-                                // if date just occurs this week
-                            } else {
-                                if (!doneWeek) {
+                            } else if (occursInSameCalendarField(date, now, Calendar.WEEK_OF_YEAR, 0)) {
+                                // if date occurs yesterday/tomorrow (within this week)
+                                if (occursInSameCalendarField(date, now, Calendar.DAY_OF_YEAR, 1)) {
+                                    if (!doneDayDiff) {
+                                        feedCardList.add(
+                                                new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
+                                        doneDayDiff = true;
+                                    }
+                                    // if date just occurs this week
+                                } else {
+                                    if (!doneWeek) {
+                                        feedCardList.add(
+                                                new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
+                                        doneWeek = true;
+                                    }
+                                }
+                            } else if (occursInSameCalendarField(date, now, Calendar.WEEK_OF_YEAR, 1)) {
+                                if (!doneWeekDiff) {
                                     feedCardList.add(
                                             new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
-                                    doneWeek = true;
+                                    doneWeekDiff = true;
                                 }
-                            }
-                        } else if (occursInSameCalendarField(date, now, Calendar.WEEK_OF_YEAR, 1)) {
-                            if (!doneWeekDiff) {
-                                feedCardList.add(
-                                        new FeedCard(FeedCard.FeedCardType.DATE, (FeedCardDateObject) () -> date, controller));
-                                doneWeekDiff = true;
                             }
                         } else {
                             cal.setTime(date);

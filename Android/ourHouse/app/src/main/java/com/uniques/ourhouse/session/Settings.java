@@ -186,7 +186,7 @@ public enum Settings {
         @Override
         protected void read(JSONElement parent) {
             String idString = parent.valueOf(getKey());
-            obj = idString == null ? null : new ObjectId(idString);
+            obj = (idString == null ? null : new ObjectId(idString));
         }
 
         @Override

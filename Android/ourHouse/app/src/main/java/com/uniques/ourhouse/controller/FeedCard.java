@@ -36,11 +36,25 @@ public final class FeedCard implements RecyclerCard, Comparable {
 
     @Override
     public int getCompareType() {
-        return DATE;
+        return COMPLEX;
     }
 
     @Override
     public Comparable getCompareObject() {
+        if (object.getEvent() != null) {
+            return new Comparable() {
+                @Override
+                public int getCompareType() {
+                    return DATE;
+                }
+
+                @Override
+                public java.lang.Comparable getCompareObject() {
+                    return object.getEvent().getDateCompleted() != null ?
+                            object.getEvent().getDateCompleted() : object.getEvent().getDueDate();
+                }
+            };
+        }
         return object;
     }
 
@@ -158,10 +172,9 @@ public final class FeedCard implements RecyclerCard, Comparable {
                     Toast.makeText(activity, "We are updating this event, please wait a second", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(object.getEvent().getType() == 0) {
+                if (object.getEvent().getType() == 0) {
                     activity.pushFragment(FragmentId.GET(EditTaskFragment.TAG), object.getEvent().getAssociatedTask());
-                }
-                else{
+                } else {
                     activity.pushFragment(FragmentId.GET(EditFeeFragment.TAG), object.getEvent().getAssociatedTask());
                 }
             });
@@ -199,12 +212,11 @@ public final class FeedCard implements RecyclerCard, Comparable {
                             object.getDateCompleted().getTime()) > object.getDueDate().getTime();
 
             if (!isExpanded) {
-                if(object.getEvent().getType() == 1){
+                if (object.getEvent().getType() == 1) {
                     Session.getSession().getDatabase().getFee(object.getEvent().getAssociatedTask(), fee -> {
                         txtTitle.setText("$" + fee.getAmount() + " - " + object.getName());
                     });
-                }
-                else{
+                } else {
                     txtTitle.setText(object.getName());
                 }
                 txtDate.setText(new SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
@@ -258,8 +270,8 @@ public final class FeedCard implements RecyclerCard, Comparable {
             btnShowOnTime = layout.findViewById(R.id.feed_filter_btnShowOnTime);
 
             btnAssignedToMe.setOnClickListener(v -> {
-                ObjectId me = Session.getSession().getLoggedInUser().getId();
-                if (Settings.FEED_FILTER_USER.get() == me) {
+                ObjectId me = Session.getSession().getLoggedInUserId();
+                if (Settings.FEED_FILTER_USER.get() != null && Settings.FEED_FILTER_USER.get().equals(me)) {
                     Settings.FEED_FILTER_USER.set(null);
                 } else {
                     Settings.FEED_FILTER_USER.set(me);
