@@ -238,7 +238,7 @@ public class SettingsCtrl implements FragmentCtrl, RecyclerCtrl<TaskRotationCard
                 }
                 newHouse.getRotation().setRotation(userRotation);
                 String name = houseName.getText().toString();
-                newHouse.setHouseKey(houseKey.getText().toString().trim());
+                newHouse.setHouseKey(name + houseKey.getText().toString().trim());
                 newHouse.setName(name);
                 myDatabase.updateHouse(newHouse, aBoolean -> {
                     if (aBoolean) {

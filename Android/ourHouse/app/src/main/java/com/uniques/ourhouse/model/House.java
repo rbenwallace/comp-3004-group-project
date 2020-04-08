@@ -240,6 +240,8 @@ public class House implements Indexable, Observable {
     }
 
     private void doneCalculating(ArrayList<Event> events, int year, int month, ObjectId taskUser, Consumer<Boolean> returnStats) {
+        Log.d("all gathered fees", gatheredFees.toString());
+        Log.d("all gathered tasks" , gatheredTasks.toString());
         for(int i = 0; i < gatheredTasks.size(); i++) {
             int completed =  tasksCompleted.get(taskEvents.get(i).getAssignedTo()) + 1;
             tasksCompleted.put(taskEvents.get(i).getAssignedTo(), completed);

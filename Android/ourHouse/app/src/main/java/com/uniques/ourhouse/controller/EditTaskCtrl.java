@@ -56,6 +56,7 @@ public class EditTaskCtrl implements FragmentCtrl {
     private ObjectId currentTask;
     private Schedule.RepeatBasis sameSchedule;
     private Schedule oldSchedule;
+    private boolean showDifficulty = true;
 
     public EditTaskCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -82,12 +83,21 @@ public class EditTaskCtrl implements FragmentCtrl {
         taskViewTitle = view.findViewById(R.id.addTask_title);
         saveTask = view.findViewById(R.id.addTask_btnAdd);
         deleteTask = view.findViewById(R.id.addTask_btnDelete);
+        TextView difficultyTitle = view.findViewById(R.id.addTask_difficultyTitle);
 
         taskViewTitle.setText("Edit Task");
         saveTask.setText("SAVE");
 
         userId = Session.getSession().getLoggedInUserId();
         houseId = Settings.OPEN_HOUSE.get();
+
+        myDatabase.getHouse(houseId, house -> {
+            if(!house.getShowTaskDifficulty()){
+                taskDifficulty.setVisibility(View.GONE);
+                difficultyTitle.setVisibility(View.GONE);
+                showDifficulty = false;
+            }
+        });
 
         if (taskIdStr.equals("")) {
             Log.d(EditTaskFragment.TAG, "Task Id not received");
@@ -108,12 +118,14 @@ public class EditTaskCtrl implements FragmentCtrl {
             currentTask = task.getId();
             taskName.setText(task.getName());
             int difficulty = task.getDifficulty();
-            if (difficulty == 1) {
-                easyButton.performClick();
-            } else if (difficulty == 2) {
-                mediumButton.performClick();
-            } else {
-                hardButton.performClick();
+            if(showDifficulty){
+                if (difficulty == 1) {
+                    easyButton.performClick();
+                } else if (difficulty == 2) {
+                    mediumButton.performClick();
+                } else {
+                    hardButton.performClick();
+                }
             }
             Calendar currentCalendar = Calendar.getInstance();
             currentCalendar.set(Calendar.HOUR_OF_DAY, 23);
@@ -221,13 +233,15 @@ public class EditTaskCtrl implements FragmentCtrl {
                     Toast.makeText(activity, "Please enter a whole number for frequency number", Toast.LENGTH_LONG).show();
                 }
             }
-            String name = String.valueOf(taskName.getText());
-            String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
             int selectedDifficultyNum = 1;
-            if (selectedDifficulty.equals("Medium")) {
-                selectedDifficultyNum = 2;
-            } else if (selectedDifficulty.equals("Hard")) {
-                selectedDifficultyNum = 3;
+            String name = String.valueOf(taskName.getText());
+            if(showDifficulty){
+                String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
+                if (selectedDifficulty.equals("Medium")) {
+                    selectedDifficultyNum = 2;
+                } else if (selectedDifficulty.equals("Hard")) {
+                    selectedDifficultyNum = 3;
+                }
             }
             Schedule schedule = new Schedule();
             if (selectedFrequencyText.equals("Once")) {

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
+import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
@@ -39,6 +40,7 @@ public class AddTaskCtrl implements FragmentCtrl {
     private DatePicker datePicker;
     private TextView taskViewTitle;
     private Button deleteTask;
+    private boolean showDifficulty = true;
 
     public AddTaskCtrl(FragmentActivity activity) {
         this.activity = activity;
@@ -55,6 +57,7 @@ public class AddTaskCtrl implements FragmentCtrl {
         otherTaskFrequency = view.findViewById(R.id.addTask_editNumberOfDays);
         datePicker = view.findViewById(R.id.addTask_datePicked);
         taskViewTitle = view.findViewById(R.id.addTask_title);
+        TextView difficultyTitle = view.findViewById(R.id.addTask_difficultyTitle);
 
         userId = Session.getSession().getLoggedInUserId();
         houseId = Settings.OPEN_HOUSE.get();
@@ -62,6 +65,14 @@ public class AddTaskCtrl implements FragmentCtrl {
 
         taskViewTitle.setText("Add Task");
         addTaskAddButton.setText("ADD");
+
+        myDatabase.getHouse(houseId, house -> {
+            if(!house.getShowTaskDifficulty()){
+                taskDifficulty.setVisibility(View.GONE);
+                difficultyTitle.setVisibility(View.GONE);
+                showDifficulty = false;
+            }
+        });
 
         addTaskBackButton.setOnClickListener(view12 -> {
             //TODO NAVIGATE TO NEXT FRAGMENT
@@ -103,13 +114,15 @@ public class AddTaskCtrl implements FragmentCtrl {
                     Toast.makeText(activity, "Please enter a whole number for frequency number", Toast.LENGTH_LONG).show();
                 }
             }
-            String name = String.valueOf(taskName.getText());
-            String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
             int selectedDifficultyNum = 1;
-            if (selectedDifficulty.equals("Medium")) {
-                selectedDifficultyNum = 2;
-            } else if (selectedDifficulty.equals("Hard")) {
-                selectedDifficultyNum = 3;
+            String name = String.valueOf(taskName.getText());
+            if(showDifficulty){
+                String selectedDifficulty = ((RadioButton) view.findViewById(taskDifficulty.getCheckedRadioButtonId())).getText().toString();
+                if (selectedDifficulty.equals("Medium")) {
+                    selectedDifficultyNum = 2;
+                } else if (selectedDifficulty.equals("Hard")) {
+                    selectedDifficultyNum = 3;
+                }
             }
             Schedule schedule = new Schedule();
             if (selectedFrequencyText.equals("Once")) {
@@ -159,6 +172,7 @@ public class AddTaskCtrl implements FragmentCtrl {
                     Toast.makeText(activity, "Task Added", Toast.LENGTH_SHORT).show();
                     Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
                     activity.popFragment(FragmentId.GET(ManageFragment.TAG));
+                    activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
                 } else {
                     Log.d(AddTaskFragment.TAG, "Task not received by Database");
                     Toast.makeText(activity, "Task Not Added", Toast.LENGTH_SHORT).show();

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.uniques.ourhouse.R;
 import com.uniques.ourhouse.fragment.AddFeeFragment;
 import com.uniques.ourhouse.fragment.AddTaskFragment;
+import com.uniques.ourhouse.fragment.FeedFragment;
 import com.uniques.ourhouse.fragment.FragmentActivity;
 import com.uniques.ourhouse.fragment.FragmentId;
 import com.uniques.ourhouse.fragment.ManageFragment;
@@ -229,6 +230,7 @@ public class AddFeeCtrl implements FragmentCtrl {
                     Toast.makeText(activity, "Fee Added", Toast.LENGTH_SHORT).show();
                     Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
                     activity.popFragment(FragmentId.GET(ManageFragment.TAG));
+                    activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
                 }
                 else{
                     Log.d(AddTaskFragment.TAG, "Fee not received by Database");

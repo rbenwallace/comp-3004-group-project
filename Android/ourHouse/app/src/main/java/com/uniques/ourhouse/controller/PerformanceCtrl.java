@@ -151,8 +151,9 @@ public class PerformanceCtrl implements FragmentCtrl {
         ArrayList<PieEntry> entries2 = new ArrayList<>();
         int curUser2 = 0;
         for (int i = 0; i < userArray2.size(); i++) {
-            if ((float) (Math.round((floatPerformanceArray.get(curUser2) / total) * 10000) / 100) != 0)
-            value.add(new PieEntry((float) (Math.round((floatPerformanceArray.get(curUser2) / total) * 10000) / 100), userArray2.get(curUser2).getFirstName()));
+            if (floatPerformanceArray.get(curUser2) != 0.0) {
+                value.add(new PieEntry((float) (Math.round((floatPerformanceArray.get(curUser2) / total) * 10000) / 100), userArray2.get(curUser2).getFirstName()));
+            }
             curUser2++;
         }
 
@@ -254,13 +255,13 @@ public class PerformanceCtrl implements FragmentCtrl {
             } else {
                 Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
                 intTaskCompletedArray.add(pair.getValue());
-                Log.d("gathering1", pair.getKey().toString());
+                Log.d("gathering1", pair.getValue().toString() + " " + pair.getKey().toString());
                 myDatabase.getUser(pair.getKey(), filler);
             }
         };
         Map.Entry<ObjectId, Integer> pair = (Map.Entry<ObjectId, Integer>) it.next();
         intTaskCompletedArray.add(pair.getValue());
-        Log.d("gathering1", pair.getKey().toString());
+        Log.d("gathering1", pair.getValue().toString() + " " + pair.getKey().toString());
         myDatabase.getUser(pair.getKey(), filler);
     }
 
@@ -287,13 +288,13 @@ public class PerformanceCtrl implements FragmentCtrl {
             } else {
                 Map.Entry<ObjectId, Float> pair2 = (Map.Entry<ObjectId, Float>) it2.next();
                 floatPerformanceArray.add(pair2.getValue());
-                Log.d("gathering2", pair2.getKey().toString());
+                Log.d("gathering2", pair2.getValue().toString());
                 myDatabase.getUser(pair2.getKey(), filler2);
             }
         };
         Map.Entry<ObjectId, Float> pair2 = (Map.Entry<ObjectId, Float>) it2.next();
         floatPerformanceArray.add(pair2.getValue());
-        Log.d("gathering2", pair2.getKey().toString());
+        Log.d("gathering2", pair2.getValue().toString());
         myDatabase.getUser(pair2.getKey(), filler2);
     }
 
