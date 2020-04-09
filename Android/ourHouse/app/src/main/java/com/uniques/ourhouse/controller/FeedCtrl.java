@@ -62,6 +62,10 @@ public class FeedCtrl implements FragmentCtrl, RecyclerCtrl<FeedCard> {
         recyclerView = view.findViewById(R.id.feed_recycler);
 
         showingPastEvents = Settings.FEED_SHOWING_PAST_EVENTS.get();
+        ObjectId houseId = Settings.OPEN_HOUSE.get();
+        Session.getSession().getDatabase().getHouse(houseId, house -> {
+            Settings.FEED_PENALIZE_TASKS.set(house.getPenalizeLateTasks());
+        });
 
         txtPastEvents.setOnClickListener(v -> {
             if (!showingPastEvents) {

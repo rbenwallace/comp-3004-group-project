@@ -60,6 +60,18 @@ public enum Settings {
         }
     }),
 
+    FEED_PENALIZE_TASKS(new PrimitiveHandler<Boolean>() {
+        @Override
+        String getKey() {
+            return "feed_penalizeTasks";
+        }
+
+        @Override
+        Boolean getDefault() {
+            return true;
+        }
+    }),
+
     FEED_SHOW_ON_TIME(new PrimitiveHandler<Boolean>() {
         @Override
         String getKey() {

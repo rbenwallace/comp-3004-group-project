@@ -228,9 +228,15 @@ public final class FeedCard implements RecyclerCard, Comparable {
                         .format(cardType == FeedCardType.BUBBLE && object.getDateCompleted() != null ? object.getDateCompleted() : object.getDueDate()));
                 object.getPerson(person -> txtName.setText(person.getFirstName()));
 
-                txtStatus.setText(isLate ? "Late" : "On Time");
-                txtStatus.setTextColor(activity.getColor(
-                        isLate ? R.color.feedCardLate : R.color.feedCardOnTime));
+                if(Settings.FEED_PENALIZE_TASKS.get()){
+                    txtStatus.setText(isLate ? "Late" : "On Time");
+                    txtStatus.setTextColor(activity.getColor(
+                            isLate ? R.color.feedCardLate : R.color.feedCardOnTime));
+                }
+                else{
+                    txtStatus.setText("Complete");
+                    txtStatus.setTextColor(activity.getColor(R.color.feedCardOnTime));
+                }
                 txtStatus.setVisibility(object.getDateCompleted() == null ? View.INVISIBLE : View.VISIBLE);
 
                 imgFace.setImageDrawable(activity.getDrawable(
