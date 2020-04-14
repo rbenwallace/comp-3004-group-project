@@ -230,7 +230,6 @@ public class AddFeeCtrl implements FragmentCtrl {
                     Toast.makeText(activity, "Fee Added", Toast.LENGTH_SHORT).show();
                     Settings.EVENT_SERVICE_DUTIES_ARE_PRISTINE.set(false);
                     activity.popFragment(FragmentId.GET(ManageFragment.TAG));
-                    activity.pushFragment(FragmentId.GET(FeedFragment.TAG));
                 }
                 else{
                     Log.d(AddTaskFragment.TAG, "Fee not received by Database");
